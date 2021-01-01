@@ -1,0 +1,25 @@
+import 'package:geolocator/geolocator.dart';
+import 'package:flutter/foundation.dart';
+import 'package:location/location.dart' show Location;
+
+class LocationService with ChangeNotifier {
+  double location_latitude = 0;
+  double location_longitude = 0;
+
+
+  Future getCurrentLocation() async {
+    try{
+      Position position = await getCurrentPosition(desiredAccuracy: LocationAccuracy.best);
+      location_latitude = position.latitude;
+      location_longitude = position.longitude;
+      notifyListeners();
+      return position;
+    }catch(e){
+      print(e);
+    }
+
+  }
+
+
+
+}
