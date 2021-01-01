@@ -67,7 +67,7 @@ class SelectAuthScreenState extends State<SelectAuthScreen> {
                   height: 50,
                   child: Center(
                       child: Text(
-                    'Registe',
+                    'Register',
                     style: TextStyle(color: Colors.white, fontWeight: FontWeight.bold, fontSize: 15),
                   )),
                 ),
