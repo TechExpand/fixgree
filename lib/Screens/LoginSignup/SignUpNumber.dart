@@ -67,7 +67,7 @@ class SignUpState extends State<SignUp>{
                             context,
                             PageRouteBuilder(
                                 pageBuilder: (context, animation, secondaryAnihfmation) {
-                                    return OTPPAGE(verificationId, data.number.toString(), Credential);
+                                    return OTPPAGE(verificationID:verificationId,data: data.number.toString(),Credential: Credential);
                                 },
                                 transitionsBuilder: (context, animation, secondaryAnimation,
                                     child) {
@@ -89,34 +89,7 @@ class SignUpState extends State<SignUp>{
 
 
         //when phone is verify , then register the phone to the backend(firebase)
-        signinWithPhoneAndSMScode(id, sms_code) async {
-            try {
-                AuthCredential authcred = PhoneAuthProvider.credential(
-                    verificationId: id, smsCode: sms_code);
-                final User user =
-                    (await FirebaseAuth.instance.signInWithCredential(authcred)).user;
-                await Navigator.pushReplacement(
-                    context,
-                    PageRouteBuilder(
-                        pageBuilder: (context, animation, secondaryAnimation) {
-                            return SignUpPassword();
-                        },
-                        transitionsBuilder:
-                            (context, animation, secondaryAnimation, child) {
-                            return FadeTransition(
-                                opacity: animation,
-                                child: child,
-                            );
-                        },
-                    ),
-                );
-            } catch (e) {
-                print(e.message);
-                scaffoldKey.currentState
-                    .showSnackBar(SnackBar(content: Text(e.message)));
-            }
-        }
-
+      
         return Scaffold(
             key: scaffoldKey,
             body: Material(

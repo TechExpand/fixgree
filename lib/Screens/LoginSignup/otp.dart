@@ -10,7 +10,7 @@ class OTPPAGE extends StatefulWidget {
     var data;
     var Credential;
 
-    OTPPAGE(this.verificationID, this.data, this.Credential);
+    OTPPAGE({this.verificationID, this.data, this.Credential});
 
     @override
     OTPState createState() => OTPState();
@@ -25,6 +25,40 @@ class OTPState extends State<OTPPAGE> {
     static final TextEditingController controller4 = TextEditingController();
     static final TextEditingController controller5 = TextEditingController();
     static final TextEditingController controller6 = TextEditingController();
+
+Timer _timer;
+int _start = 70;
+
+void startTimer() {
+  const oneSec = const Duration(seconds: 1);
+  _timer = new Timer.periodic(
+    oneSec,
+    (Timer timer) {
+      if (_start == 0) {
+        setState(() {
+          timer.cancel();
+        });
+      } else {
+        setState(() {
+          _start--;
+        });
+      }
+    },
+  );
+}
+
+
+
+    void initState(){
+      super.initState();
+      startTimer();
+    }
+
+    @override
+void dispose() {
+  _timer.cancel();
+  super.dispose();
+}
 
     @override
     Widget build(BuildContext context) {
@@ -43,58 +77,7 @@ class OTPState extends State<OTPPAGE> {
         var node = FocusScope.of(context);
         var data = Provider.of<DataProvider>(context);
         var auth = FirebaseAuth.instance;
-
-        //wait for 120 second before sent code expires , when it expires then show timeout and resdnd code
-        var otpTimer =  Timer.periodic(
-            Duration(seconds: 125),
-                (Timer t) =>   showDialog(
-                        context: context,
-                        builder: (_) => new AlertDialog(
-                            title: new Text("Phone number verification timeout. "
-                                "Resend verification code"),
-                            actions: <Widget>[
-                                FlatButton(
-                                    child: Text('Send',style:TextStyle(color:Colors.black)),
-                                    onPressed: () {
-                                        FirebaseAuth.instance.verifyPhoneNumber(
-                                            phoneNumber: data.number.toString(),
-                                            verificationCompleted: (credential) async {
-                                                await auth.signInWithCredential(credential);
-                                                t.cancel();
-                                                await Navigator.pushReplacement(
-                                                    context,
-                                                    PageRouteBuilder(
-                                                        pageBuilder: (context, animation, secondaryAnimation) {
-                                                            return SignUpPassword();
-                                                        },
-                                                        transitionsBuilder:
-                                                            (context, animation, secondaryAnimation, child) {
-                                                            return FadeTransition(
-                                                                opacity: animation,
-                                                                child: child,
-                                                            );
-                                                        },
-                                                    ),
-                                                );
-                                            },
-                                            verificationFailed: (FirebaseAuthException e) {
-                                                scaffoldKey.currentState
-                                                    .showSnackBar(SnackBar(content: Text(e.message)));
-                                            },
-                                            timeout: Duration(seconds: 120),
-                                            codeSent: (String verificationId, int resendToken) {
-                                                widget.verificationID = verificationId;
-                                                scaffoldKey.currentState
-                                                    .showSnackBar(SnackBar(content: Text('Code Sent')));
-                                            },
-                                            codeAutoRetrievalTimeout: (String verificationId) {},
-                                        ).then((value) => Navigator.pop(context));
-
-                                    },
-                                )
-                            ],
-                        )));
-
+ 
 
         //register user if code is correct after code has been sent again
         signinWithPhoneAndSMScode(id, sms_code) async {
@@ -105,7 +88,7 @@ class OTPState extends State<OTPPAGE> {
                 final User user =
                     (await FirebaseAuth.instance.signInWithCredential(authcred)).user;
                 data.setUserID(user.uid);
-                otpTimer.cancel();
+                //otpTimer.cancel();
                 await Navigator.pushReplacement(
                     context,
                     PageRouteBuilder(
@@ -536,7 +519,71 @@ class OTPState extends State<OTPPAGE> {
                                     ),
                                 ],
                             ),
-
+                           _start!=0? Align(
+                             alignment: Alignment.bottomRight,
+                               child: Padding(
+                               padding: const EdgeInsets.only(right:50.0, top:15),
+                               child: Container(
+                                 width: 25,
+                                 height: 25,
+                                 decoration: BoxDecoration(
+                                    color:  Color(0x909B049B),
+                                   shape: BoxShape.circle,
+                                 ),
+                                 child: Center(child: Text('$_start'))),
+                             ),
+                           ):Align(
+                             alignment: Alignment.bottomRight,
+                                  child: FlatButton(
+                                  splashColor: Colors.transparent,
+                                  hoverColor: Colors.transparent,
+                                  focusColor: Colors.transparent,
+                                  highlightColor: Colors.transparent,
+                                  onPressed: (){
+                                   
+                                       FirebaseAuth.instance.verifyPhoneNumber(
+                                            phoneNumber: data.number.toString(),
+                                            verificationCompleted: (credential) async {
+                                                await auth.signInWithCredential(credential);
+                                                await Navigator.pushReplacement(
+                                                    context,
+                                                    PageRouteBuilder(
+                                                        pageBuilder: (context, animation, secondaryAnimation) {
+                                                            return SignUpPassword();
+                                                        },
+                                                        transitionsBuilder:
+                                                            (context, animation, secondaryAnimation, child) {
+                                                            return FadeTransition(
+                                                                opacity: animation,
+                                                                child: child,
+                                                            );
+                                                        },
+                                                    ),
+                                                );
+                                            },
+                                            verificationFailed: (FirebaseAuthException e) {
+                                                scaffoldKey.currentState
+                                                    .showSnackBar(SnackBar(content: Text(e.message)));
+                                            },
+                                            timeout: Duration(seconds: 120),
+                                            codeSent: (String verificationId, int resendToken) {
+                                                widget.verificationID = verificationId;
+                                                scaffoldKey.currentState
+                                                    .showSnackBar(SnackBar(content: Text('Code Sent')));
+                                            },
+                                            codeAutoRetrievalTimeout: (String verificationId) {},
+                                        ).then((value){
+                                          setState(() {
+                                             _start = 70;
+                                      startTimer();
+                                          });
+           
+                                    });
+                                  },
+                                  child:Text('Resend Code')
+                                ),
+                           ),
+                           
                             Spacer(),
                             Align(
                                 alignment: Alignment.center,

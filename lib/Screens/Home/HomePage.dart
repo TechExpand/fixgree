@@ -1,3 +1,6 @@
+import 'dart:io';
+import 'dart:ui';
+
 import 'package:fixme/Screens/Chat/callscreens/listen_incoming_call.dart';
 import 'package:fixme/Screens/Wallet/Wallet.dart';
 import 'package:fixme/Screens/pending/pendingpage.dart';
@@ -8,6 +11,7 @@ import 'package:fixme/Services/network_service.dart';
 import 'package:fixme/Utils/Provider.dart';
 import 'package:fixme/Widgets/Drawer.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter_feather_icons/flutter_feather_icons.dart';
 import 'package:provider/provider.dart';
 import 'package:fixme/Screens/Home/Home.dart';
 import 'package:fixme/Screens/Notification/Notification.dart';
@@ -52,111 +56,184 @@ class _HomePageState extends State<HomePage> {
         ),
       ),
       bottomNavigationBar: Container(
-        decoration: BoxDecoration(
-          boxShadow: <BoxShadow>[
-            BoxShadow(
-              color: Colors.black,
-              blurRadius: 10,
+       height: 60,
+        child: BottomNavigationBar(
+          onTap: (index){
+           _myPage.jumpToPage(index);
+           data.setSelectedBottomNavBar(index);
+          },
+          elevation: 20,
+           type: BottomNavigationBarType.fixed,
+        currentIndex: data.selectedPage,
+          unselectedItemColor: Color(0xFF555555),
+          selectedItemColor: Color(0xFFA40C85),
+          selectedLabelStyle: TextStyle(
+            fontSize: 13,
+              fontFamily: 'Firesans'),
+          unselectedLabelStyle: TextStyle(
+              fontSize: 13,
+              fontFamily: 'Firesans'),
+          items:[
+                BottomNavigationBarItem(
+                
+              icon: Icon(FeatherIcons.home),
+              title: Text('Home'),
             ),
-          ],
-        ),
-        height: 60,
-        child: BottomAppBar(
-          elevation: 3,
-          child: Row(
-            mainAxisAlignment: MainAxisAlignment.spaceEvenly,
-            children: <Widget>[
-              InkWell(
-                  onTap: () {
-                    _myPage.jumpToPage(0);
-                    data.setSelectedBottomNavBar(0);
-                  },
-                  child: Tab(
-                      child: Text('Home',
-                          style: TextStyle(
-                              color: data.selectedPage == 0
-                                  ? Color(0xFFA40C85)
-                                  : Color(0xFF555555))),
-                      icon: Icon(
-                        Icons.home,
-                        color: data.selectedPage == 0
-                            ? Color(0xFFA40C85)
-                            : Color(0xFF555555),
-                      ))),
-              InkWell(
-                  onTap: () {
-                    _myPage.jumpToPage(1);
-                    data.setSelectedBottomNavBar(1);
-                  },
-                  child: Tab(
-                      child: Text('Wallet',
-                          style: TextStyle(
-                              color: data.selectedPage == 1
-                                  ? Color(0xFFA40C85)
-                                  : Color(0xFF555555))),
-                      icon: Icon(Icons.account_balance_wallet,
-                          color: data.selectedPage == 1
-                              ? Color(0xFFA40C85)
-                              : Color(0xFF555555)))),
-              InkWell(
-                  onTap: () {
-                    _myPage.jumpToPage(2);
-                    data.setSelectedBottomNavBar(2);
-                  },
-                  child: Tab(
-                      child: Text('Post',
-                          style: TextStyle(
-                              color: data.selectedPage == 2
-                                  ? Color(0xFFA40C85)
-                                  : Color(0xFF555555))),
-                      icon: Icon(Icons.add_circle_outline,
-                          color: data.selectedPage == 2
-                              ? Color(0xFFA40C85)
-                              : Color(0xFF555555)))),
-              InkWell(
-                  onTap: () {
-                    _myPage.jumpToPage(3);
-                    data.setSelectedBottomNavBar(3);
-                  },
-                  child: Tab(
-                      child: Text('Notification',
-                          style: TextStyle(
-                              color: data.selectedPage == 3
-                                  ? Color(0xFFA40C85)
-                                  : Color(0xFF555555))),
-                      icon: Icon(Icons.notifications_none,
-                          color: data.selectedPage == 3
-                              ? Color(0xFFA40C85)
-                              : Color(0xFF555555)))),
-              InkWell(
-                  onTap: () {
-                    _myPage.jumpToPage(4);
-                    data.setSelectedBottomNavBar(4);
-                  },
-                  child: Tab(
-                      child: Text('Pending',
-                          style: TextStyle(
-                              color: data.selectedPage == 4
-                                  ? Color(0xFFA40C85)
-                                  : Color(0xFF555555))),
-                      icon: Icon(Icons.access_time,
-                          color: data.selectedPage == 4
-                              ? Color(0xFFA40C85)
-                              : Color(0xFF555555)))),
-            ],
-          ),
+            BottomNavigationBarItem(
+              icon: Icon(FeatherIcons.briefcase),
+              title:Text('Wallet'),
+            ),
+            BottomNavigationBarItem(
+              icon: Icon(FeatherIcons.plusCircle),
+              title: Text('Post'),
+            ),
+            BottomNavigationBarItem(
+              icon: Icon(FeatherIcons.bell),
+              title:Text('Notifications'),
+            ),
+            BottomNavigationBarItem(
+              icon: Icon(FeatherIcons.clock),
+              title:Text('Pending'),
+            )
+                              
+          ] 
         ),
       ),
-      body: PageView(
-        controller: _myPage,
-        physics: NeverScrollableScrollPhysics(),
-        children: [
-          Home(scafold_key, data),
-          Wallet(),
-          PostScreen(),
-          NotificationPage(scafold_key),
-          PendingScreen(),
-        ],
+      body: WillPopScope(
+         onWillPop: (){
+           return showDialog(
+               child: BackdropFilter(
+                 filter: ImageFilter.blur(sigmaX: 8, sigmaY: 8),
+                 child: AlertDialog(
+                   elevation: 6,
+                   shape: RoundedRectangleBorder(
+                       borderRadius: BorderRadius.all(Radius.circular(32.0))),
+                   content: Container(
+                     height: 150,
+                     child: Column(
+                       crossAxisAlignment: CrossAxisAlignment.center,
+                       mainAxisAlignment: MainAxisAlignment.center,
+                       children: <Widget>[
+                         Text(
+                           'Oops!!',
+                           style: TextStyle(
+                               fontSize: 20,
+                               color: Color(0xFF9B049B),
+                               fontWeight: FontWeight.bold),
+                         ),
+                         Row(
+                           children: [
+                             Container(
+                               padding: EdgeInsets.only(top: 15, bottom: 15),
+                               width: 250,
+                               child: Text(
+                                 'DO YOU WANT TO EXIT THIS APP?',
+                                 textAlign: TextAlign.center,
+                                 style: TextStyle(
+                                   fontSize: 15,
+                                   fontWeight: FontWeight.bold,
+                                   color: Colors.black54,
+                                 ),
+                               ),
+                             ),
+                           ],
+                         ),
+                         ButtonBar(
+                           alignment: MainAxisAlignment.center,
+                     children: [Material(
+                             borderRadius: BorderRadius.circular(26),
+                             elevation: 2,
+                             child: Container(
+                               height: 35,
+                               width: 100,
+                               decoration: BoxDecoration(
+                                   border: Border.all(color:  Color(0xFF9B049B)),
+                                   borderRadius: BorderRadius.circular(26)),
+                               child: FlatButton(
+                                 onPressed: () {
+                                   return exit(0);
+                                 },
+                                 color:  Color(0xFF9B049B),
+                                 shape: RoundedRectangleBorder(
+                                     borderRadius: BorderRadius.circular(26)),
+                                 padding: EdgeInsets.all(0.0),
+                                 child: Ink(
+                                   decoration: BoxDecoration(
+                                       borderRadius: BorderRadius.circular(26)),
+                                   child: Container(
+                                     constraints: BoxConstraints(
+                                         maxWidth: 190.0, minHeight: 53.0),
+                                     alignment: Alignment.center,
+                                     child: Text(
+                                       "Yes",
+                                       textAlign: TextAlign.center,
+                                       style: TextStyle(
+                                           fontSize: 16,
+                                           fontWeight: FontWeight.bold,
+                                           color: Colors.white),
+                                     ),
+                                   ),
+                                 ),
+                               ),
+                             ),
+                           ),
+                           Material(
+                           borderRadius: BorderRadius.circular(26),
+                           elevation: 2,
+                           child: Container(
+                             height: 35,
+                             width: 100,
+                             decoration: BoxDecoration(
+                                 border: Border.all(color:  Color(0xFF9B049B)),
+                                 borderRadius: BorderRadius.circular(26)),
+                             child: FlatButton(
+                               onPressed: () {
+                                 Navigator.pop(context);
+                               },
+                               color:  Color(0xFF9B049B),
+                               shape: RoundedRectangleBorder(
+                                   borderRadius: BorderRadius.circular(26)),
+                               padding: EdgeInsets.all(0.0),
+                               child: Ink(
+                                 decoration: BoxDecoration(
+                                     borderRadius: BorderRadius.circular(26)),
+                                 child: Container(
+                                   constraints: BoxConstraints(
+                                       maxWidth: 190.0, minHeight: 53.0),
+                                   alignment: Alignment.center,
+                                   child: Text(
+                                     "No",
+                                     textAlign: TextAlign.center,
+                                     style: TextStyle(
+                                         fontSize: 16,
+                                         fontWeight: FontWeight.bold,
+                                         color: Colors.white),
+                                   ),
+                                 ),
+                               ),
+                             ),
+                           ),
+                         ),
+                           ]
+                         ),
+                       ],
+                     ),
+                   ),
+                 ),
+               ),
+               context: context);
+      },
+              child: PageView(
+          controller: _myPage,
+          physics: NeverScrollableScrollPhysics(),
+          children: [
+            Home(scafold_key, data),
+            Wallet(),
+            PostScreen(),
+            NotificationPage(scafold_key),
+            PendingScreen(),
+          ],
+        ),
       ),
     );
 

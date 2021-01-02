@@ -1,9 +1,9 @@
+import 'package:fixme/Screens/Wallet/Providers/PinProvider.dart';
 import 'package:flutter/material.dart';
 import 'package:fixme/Services/network_service.dart';
 import "package:flutter_feather_icons/flutter_feather_icons.dart";
 import 'package:fixme/Model/BankInfo.dart';
 import 'package:provider/provider.dart';
-import 'Providers/PinProvider.dart';
 import 'package:flutter_multi_formatter/flutter_multi_formatter.dart';
 
 BorderRadiusGeometry radiusTop = BorderRadius.only(

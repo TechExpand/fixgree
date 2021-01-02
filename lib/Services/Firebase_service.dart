@@ -132,9 +132,6 @@ class FirebaseApi {
         await refMessages2.add(newMessage.toJson());
       });
     });
-
-     Navigator.pop(context);
-
     final refUsers = FirebaseFirestore.instance.collection('UserChat/$idUser/individual');
  final refArtisan = FirebaseFirestore.instance.collection('UserChat/$idArtisan/individual');
     await refArtisan.doc(idUser).update({
@@ -243,8 +240,8 @@ class FirebaseApi {
     String idArtisan,
   }) async {
   
-    final refUsers = FirebaseFirestore.instance.collection('UserChat/$idUser/individual');
-    await refUsers.doc(idArtisan).update({
+    final refUsers = FirebaseFirestore.instance.collection('UserChat/$idArtisan/individual');
+    await refUsers.doc(idUser).update({
       'read': true,
     });
   }

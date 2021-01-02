@@ -43,9 +43,9 @@ class PostScreenState extends State<PostScreen> {
           backgroundColor: Colors.white,
           //title: Text(widget.title),
           actions: [
-            IconButton(icon: Icon(Icons.close, color: Color(0xFF9B049B),), onPressed: (){
-            Navigator.pop(context);}
-            ),
+          //  IconButton(icon: Icon(Icons.close, color: Color(0xFF9B049B),), onPressed: (){
+          //  Navigator.pop(context);}
+         //   ),
             //TextField(),
             Expanded(
                 child: Center(

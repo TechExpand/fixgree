@@ -8,7 +8,7 @@ class UserChat {
   String id;
   final String idUser;
   final String name;
-   var read;
+   bool read;
    var block;
    var status;
   final String urlAvatar;

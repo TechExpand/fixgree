@@ -203,7 +203,7 @@ class _WalletFundState extends State<WalletFund> {
                                   fontFamily: 'Firesans',
                                   fontWeight: FontWeight.w600)),
                           IconButton(
-                            icon: Icon(Icons.copy),
+                            icon: Icon(Icons.content_copy),
                             color: Color(0xFF333333),
                             onPressed: (){
 

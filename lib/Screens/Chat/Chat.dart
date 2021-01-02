@@ -142,12 +142,14 @@ init() async {
       FocusScope.of(context).unfocus();
        _controller2.clear();
         _controller.clear();
+         datas.setWritingTo(false);
       await FirebaseApi.uploadImage(
               widget.user.idUser,
               network.mobile_device_token,
               selectedImage,
               context,
           '${network.firstName}-${widget.user.name}');
+          
     }
 
 
@@ -160,35 +162,43 @@ final selectedImage = await FilePicker.getFile(type: FileType.custom,
   FocusScope.of(context).unfocus();
        _controller2.clear();
         _controller.clear();
+         datas.setWritingTo(false);
       await FirebaseApi.uploadImage(
               widget.user.idUser,
               network.mobile_device_token,
               selectedImage,
               context,
           '${network.firstName}-${widget.user.name}');
+          
 }
 
      void record({record, context}) async {
+        
       FocusScope.of(context).unfocus();
        _controller2.clear();
         _controller.clear();
+        datas.setWritingTo(false);
       await FirebaseApi.uploadRecord(
               widget.user.idUser,
               network.mobile_device_token,
               record,
               context,
           '${network.firstName}-${widget.user.name}');
+          
     }
 
     void sendMessage() async {
+     
       FocusScope.of(context).unfocus();
       _controller.clear();
+       datas.setWritingTo(false);
       await FirebaseApi.uploadmessage(
               widget.user.idUser,
               network.mobile_device_token,
               message,
               context,
               '${network.firstName}-${widget.user.name}');
+              
     }
 
 
@@ -425,8 +435,11 @@ _start() async {
                               // focusNode: textFieldFocus,
                               enableSuggestions: true,
                                 maxLines: null,
+                                
                               decoration: InputDecoration(
                                  border: InputBorder.none,
+                                  hintStyle: TextStyle(color:Colors.black54),
+                                 hintText: 'Send Message...',
         focusedBorder: InputBorder.none,
         enabledBorder: InputBorder.none,
         errorBorder: InputBorder.none,
@@ -443,30 +456,18 @@ _start() async {
                           selector: (_, model) => model.isWriting,
                           builder: (_, mo, __) {
                             return mo
-                                ? GestureDetector(
-                                    onTap: sendMessage,
-                                    child: Container(
-                                      margin:
-                                          EdgeInsets.only(right: 1, left: 21),
-                                      decoration: BoxDecoration(),
-                                      child:
-                                          Icon(Icons.send, color: Colors.white),
-                                    ),
-                                  )
-                                : InkWell(
-                              onTap:(){
-                                Navigator.pop(context);
-                                _modalBottomSheetRecord(datas);
-                                },
-                                  child: Padding(
-                                      padding:
-                                          EdgeInsets.only(right: 1, left: 15),
-                                      child: Icon(
-                                        Icons.mic,
-                                        color: Colors.white,
-                                        size: 30,
-                                      ),
-                                    ),
+                                ?IconButton(
+                                  onPressed: sendMessage,
+                                icon:  Icon(Icons.send, color: Colors.white),
+                                  
+                                )
+                                : IconButton(
+                                  onPressed:(){
+                                    _modalBottomSheetRecord(datas);
+                                  },
+                                icon:  Icon(Icons.mic,
+                                      color: Colors.white,
+                                      size: 30,),
                                 );
                           },
                         ),
@@ -688,6 +689,7 @@ _start() async {
                             height: 53,
                             width: MediaQuery.of(context).size.width / 1.45,
                             child: TextField(
+                              
                               onTap: () =>  FirebaseApi.updateUsertoRead(
                                                 idUser: widget.user.idUser,
                                                idArtisan:network.mobile_device_token),
@@ -704,6 +706,8 @@ _start() async {
                               enableSuggestions: true,
                                 maxLines: null,
                               decoration: InputDecoration(
+                                hintText: 'Send Message...',
+                                hintStyle: TextStyle(color:Colors.black54),
                                  border: InputBorder.none,
         focusedBorder: InputBorder.none,
         enabledBorder: InputBorder.none,
@@ -722,29 +726,22 @@ _start() async {
                       Selector<DataProvider, bool>(
                         selector: (_, model) => model.isWriting,
                         builder: (_, mo, __) {
+                        
                           return mo
-                              ? GestureDetector(
-                                  onTap: sendMessage,
-                                  child: Container(
-                                    margin: EdgeInsets.only(right: 1, left: 21),
-                                    decoration: BoxDecoration(),
-                                    child:
-                                        Icon(Icons.send, color: Colors.white),
-                                  ),
+                          
+                              ? IconButton(
+                                  onPressed: sendMessage,
+                                icon:  Icon(Icons.send, color: Colors.white),
+                                  
                                 )
-                              : InkWell(
-                            onTap:(){
-                              _modalBottomSheetRecord(datas);
-                            },
-                                child: Padding(
-                                    padding: EdgeInsets.only(right: 1, left: 15),
-                                    child: Icon(
-                                      Icons.mic,
+                              : IconButton(
+                                  onPressed:(){
+                                    _modalBottomSheetRecord(datas);
+                                  },
+                                icon:  Icon(Icons.mic,
                                       color: Colors.white,
-                                      size: 30,
-                                    ),
-                                  ),
-                              );
+                                      size: 30,),
+                                );
                         },
                       ),
                     ],
