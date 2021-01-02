@@ -159,6 +159,7 @@ class _HomePageState extends State<HomePage> {
         ],
       ),
     );
+
     return PickupLayout(scaffold: widget);
   }
 }

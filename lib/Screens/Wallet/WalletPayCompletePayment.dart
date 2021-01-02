@@ -1,8 +1,18 @@
 import 'package:flutter/material.dart';
 import "package:flutter_feather_icons/flutter_feather_icons.dart";
-import 'package:fixme/Utils/utils.dart';
+import 'package:fixme/Services/network_service.dart';
+import 'package:fixme/Screens/Wallet/SecurePin.dart';
+import 'package:provider/provider.dart';
+import 'package:fixme/Model/BankInfo.dart';
 
 class WalletPayCompletePayment extends StatefulWidget {
+  final BankInfo bankInfo;
+  final String accountNumber;
+  final String accountName;
+
+  WalletPayCompletePayment(
+      {this.bankInfo, this.accountNumber, this.accountName});
+
   @override
   _WalletPayCompletePaymentState createState() =>
       _WalletPayCompletePaymentState();
@@ -24,6 +34,7 @@ class _WalletPayCompletePaymentState extends State<WalletPayCompletePayment> {
   @override
   Widget build(BuildContext context) {
     var deviceSize = MediaQuery.of(context).size;
+    var network = Provider.of<WebServices>(context);
     return Scaffold(
       appBar: AppBar(
         backgroundColor: Colors.white,
@@ -105,7 +116,7 @@ class _WalletPayCompletePaymentState extends State<WalletPayCompletePayment> {
                 ),
                 Container(
                   margin: const EdgeInsets.only(right: 15, left: 15),
-                  height: 100,
+                  height: 164,
                   decoration: BoxDecoration(
                     borderRadius: radiusBottom,
                     color: Color(0xFFFFFFFF),
@@ -118,20 +129,20 @@ class _WalletPayCompletePaymentState extends State<WalletPayCompletePayment> {
                   ),
                   child: Column(
                     children: <Widget>[
-                      Row(
-                        mainAxisAlignment: MainAxisAlignment.center,
-                        children: <Widget>[
-                          Padding(
-                            padding: const EdgeInsets.only(top: 5),
-                            child: Text('Leonardo De Ser',
+                      Padding(
+                        padding:
+                            const EdgeInsets.only(top: 5, left: 8, right: 8),
+                        child: Wrap(
+                          children: [
+                            Text('${widget.accountName}',
                                 style: TextStyle(
                                     color: Color(0xFF333333),
                                     fontSize: 21,
                                     fontFamily: 'Firesans',
                                     height: 1.4,
                                     fontWeight: FontWeight.w500)),
-                          ),
-                        ],
+                          ],
+                        ),
                       ),
                       Divider(),
                       Row(
@@ -151,7 +162,7 @@ class _WalletPayCompletePaymentState extends State<WalletPayCompletePayment> {
                         child: Row(
                           mainAxisAlignment: MainAxisAlignment.center,
                           children: [
-                            Text('48459845',
+                            Text('${widget.accountNumber}',
                                 style: TextStyle(
                                     letterSpacing: 2,
                                     color: Color(0xFF333333),
@@ -160,6 +171,19 @@ class _WalletPayCompletePaymentState extends State<WalletPayCompletePayment> {
                                     fontWeight: FontWeight.w600)),
                           ],
                         ),
+                      ),
+                      Divider(),
+                      Row(
+                        mainAxisAlignment: MainAxisAlignment.center,
+                        children: <Widget>[
+                          Text('${widget.bankInfo.name}',
+                              style: TextStyle(
+                                  color: Color(0xFF333333),
+                                  fontSize: 21,
+                                  fontFamily: 'Firesans',
+                                  height: 1,
+                                  fontWeight: FontWeight.w500)),
+                        ],
                       ),
                     ],
                   ),
@@ -203,7 +227,7 @@ class _WalletPayCompletePaymentState extends State<WalletPayCompletePayment> {
                 ),
                 Container(
                   margin: const EdgeInsets.only(right: 15, left: 15),
-                  height: 100,
+                  height: 170,
                   decoration: BoxDecoration(
                     borderRadius: radiusBottom,
                     color: Color(0xFFFFFFFF),
@@ -239,12 +263,65 @@ class _WalletPayCompletePaymentState extends State<WalletPayCompletePayment> {
                           children: [
                             Padding(
                               padding: const EdgeInsets.only(right: 10),
-                              child: Icon(
-                                FeatherIcons.dollarSign,
-                                color: Color(0xFF555555),
-                                size: 20,
+                              child: Text(
+                                '\₦',
+                                style: TextStyle(
+                                    color: Color(0xFF555555), fontSize: 20),
                               ),
                             ),
+                            Expanded(
+                              child: TextFormField(
+                                keyboardType: TextInputType.number,
+                                style: TextStyle(
+                                    fontFamily: 'Firesans',
+                                    fontSize: 16,
+                                    color: Color(0xFF270F33),
+                                    fontWeight: FontWeight.w600),
+                                controller: amount,
+                                decoration: InputDecoration.collapsed(
+                                  hintText: '',
+                                  focusColor: Color(0xFF2B1137),
+                                  fillColor: Color(0xFF2B1137),
+                                  hoverColor: Color(0xFF2B1137),
+                                ),
+                              ),
+                            ),
+                          ],
+                        ),
+                      ),
+                      Row(
+                        children: <Widget>[
+                          Padding(
+                            padding: const EdgeInsets.only(left: 14),
+                            child: Text('Narration',
+                                style: TextStyle(
+                                    color: Color(0xFF4B4B4B),
+                                    fontSize: 18,
+                                    fontFamily: 'Firesans',
+                                    height: 1.4,
+                                    fontWeight: FontWeight.w600)),
+                          ),
+                        ],
+                      ),
+                      Container(
+                        height: 55,
+                        alignment: Alignment.center,
+                        padding: const EdgeInsets.only(left: 12),
+                        margin: const EdgeInsets.only(
+                            left: 12, right: 12, bottom: 10, top: 5),
+                        decoration: BoxDecoration(
+                            color: Color(0xFFFFFFFF),
+                            border: Border.all(color: Color(0xFFF1F1FD)),
+                            boxShadow: [
+                              BoxShadow(
+                                  color: Color(0xFFF1F1FD).withOpacity(0.5),
+                                  blurRadius: 10.0,
+                                  offset: Offset(0.3, 4.0))
+                            ],
+                            borderRadius: BorderRadius.all(Radius.circular(7))),
+                        child: Row(
+                          mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                          children: [
                             Expanded(
                               child: TextFormField(
                                 keyboardType: TextInputType.number,
@@ -281,7 +358,28 @@ class _WalletPayCompletePaymentState extends State<WalletPayCompletePayment> {
             ),
             child: new FlatButton(
               padding: EdgeInsets.all(10),
-              onPressed: () async {},
+              onPressed: () async {
+                String hasPin = await network.checkSecurePin();
+                if (hasPin == 'false') {
+                  displayCreateSecurePinBottomModal(
+                      context: context,
+                      bankInfo: widget.bankInfo,
+                      accountName: widget.accountName,
+                      accountNumber: widget.accountNumber,
+                      amount: amount.text,
+                      isBeneficiary: true,
+                      narration: '');
+                } else if (hasPin == 'true') {
+                  displayEnterSecurePinBottomModal(
+                      context: context,
+                      bankInfo: widget.bankInfo,
+                      accountName: widget.accountName,
+                      accountNumber: widget.accountNumber,
+                      amount: amount.text,
+                      isBeneficiary: true,
+                      narration: '');
+                }
+              },
               child: Padding(
                 padding: const EdgeInsets.only(left: 7, right: 7),
                 child: Row(

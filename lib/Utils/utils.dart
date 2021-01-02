@@ -92,42 +92,35 @@ class Utils with ChangeNotifier {
   }
 
   onExpansionChanged(bool val) {
-      isExpanded = val;
+    isExpanded = val;
   }
-
-
-
-  String formatCurrency(String country, double number) =>
-      NumberFormat.simpleCurrency(name: country, decimalDigits: 2).format(number);
-
-
-  String formatDecimal(double number) =>
-      NumberFormat('#########0.0').format(number);
-
-
-
-  String currencySymbol(String currencyCode) =>
-      NumberFormat().simpleCurrencySymbol(currencyCode);
 
   Future storeData(String name, String data) async {
     SharedPreferences prefs = await SharedPreferences.getInstance();
     prefs.setString(name, data);
   }
+
   Future getData(String name) async {
     SharedPreferences prefs = await SharedPreferences.getInstance();
     String data = prefs.getString(name);
     return data;
   }
-
-//  extension CapExtension on String {
-//  String capitalize() {
-//    return '${this[0].toUpperCase()}${this.substring(1)}';
-//  }
-
-//
-//  String get capitalizeFirstOfEach =>
-//      this.split(" ").map((str) => str.capitalize()).join(" ");
-
-
-
 }
+
+extension CapExtension on String {
+  String capitalize() {
+    return '${this[0].toUpperCase()}${this.substring(1)}';
+  }
+
+  String get capitalizeFirstOfEach =>
+      this.split(" ").map((str) => str.capitalize()).join(" ");
+}
+
+String formatCurrency(String country, double number) =>
+    NumberFormat.simpleCurrency(name: country, decimalDigits: 2).format(number);
+
+String formatDecimal(double number) =>
+    NumberFormat('#########0.0').format(number);
+
+String currencySymbol(String currencyCode) =>
+    NumberFormat().simpleCurrencySymbol(currencyCode);

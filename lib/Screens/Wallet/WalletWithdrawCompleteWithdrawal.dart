@@ -1,7 +1,9 @@
 import 'package:flutter/material.dart';
+import 'package:fixme/Services/network_service.dart';
 import "package:flutter_feather_icons/flutter_feather_icons.dart";
+import 'package:fixme/Screens/Wallet/SecurePin.dart';
+import 'package:provider/provider.dart';
 import 'package:fixme/Model/BankInfo.dart';
-import 'package:fixme/Utils/utils.dart';
 
 class WalletWithdrawCompleteWithdrawal extends StatefulWidget {
   final BankInfo bankInfo;
@@ -35,6 +37,7 @@ class _WalletWithdrawCompleteWithdrawalState
   @override
   Widget build(BuildContext context) {
     var deviceSize = MediaQuery.of(context).size;
+    var network = Provider.of<WebServices>(context);
     return Scaffold(
       appBar: AppBar(
         backgroundColor: Colors.white,
@@ -116,7 +119,7 @@ class _WalletWithdrawCompleteWithdrawalState
                 ),
                 Container(
                   margin: const EdgeInsets.only(right: 15, left: 15),
-                  height: 135,
+                  height: 140,
                   decoration: BoxDecoration(
                     borderRadius: radiusBottom,
                     color: Color(0xFFFFFFFF),
@@ -134,7 +137,7 @@ class _WalletWithdrawCompleteWithdrawalState
                         children: <Widget>[
                           Padding(
                             padding: const EdgeInsets.only(top: 5),
-                            child: Text('Leonardo De Ser',
+                            child: Text('${widget.accountName}',
                                 style: TextStyle(
                                     color: Color(0xFF333333),
                                     fontSize: 21,
@@ -162,7 +165,7 @@ class _WalletWithdrawCompleteWithdrawalState
                         child: Row(
                           mainAxisAlignment: MainAxisAlignment.center,
                           children: [
-                            Text('48459845',
+                            Text('${widget.accountNumber}',
                                 style: TextStyle(
                                     letterSpacing: 2,
                                     color: Color(0xFF333333),
@@ -176,7 +179,7 @@ class _WalletWithdrawCompleteWithdrawalState
                       Row(
                         mainAxisAlignment: MainAxisAlignment.center,
                         children: <Widget>[
-                          Text('Access Bank',
+                          Text('${widget.bankInfo.name}',
                               style: TextStyle(
                                   color: Color(0xFF333333),
                                   fontSize: 21,
@@ -227,7 +230,7 @@ class _WalletWithdrawCompleteWithdrawalState
                 ),
                 Container(
                   margin: const EdgeInsets.only(right: 15, left: 15),
-                  height: 100,
+                  height: 170,
                   decoration: BoxDecoration(
                     borderRadius: radiusBottom,
                     color: Color(0xFFFFFFFF),
@@ -247,7 +250,7 @@ class _WalletWithdrawCompleteWithdrawalState
                         alignment: Alignment.center,
                         padding: const EdgeInsets.only(left: 12),
                         margin: const EdgeInsets.only(
-                            left: 12, right: 12, bottom: 10),
+                            left: 12, right: 12, bottom: 4, top: 3),
                         decoration: BoxDecoration(
                             color: Color(0xFFFFFFFF),
                             border: Border.all(color: Color(0xFFF1F1FD)),
@@ -263,12 +266,65 @@ class _WalletWithdrawCompleteWithdrawalState
                           children: [
                             Padding(
                               padding: const EdgeInsets.only(right: 10),
-                              child: Icon(
-                                FeatherIcons.dollarSign,
-                                color: Color(0xFF555555),
-                                size: 20,
+                              child: Text(
+                                '\₦',
+                                style: TextStyle(
+                                    color: Color(0xFF555555), fontSize: 20),
                               ),
                             ),
+                            Expanded(
+                              child: TextFormField(
+                                keyboardType: TextInputType.number,
+                                style: TextStyle(
+                                    fontFamily: 'Firesans',
+                                    fontSize: 16,
+                                    color: Color(0xFF270F33),
+                                    fontWeight: FontWeight.w600),
+                                controller: amount,
+                                decoration: InputDecoration.collapsed(
+                                  hintText: '',
+                                  focusColor: Color(0xFF2B1137),
+                                  fillColor: Color(0xFF2B1137),
+                                  hoverColor: Color(0xFF2B1137),
+                                ),
+                              ),
+                            ),
+                          ],
+                        ),
+                      ),
+                      Row(
+                        children: <Widget>[
+                          Padding(
+                            padding: const EdgeInsets.only(left: 14),
+                            child: Text('Narration',
+                                style: TextStyle(
+                                    color: Color(0xFF4B4B4B),
+                                    fontSize: 18,
+                                    fontFamily: 'Firesans',
+                                    height: 1.4,
+                                    fontWeight: FontWeight.w600)),
+                          ),
+                        ],
+                      ),
+                      Container(
+                        height: 55,
+                        alignment: Alignment.center,
+                        padding: const EdgeInsets.only(left: 12),
+                        margin: const EdgeInsets.only(
+                            left: 12, right: 12, bottom: 10, top: 5),
+                        decoration: BoxDecoration(
+                            color: Color(0xFFFFFFFF),
+                            border: Border.all(color: Color(0xFFF1F1FD)),
+                            boxShadow: [
+                              BoxShadow(
+                                  color: Color(0xFFF1F1FD).withOpacity(0.5),
+                                  blurRadius: 10.0,
+                                  offset: Offset(0.3, 4.0))
+                            ],
+                            borderRadius: BorderRadius.all(Radius.circular(7))),
+                        child: Row(
+                          mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                          children: [
                             Expanded(
                               child: TextFormField(
                                 keyboardType: TextInputType.number,
@@ -305,7 +361,28 @@ class _WalletWithdrawCompleteWithdrawalState
             ),
             child: new FlatButton(
               padding: EdgeInsets.all(10),
-              onPressed: () async {},
+              onPressed: () async {
+                String hasPin = await network.checkSecurePin();
+                if (hasPin == 'false') {
+                  displayCreateSecurePinBottomModal(
+                      context: context,
+                      bankInfo: widget.bankInfo,
+                      accountName: widget.accountName,
+                      accountNumber: widget.accountNumber,
+                      amount: amount.text,
+                      isBeneficiary: true,
+                      narration: '');
+                } else if (hasPin == 'true') {
+                  displayEnterSecurePinBottomModal(
+                      context: context,
+                      bankInfo: widget.bankInfo,
+                      accountName: widget.accountName,
+                      accountNumber: widget.accountNumber,
+                      amount: amount.text,
+                      isBeneficiary: true,
+                      narration: '');
+                }
+              },
               child: Padding(
                 padding: const EdgeInsets.only(left: 7, right: 7),
                 child: Row(

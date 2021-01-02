@@ -1,5 +1,10 @@
 import 'package:flutter/material.dart';
+import 'package:fixme/Services/network_service.dart';
 import "package:flutter_feather_icons/flutter_feather_icons.dart";
+import 'package:provider/provider.dart';
+import 'package:fixme/Model/TransactionDetails.dart';
+import 'package:fixme/Utils/utils.dart';
+import 'package:intl/intl.dart';
 
 class WalletHistory extends StatefulWidget {
   @override
@@ -9,6 +14,8 @@ class WalletHistory extends StatefulWidget {
 class _WalletHistoryState extends State<WalletHistory> {
   @override
   Widget build(BuildContext context) {
+    var deviceSize = MediaQuery.of(context).size;
+    var network = Provider.of<WebServices>(context);
     return Scaffold(
       appBar: AppBar(
         backgroundColor: Colors.white,
@@ -21,14 +28,129 @@ class _WalletHistoryState extends State<WalletHistory> {
                 fontWeight: FontWeight.w500)),
         centerTitle: true,
         leading: IconButton(
-          onPressed: (){
+          onPressed: () {
             Navigator.of(context).pop();
           },
-          icon: Icon(FeatherIcons.arrowLeft,
-              color: Color(0xFF9B049B)),
+          icon: Icon(FeatherIcons.arrowLeft, color: Color(0xFF9B049B)),
         ),
         elevation: 0,
       ),
+      body: ListView(
+        children: [
+          Container(
+            height: deviceSize.height,
+            child: FutureBuilder<List>(
+                future: network.getUserTransactions(),
+                builder: (context, AsyncSnapshot<List> snapshot) {
+                  Widget mainWidget;
+                  if (snapshot.connectionState == ConnectionState.none) {
+                    mainWidget = Center(
+                      child: Column(
+                        mainAxisAlignment: MainAxisAlignment.center,
+                        crossAxisAlignment: CrossAxisAlignment.center,
+                        children: [
+                          CircularProgressIndicator(),
+                          SizedBox(
+                            height: 10,
+                          ),
+                          Text('Loading',
+                              style: TextStyle(
+                                  color: Color(0xFF333333),
+                                  fontSize: 18,
+                                  fontFamily: 'Firesans',
+                                  fontWeight: FontWeight.w600)),
+                        ],
+                      ),
+                    );
+                  } else {
+                    if (snapshot.data == null) {
+                      mainWidget = Center(
+                        child: Column(
+                          mainAxisAlignment: MainAxisAlignment.center,
+                          crossAxisAlignment: CrossAxisAlignment.center,
+                          children: [
+                            CircularProgressIndicator(),
+                            SizedBox(
+                              height: 10,
+                            ),
+                            Text('No Network',
+                                style: TextStyle(
+                                    color: Color(0xFF333333),
+                                    fontSize: 18,
+                                    fontFamily: 'Firesans',
+                                    fontWeight: FontWeight.w600)),
+                          ],
+                        ),
+                      );
+                    } else {
+                      mainWidget = ListView.builder(
+                        itemCount: snapshot.data.length,
+                        padding:
+                            const EdgeInsets.only(top: 10, left: 3, right: 5),
+                        physics: BouncingScrollPhysics(),
+                        itemBuilder: (context, index) {
+                          TransactionDetails transactionDetails =
+                              TransactionDetails.fromJson(snapshot.data[index]);
+                          return ListTile(
+                              leading: Container(
+                                height: 43,
+                                width: 43,
+                                decoration: BoxDecoration(
+                                  borderRadius: BorderRadius.circular(25),
+                                  color: Color(0xFFE1E1E1),
+                                ),
+                                child: Icon(FeatherIcons.checkCircle),
+                              ),
+                              title: Text(transactionDetails.paymentDescription,
+                                  style: TextStyle(
+                                      fontFamily: 'Firesans',
+                                      fontSize: 17,
+                                      color: Color(0xFF333333),
+                                      fontWeight: FontWeight.w600)),
+                              subtitle: Text(
+                                  '${DateFormat('MMM dd, y').format(transactionDetails.transactionDate)}',
+                                  style: TextStyle(
+                                      fontFamily: 'Firesans',
+                                      fontSize: 16,
+                                      color: Color(0xFF555555),
+                                      fontWeight: FontWeight.w600)),
+                              trailing: buildTransactionText(
+                                  transactionDetails.transactionType,
+                                  '${transactionDetails.amountPaid}',
+                                  transactionDetails.currency));
+                        },
+                      );
+                    }
+                  }
+                  return mainWidget;
+                }),
+          ),
+        ],
+      ),
     );
+  }
+
+  Widget buildTransactionText(String type, String amount, String currency) {
+    Widget text;
+    switch (type) {
+      case "credit":
+        text = Text('+ ${currencySymbol(currency)}$amount',
+            style: TextStyle(
+                fontFamily: 'Firesans',
+                fontSize: 17,
+                color: Color(0xFF02FF1B),
+                fontWeight: FontWeight.w600));
+        break;
+      case "withdrawal":
+        text = Text('- ${currencySymbol(currency)}$amount',
+            style: TextStyle(
+                fontFamily: 'Firesans',
+                fontSize: 17,
+                color: Color(0xFFFF0202),
+                fontWeight: FontWeight.w600));
+        break;
+      default:
+    }
+    return text;
   }
 }

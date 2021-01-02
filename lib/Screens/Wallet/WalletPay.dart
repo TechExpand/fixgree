@@ -3,6 +3,10 @@ import 'package:fixme/Screens/Wallet/WalletPayCompletePayment.dart';
 import 'package:fixme/Model/UserBankInfo.dart';
 import "package:flutter_feather_icons/flutter_feather_icons.dart";
 import 'package:fixme/Utils/utils.dart';
+import 'package:fixme/Services/network_service.dart';
+import 'package:fixme/Model/BankInfo.dart';
+import 'package:provider/provider.dart';
+import 'package:fixme/Screens/Wallet/Providers/BankProvider.dart';
 
 class WalletPay extends StatefulWidget {
   final UserBankInfo userBankInfo;
@@ -37,6 +41,7 @@ class _WalletPayState extends State<WalletPay> {
   @override
   Widget build(BuildContext context) {
     var deviceSize = MediaQuery.of(context).size;
+    var network = Provider.of<WebServices>(context, listen: false);
     return Scaffold(
       appBar: AppBar(
         backgroundColor: Colors.white,
@@ -177,7 +182,9 @@ class _WalletPayState extends State<WalletPay> {
                         children: <Widget>[
                           Padding(
                             padding: const EdgeInsets.only(top: 5),
-                            child: Text('${widget.userBankInfo.accountName}',
+                            child: Text(
+                                '${widget.userBankInfo.accountName}'
+                                    .capitalizeFirstOfEach,
                                 style: TextStyle(
                                     color: Color(0xFF333333),
                                     fontSize: 21,
@@ -274,139 +281,175 @@ class _WalletPayState extends State<WalletPay> {
                           offset: Offset(0.3, 4.0))
                     ],
                   ),
-                  child: Column(
-                    children: [
-                      Row(
-                        children: <Widget>[
-                          Padding(
-                            padding: const EdgeInsets.only(top: 5, left: 12),
-                            child: Text('Beneficiary account number',
-                                style: TextStyle(
-                                    color: Color(0xFF4B4B4B),
-                                    fontSize: 18,
-                                    fontFamily: 'Firesans',
-                                    height: 1.4,
-                                    fontWeight: FontWeight.w600)),
-                          ),
-                        ],
-                      ),
-                      Container(
-                        height: 55,
-                        alignment: Alignment.center,
-                        padding: const EdgeInsets.only(left: 12),
-                        margin: const EdgeInsets.only(
-                            bottom: 6, left: 12, right: 12, top: 6),
-                        decoration: BoxDecoration(
-                            color: Color(0xFFFFFFFF),
-                            border: Border.all(color: Color(0xFFF1F1FD)),
-                            boxShadow: [
-                              BoxShadow(
-                                  color: Color(0xFFF1F1FD).withOpacity(0.5),
-                                  blurRadius: 10.0,
-                                  offset: Offset(0.3, 4.0))
-                            ],
-                            borderRadius: BorderRadius.all(Radius.circular(7))),
-                        child: Row(
-                          mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                          children: [
+                  child: Consumer<BankProvider2>(
+                      builder: (context, model, widget) {
+                    return Column(
+                      children: [
+                        Row(
+                          children: <Widget>[
                             Padding(
-                              padding: const EdgeInsets.only(right: 10),
-                              child: Icon(
-                                FeatherIcons.user,
-                                color: Color(0xFF555555),
-                                size: 20,
-                              ),
-                            ),
-                            Expanded(
-                              child: TextFormField(
-                                keyboardType: TextInputType.number,
-                                style: TextStyle(
-                                    fontFamily: 'Firesans',
-                                    fontSize: 16,
-                                    color: Color(0xFF270F33),
-                                    fontWeight: FontWeight.w600),
-                                controller: accountNo,
-                                decoration: InputDecoration.collapsed(
-                                  hintText: '',
-                                  focusColor: Color(0xFF2B1137),
-                                  fillColor: Color(0xFF2B1137),
-                                  hoverColor: Color(0xFF2B1137),
-                                ),
-                              ),
+                              padding: const EdgeInsets.only(top: 5, left: 12),
+                              child: Text('Beneficiary account number',
+                                  style: TextStyle(
+                                      color: Color(0xFF4B4B4B),
+                                      fontSize: 18,
+                                      fontFamily: 'Firesans',
+                                      height: 1.4,
+                                      fontWeight: FontWeight.w600)),
                             ),
                           ],
                         ),
-                      ),
-                      Row(
-                        mainAxisAlignment: MainAxisAlignment.end,
-                        children: <Widget>[
-                          Padding(
-                            padding: const EdgeInsets.only(right: 12),
-                            child: Text('Choose beneficiary',
-                                style: TextStyle(
-                                    color: Color(0xFF9B049B),
-                                    fontSize: 16,
-                                    fontFamily: 'Firesans',
-                                    height: 1.4,
-                                    fontWeight: FontWeight.w600)),
+                        Container(
+                          height: 55,
+                          alignment: Alignment.center,
+                          padding: const EdgeInsets.only(left: 12),
+                          margin: const EdgeInsets.only(
+                              bottom: 6, left: 12, right: 12, top: 6),
+                          decoration: BoxDecoration(
+                              color: Color(0xFFFFFFFF),
+                              border: model.getAccountNoStatus
+                                  ? Border.all(color: Colors.red)
+                                  : Border.all(color: Color(0xFFF1F1FD)),
+                              boxShadow: [
+                                BoxShadow(
+                                    color: Color(0xFFF1F1FD).withOpacity(0.5),
+                                    blurRadius: 10.0,
+                                    offset: Offset(0.3, 4.0))
+                              ],
+                              borderRadius:
+                                  BorderRadius.all(Radius.circular(7))),
+                          child: Row(
+                            mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                            children: [
+                              Padding(
+                                padding: const EdgeInsets.only(right: 10),
+                                child: Icon(
+                                  FeatherIcons.user,
+                                  color: Color(0xFF555555),
+                                  size: 20,
+                                ),
+                              ),
+                              Expanded(
+                                child: TextFormField(
+                                  onChanged: (val) {
+                                    model.setAccountNumber = val;
+                                  },
+                                  keyboardType: TextInputType.number,
+                                  style: TextStyle(
+                                      fontFamily: 'Firesans',
+                                      fontSize: 16,
+                                      color: Color(0xFF270F33),
+                                      fontWeight: FontWeight.w600),
+                                  controller: accountNo,
+                                  decoration: InputDecoration.collapsed(
+                                    hintText: '',
+                                    focusColor: Color(0xFF2B1137),
+                                    fillColor: Color(0xFF2B1137),
+                                    hoverColor: Color(0xFF2B1137),
+                                  ),
+                                ),
+                              ),
+                            ],
                           ),
-                        ],
-                      ),
-                    ],
-                  ),
+                        ),
+                        Row(
+                          mainAxisAlignment: MainAxisAlignment.end,
+                          children: <Widget>[
+                            Padding(
+                              padding: const EdgeInsets.only(right: 12),
+                              child: Text('Choose beneficiary',
+                                  style: TextStyle(
+                                      color: Color(0xFF9B049B),
+                                      fontSize: 16,
+                                      fontFamily: 'Firesans',
+                                      height: 1.4,
+                                      fontWeight: FontWeight.w600)),
+                            ),
+                          ],
+                        ),
+                      ],
+                    );
+                  }),
                 )
               ],
             ),
           ),
-          Container(
-            height: 50,
-            margin:
-                const EdgeInsets.only(top: 10, left: 15, right: 15, bottom: 20),
-            decoration: BoxDecoration(
-              borderRadius: BorderRadius.all(Radius.circular(25)),
-              color: Color(0xFF9B049B),
-            ),
-            child: new FlatButton(
-              padding: EdgeInsets.all(10),
-              onPressed: () {
-                Navigator.of(context).push(
-                  PageRouteBuilder(
-                    pageBuilder:
-                        (context, animation, secondaryAnimation) {
-                      return WalletPayCompletePayment();
-                    },
-                    transitionsBuilder: (context, animation,
-                        secondaryAnimation, child) {
-                      return FadeTransition(
-                        opacity: animation,
-                        child: child,
+          Consumer<BankProvider2>(builder: (context, model, widget) {
+            return Container(
+              height: 50,
+              margin: const EdgeInsets.only(
+                  top: 10, left: 15, right: 15, bottom: 20),
+              decoration: BoxDecoration(
+                borderRadius: BorderRadius.all(Radius.circular(25)),
+                color: Color(0xFF9B049B),
+              ),
+              child: new FlatButton(
+                padding: EdgeInsets.all(10),
+                onPressed: () async {
+                  if (model.getAccountNumber.isEmpty) {
+                    print('Its empty');
+                    model.setAccountNoStatus = true;
+                  } else {
+                    model.setIsValidated = false;
+                    model.setAccountName =
+                        await network.validateUserAccountName(
+                            accountNumber: model.getAccountNumber,
+                            bankCode: '101');
+                    BankInfo bankInfo =
+                        BankInfo(code: '101', name: 'Providus Bank');
+                    if (model.getAccountName.isNotEmpty) {
+                      Navigator.of(context).push(
+                        PageRouteBuilder(
+                          pageBuilder:
+                              (context, animation, secondaryAnimation) {
+                            return WalletPayCompletePayment(
+                                accountNumber: model.getAccountNumber,
+                                accountName: model.getAccountName,
+                                bankInfo: bankInfo);
+                          },
+                          transitionsBuilder:
+                              (context, animation, secondaryAnimation, child) {
+                            return FadeTransition(
+                              opacity: animation,
+                              child: child,
+                            );
+                          },
+                        ),
                       );
-                    },
+                    }
+                  }
+                },
+                child: Padding(
+                  padding: const EdgeInsets.only(left: 7, right: 7),
+                  child: Row(
+                    mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                    children: [
+                      Text(
+                        'Confirm Receiver',
+                        style: TextStyle(
+                            color: Colors.white,
+                            fontFamily: 'Firesans',
+                            fontSize: 17,
+                            fontWeight: FontWeight.w600),
+                      ),
+                      Container(
+                          height: 25,
+                          width: 25,
+                          child: model.getIsValidated
+                              ? Icon(
+                                  FeatherIcons.arrowRightCircle,
+                                  color: Colors.white,
+                                )
+                              : CircularProgressIndicator(
+                                  strokeWidth: 2,
+                                  backgroundColor: Colors.white,
+                                )),
+                    ],
                   ),
-                );
-              },
-              child: Padding(
-                padding: const EdgeInsets.only(left: 7, right: 7),
-                child: Row(
-                  mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                  children: [
-                    Text(
-                      'Confirm Receiver',
-                      style: TextStyle(
-                          color: Colors.white,
-                          fontFamily: 'Firesans',
-                          fontSize: 17,
-                          fontWeight: FontWeight.w600),
-                    ),
-                    Icon(
-                      FeatherIcons.arrowRightCircle,
-                      color: Colors.white,
-                    ),
-                  ],
                 ),
               ),
-            ),
-          ),
+            );
+          }),
         ],
       ),
     );

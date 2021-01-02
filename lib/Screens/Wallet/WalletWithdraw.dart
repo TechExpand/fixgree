@@ -1,7 +1,7 @@
-import 'package:fixme/Services/network_service.dart';
 import 'package:flutter/material.dart';
 import "package:flutter_feather_icons/flutter_feather_icons.dart";
 import 'package:fixme/Utils/utils.dart';
+import 'package:fixme/Services/network_service.dart';
 import 'package:fixme/Model/BankInfo.dart';
 import 'package:provider/provider.dart';
 import 'package:fixme/Screens/Wallet/WalletWithdrawCompleteWithdrawal.dart';
@@ -50,7 +50,7 @@ class _WalletWithdrawState extends State<WalletWithdraw> {
                   color: Colors.white,
                 ),
                 clipBehavior: Clip.antiAliasWithSaveLayer,
-                height: 360,
+                height: 390,
                 width: 120,
                 child: ListView(
                   children: [
@@ -111,7 +111,7 @@ class _WalletWithdrawState extends State<WalletWithdraw> {
                             bottomLeft: Radius.circular(10),
                             bottomRight: Radius.circular(10)),
                       ),
-                      height: deviceSize.height,
+                      height: 307,
                       child: FutureBuilder<List>(
                           future: network.getAvailableBanks(),
                           builder: (context, AsyncSnapshot<List> snapshot) {
@@ -140,7 +140,32 @@ class _WalletWithdrawState extends State<WalletWithdraw> {
                                   ),
                                 );
                               } else {
+                                // List _bankList = snapshot.data;
+                                // List _searchList = _bankList;
+                                //
+                                // searchBank.addListener(() {
+                                //   if (searchBank.text.isEmpty) {
+                                //     print('I entered 2');
+                                //     setState(() {
+                                //       _searchList = _bankList;
+                                //     });
+                                //   } else {
+                                //     print('I entered' + searchBank.value.text);
+                                //     setState(() {
+                                //       _searchList = [];
+                                //       _bankList.forEach((element) {
+                                //         if (element["name"] ==
+                                //             searchBank.value.text) {
+                                //           _searchList.add(element);
+                                //         }
+                                //       });
+                                //     });
+                                //   }
+                                // });
+
                                 mainWidget = ListView.separated(
+                                    padding: const EdgeInsets.only(
+                                        bottom: 10, top: 5),
                                     physics: BouncingScrollPhysics(),
                                     itemCount: snapshot.data.length,
                                     separatorBuilder: (context, position) =>
@@ -153,7 +178,11 @@ class _WalletWithdrawState extends State<WalletWithdraw> {
                                           snapshot.data[index]);
                                       return ListTile(
                                         onTap: () {
-                                          bankProvider.setUserBankInfo = bankInfo;
+                                          bankName.text = bankInfo.name;
+                                          bankProvider.setUserBankInfo =
+                                              bankInfo;
+                                          bankProvider.setBankNameStatus =
+                                              false;
                                           Navigator.pop(context);
                                         },
                                         leading: CircleAvatar(
@@ -212,6 +241,7 @@ class _WalletWithdrawState extends State<WalletWithdraw> {
   @override
   Widget build(BuildContext context) {
     var deviceSize = MediaQuery.of(context).size;
+    var network = Provider.of<WebServices>(context, listen: false);
     return Scaffold(
       appBar: AppBar(
         backgroundColor: Colors.white,
@@ -293,7 +323,7 @@ class _WalletWithdrawState extends State<WalletWithdraw> {
                 ),
                 Container(
                   margin: const EdgeInsets.only(right: 15, left: 15),
-                  height: 100,
+                  height: 110,
                   decoration: BoxDecoration(
                     borderRadius: radiusBottom,
                     color: Color(0xFFFFFFFF),
@@ -311,7 +341,9 @@ class _WalletWithdrawState extends State<WalletWithdraw> {
                         children: <Widget>[
                           Padding(
                             padding: const EdgeInsets.only(top: 5),
-                            child: Text('${widget.userBankInfo.accountName}',
+                            child: Text(
+                                '${widget.userBankInfo.accountName}'
+                                    .capitalizeFirstOfEach,
                                 style: TextStyle(
                                     color: Color(0xFF333333),
                                     fontSize: 21,
@@ -408,213 +440,240 @@ class _WalletWithdrawState extends State<WalletWithdraw> {
                           offset: Offset(0.3, 4.0))
                     ],
                   ),
-                  child: Consumer<BankProvider>(
-                      builder: (context, model, widget) {
-                      return Column(
-                        children: [
-                          InkWell(
-                            onTap: () {
-                              showAppSelectionModal(context);
-                            },
-                            child: AbsorbPointer(
-                              child: Container(
-                                height: 55,
-                                alignment: Alignment.center,
-                                padding: const EdgeInsets.only(left: 12),
-                                margin: const EdgeInsets.only(
-                                    bottom: 3, left: 12, right: 12, top: 6),
-                                decoration: BoxDecoration(
-                                    color: Color(0xFFFFFFFF),
-                                    border: Border.all(color: Color(0xFFF1F1FD)),
-                                    boxShadow: [
-                                      BoxShadow(
-                                          color: Color(0xFFF1F1FD).withOpacity(0.5),
-                                          blurRadius: 10.0,
-                                          offset: Offset(0.3, 4.0))
-                                    ],
-                                    borderRadius:
-                                        BorderRadius.all(Radius.circular(7))),
-                                child: Row(
-                                  mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                                  children: [
-                                    Expanded(
-                                      child: TextFormField(
-                                        keyboardType: TextInputType.number,
-                                        style: TextStyle(
+                  child:
+                      Consumer<BankProvider>(builder: (context, model, widget) {
+                    return Column(
+                      children: [
+                        InkWell(
+                          onTap: () {
+                            showAppSelectionModal(context);
+                          },
+                          child: AbsorbPointer(
+                            child: Container(
+                              height: 55,
+                              alignment: Alignment.center,
+                              padding: const EdgeInsets.only(left: 12),
+                              margin: const EdgeInsets.only(
+                                  bottom: 3, left: 12, right: 12, top: 12),
+                              decoration: BoxDecoration(
+                                  color: Color(0xFFFFFFFF),
+                                  border: model.getBankNameStatus
+                                      ? Border.all(color: Colors.red)
+                                      : Border.all(color: Color(0xFFF1F1FD)),
+                                  boxShadow: [
+                                    BoxShadow(
+                                        color:
+                                            Color(0xFFF1F1FD).withOpacity(0.5),
+                                        blurRadius: 10.0,
+                                        offset: Offset(0.3, 4.0))
+                                  ],
+                                  borderRadius:
+                                      BorderRadius.all(Radius.circular(7))),
+                              child: Row(
+                                mainAxisAlignment:
+                                    MainAxisAlignment.spaceBetween,
+                                children: [
+                                  Expanded(
+                                    child: TextFormField(
+                                      keyboardType: TextInputType.number,
+                                      style: TextStyle(
+                                          fontFamily: 'Firesans',
+                                          fontSize: 16,
+                                          color: Color(0xFF270F33),
+                                          fontWeight: FontWeight.w600),
+                                      controller: bankName,
+                                      decoration: InputDecoration.collapsed(
+                                        hintText: 'Select bank',
+                                        hintStyle: TextStyle(
                                             fontFamily: 'Firesans',
                                             fontSize: 16,
-                                            color: Color(0xFF270F33),
                                             fontWeight: FontWeight.w600),
-                                        controller: bankName,
-                                        decoration: InputDecoration.collapsed(
-                                          hintText: 'Select bank',
-                                          hintStyle: TextStyle(
-                                              fontFamily: 'Firesans',
-                                              fontSize: 16,
-                                              fontWeight: FontWeight.w600),
-                                          focusColor: Color(0xFF2B1137),
-                                          fillColor: Color(0xFF2B1137),
-                                          hoverColor: Color(0xFF2B1137),
-                                        ),
+                                        focusColor: Color(0xFF2B1137),
+                                        fillColor: Color(0xFF2B1137),
+                                        hoverColor: Color(0xFF2B1137),
                                       ),
                                     ),
-                                    Padding(
-                                      padding: const EdgeInsets.only(right: 10),
-                                      child: Icon(
-                                        FeatherIcons.arrowDown,
-                                        color: Color(0xFF555555),
-                                        size: 20,
-                                      ),
+                                  ),
+                                  Padding(
+                                    padding: const EdgeInsets.only(right: 10),
+                                    child: Icon(
+                                      FeatherIcons.arrowDown,
+                                      color: Color(0xFF555555),
+                                      size: 20,
                                     ),
-                                  ],
-                                ),
+                                  ),
+                                ],
                               ),
                             ),
                           ),
-                          Row(
-                            children: <Widget>[
-                              Padding(
-                                padding: const EdgeInsets.only(left: 14),
-                                child: Text('Account number',
-                                    style: TextStyle(
-                                        color: Color(0xFF4B4B4B),
-                                        fontSize: 18,
-                                        fontFamily: 'Firesans',
-                                        height: 1.4,
-                                        fontWeight: FontWeight.w600)),
-                              ),
-                            ],
-                          ),
-                          Consumer<BankProvider>(
-                              builder: (context, model, widget) {
-                              return Container(
-                                height: 55,
-                                alignment: Alignment.center,
-                                padding: const EdgeInsets.only(left: 12),
-                                margin: const EdgeInsets.only(
-                                    bottom: 6, left: 12, right: 12, top: 6),
-                                decoration: BoxDecoration(
-                                    color: Color(0xFFFFFFFF),
-                                    border: Border.all(color: Color(0xFFF1F1FD)),
-                                    boxShadow: [
-                                      BoxShadow(
-                                          color: Color(0xFFF1F1FD).withOpacity(0.5),
-                                          blurRadius: 10.0,
-                                          offset: Offset(0.3, 4.0))
-                                    ],
-                                    borderRadius: BorderRadius.all(Radius.circular(7))),
-                                child: Row(
-                                  mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                                  children: [
-                                    Padding(
-                                      padding: const EdgeInsets.only(right: 10),
-                                      child: Icon(
-                                        FeatherIcons.user,
-                                        color: Color(0xFF555555),
-                                        size: 20,
-                                      ),
-                                    ),
-                                    Expanded(
-                                      child: TextFormField(
-                                        onChanged: (val){
-                                          model.setAccountNumber = val;
-                                        },
-                                        keyboardType: TextInputType.number,
-
-                                        style: TextStyle(
-                                            fontFamily: 'Firesans',
-                                            fontSize: 16,
-                                            color: Color(0xFF270F33),
-                                            fontWeight: FontWeight.w600),
-                                        controller: accountNo,
-                                        decoration: InputDecoration.collapsed(
-                                          hintText: '',
-                                          focusColor: Color(0xFF2B1137),
-                                          fillColor: Color(0xFF2B1137),
-                                          hoverColor: Color(0xFF2B1137),
-                                        ),
-                                      ),
-                                    ),
-                                  ],
+                        ),
+                        Row(
+                          children: <Widget>[
+                            Padding(
+                              padding: const EdgeInsets.only(left: 14),
+                              child: Text('Account number',
+                                  style: TextStyle(
+                                      color: Color(0xFF4B4B4B),
+                                      fontSize: 18,
+                                      fontFamily: 'Firesans',
+                                      height: 1.4,
+                                      fontWeight: FontWeight.w600)),
+                            ),
+                          ],
+                        ),
+                        Consumer<BankProvider>(
+                            builder: (context, model, widget) {
+                          return Container(
+                            height: 55,
+                            alignment: Alignment.center,
+                            padding: const EdgeInsets.only(left: 12),
+                            margin: const EdgeInsets.only(
+                                bottom: 6, left: 12, right: 12, top: 6),
+                            decoration: BoxDecoration(
+                                color: Color(0xFFFFFFFF),
+                                border: model.getAccountNoStatus
+                                    ? Border.all(color: Colors.red)
+                                    : Border.all(color: Color(0xFFF1F1FD)),
+                                boxShadow: [
+                                  BoxShadow(
+                                      color: Color(0xFFF1F1FD).withOpacity(0.5),
+                                      blurRadius: 10.0,
+                                      offset: Offset(0.3, 4.0))
+                                ],
+                                borderRadius:
+                                    BorderRadius.all(Radius.circular(7))),
+                            child: Row(
+                              mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                              children: [
+                                Padding(
+                                  padding: const EdgeInsets.only(right: 10),
+                                  child: Icon(
+                                    FeatherIcons.user,
+                                    color: Color(0xFF555555),
+                                    size: 20,
+                                  ),
                                 ),
-                              );
-                            }
-                          ),
-                          Row(
-                            mainAxisAlignment: MainAxisAlignment.end,
-                            children: <Widget>[
-                              Padding(
-                                padding: const EdgeInsets.only(right: 12),
-                                child: Text('Choose beneficiary',
+                                Expanded(
+                                  child: TextFormField(
+                                    onChanged: (val) {
+                                      model.setAccountNumber = val;
+                                    },
+                                    keyboardType: TextInputType.number,
                                     style: TextStyle(
-                                        color: Color(0xFF9B049B),
-                                        fontSize: 16,
                                         fontFamily: 'Firesans',
-                                        height: 1.4,
-                                        fontWeight: FontWeight.w600)),
-                              ),
-                            ],
-                          ),
-                        ],
-                      );
-                    }
-                  ),
+                                        fontSize: 16,
+                                        color: Color(0xFF270F33),
+                                        fontWeight: FontWeight.w600),
+                                    controller: accountNo,
+                                    decoration: InputDecoration.collapsed(
+                                      hintText: '',
+                                      focusColor: Color(0xFF2B1137),
+                                      fillColor: Color(0xFF2B1137),
+                                      hoverColor: Color(0xFF2B1137),
+                                    ),
+                                  ),
+                                ),
+                              ],
+                            ),
+                          );
+                        }),
+                        Row(
+                          mainAxisAlignment: MainAxisAlignment.end,
+                          children: <Widget>[
+                            Padding(
+                              padding: const EdgeInsets.only(right: 12),
+                              child: Text('Choose beneficiary',
+                                  style: TextStyle(
+                                      color: Color(0xFF9B049B),
+                                      fontSize: 16,
+                                      fontFamily: 'Firesans',
+                                      height: 1.4,
+                                      fontWeight: FontWeight.w600)),
+                            ),
+                          ],
+                        ),
+                      ],
+                    );
+                  }),
                 )
               ],
             ),
           ),
-          Consumer<BankProvider>(
-              builder: (context, model, widget) {
-              return Container(
-                height: 50,
-                margin:
-                    const EdgeInsets.only(top: 10, left: 15, right: 15, bottom: 20),
-                decoration: BoxDecoration(
-                  borderRadius: BorderRadius.all(Radius.circular(25)),
-                  color: Color(0xFF9B049B),
-                ),
-                child: new FlatButton(
-                  padding: EdgeInsets.all(10),
-                  onPressed: () {
-                    Navigator.of(context).push(
-                      PageRouteBuilder(
-                        pageBuilder: (context, animation, secondaryAnimation) {
-                          return WalletWithdrawCompleteWithdrawal(bankInfo: model.getUserBankInfo,accountName: model.getAccountName, accountNumber: model.getAccountNumber);
-                        },
-                        transitionsBuilder:
-                            (context, animation, secondaryAnimation, child) {
-                          return FadeTransition(
-                            opacity: animation,
-                            child: child,
-                          );
-                        },
+          Consumer<BankProvider>(builder: (context, model, widget) {
+            return Container(
+              height: 50,
+              margin: const EdgeInsets.only(
+                  top: 10, left: 15, right: 15, bottom: 20),
+              decoration: BoxDecoration(
+                borderRadius: BorderRadius.all(Radius.circular(25)),
+                color: Color(0xFF9B049B),
+              ),
+              child: new FlatButton(
+                padding: EdgeInsets.all(10),
+                onPressed: () async {
+                  if (bankName.text.isEmpty) {
+                    model.setBankNameStatus = true;
+                  } else if (model.getAccountNumber.isEmpty) {
+                    model.setAccountNoStatus = true;
+                  } else {
+                    model.setIsValidated = false;
+                    model.setAccountName =
+                        await network.validateUserAccountName(
+                            accountNumber: model.getAccountNumber,
+                            bankCode: model.getUserBankInfo.code);
+                    if (model.getAccountName.isNotEmpty) {
+                      Navigator.of(context).push(
+                        PageRouteBuilder(
+                          pageBuilder:
+                              (context, animation, secondaryAnimation) {
+                            return WalletWithdrawCompleteWithdrawal(
+                                bankInfo: model.getUserBankInfo,
+                                accountName: model.getAccountName,
+                                accountNumber: model.getAccountNumber);
+                          },
+                          transitionsBuilder:
+                              (context, animation, secondaryAnimation, child) {
+                            return FadeTransition(
+                              opacity: animation,
+                              child: child,
+                            );
+                          },
+                        ),
+                      );
+                    } else {}
+                  }
+                },
+                child: Padding(
+                  padding: const EdgeInsets.only(left: 7, right: 7),
+                  child: Row(
+                    mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                    children: [
+                      Text(
+                        'Confirm Receiver',
+                        style: TextStyle(
+                            color: Colors.white,
+                            fontFamily: 'Firesans',
+                            fontSize: 17,
+                            fontWeight: FontWeight.w600),
                       ),
-                    );
-                  },
-                  child: Padding(
-                    padding: const EdgeInsets.only(left: 7, right: 7),
-                    child: Row(
-                      mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                      children: [
-                        Text(
-                          'Confirm Receiver',
-                          style: TextStyle(
-                              color: Colors.white,
-                              fontFamily: 'Firesans',
-                              fontSize: 17,
-                              fontWeight: FontWeight.w600),
-                        ),
-                        Icon(
-                          FeatherIcons.arrowRightCircle,
-                          color: Colors.white,
-                        ),
-                      ],
-                    ),
+                      Container(
+                          height: 25,
+                          width: 25,
+                          child: model.getIsValidated
+                              ? Icon(
+                                  FeatherIcons.arrowRightCircle,
+                                  color: Colors.white,
+                                )
+                              : CircularProgressIndicator(
+                                  strokeWidth: 2,
+                                  backgroundColor: Colors.white,
+                                )),
+                    ],
                   ),
                 ),
-              );
-            }
-          ),
+              ),
+            );
+          }),
         ],
       ),
     );
