@@ -39,6 +39,11 @@ class _WalletPayState extends State<WalletPay> {
   );
 
   @override
+  void dispose() {
+    super.dispose();
+  }
+
+  @override
   Widget build(BuildContext context) {
     var deviceSize = MediaQuery.of(context).size;
     var network = Provider.of<WebServices>(context, listen: false);
@@ -281,8 +286,8 @@ class _WalletPayState extends State<WalletPay> {
                           offset: Offset(0.3, 4.0))
                     ],
                   ),
-                  child: Consumer<BankProvider2>(
-                      builder: (context, model, widget) {
+                  child:
+                      Consumer<BankProvider>(builder: (context, model, widget) {
                     return Column(
                       children: [
                         Row(
@@ -374,7 +379,7 @@ class _WalletPayState extends State<WalletPay> {
               ],
             ),
           ),
-          Consumer<BankProvider2>(builder: (context, model, widget) {
+          Consumer<BankProvider>(builder: (context, model, widget) {
             return Container(
               height: 50,
               margin: const EdgeInsets.only(

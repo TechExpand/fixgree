@@ -32,6 +32,11 @@ class _WalletWithdrawState extends State<WalletWithdraw> {
     bottomRight: Radius.circular(24.0),
   );
 
+  @override
+  void dispose() {
+    super.dispose();
+  }
+
   showAppSelectionModal(BuildContext context) {
     var deviceSize = MediaQuery.of(context).size;
     var network = Provider.of<WebServices>(context, listen: false);
