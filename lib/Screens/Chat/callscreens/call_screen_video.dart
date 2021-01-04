@@ -5,6 +5,10 @@ import 'package:agora_rtc_engine/rtc_remote_view.dart' as RtcRemoteView;
 import 'package:fixme/Services/call_service.dart';
 import 'package:fixme/strings.dart';
 import 'package:flutter/material.dart';
+import 'package:cloud_firestore/cloud_firestore.dart';
+import 'package:fixme/Model/Message.dart';
+import 'package:fixme/Services/call_service.dart';
+import 'package:fixme/Services/network_service.dart';
 import 'package:provider/provider.dart';
 
 
@@ -228,12 +232,12 @@ class _CallVideoPageState extends State<CallVideoPage> {
   /// Info panel to show logs
     Widget _panel() {
    return Container(
-      padding: const EdgeInsets.symmetric(vertical: 48),
+      padding: const EdgeInsets.symmetric(vertical: 10),
       alignment: Alignment.bottomCenter,
       child: FractionallySizedBox(
         heightFactor: 0.5,
         child: Container(
-          padding: const EdgeInsets.symmetric(vertical: 48),
+          padding: const EdgeInsets.symmetric(vertical: 10),
           child: ListView.builder(
             reverse: true,
             itemCount: _infoStrings.length,
@@ -297,17 +301,56 @@ class _CallVideoPageState extends State<CallVideoPage> {
 
   @override
   Widget build(BuildContext context) {
+      var network = Provider.of<WebServices>(context, listen: false);
+var data = Provider.of<CallApi>(context, listen: false);
     return Scaffold(
       backgroundColor: Colors.black,
       body: Center(
         child: Stack(
           children: <Widget>[
             _viewRows(),
-            // _panel(),
             _toolbar(),
+            Align(
+              alignment:Alignment.bottomLeft,
+              child:  Container(
+                height: 50,
+              alignment: Alignment.bottomCenter,
+      padding: const EdgeInsets.symmetric(vertical: 0),
+          child: StreamBuilder<List<Message>>(
+                  stream: data.getCallStatus(widget.idUser, network.mobile_device_token),
+                  builder: (context,  snapshot) {
+                   switch (snapshot.connectionState){ 
+                      case ConnectionState.waiting:
+              return buildText("...");
+
+                   default:
+              if (snapshot.hasError) {
+                return buildText('Something Went Wrong Try later');
+              } else if(snapshot.data.isEmpty){
+                      return buildText('');
+                    }
+              else if(snapshot.hasData){
+                final messages = snapshot.data;
+                return  messages[0].callStatus=='Connected'?buildText('Connected...')
+                    :messages[0].callStatus=='Connecting'?buildText('Connecting...')
+                    :buildText('Some');
+                    }
+
+                  }}
+                )),
+            )
           ],
         ),
       ),
     );
   }
+
+   Widget buildText(String text) => Center(
+      child: Padding(
+       padding: const EdgeInsets.all(8.0),
+      child:Text(
+        text,
+        style: TextStyle(fontSize: 24, color:Colors.white),
+      )),
+    );
 }

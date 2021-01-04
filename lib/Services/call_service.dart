@@ -15,14 +15,16 @@ class CallApi with ChangeNotifier {
       .transform(Utils.transformer(Call.fromJson));
 
   Future uploadMessage(
-      {String idUser, channelId, urlAvatar,urlAvatar2, username, context,calltype}) async {
+      {String idUser, channelId,callerId, urlAvatar,urlAvatar2, username, context,calltype}) async {
   
     final refMessages =
         FirebaseFirestore.instance.collection('call');
     final newMessage = Message(
+       callStatus:  'Connecting',
       idUser: idUser,
       urlAvatar: urlAvatar,
       username: username,
+      callerId: callerId,
       message: channelId,
       createdAt: DateTime.now(),
       calltype: calltype,
@@ -59,6 +61,29 @@ class CallApi with ChangeNotifier {
         .transform(Utils.transformer(Message.fromJson));
     return data;
   }
+
+
+ Stream<List<Message>> getCallStatus(String idUser, idArtisan) {
+   // SharedPreferences prefs = await SharedPreferences.getInstance();
+    var data = FirebaseFirestore.instance
+        .collection('call').where('idUser', isEqualTo: idUser).
+        where('callerId', isEqualTo: idArtisan)
+        .snapshots()
+        .transform(Utils.transformer(Message.fromJson));
+        print(data);
+    return data;
+  }
+
+  Stream<List<Message>> updateCallStatus(String idUser, String callStatus) {
+   // SharedPreferences prefs = await SharedPreferences.getInstance();
+    var data = FirebaseFirestore.instance
+        .collection('call').doc(idUser).
+          update({
+   'callStatus': callStatus
+ });
+      
+  }
+
 
   Future deleteCallLogs(String idUser) async {
     FirebaseFirestore.instance

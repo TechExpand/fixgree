@@ -42,11 +42,11 @@ class Utils with ChangeNotifier {
   }
 
   compareDate(DateTime date) {
-    if (date.difference(DateTime.now()).inHours <= 24) {
+    if (date.difference(DateTime.now()).inHours.abs() <= 24) {
       var value = formatTime(date);
       return value;
-    } else if (date.difference(DateTime.now()).inHours >= 24 &&
-        date.difference(DateTime.now()).inHours <= 48) {
+    } else if (date.difference(DateTime.now()).inHours.abs() >= 24 &&
+        date.difference(DateTime.now()).inHours.abs() <= 48) {
       return 'yesterday';
     } else {
       var value = formatYear(date);
@@ -106,6 +106,8 @@ class Utils with ChangeNotifier {
     return data;
   }
 }
+
+
 
 extension CapExtension on String {
   String capitalize() {

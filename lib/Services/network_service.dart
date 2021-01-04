@@ -1,5 +1,4 @@
 import 'dart:convert';
-
 import 'package:fixme/Model/UserSearch.dart';
 import 'package:fixme/Screens/Home/HomePage.dart';
 import 'package:fixme/Screens/Home/Search.dart';
@@ -62,7 +61,7 @@ class WebServices extends ChangeNotifier {
             'Bearer FIXME_1U90P3444ANdroidAPP4HUisallOkayBY_FIXME_APP_UIONSISJGJANKKI3445fv',
       });
       var body = json.decode(response.body);
-      user_id = body['user_id'];
+   user_id = body['id'];
       mobile_device_token = body['mobile_device_token'];
       profile_pic_file_name = body['profile_pic_file_name'];
       firstName = body['firstName'];
@@ -123,9 +122,13 @@ class WebServices extends ChangeNotifier {
       firstName = body['firstName'];
       phoneNum = body['fullNumber'];
       Bearer = response.headers['bearer'];
-      datas.storeData('Bearer', Bearer);
-      datas.storeData('user_id', user_id.toString());
       if (body['reqRes'] == 'true') {
+          datas.storeData('Bearer', Bearer);
+        datas.storeData('mobile_device_token', mobile_device_token);
+        datas.storeData('user_id', user_id.toString());
+        datas.storeData('profile_pic_file_name', profile_pic_file_name);
+        datas.storeData('firstName', firstName);
+        datas.storeData('phoneNum', phoneNum);
         Login_SetState();
         return Navigator.push(
           context,
@@ -153,6 +156,17 @@ class WebServices extends ChangeNotifier {
       print(e);
     }
   }
+
+/*initializeValues(name, bearer, mobile,picture,userid,mobileId)async{
+      user_id = userid; 
+      mobile_device_token = mobileId;
+      profile_pic_file_name = picture;
+      firstName = name;
+      phoneNum = mobile;
+      Bearer = bearer;
+       notifyListeners(); 
+}*/
+
 
   Future<dynamic> NearbyArtisans({longitude, latitude}) async {
     var response = await http
@@ -327,3 +341,8 @@ class WebServices extends ChangeNotifier {
     return result;
   }
 }
+
+
+
+
+

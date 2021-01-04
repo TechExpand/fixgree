@@ -140,14 +140,3 @@ class _MyAppState extends State<MyApp> {
     );
   }
 }
-
-//
-//Future<Widget> decideFirstWidget() async {
-// SharedPreferences prefs = await SharedPreferences.getInstance();
-//  var token = prefs.getString('Bearer');
-//  print('initialtoken is $token');
-//  if (token == null || token == 'null'|| token == ''){
-//    return Login();
-//  } else {
-//  return SplashScreen();}
-//}

@@ -229,6 +229,7 @@ List<UserChat> user;
                                     itemBuilder: (context, index) {
                                       var date = data
                                           .compareDate(users[index].lastMessageTime);
+                 ;
                                       return Container(
                                         height: 75,
                                         child: ListTile(

@@ -559,6 +559,7 @@ class Home extends StatelessWidget {
                         ),
                       ):Container();
                     }),
+                    
                 Padding(
                   padding: const EdgeInsets.all(8.0),
                   child: Text(
@@ -603,10 +604,12 @@ class Home extends StatelessWidget {
                     ),
                   ),
                 ),
+            
               ],
             ),
           ),
-        )
+        ),
+       
       ],
     );
   }

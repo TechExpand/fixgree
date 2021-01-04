@@ -1,6 +1,10 @@
 import 'package:flutter/material.dart';
 import 'LoginSignup/selectauth.dart';
-
+import 'Home/HomePage.dart';
+import 'package:fixme/Utils/utils.dart';
+import 'package:provider/provider.dart';
+import 'package:fixme/Services/network_service.dart';
+import 'package:shared_preferences/shared_preferences.dart';
 
 
 class SplashScreen extends StatefulWidget {
@@ -12,11 +16,12 @@ class SplashScreen extends StatefulWidget {
 }
 
 class SPLASHSTATE extends State<SplashScreen> {
+
   @override
   void initState() {
     super.initState();
     Future.delayed(Duration(seconds: 5), ()async{
-    return  Navigator.pushReplacement(
+    return Navigator.pushReplacement(
         context,
         PageRouteBuilder(
           pageBuilder: (context, animation, secondaryAnimation) {
@@ -34,16 +39,16 @@ class SPLASHSTATE extends State<SplashScreen> {
   }
 
 
-  /* Future<Widget> decideFirstWidget() async {
+  /*Future<Widget> decideFirstWidget() async {
     SharedPreferences prefs = await SharedPreferences.getInstance();
     var token = prefs.getString('Bearer');
-    print('initialtoken is $token');
+  
     if (token == null || token == 'null'|| token == ''){
      return  Navigator.pushReplacement(
         context,
         PageRouteBuilder(
           pageBuilder: (context, animation, secondaryAnimation) {
-            return SignUp();
+            return SelectAuthScreen();
           },
           transitionsBuilder: (context, animation, secondaryAnimation, child) {
             return FadeTransition(
@@ -58,7 +63,7 @@ class SPLASHSTATE extends State<SplashScreen> {
         context,
         PageRouteBuilder(
           pageBuilder: (context, animation, secondaryAnimation) {
-            return SignUp();
+            return HomePage();
           },
           transitionsBuilder: (context, animation, secondaryAnimation, child) {
             return FadeTransition(
@@ -69,12 +74,13 @@ class SPLASHSTATE extends State<SplashScreen> {
         ),
       );
     }
-  }
+  }*/
 
- */
+ 
 
   @override
   Widget build(BuildContext context) {
+    // Provider.of<WebServices>(context, listen: false).initializeValues(context);
     return Material(
       child: Container(
         width: MediaQuery.of(context).size.width,

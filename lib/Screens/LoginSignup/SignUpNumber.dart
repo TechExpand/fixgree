@@ -26,7 +26,6 @@ class SignUpState extends State<SignUp>{
     Widget build(BuildContext context) {
         var network = Provider.of<WebServices>(context);
         var data = Provider.of<DataProvider>(context);
-        var verificationID = '';
         dynamic Credential = '';
 
 
@@ -62,12 +61,12 @@ class SignUpState extends State<SignUp>{
                     timeout: Duration(seconds: 120),
                     codeSent: (String verificationId, int resendToken) {
                         network.Login_SetState();
-                        verificationID = verificationId;
+      
                         Navigator.push(
                             context,
                             PageRouteBuilder(
                                 pageBuilder: (context, animation, secondaryAnihfmation) {
-                                    return OTPPAGE(verificationID:verificationId,data: data.number.toString(),Credential: Credential);
+                                    return OTPPAGE(verificationID:verificationId,data: data.number.toString(),Credential: Credential, page:'SignUp');
                                 },
                                 transitionsBuilder: (context, animation, secondaryAnimation,
                                     child) {

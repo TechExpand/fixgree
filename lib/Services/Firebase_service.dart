@@ -158,6 +158,19 @@ class FirebaseApi {
 
 
 
+static clearMessage(String idUser, chatId1, chatId2){
+var documentReference = FirebaseFirestore.instance
+          .collection('chats/$idUser/messages')
+          .where('chatId', whereIn: [chatId1,chatId2]);
+
+          documentReference .get().then((querySnapshot) {
+  querySnapshot.docs.forEach((doc) {
+ doc.reference.delete();
+  });
+});
+}
+
+
 
   static Future addUserChat({
     idUser,

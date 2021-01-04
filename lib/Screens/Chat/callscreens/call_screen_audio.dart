@@ -2,7 +2,10 @@ import 'dart:async';
 import 'package:agora_rtc_engine/rtc_engine.dart';
 import 'package:agora_rtc_engine/rtc_local_view.dart' as RtcLocalView;
 import 'package:agora_rtc_engine/rtc_remote_view.dart' as RtcRemoteView;
+import 'package:cloud_firestore/cloud_firestore.dart';
+import 'package:fixme/Model/Message.dart';
 import 'package:fixme/Services/call_service.dart';
+import 'package:fixme/Services/network_service.dart';
 import 'package:fixme/strings.dart';
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
@@ -284,10 +287,8 @@ class _CallVideoPageState extends State<CallAudioPage> {
 
   @override
   Widget build(BuildContext context) {
-    
-print(widget.urlAvatar);
-print(widget.urlAvatar);
-print(widget.urlAvatar);
+     var network = Provider.of<WebServices>(context, listen: false);
+var data = Provider.of<CallApi>(context, listen: false);
     return Scaffold(
       backgroundColor: Colors.black,
       body: Center(
@@ -298,12 +299,34 @@ print(widget.urlAvatar);
             child: Column(
               children: <Widget>[
                 Container(
-                  height: MediaQuery.of(context).size.height*0.83,
+                  height: MediaQuery.of(context).size.height*0.78,
                   child: Image.network(
                       '${widget.urlAvatar}',
                    fit:BoxFit.cover
                     ),
                 ),
+                StreamBuilder<List<Message>>(
+                  stream: data.getCallStatus(widget.idUser, network.mobile_device_token),
+                  builder: (context,  snapshot) {
+                   switch (snapshot.connectionState){ 
+                      case ConnectionState.waiting:
+              return buildText("...");
+
+                   default:
+              if (snapshot.hasError) {
+                return buildText('Something Went Wrong Try later');
+              } else if(snapshot.data.isEmpty){
+                      return buildText('');
+                    }
+              else if(snapshot.hasData){
+                final messages = snapshot.data;
+                return  messages[0].callStatus=='Connected'?buildText('Connected...')
+                    :messages[0].callStatus=='Connecting'?buildText('Connecting...')
+                    :buildText('Some');
+                    }
+
+                  }}
+                )
               ],
             )),
          //  _panel(),
@@ -313,4 +336,15 @@ print(widget.urlAvatar);
       ),
     );
   }
+
+  Widget buildText(String text) => Center(
+      child: Padding(
+       padding: const EdgeInsets.all(8.0),
+      child:Text(
+        text,
+        style: TextStyle(fontSize: 24, color:Colors.white),
+      )),
+    );
+
+//Widget buildPop() => Navigator.pop(context);
 }

@@ -3,6 +3,7 @@ import 'package:fixme/Model/Message.dart';
 import 'package:fixme/Services/Firebase_service.dart';
 import 'package:fixme/Services/network_service.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter_ringtone_player/flutter_ringtone_player.dart';
 import 'package:provider/provider.dart';
 import 'message_widget.dart';
 
@@ -22,7 +23,6 @@ final   user;
       child: StreamBuilder<List<Message>>(
         stream: FirebaseApi.getMessages(idUser,  '${network.firstName}-${user.name}',  '${user.name}-${network.firstName}'),
         builder: (context, snapshot){
-    
           switch (snapshot.connectionState) {
             case ConnectionState.waiting:
               return Center(child: CircularProgressIndicator());
@@ -43,6 +43,7 @@ final   user;
                   reverse: true,
                   itemCount: messages.length,
                   itemBuilder: (context, index) {
+                     
                     final message = messages[index];
                     return MessageWidget(
                       message: message,

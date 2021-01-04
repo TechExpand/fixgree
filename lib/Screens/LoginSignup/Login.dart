@@ -1,8 +1,11 @@
 import 'package:fixme/Services/network_service.dart';
 import 'package:fixme/Utils/Provider.dart';
 import 'package:flutter/material.dart';
+import 'package:fixme/Services/network_service.dart';
 import 'package:intl_phone_number_input/intl_phone_number_input.dart';
 import 'package:provider/provider.dart';
+import 'otp.dart';
+import 'package:firebase_auth/firebase_auth.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 
 class Login extends StatefulWidget {
@@ -22,6 +25,55 @@ class LoginState extends State<Login>{
   Widget build(BuildContext context) {
     var network = Provider.of<WebServices>(context);
     var data = Provider.of<DataProvider>(context);
+     dynamic Credential = '';
+      var OTP;
+    var auth = FirebaseAuth.instance;
+
+
+      verifyNumber()async {
+            try {
+                await FirebaseAuth.instance.verifyPhoneNumber(
+                    phoneNumber: data.number.toString(),
+                    verificationCompleted: (credential) async {
+                      network.Login_SetState();
+                        await auth.signInWithCredential(credential);
+                        Credential = credential;
+                        await network.Login(context: context, scaffoldKey:scaffoldKey);
+                    },
+                    verificationFailed: (FirebaseAuthException e) {
+                        network.Login_SetState();
+                        scaffoldKey.currentState.showSnackBar(
+                            SnackBar(content: Text(e.message)));
+                    },
+                    timeout: Duration(seconds: 120),
+                    codeSent: (String verificationId, int resendToken) {
+                        network.Login_SetState();
+      
+                        Navigator.push(
+                            context,
+                            PageRouteBuilder(
+                                pageBuilder: (context, animation, secondaryAnihfmation) {
+                                    return OTPPAGE(verificationID:verificationId,data: data.number.toString(),Credential: Credential, page: 'Login');
+                                },
+                                transitionsBuilder: (context, animation, secondaryAnimation,
+                                    child) {
+                                    return FadeTransition(
+                                        opacity: animation,
+                                        child: child,
+                                    );
+                                },
+                            ),
+                        );
+                    },
+                    codeAutoRetrievalTimeout: (String verificationId) {},
+                );
+            }catch(e){
+              network.Login_SetState();
+                scaffoldKey.currentState.showSnackBar(
+                    SnackBar(content: Text(e.message)));
+            }
+        }
+
     return Scaffold(
       key: scaffoldKey,
       body: Material(
@@ -92,7 +144,7 @@ class LoginState extends State<Login>{
                       child: FlatButton(
                         onPressed: data.number.toString()==data.number.dialCode?null:(){
                         network.Login_SetState();
-                        network.Login(context: context, scaffoldKey:scaffoldKey);
+                         verifyNumber();
                         },
                         color:  Color(0xFF9B049B),
                         disabledColor: Color(0x909B049B),

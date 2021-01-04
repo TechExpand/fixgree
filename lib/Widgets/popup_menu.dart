@@ -30,21 +30,18 @@ class PopUpMenu extends StatelessWidget {
                     padding: const EdgeInsets.all(8),
                     child:  Text('View contact'),
                   )),
-//              PopupMenuItem(
-//                  value: 2,
-//                  child:  InkWell(
-//                    onTap: (user.block??false)?(){
-//                      print('unblock');
-//                      FirebaseApi.unblockUser(network.mobile_device_token);
-//                    }:(){
-//                      print('block');
-//                      FirebaseApi.blockUser(network.mobile_device_token);
-//                    },
-//                     child: Padding(
-//              padding: const EdgeInsets.all(8),
-//              child: Text((user.block??false)?'Unblock':'Block'),
-//              ),
-//                  )),
+              PopupMenuItem(
+                  value: 2,
+                  child:  InkWell(
+                    onTap: (){
+                     
+                     FirebaseApi.clearMessage(idUser,  '${network.firstName}-${user.name}',  '${user.name}-${network.firstName}');
+                    },
+                     child: Padding(
+              padding: const EdgeInsets.all(8),
+              child: Text('Clear Message'),
+              ),
+                  )),
               PopupMenuItem(
                   value: 3,
                   child: InkWell(

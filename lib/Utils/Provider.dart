@@ -95,7 +95,7 @@ class DataProvider extends ChangeNotifier {
   }
 
   Future<void> onJoin(
-      {channelID, context, reciever, userID, myusername, myavater, calltype}) async {
+      {channelID, callerId, context, reciever, userID, myusername, myavater, calltype}) async {
     // update input validation
     var data = Provider.of<CallApi>(context, listen: false);
     if (channelID.isNotEmpty) {
@@ -108,6 +108,7 @@ class DataProvider extends ChangeNotifier {
         channelId: channelID,
         idUser: userID,
         calltype: calltype,
+        callerId: callerId,
         urlAvatar: myavater,
         urlAvatar2: reciever,
         username: myusername,

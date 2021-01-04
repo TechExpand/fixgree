@@ -1,18 +1,18 @@
 import 'dart:io';
 import 'dart:ui';
-
+import 'package:fixme/Utils/Provider.dart';
+import 'package:fixme/Utils/utils.dart';
 import 'package:fixme/Screens/Chat/callscreens/listen_incoming_call.dart';
 import 'package:fixme/Screens/Wallet/Wallet.dart';
 import 'package:fixme/Screens/pending/pendingpage.dart';
 import 'package:fixme/Screens/postrequest/postrequest.dart';
-import 'package:fixme/Services/Firebase_service.dart';
 import 'package:fixme/Services/location_service.dart';
 import 'package:fixme/Services/network_service.dart';
+import 'package:provider/provider.dart';
 import 'package:fixme/Utils/Provider.dart';
 import 'package:fixme/Widgets/Drawer.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_feather_icons/flutter_feather_icons.dart';
-import 'package:provider/provider.dart';
 import 'package:fixme/Screens/Home/Home.dart';
 import 'package:fixme/Screens/Notification/Notification.dart';
 
@@ -31,9 +31,14 @@ class _HomePageState extends State<HomePage> {
   @override
   void initState() {
     super.initState();
+     var data = Provider.of<Utils>(context, listen: false);
+
+    // data.getData('firstName','Bearer','phoneNum', 'profile_pic_file_name', 'user_id', 'mobile_device_token',context);
+
     Provider.of<LocationService>(context, listen: false).getCurrentLocation();
     _myPage =
         PageController(initialPage: 0, viewportFraction: 1, keepPage: true);
+      
   }
 
   @override
@@ -45,7 +50,8 @@ class _HomePageState extends State<HomePage> {
   @override
   Widget build(BuildContext context) {
     var data = Provider.of<DataProvider>(context);
-    var datas = Provider.of<WebServices>(context);
+    var datas = Provider.of<Utils>(context, listen: false);
+    
     // FirebaseApi.updateUsertoOnline(datas.mobile_device_token);
     var widget = Scaffold(
       key: scafold_key,
@@ -61,6 +67,7 @@ class _HomePageState extends State<HomePage> {
           onTap: (index){
            _myPage.jumpToPage(index);
            data.setSelectedBottomNavBar(index);
+          
           },
           elevation: 20,
            type: BottomNavigationBarType.fixed,
@@ -236,7 +243,7 @@ class _HomePageState extends State<HomePage> {
         ),
       ),
     );
-
+           
     return PickupLayout(scaffold: widget);
   }
 }

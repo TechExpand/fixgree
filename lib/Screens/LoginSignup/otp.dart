@@ -4,13 +4,16 @@ import 'package:fixme/Utils/Provider.dart';
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 import 'SignupPassword.dart';
+import 'package:fixme/Services/network_service.dart';
+
 
 class OTPPAGE extends StatefulWidget {
     var verificationID;
     var data;
     var Credential;
+    String page;
 
-    OTPPAGE({this.verificationID, this.data, this.Credential});
+    OTPPAGE({this.verificationID, this.data, this.Credential, this.page});
 
     @override
     OTPState createState() => OTPState();
@@ -27,7 +30,7 @@ class OTPState extends State<OTPPAGE> {
     static final TextEditingController controller6 = TextEditingController();
 
 Timer _timer;
-int _start = 70;
+int _start = 120;
 
 void startTimer() {
   const oneSec = const Duration(seconds: 1);
@@ -77,7 +80,8 @@ void dispose() {
         var node = FocusScope.of(context);
         var data = Provider.of<DataProvider>(context);
         var auth = FirebaseAuth.instance;
- 
+var network = Provider.of<WebServices>(context);
+
 
         //register user if code is correct after code has been sent again
         signinWithPhoneAndSMScode(id, sms_code) async {
@@ -89,10 +93,11 @@ void dispose() {
                     (await FirebaseAuth.instance.signInWithCredential(authcred)).user;
                 data.setUserID(user.uid);
                 //otpTimer.cancel();
-                await Navigator.pushReplacement(
+                await widget.page=="SignUp"?Navigator.pushReplacement(
                     context,
                     PageRouteBuilder(
                         pageBuilder: (context, animation, secondaryAnimation) {
+                           network.Login_SetState();
                             return SignUpPassword();
                         },
                         transitionsBuilder:
@@ -103,7 +108,7 @@ void dispose() {
                             );
                         },
                     ),
-                );
+                ):network.Login(context: context, scaffoldKey:scaffoldKey);
             } catch (e) {
                 print(e.message);
                 scaffoldKey.currentState
@@ -574,7 +579,7 @@ void dispose() {
                                             codeAutoRetrievalTimeout: (String verificationId) {},
                                         ).then((value){
                                           setState(() {
-                                             _start = 70;
+                                             _start = 120;
                                       startTimer();
                                           });
            
@@ -587,7 +592,7 @@ void dispose() {
                             Spacer(),
                             Align(
                                 alignment: Alignment.center,
-                                child: Container(
+                                child: !network.login_state?Container(
                                     margin: EdgeInsets.only(
                                         bottom: 50,
                                     ),
@@ -604,8 +609,7 @@ void dispose() {
                                             controller6.text.isEmpty
                                             ? null
                                             : () {
-                                            print(widget.verificationID);
-                                            print(data.otp);
+                                            network.Login_SetState();
                                             signinWithPhoneAndSMScode(
                                                 widget.verificationID, data.otp);
                                         },
@@ -629,7 +633,10 @@ void dispose() {
                                             ),
                                         ),
                                     ),
-                                ),
+                                ):Padding(
+                      padding: const EdgeInsets.only(bottom:50.0),
+                      child: CircularProgressIndicator(valueColor:  AlwaysStoppedAnimation<Color>(Color(0xFF9B049B)),),
+                    )
                             ),
                         ],
                     ),
