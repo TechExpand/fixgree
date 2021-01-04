@@ -19,6 +19,11 @@ class PostRequestProvider with ChangeNotifier {
   PostRequestProvider() {
     getServices();
   }
+  bool gotit = true;
+  changeGotit(){
+    gotit = false;
+    notifyListeners();
+  }
   bool _loading = false;
   final jobtitleController = TextEditingController();
   final jobdescriptionController = TextEditingController();
@@ -76,7 +81,18 @@ class PostRequestProvider with ChangeNotifier {
       print('startedd');
       var body1 = json.decode(response.body);
       if (statusCode<400){
-        popDialog(context, 'Successfully Posted');
+        String theresponse = body1['reqRes'].toString();
+        if (theresponse == 'true') {
+          isLoading(false);
+          popDialog(context, 'Successfully Posted', 'assets/images/go.png');
+        } else {
+          isLoading(false);
+          popDialog(context, 'Unable To Post', 'assets/images/fail.jpg');
+        }
+        
+      } else {
+        isLoading(false);
+        popDialog(context, 'Unable To Post', 'assets/images/fail.jpg');
       }
       print(body1);
       isLoading(false);
@@ -85,6 +101,7 @@ class PostRequestProvider with ChangeNotifier {
       print(e);
       print('na error b tat');
       isLoading(false);
+      popDialog(context, 'Unable To Post', 'assets/images/fail.jpg');
     }
     isLoading(false);
 
