@@ -38,7 +38,6 @@ class _WalletWithdrawState extends State<WalletWithdraw> {
   }
 
   showAppSelectionModal(BuildContext context) {
-    var deviceSize = MediaQuery.of(context).size;
     var network = Provider.of<WebServices>(context, listen: false);
     var bankProvider = Provider.of<BankProvider>(context, listen: false);
     showDialog(
@@ -134,7 +133,7 @@ class _WalletWithdrawState extends State<WalletWithdraw> {
                                       SizedBox(
                                         height: 10,
                                       ),
-                                      Text('LOADING',
+                                      Text('No Network',
                                           style: TextStyle(
                                               // letterSpacing: 4,
                                               color: Colors.white,
@@ -222,7 +221,7 @@ class _WalletWithdrawState extends State<WalletWithdraw> {
                                     SizedBox(
                                       height: 10,
                                     ),
-                                    Text('No Network',
+                                    Text('Loading',
                                         style: TextStyle(
                                             // letterSpacing: 4,
                                             color: Colors.white,
@@ -563,6 +562,7 @@ class _WalletWithdrawState extends State<WalletWithdraw> {
                                     onChanged: (val) {
                                       model.setAccountNumber = val;
                                     },
+                                    autofocus: false,
                                     keyboardType: TextInputType.number,
                                     style: TextStyle(
                                         fontFamily: 'Firesans',

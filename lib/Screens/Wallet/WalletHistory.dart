@@ -53,7 +53,7 @@ class _WalletHistoryState extends State<WalletHistory> {
                           SizedBox(
                             height: 10,
                           ),
-                          Text('Loading',
+                          Text('No Network',
                               style: TextStyle(
                                   color: Color(0xFF333333),
                                   fontSize: 18,
@@ -73,7 +73,7 @@ class _WalletHistoryState extends State<WalletHistory> {
                             SizedBox(
                               height: 10,
                             ),
-                            Text('No Network',
+                            Text('Loading',
                                 style: TextStyle(
                                     color: Color(0xFF333333),
                                     fontSize: 18,

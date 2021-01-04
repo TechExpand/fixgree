@@ -386,7 +386,7 @@ class _WalletPayCompletePaymentState extends State<WalletPayCompletePayment> {
                           accountNumber: widget.accountNumber,
                           amount: model.getAmount,
                           isBeneficiary: true,
-                          narration: '');
+                          narration: model.getNarration);
                     } else if (hasPin == 'true') {
                       displayEnterSecurePinBottomModal(
                           context: context,
@@ -395,7 +395,7 @@ class _WalletPayCompletePaymentState extends State<WalletPayCompletePayment> {
                           accountNumber: widget.accountNumber,
                           amount: model.getAmount,
                           isBeneficiary: true,
-                          narration: '');
+                          narration: model.getNarration);
                     }
                   }
                 },

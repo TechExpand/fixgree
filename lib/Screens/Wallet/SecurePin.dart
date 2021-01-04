@@ -3,6 +3,8 @@ import 'package:flutter/material.dart';
 import 'package:fixme/Services/network_service.dart';
 import "package:flutter_feather_icons/flutter_feather_icons.dart";
 import 'package:fixme/Model/BankInfo.dart';
+import 'package:fixme/Screens/Wallet/TransactionSuccessful.dart';
+import 'package:fixme/Screens/Wallet/TransactionFailed.dart';
 import 'package:provider/provider.dart';
 import 'package:flutter_multi_formatter/flutter_multi_formatter.dart';
 
@@ -351,7 +353,7 @@ displayEnterSecurePinBottomModal(
                         model.setPinStatus = true;
                       } else {
                         model.setTransactionStatus = false;
-                        model.setTransactionStatus =
+                        Map<String, String> result =
                             await network.initiateTransfer(
                                 accountName: accountName,
                                 accountNumber: accountNumber,
@@ -360,6 +362,45 @@ displayEnterSecurePinBottomModal(
                                 isBeneficiary: isBeneficiary,
                                 naration: narration,
                                 secPin: model.getPin);
+                        print('The result: ' + result.toString());
+                        model.setTransactionStatus =
+                            bool.fromEnvironment(result['reqRes']);
+
+                        if (model.getTransactionStatus) {
+                          Navigator.of(context).push(
+                            PageRouteBuilder(
+                              pageBuilder:
+                                  (context, animation, secondaryAnimation) {
+                                return TransactionSuccessful();
+                              },
+                              transitionsBuilder: (context, animation,
+                                  secondaryAnimation, child) {
+                                return FadeTransition(
+                                  opacity: animation,
+                                  child: child,
+                                );
+                              },
+                            ),
+                          );
+                        } else {
+                          Navigator.of(context).push(
+                            PageRouteBuilder(
+                              pageBuilder:
+                                  (context, animation, secondaryAnimation) {
+                                return TransactionFailed(
+                                  message: result['message'],
+                                );
+                              },
+                              transitionsBuilder: (context, animation,
+                                  secondaryAnimation, child) {
+                                return FadeTransition(
+                                  opacity: animation,
+                                  child: child,
+                                );
+                              },
+                            ),
+                          );
+                        }
                       }
                     },
                     child: Padding(

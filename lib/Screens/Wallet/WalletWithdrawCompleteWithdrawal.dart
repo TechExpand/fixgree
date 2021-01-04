@@ -34,6 +34,11 @@ class _WalletWithdrawCompleteWithdrawalState
   );
 
   @override
+  void dispose() {
+    super.dispose();
+  }
+
+  @override
   Widget build(BuildContext context) {
     var deviceSize = MediaQuery.of(context).size;
     var network = Provider.of<WebServices>(context);
@@ -375,25 +380,31 @@ class _WalletWithdrawCompleteWithdrawalState
               child: new FlatButton(
                 padding: EdgeInsets.all(10),
                 onPressed: () async {
-                  String hasPin = await network.checkSecurePin();
-                  if (hasPin == 'false') {
-                    displayCreateSecurePinBottomModal(
-                        context: context,
-                        bankInfo: widget.bankInfo,
-                        accountName: widget.accountName,
-                        accountNumber: widget.accountNumber,
-                        amount: model.getAmount,
-                        isBeneficiary: true,
-                        narration: '');
-                  } else if (hasPin == 'true') {
-                    displayEnterSecurePinBottomModal(
-                        context: context,
-                        bankInfo: widget.bankInfo,
-                        accountName: widget.accountName,
-                        accountNumber: widget.accountNumber,
-                        amount: model.getAmount,
-                        isBeneficiary: true,
-                        narration: '');
+                  if (model.getAmount.isEmpty) {
+                    model.setAmountStatus = true;
+                  } else if (model.getNarration.isEmpty) {
+                    model.setNarrationStatus = true;
+                  } else {
+                    String hasPin = await network.checkSecurePin();
+                    if (hasPin == 'false') {
+                      displayCreateSecurePinBottomModal(
+                          context: context,
+                          bankInfo: widget.bankInfo,
+                          accountName: widget.accountName,
+                          accountNumber: widget.accountNumber,
+                          amount: model.getAmount,
+                          isBeneficiary: true,
+                          narration: model.getNarration);
+                    } else if (hasPin == 'true') {
+                      displayEnterSecurePinBottomModal(
+                          context: context,
+                          bankInfo: widget.bankInfo,
+                          accountName: widget.accountName,
+                          accountNumber: widget.accountNumber,
+                          amount: model.getAmount,
+                          isBeneficiary: true,
+                          narration: model.getNarration);
+                    }
                   }
                 },
                 child: Padding(

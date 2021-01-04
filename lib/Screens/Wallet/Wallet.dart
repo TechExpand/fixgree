@@ -64,7 +64,7 @@ class _WalletState extends State<Wallet> {
                                       SizedBox(
                                         height: 10,
                                       ),
-                                      Text('LOADING',
+                                      Text('No Network',
                                           style: TextStyle(
                                               // letterSpacing: 4,
                                               color: Colors.white,
@@ -153,7 +153,7 @@ class _WalletState extends State<Wallet> {
                                     SizedBox(
                                       height: 10,
                                     ),
-                                    Text('No Network',
+                                    Text('Loading',
                                         style: TextStyle(
                                             // letterSpacing: 4,
                                             color: Colors.white,
@@ -188,22 +188,25 @@ class _WalletState extends State<Wallet> {
                               backgroundColor: Colors.white,
                               heroTag: null,
                               onPressed: () {
-                                Navigator.of(context).push(
-                                  PageRouteBuilder(
-                                    pageBuilder: (context, animation,
-                                        secondaryAnimation) {
-                                      return WalletPay(
-                                          userBankInfo: model.userBankInfo);
-                                    },
-                                    transitionsBuilder: (context, animation,
-                                        secondaryAnimation, child) {
-                                      return FadeTransition(
-                                        opacity: animation,
-                                        child: child,
-                                      );
-                                    },
-                                  ),
-                                );
+                                if (walletProvider.getUserBankInfo == null) {
+                                } else {
+                                  Navigator.of(context).push(
+                                    PageRouteBuilder(
+                                      pageBuilder: (context, animation,
+                                          secondaryAnimation) {
+                                        return WalletPay(
+                                            userBankInfo: model.userBankInfo);
+                                      },
+                                      transitionsBuilder: (context, animation,
+                                          secondaryAnimation, child) {
+                                        return FadeTransition(
+                                          opacity: animation,
+                                          child: child,
+                                        );
+                                      },
+                                    ),
+                                  );
+                                }
                               },
                               elevation: 0,
                             ),
@@ -225,22 +228,25 @@ class _WalletState extends State<Wallet> {
                               backgroundColor: Colors.white,
                               heroTag: null,
                               onPressed: () {
-                                Navigator.of(context).push(
-                                  PageRouteBuilder(
-                                    pageBuilder: (context, animation,
-                                        secondaryAnimation) {
-                                      return WalletFund(
-                                          userBankInfo: model.userBankInfo);
-                                    },
-                                    transitionsBuilder: (context, animation,
-                                        secondaryAnimation, child) {
-                                      return FadeTransition(
-                                        opacity: animation,
-                                        child: child,
-                                      );
-                                    },
-                                  ),
-                                );
+                                if (walletProvider.getUserBankInfo == null) {
+                                } else {
+                                  Navigator.of(context).push(
+                                    PageRouteBuilder(
+                                      pageBuilder: (context, animation,
+                                          secondaryAnimation) {
+                                        return WalletFund(
+                                            userBankInfo: model.userBankInfo);
+                                      },
+                                      transitionsBuilder: (context, animation,
+                                          secondaryAnimation, child) {
+                                        return FadeTransition(
+                                          opacity: animation,
+                                          child: child,
+                                        );
+                                      },
+                                    ),
+                                  );
+                                }
                               },
                               elevation: 0,
                             ),
@@ -263,22 +269,25 @@ class _WalletState extends State<Wallet> {
                               backgroundColor: Colors.white,
                               heroTag: null,
                               onPressed: () {
-                                Navigator.of(context).push(
-                                  PageRouteBuilder(
-                                    pageBuilder: (context, animation,
-                                        secondaryAnimation) {
-                                      return WalletWithdraw(
-                                          userBankInfo: model.userBankInfo);
-                                    },
-                                    transitionsBuilder: (context, animation,
-                                        secondaryAnimation, child) {
-                                      return FadeTransition(
-                                        opacity: animation,
-                                        child: child,
-                                      );
-                                    },
-                                  ),
-                                );
+                                if (walletProvider.getUserBankInfo == null) {
+                                } else {
+                                  Navigator.of(context).push(
+                                    PageRouteBuilder(
+                                      pageBuilder: (context, animation,
+                                          secondaryAnimation) {
+                                        return WalletWithdraw(
+                                            userBankInfo: model.userBankInfo);
+                                      },
+                                      transitionsBuilder: (context, animation,
+                                          secondaryAnimation, child) {
+                                        return FadeTransition(
+                                          opacity: animation,
+                                          child: child,
+                                        );
+                                      },
+                                    ),
+                                  );
+                                }
                               },
                               elevation: 0,
                             ),

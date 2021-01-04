@@ -298,7 +298,7 @@ class WebServices extends ChangeNotifier {
     return body['reqRes'];
   }
 
-  Future<bool> initiateTransfer(
+  Future<Map> initiateTransfer(
       {bankCode,
       accountNumber,
       accountName,
@@ -309,21 +309,20 @@ class WebServices extends ChangeNotifier {
     String encoded = "ApiKey:$secPin";
     var bytes = utf8.encode(encoded);
     var base64Str = base64.encode(bytes);
-
+    //"https://manager.fixme.ng/initiate-transfer?user_id=264&bankCode=033&accountNumber=2133908837&accountName=EMMANUEL JOSHUA ISRAEL&amount=1000&secPin=Basic QXBpS2V5OjI1NDQ=&naration=Demo Transfer&isBeneficiary=true"
+    // 'https://manager.fixme.ng/initiate-transfer?user_id=$user_id&bankCode=$bankCode&accountNumber=$accountNumber&accountName=$accountName&amount=$amount1&secPin=Basic $base64Str=&naration=$naration&isBeneficiary=$isBeneficiary'
     var response = await http.post(
         Uri.parse(
-            'https://manager.fixme.ng/initiate-transfer?user_id=$user_id&bankCode=$bankCode&accountNumber=$bankCode&accountName=$accountName&amount=100&secPin=Basic $base64Str=&naration=$naration&isBeneficiary=$isBeneficiary'),
+            'https://manager.fixme.ng/initiate-transfer?user_id=$user_id&bankCode=$bankCode&accountNumber=$accountNumber&accountName=$accountName&amount=$amount&secPin=Basic $base64Str&naration=$naration&isBeneficiary=$isBeneficiary'),
         headers: {
           "Content-type": "application/json",
           'Authorization': 'Bearer $Bearer',
         });
     var body = json.decode(response.body);
-    bool result;
-    if (body['reqRes'] == 'true') {
-      result = true;
-    } else if (body['reqRes'] == 'false') {
-      result = false;
-    }
+    Map<String, String> result = {
+      'reqRes': body['reqRes'],
+      'message': body['message']
+    };
     return result;
   }
 }
