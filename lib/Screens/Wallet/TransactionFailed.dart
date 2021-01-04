@@ -22,12 +22,6 @@ class _TransactionFailedState extends State<TransactionFailed> {
     return Scaffold(
       appBar: AppBar(
         backgroundColor: Color(0xFF9B049B),
-        leading: IconButton(
-          onPressed: () {
-            Navigator.of(context).pop();
-          },
-          icon: Icon(FeatherIcons.arrowLeft, color: Colors.white),
-        ),
         elevation: 0,
       ),
       backgroundColor: Color(0xFF9B049B),
@@ -96,7 +90,9 @@ class _TransactionFailedState extends State<TransactionFailed> {
                   ),
                   child: new FlatButton(
                     padding: EdgeInsets.all(10),
-                    onPressed: () async {},
+                    onPressed: () {
+                      Navigator.of(context).pop();
+                    },
                     child: Padding(
                       padding: const EdgeInsets.only(left: 7, right: 7),
                       child: Row(

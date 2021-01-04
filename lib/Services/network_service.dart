@@ -14,8 +14,8 @@ import 'package:shared_preferences/shared_preferences.dart';
 class WebServices extends ChangeNotifier {
   var login_state = false;
   var login_state_second = false;
-  var Bearer = 'MuYpeP3yqJrVmTZ8B5XpFC';
-  var user_id = 264;
+  var Bearer = '';
+  var user_id = 0;
   var phoneNum = '';
   var mobile_device_token = '';
   var profile_pic_file_name = '';
@@ -321,8 +321,9 @@ class WebServices extends ChangeNotifier {
     var body = json.decode(response.body);
     Map<String, String> result = {
       'reqRes': body['reqRes'],
-      'message': body['message']
+      'message': body['message'] == null ? null : body['message']
     };
+    print('The 1 result: ' + result.toString());
     return result;
   }
 }

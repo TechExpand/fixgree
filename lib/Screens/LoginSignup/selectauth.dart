@@ -37,9 +37,12 @@ class SelectAuthScreenState extends State<SelectAuthScreen> {
               decoration: BoxDecoration(color: Colors.white),
               child: Padding(
                 padding: const EdgeInsets.all(13.0),
-                child: Image.asset(
-                  'assets/images/fixme.png',
-                  scale: 1.5,
+                child: Hero(
+                  tag: 'MainImage',
+                  child: Image.asset(
+                    'assets/images/fixme.png',
+                    scale: 1.5,
+                  ),
                 ),
               ),
             ),

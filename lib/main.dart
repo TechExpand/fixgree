@@ -108,12 +108,6 @@ void main() async {
     ChangeNotifierProvider<PendingProvider>(
       create: (context) => PendingProvider(),
     ),
-    ChangeNotifierProvider<BankProvider>(
-      create: (context) => BankProvider(),
-    ),
-    ChangeNotifierProvider<BankProvider2>(
-      create: (context) => BankProvider2(),
-    ),
     ChangeNotifierProvider<PinProvider>(
       create: (context) => PinProvider(),
     ),

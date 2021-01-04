@@ -1,15 +1,6 @@
 import 'package:flutter/material.dart';
 
 class PinProvider extends ChangeNotifier {
-  @override
-  void dispose() {
-    _isPinEmpty = null;
-    _isPinSet = null;
-    _pin = null;
-    _transactionStatus = null;
-    super.dispose();
-  }
-
   bool _isPinEmpty = false;
 
   bool get getPinStatus => _isPinEmpty;

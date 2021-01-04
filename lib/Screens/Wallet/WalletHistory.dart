@@ -35,10 +35,10 @@ class _WalletHistoryState extends State<WalletHistory> {
         ),
         elevation: 0,
       ),
-      body: ListView(
+      body: Column(
         children: [
-          Container(
-            height: deviceSize.height,
+          Expanded(
+            // height: deviceSize.height,
             child: FutureBuilder<List>(
                 future: network.getUserTransactions(),
                 builder: (context, AsyncSnapshot<List> snapshot) {

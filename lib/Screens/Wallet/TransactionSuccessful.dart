@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_feather_icons/flutter_feather_icons.dart';
+import 'package:fixme/Screens/Home/HomePage.dart';
 
 class TransactionSuccessful extends StatefulWidget {
   @override
@@ -18,12 +19,6 @@ class _TransactionSuccessfulState extends State<TransactionSuccessful> {
     return Scaffold(
       appBar: AppBar(
         backgroundColor: Color(0xFF9B049B),
-        leading: IconButton(
-          onPressed: () {
-            Navigator.of(context).pop();
-          },
-          icon: Icon(FeatherIcons.arrowLeft, color: Colors.white),
-        ),
         elevation: 0,
       ),
       backgroundColor: Color(0xFF9B049B),
@@ -88,7 +83,23 @@ class _TransactionSuccessfulState extends State<TransactionSuccessful> {
                   ),
                   child: new FlatButton(
                     padding: EdgeInsets.all(10),
-                    onPressed: () async {},
+                    onPressed: () {
+                      Navigator.of(context).push(
+                        PageRouteBuilder(
+                          pageBuilder:
+                              (context, animation, secondaryAnimation) {
+                            return HomePage();
+                          },
+                          transitionsBuilder:
+                              (context, animation, secondaryAnimation, child) {
+                            return FadeTransition(
+                              opacity: animation,
+                              child: child,
+                            );
+                          },
+                        ),
+                      );
+                    },
                     child: Padding(
                       padding: const EdgeInsets.only(left: 7, right: 7),
                       child: Row(

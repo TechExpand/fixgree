@@ -8,8 +8,8 @@ class UserBankInfo {
   String accountNumber;
   String bankName;
   DateTime dateCreated;
-  int balance;
-  int totalIncome;
+  double balance;
+  double totalIncome;
   int totalWithdrawal;
 
   UserBankInfo(

@@ -1,8 +1,6 @@
 import 'package:flutter/material.dart';
 import 'LoginSignup/selectauth.dart';
 
-
-
 class SplashScreen extends StatefulWidget {
   @override
   State<StatefulWidget> createState() {
@@ -15,13 +13,14 @@ class SPLASHSTATE extends State<SplashScreen> {
   @override
   void initState() {
     super.initState();
-    Future.delayed(Duration(seconds: 5), ()async{
-    return  Navigator.pushReplacement(
+    Future.delayed(Duration(seconds: 5), () async {
+      return Navigator.pushReplacement(
         context,
         PageRouteBuilder(
           pageBuilder: (context, animation, secondaryAnimation) {
             return SelectAuthScreen();
           },
+          // transitionDuration: Duration(milliseconds: 700),
           transitionsBuilder: (context, animation, secondaryAnimation, child) {
             return FadeTransition(
               opacity: animation,
@@ -32,7 +31,6 @@ class SPLASHSTATE extends State<SplashScreen> {
       );
     });
   }
-
 
   /* Future<Widget> decideFirstWidget() async {
     SharedPreferences prefs = await SharedPreferences.getInstance();
@@ -80,9 +78,12 @@ class SPLASHSTATE extends State<SplashScreen> {
         width: MediaQuery.of(context).size.width,
         height: MediaQuery.of(context).size.height,
         child: Center(
-          child: Image.asset(
-            'assets/images/fixme.png',
-            scale: 1.5,
+          child: Hero(
+            tag: 'MainImage',
+            child: Image.asset(
+              'assets/images/fixme.png',
+              scale: 1.5,
+            ),
           ),
         ),
       ),
