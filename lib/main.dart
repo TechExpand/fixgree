@@ -22,6 +22,7 @@ import 'package:http/http.dart' as http;
 import 'dart:convert';
 
 Future getCurrentLocation() async {
+  print('gettingggg');
   try {
     SharedPreferences prefs = await SharedPreferences.getInstance();
     var token = prefs.getString('Bearer');
@@ -76,7 +77,9 @@ void main() async {
     } catch (e) {
       print(e);
     }
+    print('start sending initiasllll');
     getCurrentLocation();
+    print('ebnd sending initiasllll');
     const oneSec = const Duration(minutes: 8);
     new Timer.periodic(oneSec, (Timer t) => getCurrentLocation());
   }
@@ -107,12 +110,6 @@ void main() async {
     ),
     ChangeNotifierProvider<PendingProvider>(
       create: (context) => PendingProvider(),
-    ),
-    ChangeNotifierProvider<BankProvider>(
-      create: (context) => BankProvider(),
-    ),
-    ChangeNotifierProvider<BankProvider2>(
-      create: (context) => BankProvider2(),
     ),
     ChangeNotifierProvider<PinProvider>(
       create: (context) => PinProvider(),

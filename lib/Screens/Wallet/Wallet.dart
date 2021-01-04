@@ -64,7 +64,7 @@ class _WalletState extends State<Wallet> {
                                       SizedBox(
                                         height: 10,
                                       ),
-                                      Text('LOADING',
+                                      Text('No Network',
                                           style: TextStyle(
                                               // letterSpacing: 4,
                                               color: Colors.white,
@@ -153,7 +153,7 @@ class _WalletState extends State<Wallet> {
                                     SizedBox(
                                       height: 10,
                                     ),
-                                    Text('No Network',
+                                    Text('Loading',
                                         style: TextStyle(
                                             // letterSpacing: 4,
                                             color: Colors.white,
@@ -188,22 +188,25 @@ class _WalletState extends State<Wallet> {
                               backgroundColor: Colors.white,
                               heroTag: null,
                               onPressed: () {
-                                Navigator.of(context).push(
-                                  PageRouteBuilder(
-                                    pageBuilder: (context, animation,
-                                        secondaryAnimation) {
-                                      return WalletPay(
-                                          userBankInfo: model.userBankInfo);
-                                    },
-                                    transitionsBuilder: (context, animation,
-                                        secondaryAnimation, child) {
-                                      return FadeTransition(
-                                        opacity: animation,
-                                        child: child,
-                                      );
-                                    },
-                                  ),
-                                );
+                                if (walletProvider.getUserBankInfo == null) {
+                                } else {
+                                  Navigator.of(context).push(
+                                    PageRouteBuilder(
+                                      pageBuilder: (context, animation,
+                                          secondaryAnimation) {
+                                        return WalletPay(
+                                            userBankInfo: model.userBankInfo);
+                                      },
+                                      transitionsBuilder: (context, animation,
+                                          secondaryAnimation, child) {
+                                        return FadeTransition(
+                                          opacity: animation,
+                                          child: child,
+                                        );
+                                      },
+                                    ),
+                                  );
+                                }
                               },
                               elevation: 0,
                             ),
@@ -225,22 +228,25 @@ class _WalletState extends State<Wallet> {
                               backgroundColor: Colors.white,
                               heroTag: null,
                               onPressed: () {
-                                Navigator.of(context).push(
-                                  PageRouteBuilder(
-                                    pageBuilder: (context, animation,
-                                        secondaryAnimation) {
-                                      return WalletFund(
-                                          userBankInfo: model.userBankInfo);
-                                    },
-                                    transitionsBuilder: (context, animation,
-                                        secondaryAnimation, child) {
-                                      return FadeTransition(
-                                        opacity: animation,
-                                        child: child,
-                                      );
-                                    },
-                                  ),
-                                );
+                                if (walletProvider.getUserBankInfo == null) {
+                                } else {
+                                  Navigator.of(context).push(
+                                    PageRouteBuilder(
+                                      pageBuilder: (context, animation,
+                                          secondaryAnimation) {
+                                        return WalletFund(
+                                            userBankInfo: model.userBankInfo);
+                                      },
+                                      transitionsBuilder: (context, animation,
+                                          secondaryAnimation, child) {
+                                        return FadeTransition(
+                                          opacity: animation,
+                                          child: child,
+                                        );
+                                      },
+                                    ),
+                                  );
+                                }
                               },
                               elevation: 0,
                             ),
@@ -263,22 +269,25 @@ class _WalletState extends State<Wallet> {
                               backgroundColor: Colors.white,
                               heroTag: null,
                               onPressed: () {
-                                Navigator.of(context).push(
-                                  PageRouteBuilder(
-                                    pageBuilder: (context, animation,
-                                        secondaryAnimation) {
-                                      return WalletWithdraw(
-                                          userBankInfo: model.userBankInfo);
-                                    },
-                                    transitionsBuilder: (context, animation,
-                                        secondaryAnimation, child) {
-                                      return FadeTransition(
-                                        opacity: animation,
-                                        child: child,
-                                      );
-                                    },
-                                  ),
-                                );
+                                if (walletProvider.getUserBankInfo == null) {
+                                } else {
+                                  Navigator.of(context).push(
+                                    PageRouteBuilder(
+                                      pageBuilder: (context, animation,
+                                          secondaryAnimation) {
+                                        return WalletWithdraw(
+                                            userBankInfo: model.userBankInfo);
+                                      },
+                                      transitionsBuilder: (context, animation,
+                                          secondaryAnimation, child) {
+                                        return FadeTransition(
+                                          opacity: animation,
+                                          child: child,
+                                        );
+                                      },
+                                    ),
+                                  );
+                                }
                               },
                               elevation: 0,
                             ),
@@ -302,207 +311,198 @@ class _WalletState extends State<Wallet> {
               // minChildSize: 0.5,
               builder: (context, scrollController) {
                 return Container(
+                  padding: const EdgeInsets.only(top: 10),
                   decoration:
                       BoxDecoration(borderRadius: radius, color: Colors.white),
-                  child: ListView(
-                      padding: const EdgeInsets.only(top: 10),
-                      physics: NeverScrollableScrollPhysics(),
-                      children: [
-                        InkWell(
-                          onTap: () {
-                            Navigator.of(context).push(
-                              PageRouteBuilder(
-                                pageBuilder:
-                                    (context, animation, secondaryAnimation) {
-                                  return WalletAddCard();
-                                },
-                                transitionsBuilder: (context, animation,
-                                    secondaryAnimation, child) {
-                                  return FadeTransition(
-                                    opacity: animation,
-                                    child: child,
-                                  );
-                                },
-                              ),
-                            );
-                          },
-                          child: Row(
-                            mainAxisAlignment: MainAxisAlignment.center,
-                            children: [
-                              Icon(FeatherIcons.plus, color: Color(0xFF333333)),
-                              SizedBox(
-                                width: 5,
-                              ),
-                              Text('Add payment card',
-                                  style: TextStyle(
-                                      color: Color(0xFF333333),
-                                      fontSize: 18,
-                                      fontFamily: 'Firesans',
-                                      height: 1.4,
-                                      fontWeight: FontWeight.w500)),
-                            ],
+                  child: Column(children: [
+                    InkWell(
+                      onTap: () {
+                        Navigator.of(context).push(
+                          PageRouteBuilder(
+                            pageBuilder:
+                                (context, animation, secondaryAnimation) {
+                              return WalletAddCard();
+                            },
+                            transitionsBuilder: (context, animation,
+                                secondaryAnimation, child) {
+                              return FadeTransition(
+                                opacity: animation,
+                                child: child,
+                              );
+                            },
                           ),
-                        ),
-                        Container(
-                          height: 30,
-                          child: Row(
-                            mainAxisAlignment: MainAxisAlignment.center,
-                            children: <Widget>[
-                              Container(
-                                width: 70,
-                                height: 5,
-                                decoration: BoxDecoration(
-                                    color: Colors.grey[300],
-                                    borderRadius: BorderRadius.all(
-                                        Radius.circular(12.0))),
-                              ),
-                            ],
+                        );
+                      },
+                      child: Row(
+                        mainAxisAlignment: MainAxisAlignment.center,
+                        children: [
+                          Icon(FeatherIcons.plus, color: Color(0xFF333333)),
+                          SizedBox(
+                            width: 5,
                           ),
-                        ),
-                        Container(
-                          padding: EdgeInsets.only(left: 19, right: 19),
-                          child: Row(
-                            mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                            children: <Widget>[
-                              Text('Last Transactions',
+                          Text('Add payment card',
+                              style: TextStyle(
+                                  color: Color(0xFF333333),
+                                  fontSize: 18,
+                                  fontFamily: 'Firesans',
+                                  height: 1.4,
+                                  fontWeight: FontWeight.w500)),
+                        ],
+                      ),
+                    ),
+                    Container(
+                      height: 30,
+                      child: Row(
+                        mainAxisAlignment: MainAxisAlignment.center,
+                        children: <Widget>[
+                          Container(
+                            width: 70,
+                            height: 5,
+                            decoration: BoxDecoration(
+                                color: Colors.grey[300],
+                                borderRadius:
+                                    BorderRadius.all(Radius.circular(12.0))),
+                          ),
+                        ],
+                      ),
+                    ),
+                    Container(
+                      padding: EdgeInsets.only(left: 19, right: 19),
+                      child: Row(
+                        mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                        children: <Widget>[
+                          Text('Last Transactions',
+                              style: TextStyle(
+                                  fontFamily: 'Firesans',
+                                  fontSize: 17,
+                                  color: Color(0xFF333333),
+                                  fontWeight: FontWeight.w600)),
+                          Padding(
+                            padding: const EdgeInsets.only(top: 1),
+                            child: InkWell(
+                              onTap: () {
+                                Navigator.of(context).push(
+                                  PageRouteBuilder(
+                                    pageBuilder: (context, animation,
+                                        secondaryAnimation) {
+                                      return WalletHistory();
+                                    },
+                                    transitionsBuilder: (context, animation,
+                                        secondaryAnimation, child) {
+                                      return FadeTransition(
+                                        opacity: animation,
+                                        child: child,
+                                      );
+                                    },
+                                  ),
+                                );
+                              },
+                              child: Text('See all',
                                   style: TextStyle(
                                       fontFamily: 'Firesans',
-                                      fontSize: 17,
-                                      color: Color(0xFF333333),
+                                      fontSize: 15,
+                                      color: Color(0xFFBD4591),
                                       fontWeight: FontWeight.w600)),
-                              Padding(
-                                padding: const EdgeInsets.only(top: 1),
-                                child: InkWell(
-                                  onTap: () {
-                                    Navigator.of(context).push(
-                                      PageRouteBuilder(
-                                        pageBuilder: (context, animation,
-                                            secondaryAnimation) {
-                                          return WalletHistory();
-                                        },
-                                        transitionsBuilder: (context, animation,
-                                            secondaryAnimation, child) {
-                                          return FadeTransition(
-                                            opacity: animation,
-                                            child: child,
-                                          );
-                                        },
-                                      ),
-                                    );
-                                  },
-                                  child: Text('See all',
-                                      style: TextStyle(
-                                          fontFamily: 'Firesans',
-                                          fontSize: 15,
-                                          color: Color(0xFFBD4591),
-                                          fontWeight: FontWeight.w600)),
-                                ),
-                              )
-                            ],
-                          ),
-                        ),
-                        Container(
-                          height: deviceSize.height,
-                          child: FutureBuilder<List>(
-                              future: network.getUserTransactions(),
-                              builder: (context, AsyncSnapshot<List> snapshot) {
-                                Widget mainWidget;
-                                if (snapshot.connectionState ==
-                                    ConnectionState.none) {
-                                  mainWidget = Center(
-                                    child: Column(
-                                      mainAxisAlignment:
-                                          MainAxisAlignment.center,
-                                      crossAxisAlignment:
-                                          CrossAxisAlignment.center,
-                                      children: [
-                                        CircularProgressIndicator(),
-                                        SizedBox(
-                                          height: 10,
-                                        ),
-                                        Text('Loading',
-                                            style: TextStyle(
-                                                color: Color(0xFF333333),
-                                                fontSize: 18,
-                                                fontFamily: 'Firesans',
-                                                fontWeight: FontWeight.w600)),
-                                      ],
+                            ),
+                          )
+                        ],
+                      ),
+                    ),
+                    Expanded(
+                      child: FutureBuilder<List>(
+                          future: network.getUserTransactions(),
+                          builder: (context, AsyncSnapshot<List> snapshot) {
+                            Widget mainWidget;
+                            if (snapshot.connectionState ==
+                                ConnectionState.none) {
+                              mainWidget = Center(
+                                child: Column(
+                                  mainAxisAlignment: MainAxisAlignment.center,
+                                  crossAxisAlignment: CrossAxisAlignment.center,
+                                  children: [
+                                    CircularProgressIndicator(),
+                                    SizedBox(
+                                      height: 10,
                                     ),
-                                  );
-                                } else {
-                                  if (snapshot.data == null) {
-                                    mainWidget = Center(
-                                      child: Column(
-                                        mainAxisAlignment:
-                                            MainAxisAlignment.center,
-                                        crossAxisAlignment:
-                                            CrossAxisAlignment.center,
-                                        children: [
-                                          CircularProgressIndicator(),
-                                          SizedBox(
-                                            height: 10,
-                                          ),
-                                          Text('No Network',
-                                              style: TextStyle(
-                                                  color: Color(0xFF333333),
-                                                  fontSize: 18,
-                                                  fontFamily: 'Firesans',
-                                                  fontWeight: FontWeight.w600)),
-                                        ],
+                                    Text('No Network',
+                                        style: TextStyle(
+                                            color: Color(0xFF333333),
+                                            fontSize: 18,
+                                            fontFamily: 'Firesans',
+                                            fontWeight: FontWeight.w600)),
+                                  ],
+                                ),
+                              );
+                            } else {
+                              if (snapshot.data == null) {
+                                mainWidget = Center(
+                                  child: Column(
+                                    mainAxisAlignment: MainAxisAlignment.center,
+                                    crossAxisAlignment:
+                                        CrossAxisAlignment.center,
+                                    children: [
+                                      CircularProgressIndicator(),
+                                      SizedBox(
+                                        height: 10,
                                       ),
-                                    );
-                                  } else {
-                                    mainWidget = ListView.builder(
-                                      itemCount: snapshot.data.length,
-                                      padding: const EdgeInsets.only(
-                                          top: 10, left: 3, right: 5),
-                                      physics: BouncingScrollPhysics(),
-                                      itemBuilder: (context, index) {
-                                        TransactionDetails transactionDetails =
-                                            TransactionDetails.fromJson(
-                                                snapshot.data[index]);
-                                        return ListTile(
-                                            leading: Container(
-                                              height: 43,
-                                              width: 43,
-                                              decoration: BoxDecoration(
-                                                borderRadius:
-                                                    BorderRadius.circular(25),
-                                                color: Color(0xFFE1E1E1),
-                                              ),
-                                              child: Icon(
-                                                  FeatherIcons.checkCircle),
-                                            ),
-                                            title: Text(
-                                                transactionDetails
-                                                    .paymentDescription,
-                                                style: TextStyle(
-                                                    fontFamily: 'Firesans',
-                                                    fontSize: 17,
-                                                    color: Color(0xFF333333),
-                                                    fontWeight:
-                                                        FontWeight.w600)),
-                                            subtitle: Text(
-                                                '${DateFormat('MMM dd, y').format(transactionDetails.transactionDate)}',
-                                                style: TextStyle(
-                                                    fontFamily: 'Firesans',
-                                                    fontSize: 16,
-                                                    color: Color(0xFF555555),
-                                                    fontWeight:
-                                                        FontWeight.w600)),
-                                            trailing: buildTransactionText(
-                                                transactionDetails
-                                                    .transactionType,
-                                                '${transactionDetails.amountPaid}',
-                                                transactionDetails.currency));
-                                      },
-                                    );
-                                  }
-                                }
-                                return mainWidget;
-                              }),
-                        ),
-                      ]),
+                                      Text('Loading',
+                                          style: TextStyle(
+                                              color: Color(0xFF333333),
+                                              fontSize: 18,
+                                              fontFamily: 'Firesans',
+                                              fontWeight: FontWeight.w600)),
+                                    ],
+                                  ),
+                                );
+                              } else {
+                                mainWidget = ListView.builder(
+                                  itemCount: snapshot.data.length,
+                                  padding: const EdgeInsets.only(
+                                      top: 10, left: 3, right: 5),
+                                  physics: BouncingScrollPhysics(),
+                                  itemBuilder: (context, index) {
+                                    TransactionDetails transactionDetails =
+                                        TransactionDetails.fromJson(
+                                            snapshot.data[index]);
+                                    return ListTile(
+                                        leading: Container(
+                                          height: 43,
+                                          width: 43,
+                                          decoration: BoxDecoration(
+                                            borderRadius:
+                                                BorderRadius.circular(25),
+                                            color: Color(0xFFE1E1E1),
+                                          ),
+                                          child: Icon(FeatherIcons.checkCircle),
+                                        ),
+                                        title: Text(
+                                            transactionDetails
+                                                .paymentDescription
+                                                .capitalizeFirstOfEach,
+                                            style: TextStyle(
+                                                fontFamily: 'Firesans',
+                                                fontSize: 17,
+                                                color: Color(0xFF333333),
+                                                fontWeight: FontWeight.w600)),
+                                        subtitle: Text(
+                                            '${DateFormat('MMM dd, y').format(transactionDetails.transactionDate)}',
+                                            style: TextStyle(
+                                                fontFamily: 'Firesans',
+                                                fontSize: 16,
+                                                color: Color(0xFF555555),
+                                                fontWeight: FontWeight.w600)),
+                                        trailing: buildTransactionText(
+                                            transactionDetails.transactionType,
+                                            '${transactionDetails.amountPaid}',
+                                            transactionDetails.currency));
+                                  },
+                                );
+                              }
+                            }
+                            return mainWidget;
+                          }),
+                    ),
+                  ]),
                 );
               },
             )

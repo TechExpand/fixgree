@@ -62,8 +62,9 @@ class _HomePageState extends State<HomePage> {
         ),
       ),
       bottomNavigationBar: Container(
-       height: 60,
+        height: 60,
         child: BottomNavigationBar(
+<<<<<<< HEAD
           onTap: (index){
            _myPage.jumpToPage(index);
            data.setSelectedBottomNavBar(index);
@@ -105,132 +106,177 @@ class _HomePageState extends State<HomePage> {
                               
           ] 
         ),
+=======
+            onTap: (index) {
+              if (data.selectedPage == index) {
+              } else {
+                _myPage.jumpToPage(index);
+                data.setSelectedBottomNavBar(index);
+              }
+            },
+            elevation: 20,
+            type: BottomNavigationBarType.fixed,
+            currentIndex: data.selectedPage,
+            unselectedItemColor: Color(0xFF555555),
+            selectedItemColor: Color(0xFFA40C85),
+            selectedLabelStyle: TextStyle(fontSize: 13, fontFamily: 'Firesans'),
+            unselectedLabelStyle:
+                TextStyle(fontSize: 13, fontFamily: 'Firesans'),
+            items: [
+              BottomNavigationBarItem(
+                icon: Icon(FeatherIcons.home),
+                label: 'Home',
+              ),
+              BottomNavigationBarItem(
+                icon: Icon(FeatherIcons.briefcase),
+                label: 'Wallet',
+              ),
+              BottomNavigationBarItem(
+                icon: Icon(FeatherIcons.plusCircle),
+                label: 'Post',
+              ),
+              BottomNavigationBarItem(
+                icon: Icon(FeatherIcons.bell),
+                label: 'Notifications',
+              ),
+              BottomNavigationBarItem(
+                icon: Icon(FeatherIcons.clock),
+                label: 'Pending',
+              )
+            ]),
+>>>>>>> 57fe2cbcdab49a93de83395d586d59e6e661f2cd
       ),
       body: WillPopScope(
-         onWillPop: (){
-           return showDialog(
-               child: BackdropFilter(
-                 filter: ImageFilter.blur(sigmaX: 8, sigmaY: 8),
-                 child: AlertDialog(
-                   elevation: 6,
-                   shape: RoundedRectangleBorder(
-                       borderRadius: BorderRadius.all(Radius.circular(32.0))),
-                   content: Container(
-                     height: 150,
-                     child: Column(
-                       crossAxisAlignment: CrossAxisAlignment.center,
-                       mainAxisAlignment: MainAxisAlignment.center,
-                       children: <Widget>[
-                         Text(
-                           'Oops!!',
-                           style: TextStyle(
-                               fontSize: 20,
-                               color: Color(0xFF9B049B),
-                               fontWeight: FontWeight.bold),
-                         ),
-                         Row(
-                           children: [
-                             Container(
-                               padding: EdgeInsets.only(top: 15, bottom: 15),
-                               width: 250,
-                               child: Text(
-                                 'DO YOU WANT TO EXIT THIS APP?',
-                                 textAlign: TextAlign.center,
-                                 style: TextStyle(
-                                   fontSize: 15,
-                                   fontWeight: FontWeight.bold,
-                                   color: Colors.black54,
-                                 ),
-                               ),
-                             ),
-                           ],
-                         ),
-                         ButtonBar(
-                           alignment: MainAxisAlignment.center,
-                     children: [Material(
-                             borderRadius: BorderRadius.circular(26),
-                             elevation: 2,
-                             child: Container(
-                               height: 35,
-                               width: 100,
-                               decoration: BoxDecoration(
-                                   border: Border.all(color:  Color(0xFF9B049B)),
-                                   borderRadius: BorderRadius.circular(26)),
-                               child: FlatButton(
-                                 onPressed: () {
-                                   return exit(0);
-                                 },
-                                 color:  Color(0xFF9B049B),
-                                 shape: RoundedRectangleBorder(
-                                     borderRadius: BorderRadius.circular(26)),
-                                 padding: EdgeInsets.all(0.0),
-                                 child: Ink(
-                                   decoration: BoxDecoration(
-                                       borderRadius: BorderRadius.circular(26)),
-                                   child: Container(
-                                     constraints: BoxConstraints(
-                                         maxWidth: 190.0, minHeight: 53.0),
-                                     alignment: Alignment.center,
-                                     child: Text(
-                                       "Yes",
-                                       textAlign: TextAlign.center,
-                                       style: TextStyle(
-                                           fontSize: 16,
-                                           fontWeight: FontWeight.bold,
-                                           color: Colors.white),
-                                     ),
-                                   ),
-                                 ),
-                               ),
-                             ),
-                           ),
-                           Material(
-                           borderRadius: BorderRadius.circular(26),
-                           elevation: 2,
-                           child: Container(
-                             height: 35,
-                             width: 100,
-                             decoration: BoxDecoration(
-                                 border: Border.all(color:  Color(0xFF9B049B)),
-                                 borderRadius: BorderRadius.circular(26)),
-                             child: FlatButton(
-                               onPressed: () {
-                                 Navigator.pop(context);
-                               },
-                               color:  Color(0xFF9B049B),
-                               shape: RoundedRectangleBorder(
-                                   borderRadius: BorderRadius.circular(26)),
-                               padding: EdgeInsets.all(0.0),
-                               child: Ink(
-                                 decoration: BoxDecoration(
-                                     borderRadius: BorderRadius.circular(26)),
-                                 child: Container(
-                                   constraints: BoxConstraints(
-                                       maxWidth: 190.0, minHeight: 53.0),
-                                   alignment: Alignment.center,
-                                   child: Text(
-                                     "No",
-                                     textAlign: TextAlign.center,
-                                     style: TextStyle(
-                                         fontSize: 16,
-                                         fontWeight: FontWeight.bold,
-                                         color: Colors.white),
-                                   ),
-                                 ),
-                               ),
-                             ),
-                           ),
-                         ),
-                           ]
-                         ),
-                       ],
-                     ),
-                   ),
-                 ),
-               ),
-               context: context);
-      },
-              child: PageView(
+        onWillPop: () {
+          return showDialog(
+              child: BackdropFilter(
+                filter: ImageFilter.blur(sigmaX: 8, sigmaY: 8),
+                child: AlertDialog(
+                  elevation: 6,
+                  shape: RoundedRectangleBorder(
+                      borderRadius: BorderRadius.all(Radius.circular(32.0))),
+                  content: Container(
+                    height: 150,
+                    child: Column(
+                      crossAxisAlignment: CrossAxisAlignment.center,
+                      mainAxisAlignment: MainAxisAlignment.center,
+                      children: <Widget>[
+                        Text(
+                          'Oops!!',
+                          style: TextStyle(
+                              fontSize: 20,
+                              color: Color(0xFF9B049B),
+                              fontWeight: FontWeight.bold),
+                        ),
+                        Row(
+                          children: [
+                            Container(
+                              padding: EdgeInsets.only(top: 15, bottom: 15),
+                              width: 250,
+                              child: Text(
+                                'DO YOU WANT TO EXIT THIS APP?',
+                                textAlign: TextAlign.center,
+                                style: TextStyle(
+                                  fontSize: 15,
+                                  fontWeight: FontWeight.bold,
+                                  color: Colors.black54,
+                                ),
+                              ),
+                            ),
+                          ],
+                        ),
+                        ButtonBar(
+                            alignment: MainAxisAlignment.center,
+                            children: [
+                              Material(
+                                borderRadius: BorderRadius.circular(26),
+                                elevation: 2,
+                                child: Container(
+                                  height: 35,
+                                  width: 100,
+                                  decoration: BoxDecoration(
+                                      border:
+                                          Border.all(color: Color(0xFF9B049B)),
+                                      borderRadius: BorderRadius.circular(26)),
+                                  child: FlatButton(
+                                    onPressed: () {
+                                      return exit(0);
+                                    },
+                                    color: Color(0xFF9B049B),
+                                    shape: RoundedRectangleBorder(
+                                        borderRadius:
+                                            BorderRadius.circular(26)),
+                                    padding: EdgeInsets.all(0.0),
+                                    child: Ink(
+                                      decoration: BoxDecoration(
+                                          borderRadius:
+                                              BorderRadius.circular(26)),
+                                      child: Container(
+                                        constraints: BoxConstraints(
+                                            maxWidth: 190.0, minHeight: 53.0),
+                                        alignment: Alignment.center,
+                                        child: Text(
+                                          "Yes",
+                                          textAlign: TextAlign.center,
+                                          style: TextStyle(
+                                              fontSize: 16,
+                                              fontWeight: FontWeight.bold,
+                                              color: Colors.white),
+                                        ),
+                                      ),
+                                    ),
+                                  ),
+                                ),
+                              ),
+                              Material(
+                                borderRadius: BorderRadius.circular(26),
+                                elevation: 2,
+                                child: Container(
+                                  height: 35,
+                                  width: 100,
+                                  decoration: BoxDecoration(
+                                      border:
+                                          Border.all(color: Color(0xFF9B049B)),
+                                      borderRadius: BorderRadius.circular(26)),
+                                  child: FlatButton(
+                                    onPressed: () {
+                                      Navigator.pop(context);
+                                    },
+                                    color: Color(0xFF9B049B),
+                                    shape: RoundedRectangleBorder(
+                                        borderRadius:
+                                            BorderRadius.circular(26)),
+                                    padding: EdgeInsets.all(0.0),
+                                    child: Ink(
+                                      decoration: BoxDecoration(
+                                          borderRadius:
+                                              BorderRadius.circular(26)),
+                                      child: Container(
+                                        constraints: BoxConstraints(
+                                            maxWidth: 190.0, minHeight: 53.0),
+                                        alignment: Alignment.center,
+                                        child: Text(
+                                          "No",
+                                          textAlign: TextAlign.center,
+                                          style: TextStyle(
+                                              fontSize: 16,
+                                              fontWeight: FontWeight.bold,
+                                              color: Colors.white),
+                                        ),
+                                      ),
+                                    ),
+                                  ),
+                                ),
+                              ),
+                            ]),
+                      ],
+                    ),
+                  ),
+                ),
+              ),
+              context: context);
+        },
+        child: PageView(
           controller: _myPage,
           physics: NeverScrollableScrollPhysics(),
           children: [

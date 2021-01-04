@@ -64,7 +64,7 @@ class PostScreenState extends State<PostScreen> {
           child: ListView(
             // mainAxisAlignment: MainAxisAlignment.center,
             children: <Widget>[
-              Card(
+              postRequestProvider.gotit ? Card(
                 color: Color(0xFF9B049B),
                 child: Center(
                   child: Padding(
@@ -125,17 +125,24 @@ class PostScreenState extends State<PostScreen> {
                         SizedBox(
                           height: 8,
                         ),
-                        Padding(
-                          padding: const EdgeInsets.all(8.0),
-                          child: Align(
-                              alignment: Alignment.bottomRight,
-                              child: Text('Got it'.toUpperCase(), style: TextStyle(color:Colors.white))),
+                        GestureDetector(
+                            onTap: () {
+                              print('changed');
+                              postRequestProvider.changeGotit();
+                            },
+                            child: Padding(
+                            padding: const EdgeInsets.all(8.0),
+                            child: Align(
+                                alignment: Alignment.bottomRight,
+                                child: Text('Got it'.toUpperCase(), style: TextStyle(color:Colors.white))),
+                          ),
                         )
                       ],
                     ),
                   ),
                 ),
-              ),
+              ) 
+              : SizedBox(),
               SizedBox(
                 height: 10,
               ),
@@ -169,7 +176,7 @@ class PostScreenState extends State<PostScreen> {
                     BoxDecoration(border: Border.all(color: Colors.grey)),
                 child: DropdownButton(
                     underline: SizedBox(),
-                    hint: Text('Select a service'),
+                    hint: Text(' Select a service'),
                     // dropdownColor: Colors.grey,
                     isExpanded: true,
                     elevation: 5,
