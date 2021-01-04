@@ -92,7 +92,7 @@ class _HomePageState extends State<HomePage> {
               ),
               BottomNavigationBarItem(
                 icon: Icon(FeatherIcons.clock),
-                title: Text('Pending'),
+                label: 'Pending',
               )
             ]),
       ),
