@@ -64,7 +64,6 @@ class _HomePageState extends State<HomePage> {
       bottomNavigationBar: Container(
         height: 60,
         child: BottomNavigationBar(
-<<<<<<< HEAD
           onTap: (index){
            _myPage.jumpToPage(index);
            data.setSelectedBottomNavBar(index);
@@ -106,46 +105,9 @@ class _HomePageState extends State<HomePage> {
                               
           ] 
         ),
-=======
-            onTap: (index) {
-              if (data.selectedPage == index) {
-              } else {
-                _myPage.jumpToPage(index);
-                data.setSelectedBottomNavBar(index);
-              }
-            },
-            elevation: 20,
-            type: BottomNavigationBarType.fixed,
-            currentIndex: data.selectedPage,
-            unselectedItemColor: Color(0xFF555555),
-            selectedItemColor: Color(0xFFA40C85),
-            selectedLabelStyle: TextStyle(fontSize: 13, fontFamily: 'Firesans'),
-            unselectedLabelStyle:
-                TextStyle(fontSize: 13, fontFamily: 'Firesans'),
-            items: [
-              BottomNavigationBarItem(
-                icon: Icon(FeatherIcons.home),
-                label: 'Home',
-              ),
-              BottomNavigationBarItem(
-                icon: Icon(FeatherIcons.briefcase),
-                label: 'Wallet',
-              ),
-              BottomNavigationBarItem(
-                icon: Icon(FeatherIcons.plusCircle),
-                label: 'Post',
-              ),
-              BottomNavigationBarItem(
-                icon: Icon(FeatherIcons.bell),
-                label: 'Notifications',
-              ),
-              BottomNavigationBarItem(
-                icon: Icon(FeatherIcons.clock),
-                label: 'Pending',
-              )
-            ]),
->>>>>>> 57fe2cbcdab49a93de83395d586d59e6e661f2cd
-      ),
+
+            ),
+      
       body: WillPopScope(
         onWillPop: () {
           return showDialog(
@@ -172,14 +134,16 @@ class _HomePageState extends State<HomePage> {
                           children: [
                             Container(
                               padding: EdgeInsets.only(top: 15, bottom: 15),
-                              width: 250,
-                              child: Text(
-                                'DO YOU WANT TO EXIT THIS APP?',
-                                textAlign: TextAlign.center,
-                                style: TextStyle(
-                                  fontSize: 15,
-                                  fontWeight: FontWeight.bold,
-                                  color: Colors.black54,
+                             
+                              child: Center(
+                                child: Text(
+                                  'DO YOU WANT TO EXIT THIS APP?',
+                                 
+                                  style: TextStyle(
+                                    fontSize: 14,
+                                    fontWeight: FontWeight.bold,
+                                    color: Colors.black54,
+                                  ),
                                 ),
                               ),
                             ),

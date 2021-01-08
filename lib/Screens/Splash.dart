@@ -1,14 +1,11 @@
 import 'package:flutter/material.dart';
 import 'LoginSignup/selectauth.dart';
-<<<<<<< HEAD
 import 'Home/HomePage.dart';
 import 'package:fixme/Utils/utils.dart';
 import 'package:provider/provider.dart';
 import 'package:fixme/Services/network_service.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 
-=======
->>>>>>> 57fe2cbcdab49a93de83395d586d59e6e661f2cd
 
 class SplashScreen extends StatefulWidget {
   @override
@@ -23,13 +20,8 @@ class SPLASHSTATE extends State<SplashScreen> {
   @override
   void initState() {
     super.initState();
-<<<<<<< HEAD
     Future.delayed(Duration(seconds: 5), ()async{
     return Navigator.pushReplacement(
-=======
-    Future.delayed(Duration(seconds: 5), () async {
-      return Navigator.pushReplacement(
->>>>>>> 57fe2cbcdab49a93de83395d586d59e6e661f2cd
         context,
         PageRouteBuilder(
           pageBuilder: (context, animation, secondaryAnimation) {
@@ -47,12 +39,8 @@ class SPLASHSTATE extends State<SplashScreen> {
     });
   }
 
-<<<<<<< HEAD
 
   /*Future<Widget> decideFirstWidget() async {
-=======
-  /* Future<Widget> decideFirstWidget() async {
->>>>>>> 57fe2cbcdab49a93de83395d586d59e6e661f2cd
     SharedPreferences prefs = await SharedPreferences.getInstance();
     var token = prefs.getString('Bearer');
   
