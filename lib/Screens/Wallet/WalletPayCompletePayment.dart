@@ -1,3 +1,4 @@
+import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import "package:flutter_feather_icons/flutter_feather_icons.dart";
 import 'package:fixme/Services/network_service.dart';
@@ -21,13 +22,13 @@ class WalletPayCompletePayment extends StatefulWidget {
 
 class _WalletPayCompletePaymentState extends State<WalletPayCompletePayment> {
   BorderRadiusGeometry radiusTop = BorderRadius.only(
-    topLeft: Radius.circular(24.0),
-    topRight: Radius.circular(24.0),
+    topLeft: Radius.circular(15.0),
+    topRight: Radius.circular(15.0),
   );
 
   BorderRadiusGeometry radiusBottom = BorderRadius.only(
-    bottomLeft: Radius.circular(24.0),
-    bottomRight: Radius.circular(24.0),
+    bottomLeft: Radius.circular(15.0),
+    bottomRight: Radius.circular(15.0),
   );
 
   @override
@@ -59,21 +60,12 @@ class _WalletPayCompletePaymentState extends State<WalletPayCompletePayment> {
             Row(
               children: [
                 Container(
-                  width: 12.0,
+                  width: 20.0,
                   height: 40.0,
                   color: Colors.transparent,
                 ),
-                Padding(
-                  padding: const EdgeInsets.only(right: 8.0),
-                  child: Container(
-                    height: 1.5,
-                    width: 19,
-                    color: Color(0xFFD1D1D3),
-                  ),
-                ),
                 Text('Wallet Transfer',
                     style: TextStyle(
-                        fontFamily: 'Firesans',
                         fontSize: 18,
                         color: Color(0xFF333333),
                         fontWeight: FontWeight.w600))
@@ -83,7 +75,7 @@ class _WalletPayCompletePaymentState extends State<WalletPayCompletePayment> {
               child: Column(
                 children: [
                   Container(
-                    margin: const EdgeInsets.only(top: 20, right: 15, left: 15),
+                    margin: const EdgeInsets.only(top: 10, right: 20, left: 20),
                     height: 55,
                     alignment: Alignment.centerLeft,
                     width: deviceSize.width,
@@ -98,26 +90,17 @@ class _WalletPayCompletePaymentState extends State<WalletPayCompletePayment> {
                           height: 40.0,
                           color: Colors.transparent,
                         ),
-                        Padding(
-                          padding: const EdgeInsets.only(right: 8.0),
-                          child: Container(
-                            height: 1.5,
-                            width: 19,
-                            color: Color(0xFFD1D1D3),
-                          ),
-                        ),
                         Text('Beneficiary account',
                             style: TextStyle(
-                                fontFamily: 'Firesans',
-                                fontSize: 17,
-                                color: Color(0xFF333333),
-                                fontWeight: FontWeight.w600))
+                              fontSize: 17,
+                              color: Color(0xFF333333),
+                            ))
                       ],
                     ),
                   ),
                   Container(
-                    margin: const EdgeInsets.only(right: 15, left: 15),
-                    height: 164,
+                    margin: const EdgeInsets.only(right: 20, left: 20),
+                    height: 130,
                     decoration: BoxDecoration(
                       borderRadius: radiusBottom,
                       color: Color(0xFFFFFFFF),
@@ -131,35 +114,32 @@ class _WalletPayCompletePaymentState extends State<WalletPayCompletePayment> {
                     child: Column(
                       children: <Widget>[
                         Padding(
-                          padding:
-                              const EdgeInsets.only(top: 5, left: 8, right: 8),
+                          padding: const EdgeInsets.only(
+                              top: 7, left: 8, right: 8, bottom: 10),
                           child: Wrap(
                             children: [
                               Text('${widget.accountName}',
                                   style: TextStyle(
-                                      color: Color(0xFF333333),
-                                      fontSize: 21,
-                                      fontFamily: 'Firesans',
-                                      height: 1.4,
-                                      fontWeight: FontWeight.w500)),
+                                    color: Color(0xFF333333),
+                                    fontSize: 21,
+                                    height: 1.4,
+                                  )),
                             ],
                           ),
                         ),
-                        Divider(),
                         Row(
                           mainAxisAlignment: MainAxisAlignment.center,
                           children: <Widget>[
                             Text('Account No: ',
                                 style: TextStyle(
-                                    // letterSpacing: 4,
-                                    color: Color(0xFF333333),
-                                    fontSize: 18,
-                                    fontFamily: 'Firesans',
-                                    fontWeight: FontWeight.w500)),
+                                  // letterSpacing: 4,
+                                  color: Color(0xFF333333),
+                                  fontSize: 20,
+                                )),
                           ],
                         ),
                         Padding(
-                          padding: const EdgeInsets.only(top: 5),
+                          padding: const EdgeInsets.only(top: 5, bottom: 12),
                           child: Row(
                             mainAxisAlignment: MainAxisAlignment.center,
                             children: [
@@ -168,23 +148,9 @@ class _WalletPayCompletePaymentState extends State<WalletPayCompletePayment> {
                                       letterSpacing: 2,
                                       color: Color(0xFF333333),
                                       fontSize: 20,
-                                      fontFamily: 'Firesans',
                                       fontWeight: FontWeight.w600)),
                             ],
                           ),
-                        ),
-                        Divider(),
-                        Row(
-                          mainAxisAlignment: MainAxisAlignment.center,
-                          children: <Widget>[
-                            Text('${widget.bankInfo.name}',
-                                style: TextStyle(
-                                    color: Color(0xFF333333),
-                                    fontSize: 21,
-                                    fontFamily: 'Firesans',
-                                    height: 1,
-                                    fontWeight: FontWeight.w500)),
-                          ],
                         ),
                       ],
                     ),
@@ -196,7 +162,7 @@ class _WalletPayCompletePaymentState extends State<WalletPayCompletePayment> {
               child: Column(
                 children: [
                   Container(
-                    margin: const EdgeInsets.only(top: 20, right: 15, left: 15),
+                    margin: const EdgeInsets.only(top: 20, right: 20, left: 20),
                     height: 55,
                     decoration: BoxDecoration(
                       borderRadius: radiusTop,
@@ -209,26 +175,17 @@ class _WalletPayCompletePaymentState extends State<WalletPayCompletePayment> {
                           height: 40.0,
                           color: Colors.transparent,
                         ),
-                        Padding(
-                          padding: const EdgeInsets.only(right: 8.0),
-                          child: Container(
-                            height: 1.5,
-                            width: 19,
-                            color: Color(0xFFD1D1D3),
-                          ),
-                        ),
                         Text('Amount',
                             style: TextStyle(
-                                fontFamily: 'Firesans',
-                                fontSize: 17,
-                                color: Color(0xFF333333),
-                                fontWeight: FontWeight.w600))
+                              fontSize: 17,
+                              color: Color(0xFF333333),
+                            ))
                       ],
                     ),
                   ),
                   Container(
-                    margin: const EdgeInsets.only(right: 15, left: 15),
-                    height: 170,
+                    margin: const EdgeInsets.only(right: 20, left: 20),
+                    height: 230,
                     decoration: BoxDecoration(
                       borderRadius: radiusBottom,
                       color: Color(0xFFFFFFFF),
@@ -246,11 +203,11 @@ class _WalletPayCompletePaymentState extends State<WalletPayCompletePayment> {
                         crossAxisAlignment: CrossAxisAlignment.center,
                         children: [
                           Container(
-                            height: 55,
+                            height: 50,
                             alignment: Alignment.center,
                             padding: const EdgeInsets.only(left: 12),
                             margin: const EdgeInsets.only(
-                                left: 12, right: 12, bottom: 10),
+                                left: 12, right: 12, bottom: 9),
                             decoration: BoxDecoration(
                                 color: Color(0xFFFFFFFF),
                                 border: model.getAmountStatus
@@ -263,7 +220,7 @@ class _WalletPayCompletePaymentState extends State<WalletPayCompletePayment> {
                                       offset: Offset(0.3, 4.0))
                                 ],
                                 borderRadius:
-                                    BorderRadius.all(Radius.circular(7))),
+                                    BorderRadius.all(Radius.circular(35))),
                             child: Row(
                               mainAxisAlignment: MainAxisAlignment.spaceBetween,
                               children: [
@@ -282,7 +239,6 @@ class _WalletPayCompletePaymentState extends State<WalletPayCompletePayment> {
                                       model.setAmount = val;
                                     },
                                     style: TextStyle(
-                                        fontFamily: 'Firesans',
                                         fontSize: 16,
                                         color: Color(0xFF270F33),
                                         fontWeight: FontWeight.w600),
@@ -300,23 +256,22 @@ class _WalletPayCompletePaymentState extends State<WalletPayCompletePayment> {
                           Row(
                             children: <Widget>[
                               Padding(
-                                padding: const EdgeInsets.only(left: 14),
+                                padding: const EdgeInsets.only(left: 16),
                                 child: Text('Narration',
                                     style: TextStyle(
                                         color: Color(0xFF4B4B4B),
                                         fontSize: 18,
-                                        fontFamily: 'Firesans',
                                         height: 1.4,
-                                        fontWeight: FontWeight.w600)),
+                                        fontWeight: FontWeight.w500)),
                               ),
                             ],
                           ),
                           Container(
-                            height: 55,
+                            height: 50,
                             alignment: Alignment.center,
-                            padding: const EdgeInsets.only(left: 12),
+                            padding: const EdgeInsets.only(left: 17),
                             margin: const EdgeInsets.only(
-                                left: 12, right: 12, bottom: 10, top: 5),
+                                left: 12, right: 12, bottom: 10, top: 10),
                             decoration: BoxDecoration(
                                 color: Color(0xFFFFFFFF),
                                 border: model.getNarrationStatus
@@ -329,7 +284,7 @@ class _WalletPayCompletePaymentState extends State<WalletPayCompletePayment> {
                                       offset: Offset(0.3, 4.0))
                                 ],
                                 borderRadius:
-                                    BorderRadius.all(Radius.circular(7))),
+                                    BorderRadius.all(Radius.circular(35))),
                             child: Row(
                               mainAxisAlignment: MainAxisAlignment.spaceBetween,
                               children: [
@@ -340,7 +295,6 @@ class _WalletPayCompletePaymentState extends State<WalletPayCompletePayment> {
                                       model.setNarration = val;
                                     },
                                     style: TextStyle(
-                                        fontFamily: 'Firesans',
                                         fontSize: 16,
                                         color: Color(0xFF270F33),
                                         fontWeight: FontWeight.w600),
@@ -355,6 +309,29 @@ class _WalletPayCompletePaymentState extends State<WalletPayCompletePayment> {
                               ],
                             ),
                           ),
+                          Row(
+                              mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                              children: [
+                                Padding(
+                                  padding: const EdgeInsets.only(left: 16),
+                                  child: Text('Save as beneficiary',
+                                      style: TextStyle(
+                                          color: Color(0xFF4B4B4B),
+                                          fontSize: 18,
+                                          height: 1.4,
+                                          fontWeight: FontWeight.w600)),
+                                ),
+                                Padding(
+                                  padding: const EdgeInsets.only(right: 14),
+                                  child: CupertinoSwitch(
+                                      value: model.getSaveBeneficiary,
+                                      trackColor: Color(0xFFF1F1F1),
+                                      activeColor: Color(0xFF9B049B),
+                                      onChanged: (value) {
+                                        model.setSaveBeneficiary = value;
+                                      }),
+                                )
+                              ])
                         ],
                       );
                     }),
@@ -363,66 +340,81 @@ class _WalletPayCompletePaymentState extends State<WalletPayCompletePayment> {
               ),
             ),
             Consumer<BankProvider2>(builder: (context, model, _) {
-              return Container(
-                height: 50,
-                margin: const EdgeInsets.only(
-                    top: 10, left: 15, right: 15, bottom: 20),
-                decoration: BoxDecoration(
-                  borderRadius: BorderRadius.all(Radius.circular(25)),
-                  color: Color(0xFF9B049B),
-                ),
-                child: new FlatButton(
-                  padding: EdgeInsets.all(10),
-                  onPressed: () async {
-                    if (model.getAmount.isEmpty) {
-                      model.setAmountStatus = true;
-                    } else if (model.getNarration.isEmpty) {
-                      model.setNarrationStatus = true;
-                    } else {
-                      String hasPin = await network.checkSecurePin();
-                      if (hasPin == 'false') {
-                        displayCreateSecurePinBottomModal(
-                            context: context,
-                            bankInfo: widget.bankInfo,
-                            accountName: widget.accountName,
-                            accountNumber: widget.accountNumber,
-                            amount: model.getAmount,
-                            isBeneficiary: true,
-                            narration: model.getNarration);
-                      } else if (hasPin == 'true') {
-                        displayEnterSecurePinBottomModal(
-                            context: context,
-                            bankInfo: widget.bankInfo,
-                            accountName: widget.accountName,
-                            accountNumber: widget.accountNumber,
-                            amount: model.getAmount,
-                            isBeneficiary: true,
-                            narration: model.getNarration);
-                      }
-                    }
-                  },
-                  child: Padding(
-                    padding: const EdgeInsets.only(left: 7, right: 7),
-                    child: Row(
-                      mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                      children: [
-                        Text(
-                          'Complete payment',
-                          style: TextStyle(
-                              color: Colors.white,
-                              fontFamily: 'Firesans',
-                              fontSize: 17,
-                              fontWeight: FontWeight.w600),
+              return model.getIsValidated
+                  ? Container(
+                      height: 50,
+                      margin: const EdgeInsets.only(
+                          top: 20, left: 15, right: 15, bottom: 20),
+                      decoration: BoxDecoration(
+                        borderRadius: BorderRadius.all(Radius.circular(25)),
+                        color: Color(0xFF9B049B),
+                      ),
+                      child: new FlatButton(
+                        padding: EdgeInsets.all(10),
+                        onPressed: () async {
+                          model.setIsValidated = false;
+                          if (model.getAmount.isEmpty) {
+                            model.setAmountStatus = true;
+                          } else if (model.getNarration.isEmpty) {
+                            model.setNarrationStatus = true;
+                          } else {
+                            String hasPin = await network.checkSecurePin();
+                            if (hasPin == 'false') {
+                              model.setIsValidated = true;
+                              displayCreateSecurePinBottomModal(
+                                  context: context,
+                                  bankInfo: widget.bankInfo,
+                                  accountName: widget.accountName,
+                                  accountNumber: widget.accountNumber,
+                                  amount: model.getAmount,
+                                  isBeneficiary: model.getSaveBeneficiary,
+                                  narration: model.getNarration);
+                            } else if (hasPin == 'true') {
+                              model.setIsValidated = true;
+                              displayEnterSecurePinBottomModal(
+                                  context: context,
+                                  bankInfo: widget.bankInfo,
+                                  accountName: widget.accountName,
+                                  accountNumber: widget.accountNumber,
+                                  amount: model.getAmount,
+                                  isBeneficiary: model.getSaveBeneficiary,
+                                  narration: model.getNarration);
+                            }
+                          }
+                        },
+                        child: Padding(
+                          padding: const EdgeInsets.only(left: 7, right: 7),
+                          child: Row(
+                            mainAxisAlignment: MainAxisAlignment.center,
+                            children: [
+                              Text(
+                                'Complete payment',
+                                style: TextStyle(
+                                    color: Colors.white,
+                                    fontSize: 17,
+                                    fontWeight: FontWeight.w600),
+                              ),
+                            ],
+                          ),
                         ),
-                        Icon(
-                          FeatherIcons.checkCircle,
-                          color: Colors.white,
-                        ),
-                      ],
-                    ),
-                  ),
-                ),
-              );
+                      ),
+                    )
+                  : Container(
+                      margin: const EdgeInsets.only(top: 25, bottom: 20),
+                      child: Row(
+                        mainAxisAlignment: MainAxisAlignment.center,
+                        children: [
+                          SizedBox(
+                            width: 35,
+                            height: 35,
+                            child: CircularProgressIndicator(
+                              strokeWidth: 2,
+                              backgroundColor: Colors.white,
+                            ),
+                          ),
+                        ],
+                      ),
+                    );
             }),
           ],
         ),

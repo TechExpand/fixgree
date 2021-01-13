@@ -103,7 +103,7 @@ class _TransactionSuccessfulState extends State<TransactionSuccessful> {
                     child: Padding(
                       padding: const EdgeInsets.only(left: 7, right: 7),
                       child: Row(
-                        mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                        mainAxisAlignment: MainAxisAlignment.center,
                         children: [
                           Text(
                             'Continue',
@@ -112,10 +112,6 @@ class _TransactionSuccessfulState extends State<TransactionSuccessful> {
                                 fontFamily: 'Firesans',
                                 fontSize: 17,
                                 fontWeight: FontWeight.w600),
-                          ),
-                          Icon(
-                            FeatherIcons.arrowRightCircle,
-                            color: Colors.white,
                           ),
                         ],
                       ),

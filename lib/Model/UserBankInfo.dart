@@ -8,8 +8,8 @@ class UserBankInfo {
   String accountNumber;
   String bankName;
   DateTime dateCreated;
-  int balance;
-  int totalIncome;
+  var balance;
+  var totalIncome;
   int totalWithdrawal;
 
   UserBankInfo(
@@ -53,7 +53,7 @@ class UserBankInfo {
       contractCode: jsonData["contract_code"],
       currencyCode: jsonData["currency_code"],
       accountNumber: jsonData["accountNumber"],
-      balance: jsonData["balance"],
-      totalIncome: jsonData["totalIncome"],
+      balance: '${jsonData["balance"].roundToDouble().toString()}',
+      totalIncome: '${jsonData["totalIncome"].roundToDouble().toString()}',
       totalWithdrawal: jsonData["totalWithdrawal"]);
 }

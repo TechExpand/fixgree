@@ -118,7 +118,9 @@ class _WalletAddCardState extends State<WalletAddCard> {
                       ),
                       Expanded(
                         child: TextFormField(
-                          inputFormatters: [CreditCardExpirationDateFormatter()],
+                          inputFormatters: [
+                            CreditCardExpirationDateFormatter()
+                          ],
                           keyboardType: TextInputType.number,
                           style: TextStyle(
                               fontFamily: 'Firesans',
@@ -217,20 +219,19 @@ class _WalletAddCardState extends State<WalletAddCard> {
           ),
           Container(
             height: 50,
-            margin: const EdgeInsets.only(top: 10, left: 12, right: 12, bottom: 20),
+            margin:
+                const EdgeInsets.only(top: 10, left: 12, right: 12, bottom: 20),
             decoration: BoxDecoration(
               borderRadius: BorderRadius.all(Radius.circular(25)),
               color: Color(0xFF9B049B),
             ),
             child: new FlatButton(
               padding: EdgeInsets.all(10),
-              onPressed: () async {
-
-              },
+              onPressed: () async {},
               child: Padding(
                 padding: const EdgeInsets.only(left: 7, right: 7),
                 child: Row(
-                  mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                  mainAxisAlignment: MainAxisAlignment.center,
                   children: [
                     Text(
                       'Add Card',
@@ -239,10 +240,6 @@ class _WalletAddCardState extends State<WalletAddCard> {
                           fontFamily: 'Firesans',
                           fontSize: 17,
                           fontWeight: FontWeight.w600),
-                    ),
-                    Icon(
-                      FeatherIcons.plusCircle,
-                      color: Colors.white,
                     ),
                   ],
                 ),

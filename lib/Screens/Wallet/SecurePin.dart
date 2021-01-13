@@ -247,20 +247,11 @@ displayEnterSecurePinBottomModal(
                       children: [
                         Container(
                           width: 12.0,
-                          height: 40.0,
+                          height: 45.0,
                           color: Colors.transparent,
-                        ),
-                        Padding(
-                          padding: const EdgeInsets.only(right: 8.0),
-                          child: Container(
-                            height: 1.5,
-                            width: 19,
-                            color: Color(0xFFD1D1D3),
-                          ),
                         ),
                         Text('Enter secure pin',
                             style: TextStyle(
-                                fontFamily: 'Firesans',
                                 fontSize: 17,
                                 color: Color(0xFF333333),
                                 fontWeight: FontWeight.w600))
@@ -273,11 +264,10 @@ displayEnterSecurePinBottomModal(
                           Text('Enter your personal security pin',
                               softWrap: true,
                               style: TextStyle(
-                                  color: Color(0xFF555555),
-                                  fontSize: 18,
-                                  fontFamily: 'Firesans',
-                                  height: 1.4,
-                                  fontWeight: FontWeight.w500)),
+                                color: Color(0xFF555555),
+                                fontSize: 18,
+                                height: 1.4,
+                              )),
                         ],
                       ),
                     ),
@@ -291,14 +281,14 @@ displayEnterSecurePinBottomModal(
                           color: Color(0xFFFFFFFF),
                           border: model.getPinStatus
                               ? Border.all(color: Colors.red)
-                              : null,
+                              : Border.all(color: Color(0xFFF1F1FD)),
                           boxShadow: [
                             BoxShadow(
                                 color: Color(0xFFF1F1FD),
                                 blurRadius: 15.0,
                                 offset: Offset(0.3, 4.0))
                           ],
-                          borderRadius: BorderRadius.all(Radius.circular(7))),
+                          borderRadius: BorderRadius.all(Radius.circular(35))),
                       child: Row(
                         mainAxisAlignment: MainAxisAlignment.spaceBetween,
                         children: [
@@ -318,7 +308,6 @@ displayEnterSecurePinBottomModal(
                                 model.setPin = val;
                               },
                               style: TextStyle(
-                                  fontFamily: 'Firesans',
                                   fontSize: 16,
                                   color: Color(0xFF270F33),
                                   fontWeight: FontWeight.w600),
@@ -326,9 +315,7 @@ displayEnterSecurePinBottomModal(
                               decoration: InputDecoration.collapsed(
                                 hintText: 'Enter secure pin',
                                 hintStyle: TextStyle(
-                                    fontFamily: 'Firesans',
-                                    fontSize: 16,
-                                    fontWeight: FontWeight.w600),
+                                    fontSize: 16, fontWeight: FontWeight.w600),
                                 focusColor: Color(0xFF2B1137),
                                 fillColor: Color(0xFF2B1137),
                                 hoverColor: Color(0xFF2B1137),
@@ -339,104 +326,122 @@ displayEnterSecurePinBottomModal(
                       ),
                     ),
                     Spacer(),
-                    Container(
-                      height: 50,
-                      margin: const EdgeInsets.only(
-                          top: 10, left: 12, right: 12, bottom: 20),
-                      decoration: BoxDecoration(
-                        borderRadius: BorderRadius.all(Radius.circular(25)),
-                        color: Color(0xFF9B049B),
-                      ),
-                      child: new FlatButton(
-                        padding: EdgeInsets.all(10),
-                        onPressed: () async {
-                          if (model.getPin.isEmpty) {
-                            model.setPinStatus = true;
-                          } else {
-                            model.setTransactionStatus = false;
-                            Map<String, String> result =
-                                await network.initiateTransfer(
-                                    accountName: accountName,
-                                    accountNumber: accountNumber,
-                                    amount: amount,
-                                    bankCode: bankInfo.code,
-                                    isBeneficiary: isBeneficiary,
-                                    naration: narration,
-                                    secPin: model.getPin);
-                            print('The 2 result: ' + result.toString());
-                            model.setTransactionStatus =
-                                result['reqRes'] == 'true' ?? false;
-                            print('The status: ' +
-                                model.getTransactionStatus.toString());
-                            Navigator.of(context).pop();
-                            if (model.getTransactionStatus) {
-                              Navigator.of(context).push(
-                                PageRouteBuilder(
-                                  pageBuilder:
-                                      (context, animation, secondaryAnimation) {
-                                    return TransactionSuccessful();
-                                  },
-                                  //9944011918
-                                  transitionsBuilder: (context, animation,
-                                      secondaryAnimation, child) {
-                                    return FadeTransition(
-                                      opacity: animation,
-                                      child: child,
+                    model.getTransactionStatus
+                        ? Container(
+                            height: 50,
+                            margin: const EdgeInsets.only(
+                                top: 10, left: 12, right: 12, bottom: 20),
+                            decoration: BoxDecoration(
+                              borderRadius:
+                                  BorderRadius.all(Radius.circular(25)),
+                              color: Color(0xFF9B049B),
+                            ),
+                            child: new FlatButton(
+                              padding: EdgeInsets.all(10),
+                              onPressed: () async {
+                                if (model.getPin.isEmpty) {
+                                  model.setPinStatus = true;
+                                } else {
+                                  model.setTransactionStatus = false;
+                                  Map<String, String> result =
+                                      await network.initiateTransfer(
+                                          accountName: accountName,
+                                          accountNumber: accountNumber,
+                                          amount: amount,
+                                          bankCode: bankInfo.code,
+                                          isBeneficiary: isBeneficiary,
+                                          naration: narration,
+                                          secPin: model.getPin);
+                                  model.setTransactionStatus =
+                                      result['reqRes'] == 'true' ?? false;
+                                  print('The status: ' +
+                                      model.getTransactionStatus.toString());
+                                  Navigator.of(context).pop();
+                                  if (model.getTransactionStatus) {
+                                    Navigator.of(context).push(
+                                      PageRouteBuilder(
+                                        pageBuilder: (context, animation,
+                                            secondaryAnimation) {
+                                          return TransactionSuccessful();
+                                        },
+                                        //9944011918
+                                        transitionsBuilder: (context, animation,
+                                            secondaryAnimation, child) {
+                                          return FadeTransition(
+                                            opacity: animation,
+                                            child: child,
+                                          );
+                                        },
+                                      ),
                                     );
-                                  },
-                                ),
-                              );
-                            } else {
-                              Navigator.of(context).push(
-                                PageRouteBuilder(
-                                  pageBuilder:
-                                      (context, animation, secondaryAnimation) {
-                                    return TransactionFailed(
-                                      message: result['message'],
+                                  } else {
+                                    Navigator.of(context).push(
+                                      PageRouteBuilder(
+                                        pageBuilder: (context, animation,
+                                            secondaryAnimation) {
+                                          return TransactionFailed(
+                                            message: result['message'],
+                                          );
+                                        },
+                                        transitionsBuilder: (context, animation,
+                                            secondaryAnimation, child) {
+                                          return FadeTransition(
+                                            opacity: animation,
+                                            child: child,
+                                          );
+                                        },
+                                      ),
                                     );
-                                  },
-                                  transitionsBuilder: (context, animation,
-                                      secondaryAnimation, child) {
-                                    return FadeTransition(
-                                      opacity: animation,
-                                      child: child,
-                                    );
-                                  },
-                                ),
-                              );
-                            }
-                          }
-                        },
-                        child: Padding(
-                          padding: const EdgeInsets.only(left: 7, right: 7),
-                          child: Row(
-                            mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                            children: [
-                              Text(
-                                'Pay',
-                                style: TextStyle(
-                                    color: Colors.white,
-                                    fontFamily: 'Firesans',
-                                    fontSize: 17,
-                                    fontWeight: FontWeight.w600),
-                              ),
-                              Container(
-                                  height: 25,
-                                  width: 25,
-                                  child: model.getTransactionStatus
-                                      ? Icon(
-                                          FeatherIcons.checkCircle,
+                                  }
+                                }
+                              },
+                              child: Padding(
+                                padding:
+                                    const EdgeInsets.only(left: 7, right: 7),
+                                child: Row(
+                                  mainAxisAlignment: MainAxisAlignment.center,
+                                  children: [
+                                    Text(
+                                      'Pay',
+                                      style: TextStyle(
                                           color: Colors.white,
-                                        )
-                                      : CircularProgressIndicator(
-                                          strokeWidth: 2,
-                                          backgroundColor: Colors.white,
-                                        ))
-                            ],
-                          ),
-                        ),
-                      ),
-                    ),
+                                          fontFamily: 'Firesans',
+                                          fontSize: 17,
+                                          fontWeight: FontWeight.w600),
+                                    ),
+                                    //           Container(
+                                    //               height: 25,
+                                    //               width: 25,
+                                    //               child: model.getTransactionStatus
+                                    //                   ? Icon(
+                                    //                       FeatherIcons.checkCircle,
+                                    //                       color: Colors.white,
+                                    //                     )
+                                    //                   : CircularProgressIndicator(
+                                    //                       strokeWidth: 2,
+                                    //                       backgroundColor: Colors.white,
+                                    //                     ))
+                                  ],
+                                ),
+                              ),
+                            ),
+                          )
+                        : Container(
+                            margin: const EdgeInsets.only(top: 25, bottom: 20),
+                            child: Row(
+                              mainAxisAlignment: MainAxisAlignment.center,
+                              children: [
+                                SizedBox(
+                                  width: 35,
+                                  height: 35,
+                                  child: CircularProgressIndicator(
+                                    strokeWidth: 2,
+                                    backgroundColor: Colors.white,
+                                  ),
+                                ),
+                              ],
+                            ),
+                          )
                   ],
                 ),
               );
