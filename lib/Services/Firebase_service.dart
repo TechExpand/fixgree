@@ -221,6 +221,8 @@ var documentReference = FirebaseFirestore.instance
 
 
   static Stream<QuerySnapshot> UserChatStream(chatid) { 
+    print(chatid);
+    print(chatid);
     var data = FirebaseFirestore.instance
       .collection('UserChat/$chatid/individual')
       .where('chatid', isEqualTo: chatid);

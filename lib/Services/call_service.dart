@@ -1,8 +1,8 @@
 import 'package:agora_rtc_engine/rtc_engine.dart';
 import 'package:fixme/Model/Message.dart';
 import 'package:fixme/Model/call.dart';
-import 'package:fixme/Screens/Chat/callscreens/call_screen_audio.dart';
-import 'package:fixme/Screens/Chat/callscreens/call_screen_video.dart';
+import 'package:fixme/Screens/GeneralUsers/Chat/callscreens/call_screen_audio.dart';
+import 'package:fixme/Screens/GeneralUsers/Chat/callscreens/call_screen_video.dart';
 import 'package:flutter/material.dart';
 import 'package:path/path.dart' as Path;
 import 'package:cloud_firestore/cloud_firestore.dart';

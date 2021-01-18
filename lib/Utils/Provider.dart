@@ -1,5 +1,6 @@
 import 'dart:async';
 import 'dart:io';
+import 'package:fixme/Model/service.dart';
 import 'package:fixme/Services/call_service.dart';
 import 'package:flutter/foundation.dart';
 import 'package:intl_phone_number_input/intl_phone_number_input.dart';
@@ -9,21 +10,28 @@ import 'package:provider/provider.dart';
 class DataProvider extends ChangeNotifier {
   PhoneNumber number = PhoneNumber(isoCode: 'NG');
   String password = '';
-  var count = 10;
-  var firebase_user_id = '';
-  var focus_value = false;
-  var focus_value1 = false;
-  var focus_value2 = false;
-  var focus_value3 = false;
-  var focus_value4 = false;
-  var focus_value5 = false;
+  int count = 10;
+  String firebase_user_id = '';
+  String overview = '';
+  bool focus_value = false;
+  bool focus_value1 = false;
+  List<Services> servicesList = [];
+  List subcat = [];
+  bool focus_value2 = false;
+  bool focus_value3 = false;
+  bool focus_value4 = false;
+  bool focus_value5 = false;
   bool isWriting = false;
-  var selectedPage = 0;
-  var emails = '';
-  var otp = '';
-  var firstName = '';
-  var lastName = '';
-  var password_obscure = true;
+  int selectedPage = 0;
+  String emails = '';
+  String homeAddress = '';
+  String bvn = '';
+  String officeAddress = '';
+  String otp = '';
+  String firstName = '';
+  String lastName = '';
+  String artisanVendorChoice = '';
+  bool password_obscure = true;
 
   //change password obcure text
   setSelectedBottomNavBar(value) {
@@ -43,10 +51,43 @@ class DataProvider extends ChangeNotifier {
         "${cont1.text}${cont2.text}${cont3.text}${cont4.text}${cont5.text}${cont6.text}";
     notifyListeners();
   }
-
   // check if  textfield firstNAme is empty or not
   setFirstName(value) {
     firstName = value;
+    notifyListeners();
+  }
+
+
+
+setSubCat(value){
+  subcat.add(value);
+  notifyListeners();
+}
+
+setdelSubCat(value){
+  subcat.remove(value);
+  notifyListeners();
+}
+
+setclrSubCat(){
+  subcat.clear();
+  notifyListeners();
+}
+
+  setOverView(value){
+    overview = value;
+    notifyListeners();
+  }
+
+
+ setArtisanVendorChoice(value) {
+    artisanVendorChoice = value;
+    notifyListeners();
+  }
+
+  // check if   BVN is empty or not
+  setBVN(value) {
+    bvn = value;
     notifyListeners();
   }
 
@@ -56,6 +97,18 @@ class DataProvider extends ChangeNotifier {
     notifyListeners();
   }
 
+ // check if  textfield homeAdress is empty or not
+  sethomeAdress(value) {
+    homeAddress = value;
+    notifyListeners();
+  }
+
+
+// check if  textfield officeAdress is empty or not
+setofficeAddress(value) {
+    officeAddress = value;
+    notifyListeners();
+  }
   // check if  textfield email is empty or not
   setEmail(value) {
     emails = value;

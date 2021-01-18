@@ -1,4 +1,5 @@
-import 'package:fixme/Screens/Chat/ChatFiles.dart';
+
+import 'package:fixme/Screens/GeneralUsers/Chat/ChatFiles.dart';
 import 'package:fixme/Services/Firebase_service.dart';
 import 'package:fixme/Services/network_service.dart';
 import 'package:flutter/material.dart';

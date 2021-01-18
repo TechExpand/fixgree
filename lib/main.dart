@@ -3,12 +3,10 @@ import 'package:location/location.dart' as locator;
 import 'package:provider/provider.dart';
 import 'package:firebase_core/firebase_core.dart';
 import 'package:shared_preferences/shared_preferences.dart';
-import 'Screens/LoginSignup/Login.dart';
-import 'Screens/LoginSignup/selectauth.dart';
+import 'Screens/ArtisanUser/RegisterArtisan/address.dart';
+import 'Screens/GeneralUsers/Wallet/Providers/PinProvider.dart';
+import 'Screens/GeneralUsers/Wallet/Providers/WalletProvider.dart';
 import 'Screens/Splash.dart';
-import 'Screens/Wallet/Providers/BankProvider.dart';
-import 'Screens/Wallet/Providers/PinProvider.dart';
-import 'Screens/Wallet/Providers/WalletProvider.dart';
 import 'Services/call_service.dart';
 import 'Services/location_service.dart';
 import 'Services/network_service.dart';
@@ -88,6 +86,9 @@ void main() async {
   await Firebase.initializeApp();
   Provider.debugCheckInvalidValueType = null;
   onlocation();
+
+
+
   // Widget widget = await decideFirstWidget();
   runApp(MultiProvider(providers: [
     ChangeNotifierProvider<DataProvider>(
@@ -132,8 +133,11 @@ class _MyAppState extends State<MyApp> {
   @override
   Widget build(BuildContext context) {
     return MaterialApp(
-      home:
-          SplashScreen(), //widget.widget//ListenIncoming(), // SplashScreen(),
+      theme: ThemeData(
+        accentColor:Colors.white10,
+      ),
+      color: Color(0xFF9B049B),
+      home: SplashScreen(), //widget.widget//ListenIncoming(), // SplashScreen(),
     );
   }
 }

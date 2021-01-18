@@ -1,5 +1,7 @@
 import 'dart:async';
+import 'dart:io';
 import 'dart:math';
+import 'package:image_picker/image_picker.dart';
 import 'package:intl/intl.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter/foundation.dart';
@@ -9,6 +11,7 @@ import 'package:shared_preferences/shared_preferences.dart';
 class Utils with ChangeNotifier {
   String random_num = '';
   bool isExpanded = false;
+   bool isExpanded1 = true;
 
   static StreamTransformer transformer<T>(
           T Function(Map<String, dynamic> json) fromJson) =>
@@ -82,6 +85,30 @@ class Utils with ChangeNotifier {
     }
   }
 
+   List image = [];
+
+  PickedFile selected_image;
+   final picker = ImagePicker();
+  Future selectimage({@required ImageSource source, context}) async {
+    var image = await picker.getImage(source: source);
+    selected_image = image;
+    
+      notifyListeners();
+  }
+
+
+  PickedFile selected_image2;
+   final picker2 = ImagePicker();
+  Future selectimage2({@required ImageSource source, context}) async {
+    var images = await picker.getImage(source: source);
+    selected_image = images;
+    image.add(selected_image);
+    print(selected_image2);
+      notifyListeners();
+  }
+
+
+
   opeLink(link) async {
     var url = '$link';
     if (await canLaunch(url)) {
@@ -93,6 +120,13 @@ class Utils with ChangeNotifier {
 
   onExpansionChanged(bool val) {
     isExpanded = val;
+  }
+
+  
+  onExpansionChanged1(bool val) {
+    isExpanded1 = val;
+    print(val);
+    
   }
 
   Future storeData(String name, String data) async {

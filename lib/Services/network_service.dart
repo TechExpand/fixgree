@@ -1,7 +1,8 @@
 import 'dart:convert';
 import 'package:fixme/Model/UserSearch.dart';
-import 'package:fixme/Screens/Home/HomePage.dart';
-import 'package:fixme/Screens/Home/Search.dart';
+import 'package:fixme/Screens/ArtisanUser/Profile/ProfilePage.dart';
+import 'package:fixme/Screens/GeneralUsers/Home/HomePage.dart';
+import 'package:fixme/Services/postrequest_service.dart';
 import 'package:fixme/Utils/Provider.dart';
 import 'package:fixme/Utils/utils.dart';
 import 'package:flutter/foundation.dart';
@@ -157,23 +158,118 @@ class WebServices extends ChangeNotifier {
     }
   }
 
-/*initializeValues(name, bearer, mobile,picture,userid,mobileId)async{
-      user_id = userid; 
-      mobile_device_token = mobileId;
-      profile_pic_file_name = picture;
-      firstName = name;
-      phoneNum = mobile;
-      Bearer = bearer;
+initializeValues()async{
+   SharedPreferences prefs = await SharedPreferences.getInstance();
+           user_id = int.parse(prefs.getString('user_id'));
+       Bearer = prefs.getString('Bearer');
+         mobile_device_token = prefs.getString('mobile_device_token');
+        profile_pic_file_name = prefs.getString('profile_pic_file_name');
+         firstName = prefs.getString('firstName');
+         phoneNum = prefs.getString('phoneNum');
+        
        notifyListeners(); 
-}*/
+}
+
+
+
+
+
+
+ Future<dynamic> BecomeArtisanOrBusiness({context, scaffoldKey}) async {
+    var data = Provider.of<DataProvider>(context, listen: false);
+    var datas = Provider.of<Utils>(context, listen: false);
+    PostRequestProvider postRequestProvider = Provider.of<PostRequestProvider>(context, listen:false);
+  print(postRequestProvider.selectedService.sn);
+  print(Bearer);
+  print(user_id);
+  print('${data.subcat}'.replaceAll('[','').replaceAll(']',''));
+  String sub_services = '${data.subcat}'.replaceAll('[','').replaceAll(']','');
+    try {
+      var response = await http
+          .post(Uri.parse('https://manager.fixme.ng/business-account'), 
+          body: {
+        'identification_number': data.bvn?? '',
+        'business_address': data.officeAddress?? '',
+        'house_address': data.homeAddress?? '',
+        'business_name': data.firstName ?? '',
+        'sub_services': '${data.subcat}'.replaceAll('[','').replaceAll(']',''),
+        'bio': data.overview?? '',
+        'role': data.artisanVendorChoice,
+        'service_id': '${postRequestProvider.selectedService.sn}',
+       'user_id':'$user_id',
+      }, headers: {
+        "Content-type": "application/x-www-form-urlencoded",
+        'Authorization':'Bearer $Bearer',
+      });
+      var body = json.decode(response.body);
+      print(body);
+      if (body['reqRes'] == 'true') {
+        Login_SetState();
+        return  Navigator.push(
+                            context,
+                            PageRouteBuilder(
+                              pageBuilder:
+                                  (context, animation, secondaryAnimation) {
+                                return ProfilePage();
+                              },
+                              transitionsBuilder: (context, animation,
+                                  secondaryAnimation, child) {
+                                return FadeTransition(
+                                  opacity: animation,
+                                  child: child,
+                                );
+                              },
+                            ),
+                          );
+      } 
+      else if(body['message'] == 'Duplicate Sub-Service Entry' && body['reqRes'] == 'false'){
+          scaffoldKey.currentState
+            .showSnackBar(SnackBar(content: Text('Duplicate Sub-Service Entry')));
+        Login_SetState();
+      }
+      else if (body['reqRes'] == 'false') {
+        scaffoldKey.currentState
+            .showSnackBar(SnackBar(content: Text('There was a Problem. Working on it.')));
+        Login_SetState();
+      }
+      notifyListeners();
+    } catch (e) {
+      print(e);
+      Login_SetState();
+    scaffoldKey.currentState
+            .showSnackBar(SnackBar(content: Text('There was a Problem. Working on it.')));
+    }
+  }
+
+
+  Future<dynamic> getUserInfo() async {
+    var response = await http
+        .post(Uri.parse('https://manager.fixme.ng/user-info'), body: {
+      'user_id': user_id.toString(),
+    }, headers: {
+      "Content-type": "application/x-www-form-urlencoded",
+      'Authorization': 'Bearer $Bearer',
+    });
+    var body = json.decode(response.body);
+    notifyListeners();
+    if (body['reqRes'] == 'true') {
+      return body;
+    } else if (body['reqRes'] == 'false') {
+      print(body['message']);
+    }
+  }
+
+
+
+
 
 
   Future<dynamic> NearbyArtisans({longitude, latitude}) async {
     var response = await http
         .post(Uri.parse('https://manager.fixme.ng/near-artisans'), body: {
       'user_id': user_id.toString(),
-      'longitude': 5.579340.toString(),
-      'latitude': 6.327310.toString(),
+      'longitude': longitude.toString(),
+      'latitude': latitude.toString(),
     }, headers: {
       "Content-type": "application/x-www-form-urlencoded",
       'Authorization': 'Bearer $Bearer',
@@ -190,6 +286,36 @@ class WebServices extends ChangeNotifier {
       print(body['message']);
     }
   }
+
+
+
+
+
+  Future<dynamic> NearbyShop({longitude, latitude}) async {
+    var response = await http
+        .post(Uri.parse('https://api.fixme.ng/near-shops-business'), body: {
+      'user_id': user_id.toString(),
+      'longitude':longitude.toString(),
+      'latitude': latitude.toString(),
+    }, headers: {
+      "Content-type": "application/x-www-form-urlencoded",
+      'Authorization': 'Bearer $Bearer',
+    });
+        print(response.body);
+    var body = json.decode(response.body);
+    List result = body['sortedUsers'];
+    List<UserSearch> nearebyList = result.map((data) {
+      return UserSearch.fromJson(data);
+    }).toList();
+    notifyListeners();
+    if (body['reqRes'] == 'true') {
+      return nearebyList;
+    } else if (body['reqRes'] == 'false') {
+      print(body['message']);
+    }
+  }
+
+
 
   Future Search({longitude, latitude, searchquery}) async {
     try {
@@ -226,13 +352,7 @@ class WebServices extends ChangeNotifier {
         });
     var body = json.decode(response.body);
     return body['bankInfo'];
-    // print('The result: '+result.toString());
-    // notifyListeners();
-    // if (body['reqRes'] == 'true') {
-    //   return result;
-    // } else if (body['reqRes'] == 'false') {
-    //   print('failed');
-    // }
+ 
   }
 
   Future<Map> getUserWalletInfo() async {
@@ -245,14 +365,7 @@ class WebServices extends ChangeNotifier {
         });
     var body = json.decode(response.body);
     return body['accountInfo'];
-    // notifyListeners();
-    // print('The result: '+result.toString());
-    // if (body['reqRes'] == 'true') {
-    //  return result;
-    // } else if (body['reqRes'] == 'false') {
-    //   return null;
-    // }
-    // return result;
+ 
   }
 
   Future<List> getUserTransactions() async {
@@ -337,7 +450,6 @@ class WebServices extends ChangeNotifier {
       'reqRes': body['reqRes'],
       'message': body['message'] == null ? null : body['message']
     };
-    print('The 1 result: ' + result.toString());
     return result;
   }
 }

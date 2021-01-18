@@ -1,6 +1,8 @@
-import 'package:fixme/Screens/Chat/Chats.dart';
-import 'package:fixme/Screens/LoginSignup/Login.dart';
-import 'package:fixme/Screens/Profile/Profile.dart';
+
+import 'package:fixme/Screens/ArtisanUser/RegisterArtisan/address.dart';
+import 'package:fixme/Screens/GeneralUsers/Chat/Chats.dart';
+import 'package:fixme/Screens/GeneralUsers/LoginSignup/Login.dart';
+import 'package:fixme/Screens/GeneralUsers/Profile/Profile.dart';
 import 'package:fixme/Services/network_service.dart';
 import 'package:flutter/material.dart';
 import 'package:font_awesome_flutter/font_awesome_flutter.dart';
@@ -20,7 +22,9 @@ class _DrawerState extends State<DrawerWidget> {
   @override
   Widget build(BuildContext context) {
     var network = Provider.of<WebServices>(context, listen: false);
-    return Container(
+     
+    return SafeArea(
+      child: Container(
       color: Colors.white,
       child: ListView(
         children: <Widget>[
@@ -131,6 +135,37 @@ class _DrawerState extends State<DrawerWidget> {
                     style:
                         TextStyle(fontSize: 18, fontWeight: FontWeight.w500)),
               )),
+              InkWell(
+            onTap:(){
+              Navigator.push(
+        context,
+        PageRouteBuilder(
+          pageBuilder: (context, animation, secondaryAnimation) {
+            return SignUpAddress();
+          },
+          transitionsBuilder: (context, animation, secondaryAnimation, child) {
+            return FadeTransition(
+              opacity: animation,
+              child: child,
+            );
+          },
+        ),
+      );
+              
+            },
+            child: Padding(
+              padding: const EdgeInsets.all(8.0),
+              child: Row(
+                children: [
+                  Icon(Icons.assignment_return, color: Color(0xF0A40C85)),
+                  Padding(
+                    padding: const EdgeInsets.only(left: 10.0),
+                    child: Text('Become an Arisan'),
+                  ),
+                ],
+              ),
+            ),
+          ),
           Padding(
             padding: const EdgeInsets.all(8.0),
             child: Row(
@@ -155,18 +190,7 @@ class _DrawerState extends State<DrawerWidget> {
               ],
             ),
           ),
-          Padding(
-            padding: const EdgeInsets.all(8.0),
-            child: Row(
-              children: [
-                Icon(Icons.assignment_return, color: Color(0xF0A40C85)),
-                Padding(
-                  padding: const EdgeInsets.only(left: 10.0),
-                  child: Text('Manage request'),
-                ),
-              ],
-            ),
-          ),
+          
           Divider(),
           Align(
               alignment: Alignment.topLeft,
@@ -261,6 +285,7 @@ class _DrawerState extends State<DrawerWidget> {
           ),
         ],
       ),
+    )
     );
   }
 }

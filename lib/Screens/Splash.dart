@@ -1,6 +1,8 @@
+
 import 'package:flutter/material.dart';
-import 'LoginSignup/selectauth.dart';
-import 'Home/HomePage.dart';
+import 'ArtisanUser/RegisterArtisan/address.dart';
+import 'GeneralUsers/Home/HomePage.dart';
+import 'GeneralUsers/LoginSignup/Login.dart';
 import 'package:fixme/Utils/utils.dart';
 import 'package:provider/provider.dart';
 import 'package:fixme/Services/network_service.dart';
@@ -20,27 +22,16 @@ class SPLASHSTATE extends State<SplashScreen> {
   @override
   void initState() {
     super.initState();
+     Provider.of<WebServices>(context, listen: false).initializeValues();
     Future.delayed(Duration(seconds: 5), ()async{
-    return Navigator.pushReplacement(
-        context,
-        PageRouteBuilder(
-          pageBuilder: (context, animation, secondaryAnimation) {
-            return SelectAuthScreen();
-          },
-          // transitionDuration: Duration(milliseconds: 700),
-          transitionsBuilder: (context, animation, secondaryAnimation, child) {
-            return FadeTransition(
-              opacity: animation,
-              child: child,
-            );
-          },
-        ),
-      );
+        
+    return decideFirstWidget();
+  
     });
   }
 
 
-  /*Future<Widget> decideFirstWidget() async {
+  Future<Widget> decideFirstWidget() async {
     SharedPreferences prefs = await SharedPreferences.getInstance();
     var token = prefs.getString('Bearer');
   
@@ -49,7 +40,7 @@ class SPLASHSTATE extends State<SplashScreen> {
         context,
         PageRouteBuilder(
           pageBuilder: (context, animation, secondaryAnimation) {
-            return SelectAuthScreen();
+            return Login();
           },
           transitionsBuilder: (context, animation, secondaryAnimation, child) {
             return FadeTransition(
@@ -64,7 +55,7 @@ class SPLASHSTATE extends State<SplashScreen> {
         context,
         PageRouteBuilder(
           pageBuilder: (context, animation, secondaryAnimation) {
-            return HomePage();
+            return HomePage();//SignUpAddress();
           },
           transitionsBuilder: (context, animation, secondaryAnimation, child) {
             return FadeTransition(
@@ -75,13 +66,13 @@ class SPLASHSTATE extends State<SplashScreen> {
         ),
       );
     }
-  }*/
+  }
 
  
 
   @override
   Widget build(BuildContext context) {
-    // Provider.of<WebServices>(context, listen: false).initializeValues(context);
+    
     return Material(
       child: Container(
         width: MediaQuery.of(context).size.width,
