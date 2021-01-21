@@ -85,6 +85,12 @@ class _WalletHistoryState extends State<WalletHistory> {
                             const EdgeInsets.only(top: 10, left: 3, right: 5),
                         physics: BouncingScrollPhysics(),
                         itemBuilder: (context, index) {
+                          snapshot.data.sort((a, b) {
+                            var ad = DateTime.parse(a['transaction_date']);
+                            var bd = DateTime.parse(b['transaction_date']);
+                            var s = bd.compareTo(ad);
+                            return s;
+                          });
                           TransactionDetails transactionDetails =
                               TransactionDetails.fromJson(snapshot.data[index]);
                           return ListTile(

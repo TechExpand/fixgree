@@ -2,6 +2,15 @@ import 'package:flutter/material.dart';
 import 'package:fixme/Model/BankInfo.dart';
 
 class BankProvider extends ChangeNotifier {
+  int _selectValue = 0;
+  int get getSelectValue => _selectValue;
+  set setSelectValue(int newValue) {
+    _selectValue = newValue;
+    notifyListeners();
+  }
+
+  TextEditingController bankName = new TextEditingController();
+
   bool _isAccountNoEmpty = false;
   bool get getAccountNoStatus => _isAccountNoEmpty;
   set setAccountNoStatus(bool newStatus) {

@@ -49,7 +49,7 @@ class _WalletFundState extends State<WalletFund> {
           Row(
             children: [
               Container(
-                width: 20.0,
+                width: 25.0,
                 height: 40.0,
                 color: Colors.transparent,
               ),
@@ -61,7 +61,7 @@ class _WalletFundState extends State<WalletFund> {
             ],
           ),
           Container(
-            margin: const EdgeInsets.only(right: 20, left: 20),
+            margin: const EdgeInsets.only(right: 25, left: 25),
             height: 120,
             decoration: BoxDecoration(
               borderRadius: BorderRadius.circular(24),
@@ -104,10 +104,16 @@ class _WalletFundState extends State<WalletFund> {
             ),
           ),
           Container(
+            margin:
+                const EdgeInsets.only(top: 20, right: 25, left: 25, bottom: 15),
+            decoration: BoxDecoration(
+              borderRadius: BorderRadius.circular(16),
+              border: Border.all(color: Color(0xFFD0D0D0)),
+            ),
             child: Column(
               children: [
                 Container(
-                  margin: const EdgeInsets.only(top: 20, right: 15, left: 15),
+                  // margin: const EdgeInsets.only(top: 20, right: 15, left: 15),
                   height: 55,
                   decoration: BoxDecoration(
                     borderRadius: radiusTop,
@@ -129,8 +135,7 @@ class _WalletFundState extends State<WalletFund> {
                   ),
                 ),
                 Container(
-                  margin:
-                      const EdgeInsets.only(right: 15, left: 15, bottom: 15),
+                  // margin: const EdgeInsets.only(bottom: 15),
                   height: 115,
                   decoration: BoxDecoration(
                     borderRadius: radiusBottom,
@@ -216,9 +221,8 @@ class _WalletFundState extends State<WalletFund> {
                     style: TextStyle(
                         color: Color(0xFF9B049B),
                         fontSize: 18,
-                        fontFamily: 'Firesans',
                         height: 1.4,
-                        fontWeight: FontWeight.w500)),
+                        fontWeight: FontWeight.w400)),
               ],
             ),
           ),
