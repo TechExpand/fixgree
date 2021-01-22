@@ -77,7 +77,7 @@ class _WalletState extends State<Wallet> {
                                         Text('No Network',
                                             style: TextStyle(
                                                 // letterSpacing: 4,
-                                                color: Colors.white,
+                                                color: Color(0xFF333333),
                                                 fontSize: 18,
                                                 fontWeight: FontWeight.w600)),
                                       ],
@@ -164,7 +164,7 @@ class _WalletState extends State<Wallet> {
                                       Text('Loading',
                                           style: TextStyle(
                                               // letterSpacing: 4,
-                                              color: Colors.white,
+                                              color: Color(0xFF333333),
                                               fontSize: 18,
                                               fontWeight: FontWeight.w600)),
                                     ],
@@ -473,9 +473,10 @@ class _WalletState extends State<Wallet> {
                                       width: 43,
                                       decoration: BoxDecoration(
                                         borderRadius: BorderRadius.circular(25),
-                                        color: Color(0xFFE1E1E1),
+                                        color: Color(0xFF9B049B),
                                       ),
-                                      child: Icon(FeatherIcons.checkCircle),
+                                      child: Icon(FeatherIcons.checkCircle,
+                                          color: Colors.white),
                                     ),
                                     title: Text(
                                         transactionDetails.paymentDescription

@@ -211,7 +211,6 @@ class _WalletAddCardState extends State<WalletAddCard> {
                     style: TextStyle(
                         color: Color(0xFF9B049B),
                         fontSize: 18,
-                        fontFamily: 'Firesans',
                         height: 1.4,
                         fontWeight: FontWeight.w500)),
               ],

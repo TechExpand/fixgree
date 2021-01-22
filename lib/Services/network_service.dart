@@ -65,7 +65,7 @@ class WebServices extends ChangeNotifier {
             'Bearer FIXME_1U90P3444ANdroidAPP4HUisallOkayBY_FIXME_APP_UIONSISJGJANKKI3445fv',
       });
       var body = json.decode(response.body);
-   user_id = body['id'];
+      user_id = body['id'];
       mobile_device_token = body['mobile_device_token'];
       profile_pic_file_name = body['profile_pic_file_name'];
       firstName = body['firstName'];
@@ -130,7 +130,7 @@ class WebServices extends ChangeNotifier {
       phoneNum = body['fullNumber'];
       Bearer = response.headers['bearer'];
       if (body['reqRes'] == 'true') {
-          datas.storeData('Bearer', Bearer);
+        datas.storeData('Bearer', Bearer);
         datas.storeData('mobile_device_token', mobile_device_token);
         datas.storeData('user_id', user_id.toString());
         datas.storeData('profile_pic_file_name', profile_pic_file_name);
@@ -735,7 +735,6 @@ Future<dynamic> getArtisanReviews([userId]) async {
 
 
 
-
   Future<dynamic> NearbyArtisans({longitude, latitude}) async {
    
     var response = await http
@@ -861,13 +860,11 @@ Future<dynamic> getArtisanReviews([userId]) async {
           'Authorization': 'Bearer $Bearer',
         });
     var body = json.decode(response.body);
-    return body['account_name'];
-    // notifyListeners();
-    // if (body['reqRes'] == 'true') {
-    //   return result;
-    // } else if (body['reqRes'] == 'false') {
-    //   print('failed');
-    // }
+    if (body['reqRes'] == 'true') {
+      return body['account_name'];
+    } else if (body['reqRes'] == 'false') {
+      return body['message'];
+    }
   }
 
   Future<dynamic> checkSecurePin() async {
@@ -880,8 +877,6 @@ Future<dynamic> getArtisanReviews([userId]) async {
     var body = json.decode(response.body);
     return body['reqRes'];
   }
-
-  //MjU0NA==
 
   Future<String> setSecurePin({secPin}) async {
     String encoded = "ApiKey:$secPin";
@@ -898,6 +893,25 @@ Future<dynamic> getArtisanReviews([userId]) async {
     return body['reqRes'];
   }
 
+  Future<List> getBeneficiaries() async {
+    var response = await http.post(
+        Uri.parse(
+            'https://manager.fixme.ng/all-beneficiaries?user_id=$user_id'),
+        headers: {
+          "Content-type": "application/json",
+          'Authorization': 'Bearer $Bearer',
+        });
+    var body = json.decode(response.body);
+    return body['userBeneficiaries'];
+    // print('The result: '+result.toString());
+    // notifyListeners();
+    // if (body['reqRes'] == 'true') {
+    //   return result;
+    // } else if (body['reqRes'] == 'false') {
+    //   print('failed');
+    // }
+  }
+
   Future<Map> initiateTransfer(
       {bankCode,
       accountNumber,
@@ -909,8 +923,7 @@ Future<dynamic> getArtisanReviews([userId]) async {
     String encoded = "ApiKey:$secPin";
     var bytes = utf8.encode(encoded);
     var base64Str = base64.encode(bytes);
-    //"https://manager.fixme.ng/initiate-transfer?user_id=264&bankCode=033&accountNumber=2133908837&accountName=EMMANUEL JOSHUA ISRAEL&amount=1000&secPin=Basic QXBpS2V5OjI1NDQ=&naration=Demo Transfer&isBeneficiary=true"
-    // 'https://manager.fixme.ng/initiate-transfer?user_id=$user_id&bankCode=$bankCode&accountNumber=$accountNumber&accountName=$accountName&amount=$amount1&secPin=Basic $base64Str=&naration=$naration&isBeneficiary=$isBeneficiary'
+
     var response = await http.post(
         Uri.parse(
             'https://manager.fixme.ng/initiate-transfer?user_id=$user_id&bankCode=$bankCode&accountNumber=$accountNumber&accountName=$accountName&amount=$amount&secPin=Basic $base64Str&naration=$naration&isBeneficiary=$isBeneficiary'),
@@ -926,8 +939,3 @@ Future<dynamic> getArtisanReviews([userId]) async {
     return result;
   }
 }
-
-
-
-
-

@@ -70,7 +70,7 @@ class _WalletWithdrawCompleteWithdrawalState
             Row(
               children: [
                 Container(
-                  width: 20.0,
+                  width: 25.0,
                   height: 40.0,
                   color: Colors.transparent,
                 ),
@@ -82,10 +82,15 @@ class _WalletWithdrawCompleteWithdrawalState
               ],
             ),
             Container(
+              margin: const EdgeInsets.only(top: 10, right: 25, left: 25),
+              decoration: BoxDecoration(
+                borderRadius: BorderRadius.circular(16),
+                border: Border.all(color: Color(0xFFD0D0D0)),
+              ),
               child: Column(
                 children: [
                   Container(
-                    margin: const EdgeInsets.only(top: 10, right: 20, left: 20),
+                    // margin: const EdgeInsets.only(top: 10, right: 25, left: 25),
                     height: 55,
                     alignment: Alignment.centerLeft,
                     width: deviceSize.width,
@@ -109,8 +114,8 @@ class _WalletWithdrawCompleteWithdrawalState
                     ),
                   ),
                   Container(
-                    margin: const EdgeInsets.only(right: 20, left: 20),
-                    height: 140,
+                    // margin: const EdgeInsets.only(right: 25, left: 25),
+                    height: 165,
                     decoration: BoxDecoration(
                       borderRadius: radiusBottom,
                       color: Color(0xFFFFFFFF),
@@ -123,20 +128,19 @@ class _WalletWithdrawCompleteWithdrawalState
                     ),
                     child: Column(
                       children: <Widget>[
-                        Row(
-                          mainAxisAlignment: MainAxisAlignment.center,
-                          children: <Widget>[
-                            Padding(
-                              padding:
-                                  const EdgeInsets.only(top: 7, bottom: 10),
-                              child: Text('${widget.accountName}',
+                        Padding(
+                          padding: const EdgeInsets.only(
+                              top: 7, left: 12, right: 8, bottom: 10),
+                          child: Wrap(
+                            children: [
+                              Text('${widget.accountName}',
                                   style: TextStyle(
                                     color: Color(0xFF333333),
-                                    fontSize: 24,
+                                    fontSize: 21,
                                     height: 1.4,
                                   )),
-                            ),
-                          ],
+                            ],
+                          ),
                         ),
                         Row(
                           mainAxisAlignment: MainAxisAlignment.center,
@@ -182,10 +186,15 @@ class _WalletWithdrawCompleteWithdrawalState
               ),
             ),
             Container(
+              margin: const EdgeInsets.only(top: 20, right: 25, left: 25),
+              decoration: BoxDecoration(
+                borderRadius: BorderRadius.circular(16),
+                border: Border.all(color: Color(0xFFD0D0D0)),
+              ),
               child: Column(
                 children: [
                   Container(
-                    margin: const EdgeInsets.only(top: 20, right: 20, left: 20),
+                    // margin: const EdgeInsets.only(top: 20, right: 25, left: 25),
                     height: 55,
                     decoration: BoxDecoration(
                       borderRadius: radiusTop,
@@ -207,7 +216,7 @@ class _WalletWithdrawCompleteWithdrawalState
                     ),
                   ),
                   Container(
-                    margin: const EdgeInsets.only(right: 20, left: 20),
+                    // margin: const EdgeInsets.only(right: 25, left: 25),
                     height: 230,
                     decoration: BoxDecoration(
                       borderRadius: radiusBottom,
@@ -367,7 +376,7 @@ class _WalletWithdrawCompleteWithdrawalState
                   ? Container(
                       height: 50,
                       margin: const EdgeInsets.only(
-                          top: 20, left: 15, right: 15, bottom: 20),
+                          top: 20, left: 20, right: 20, bottom: 20),
                       decoration: BoxDecoration(
                         borderRadius: BorderRadius.all(Radius.circular(25)),
                         color: Color(0xFF9B049B),
@@ -375,12 +384,12 @@ class _WalletWithdrawCompleteWithdrawalState
                       child: new FlatButton(
                         padding: EdgeInsets.all(10),
                         onPressed: () async {
-                          model.setIsValidated = false;
                           if (model.getAmount.isEmpty) {
                             model.setAmountStatus = true;
                           } else if (model.getNarration.isEmpty) {
                             model.setNarrationStatus = true;
                           } else {
+                            model.setIsValidated = false;
                             String hasPin = await network.checkSecurePin();
                             if (hasPin == 'false') {
                               model.setIsValidated = true;
