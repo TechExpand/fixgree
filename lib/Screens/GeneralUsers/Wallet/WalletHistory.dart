@@ -14,7 +14,6 @@ class WalletHistory extends StatefulWidget {
 class _WalletHistoryState extends State<WalletHistory> {
   @override
   Widget build(BuildContext context) {
-    var deviceSize = MediaQuery.of(context).size;
     var network = Provider.of<WebServices>(context);
     return Scaffold(
       appBar: AppBar(
@@ -23,7 +22,6 @@ class _WalletHistoryState extends State<WalletHistory> {
             style: TextStyle(
                 color: Color(0xFF9B049B),
                 fontSize: 21,
-                fontFamily: 'Firesans',
                 height: 1.4,
                 fontWeight: FontWeight.w500)),
         centerTitle: true,
@@ -57,7 +55,6 @@ class _WalletHistoryState extends State<WalletHistory> {
                               style: TextStyle(
                                   color: Color(0xFF333333),
                                   fontSize: 18,
-                                  fontFamily: 'Firesans',
                                   fontWeight: FontWeight.w600)),
                         ],
                       ),
@@ -77,7 +74,6 @@ class _WalletHistoryState extends State<WalletHistory> {
                                 style: TextStyle(
                                     color: Color(0xFF333333),
                                     fontSize: 18,
-                                    fontFamily: 'Firesans',
                                     fontWeight: FontWeight.w600)),
                           ],
                         ),
@@ -103,14 +99,12 @@ class _WalletHistoryState extends State<WalletHistory> {
                               ),
                               title: Text(transactionDetails.paymentDescription,
                                   style: TextStyle(
-                                      fontFamily: 'Firesans',
                                       fontSize: 17,
                                       color: Color(0xFF333333),
                                       fontWeight: FontWeight.w600)),
                               subtitle: Text(
                                   '${DateFormat('MMM dd, y').format(transactionDetails.transactionDate)}',
                                   style: TextStyle(
-                                      fontFamily: 'Firesans',
                                       fontSize: 16,
                                       color: Color(0xFF555555),
                                       fontWeight: FontWeight.w600)),
@@ -136,7 +130,6 @@ class _WalletHistoryState extends State<WalletHistory> {
       case "credit":
         text = Text('+ ${currencySymbol(currency)}$amount',
             style: TextStyle(
-                fontFamily: 'Firesans',
                 fontSize: 17,
                 color: Color(0xFF02FF1B),
                 fontWeight: FontWeight.w600));
@@ -144,7 +137,6 @@ class _WalletHistoryState extends State<WalletHistory> {
       case "withdrawal":
         text = Text('- ${currencySymbol(currency)}$amount',
             style: TextStyle(
-                fontFamily: 'Firesans',
                 fontSize: 17,
                 color: Color(0xFFFF0202),
                 fontWeight: FontWeight.w600));

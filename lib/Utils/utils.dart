@@ -85,7 +85,7 @@ class Utils with ChangeNotifier {
     }
   }
 
-   List image = [];
+
 
   PickedFile selected_image;
    final picker = ImagePicker();
@@ -101,9 +101,8 @@ class Utils with ChangeNotifier {
    final picker2 = ImagePicker();
   Future selectimage2({@required ImageSource source, context}) async {
     var images = await picker.getImage(source: source);
-    selected_image = images;
-    image.add(selected_image);
-    print(selected_image2);
+    selected_image2 = images;
+
       notifyListeners();
   }
 

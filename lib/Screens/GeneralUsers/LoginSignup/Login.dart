@@ -1,18 +1,18 @@
 import 'package:fixme/Services/network_service.dart';
 import 'package:fixme/Utils/Provider.dart';
 import 'package:flutter/material.dart';
-import 'package:fixme/Services/network_service.dart';
 import 'package:intl_phone_number_input/intl_phone_number_input.dart';
 import 'package:provider/provider.dart';
 import 'SignUpNumber.dart';
 import 'otp.dart';
-import 'package:firebase_auth/firebase_auth.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 
 class Login extends StatefulWidget {
   @override
   LoginState createState() => LoginState();
 }
+
+
 
 class LoginState extends State<Login>{
   final GlobalKey<FormState> formKey = GlobalKey<FormState>();
@@ -29,9 +29,8 @@ class LoginState extends State<Login>{
      dynamic Credential = '';
       var OTP;
     var auth = FirebaseAuth.instance;
-
-
       verifyNumber()async {
+       
             try {
                 await FirebaseAuth.instance.verifyPhoneNumber(
                     phoneNumber: data.number.toString(),
@@ -115,6 +114,7 @@ class LoginState extends State<Login>{
                     inputBorder:  InputBorder.none,
                     onInputChanged: (PhoneNumber num){
                       data.setNumber(num);
+                       print(data.number.toString());
                     },
                     onInputValidated: (bool value) {
                       print(value);

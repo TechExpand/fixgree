@@ -96,7 +96,7 @@ class _TransactionFailedState extends State<TransactionFailed> {
                     child: Padding(
                       padding: const EdgeInsets.only(left: 7, right: 7),
                       child: Row(
-                        mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                        mainAxisAlignment: MainAxisAlignment.center,
                         children: [
                           Text(
                             'Try again',
@@ -105,10 +105,6 @@ class _TransactionFailedState extends State<TransactionFailed> {
                                 fontFamily: 'Firesans',
                                 fontSize: 17,
                                 fontWeight: FontWeight.w600),
-                          ),
-                          Icon(
-                            FeatherIcons.arrowLeftCircle,
-                            color: Colors.white,
                           ),
                         ],
                       ),

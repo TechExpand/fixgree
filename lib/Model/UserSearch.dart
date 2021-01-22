@@ -4,7 +4,12 @@ class UserSearch {
   bool block;
   int distance;
   String userLastName;
+  List subServices; 
   String userRegDate;
+  String  bio;
+  String verification;
+  String  businessName;
+  String  businessAddress;
   var latitude;
   String userAddress;
   String fullNumber;
@@ -23,19 +28,24 @@ class UserSearch {
   String status;
   var longitude;
   int userRating;
-  List servicePictures;
+  var servicePictures;
 
   UserSearch(
       {this.userEmail,
       this.agentId,
       this.distance,
+      this.subServices,
       this.userLastName,
+      this.verification,
       this.idUser,
       this.locationTimeUpdated,
       this.userRegDate,
       this.latitude,
       this.block,
       this.userAddress,
+      this.bio,
+      this.businessAddress,
+      this.businessName,
       this.fullNumber,
       this.userRole,
       this.name,
@@ -60,6 +70,10 @@ class UserSearch {
         userLastName: json['user_last_name'],
         userRegDate: json['user_reg_date'],
         latitude: json['latitude'],
+        subServices: json['subServices'],
+         bio: json['bio'],
+          businessName: json['business_name'],
+           businessAddress: json['business_address'],
         userAddress: json['user_address'],
         fullNumber: json['full_number'],
         idUser: json['mobile_device_token'],
@@ -74,6 +88,8 @@ class UserSearch {
         urlAvatar: json['profile_pic_file_name'],
         serviceArea: json['service_area'],
         id: json['id'],
+        verification: json['identification_status'],
+        servicePictures: json['servicePictures'],
         status: json['status'],
         longitude: json['longitude'],
         userRating: json['user_rating'],

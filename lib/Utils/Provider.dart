@@ -15,6 +15,9 @@ class DataProvider extends ChangeNotifier {
   String overview = '';
   bool focus_value = false;
   bool focus_value1 = false;
+  String product_name= '';
+  String product_bio = '';
+  String product_price = '';
   List<Services> servicesList = [];
   List subcat = [];
   bool focus_value2 = false;
@@ -100,6 +103,23 @@ setclrSubCat(){
  // check if  textfield homeAdress is empty or not
   sethomeAdress(value) {
     homeAddress = value;
+    notifyListeners();
+  }
+
+  setProductName(value) {
+    product_name = value;
+    notifyListeners();
+  }
+
+
+  setProductBio(value) {
+    product_bio = value;
+    notifyListeners();
+  }
+
+
+  setProductPrice(value) {
+    product_price = value;
     notifyListeners();
   }
 

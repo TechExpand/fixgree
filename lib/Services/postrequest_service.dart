@@ -32,6 +32,7 @@ class PostRequestProvider with ChangeNotifier {
   List<Services> servicesList = [];
   List<Services> allservicesList = [];
   Services selectedService;
+  Services selecteService;
 
   isLoading(loading) {
     _loading = loading;
@@ -119,10 +120,10 @@ class PostRequestProvider with ChangeNotifier {
       List body = body1['services'];
       // user_id = body['id'];
       print('final responssssssssssssssssssssssse');
-      List<Services> serviceList = body.map((data) {
+      List<Services> serviceListz = body.map((data) {
         return Services.fromJson(data);
-      }).toList();
-      servicesList = serviceList;
+      }).toSet().toList();
+      servicesList = serviceListz;
       notifyListeners();
     } catch (e) {
       // Login_SetState();
@@ -155,10 +156,10 @@ class PostRequestProvider with ChangeNotifier {
       List body = body1['services'];
       // user_id = body['id'];
       print('final responssssssssssssssssssssssse');
-      List<Services> serviceList = body.map((data) {
+      List<Services> serviceLists = body.map((data) {
         return Services.fromJson(data);
       }).toList();
-      allservicesList = serviceList;
+      allservicesList = serviceLists;
       print(allservicesList);
       notifyListeners();
     } catch (e) {
@@ -172,6 +173,12 @@ class PostRequestProvider with ChangeNotifier {
   changeService(Services services) {  
     selectedService = services;
     print(selectedService.service);
+    notifyListeners();
+
+  }
+
+  changeSelectedService(Services services) {
+    selecteService = services;
     notifyListeners();
 
   }

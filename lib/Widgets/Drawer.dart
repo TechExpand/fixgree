@@ -1,5 +1,7 @@
 
+import 'package:fixme/Screens/ArtisanUser/Profile/ProfilePage.dart';
 import 'package:fixme/Screens/ArtisanUser/RegisterArtisan/address.dart';
+import 'package:fixme/Screens/ArtisanUser/RegisterArtisan/thankyou.dart';
 import 'package:fixme/Screens/GeneralUsers/Chat/Chats.dart';
 import 'package:fixme/Screens/GeneralUsers/LoginSignup/Login.dart';
 import 'package:fixme/Screens/GeneralUsers/Profile/Profile.dart';
@@ -7,12 +9,14 @@ import 'package:fixme/Services/network_service.dart';
 import 'package:flutter/material.dart';
 import 'package:font_awesome_flutter/font_awesome_flutter.dart';
 import 'package:provider/provider.dart';
+import 'package:fixme/Utils/Provider.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 
-class DrawerWidget extends StatefulWidget {
+class DrawerWidget extends StatefulWidget{
   var currentContext;
+  var controller;
 
-  DrawerWidget(this.currentContext);
+  DrawerWidget(this.currentContext, this.controller);
 
   @override
   _DrawerState createState() => _DrawerState();
@@ -22,6 +26,7 @@ class _DrawerState extends State<DrawerWidget> {
   @override
   Widget build(BuildContext context) {
     var network = Provider.of<WebServices>(context, listen: false);
+      var data = Provider.of<DataProvider>(context);
      
     return SafeArea(
       child: Container(
@@ -65,12 +70,27 @@ class _DrawerState extends State<DrawerWidget> {
                         TextStyle(fontSize: 18, fontWeight: FontWeight.w500)),
               )),
           InkWell(
-            onTap: () {
-              Navigator.push(
+            onTap: () async{
+               SharedPreferences prefs = await SharedPreferences.getInstance();
+              prefs.getString('role')==null||prefs.getString('role')==''||prefs.getString('role')=='user'?Navigator.push(
                 context,
                 PageRouteBuilder(
                   pageBuilder: (context, animation, secondaryAnimation) {
                     return Profile();
+                  },
+                  transitionsBuilder:
+                      (context, animation, secondaryAnimation, child) {
+                    return FadeTransition(
+                      opacity: animation,
+                      child: child,
+                    );
+                  },
+                ),
+              ):Navigator.push(
+                context,
+                PageRouteBuilder(
+                  pageBuilder: (context, animation, secondaryAnimation) {
+                    return ProfilePage();
                   },
                   transitionsBuilder:
                       (context, animation, secondaryAnimation, child) {
@@ -137,11 +157,11 @@ class _DrawerState extends State<DrawerWidget> {
               )),
               InkWell(
             onTap:(){
-              Navigator.push(
+              network.role == 'artisan' || network.role == 'business'? Navigator.push(
         context,
         PageRouteBuilder(
           pageBuilder: (context, animation, secondaryAnimation) {
-            return SignUpAddress();
+            return ProfilePage();
           },
           transitionsBuilder: (context, animation, secondaryAnimation, child) {
             return FadeTransition(
@@ -150,7 +170,20 @@ class _DrawerState extends State<DrawerWidget> {
             );
           },
         ),
-      );
+      ):Navigator.push(
+                context,
+                PageRouteBuilder(
+                  pageBuilder: (context, animation, secondaryAnimation) {
+                    return SignThankyou();
+                  },
+                  transitionsBuilder: (context, animation, secondaryAnimation, child) {
+                    return FadeTransition(
+                      opacity: animation,
+                      child: child,
+                    );
+                  },
+                ),
+              );
               
             },
             child: Padding(
@@ -178,7 +211,15 @@ class _DrawerState extends State<DrawerWidget> {
               ],
             ),
           ),
-          Padding(
+          
+         InkWell(
+           onTap: (){
+              Navigator.pop(context);
+              widget.controller.jumpToPage(2);
+               data.setSelectedBottomNavBar(2);
+               
+           },
+           child: Padding(
             padding: const EdgeInsets.all(8.0),
             child: Row(
               children: [
@@ -190,6 +231,7 @@ class _DrawerState extends State<DrawerWidget> {
               ],
             ),
           ),
+         ) ,
           
           Divider(),
           Align(
@@ -214,7 +256,13 @@ class _DrawerState extends State<DrawerWidget> {
               ],
             ),
           ),
-          Padding(
+          InkWell(
+             onTap: (){
+               Navigator.pop(context);
+              widget.controller.jumpToPage(1);
+               data.setSelectedBottomNavBar(1);
+           },
+            child:Padding(
             padding: const EdgeInsets.all(8.0),
             child: Row(
               children: [
@@ -225,7 +273,7 @@ class _DrawerState extends State<DrawerWidget> {
                 ),
               ],
             ),
-          ),
+          )),
           Padding(
             padding: const EdgeInsets.all(8.0),
             child: Row(

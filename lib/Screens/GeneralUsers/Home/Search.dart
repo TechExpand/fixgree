@@ -1,5 +1,5 @@
 
-
+import 'package:fixme/Screens/ArtisanUser/Profile/ArtisanPage.dart';
 import 'package:fixme/Screens/GeneralUsers/Chat/callscreens/listen_incoming_call.dart';
 import 'package:fixme/Services/location_service.dart';
 import 'package:fixme/Services/network_service.dart';
@@ -107,7 +107,26 @@ class SearchResultState extends State<SearchResult> {
           child: ListView.builder(
               itemCount: snapshot.data.length,
               itemBuilder: (context, index) {
-                return  Container(
+                return  InkWell(
+                  onTap:(){
+                    Navigator.push(
+        context,
+        PageRouteBuilder(
+          pageBuilder: (context, animation, secondaryAnimation) {
+            return ArtisanPage(
+                snapshot.data[index]
+            );
+          },
+          transitionsBuilder: (context, animation, secondaryAnimation, child) {
+            return FadeTransition(
+              opacity: animation,
+              child: child,
+            );
+          },
+        ),
+      );
+                  },
+                  child: Container(
                     child: Row(
                         crossAxisAlignment:
                         CrossAxisAlignment.start,
@@ -169,22 +188,7 @@ class SearchResultState extends State<SearchResult> {
                                       TextOverflow.ellipsis,
                                     ),
                                   ),
-                                ),
-//                                                  Container(
-//                                                    width:
-//                                                        MediaQuery.of(context)
-//                                                                .size
-//                                                                .width /
-//                                                            1.2,
-//                                                    child: Text(
-//                                                        snapshot.data[index]
-//                                                            ['user_address']
-//                                                            .toString(),
-//                                                        maxLines: 1,
-//                                                        softWrap: true,
-//                                                        overflow: TextOverflow
-//                                                            .ellipsis),
-//                                                  ),
+                                ),                        
                                 Container(
 
                                   height:1,
@@ -193,7 +197,7 @@ class SearchResultState extends State<SearchResult> {
                                 )
                               ])
                         ]),
-                  );
+                ));
               }),
         )
                         : snapshot.data.length == 0

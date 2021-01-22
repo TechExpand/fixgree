@@ -1,6 +1,7 @@
 import 'package:fixme/Screens/ArtisanUser/ProfileSetUp/Expertise.dart';
 import 'package:fixme/Screens/ArtisanUser/ProfileSetUp/Overview.dart';
-import 'package:fixme/Screens/ArtisanUser/ProfileSetUp/PhotoCatelog.dart';
+import 'package:fixme/Screens/ArtisanUser/ProfileSetUp/ProductCartalog.dart';
+import 'package:fixme/Screens/ArtisanUser/ProfileSetUp/ServicesCatelog.dart';
 import 'package:fixme/Screens/ArtisanUser/ProfileSetUp/ProductDetail.dart';
 import 'package:fixme/Screens/ArtisanUser/RegisterArtisan/bvn.dart';
 import 'package:fixme/Services/network_service.dart';
@@ -159,10 +160,10 @@ class SignUpProfileSetupPageState extends State<SignUpProfileSetupPage> {
                },
           physics: NeverScrollableScrollPhysics(),
               children: [
-                 data.artisanVendorChoice=='business'?ProductDetailPage(_myPage):ExpertisePage(_myPage),
-               OverviewPage(_myPage),
+                data.artisanVendorChoice=='business'?ProductDetailPage(_myPage):ExpertisePage(_myPage),
+                OverviewPage(_myPage),
                 ProfilePhotoPage(_myPage),
-                PhotoCatelogPage(_myPage),
+                data.artisanVendorChoice=='business'?ProductCatelogPage(_myPage):PhotoCatelogPage(_myPage),
               ],
             ),
           )

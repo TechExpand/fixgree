@@ -1,5 +1,6 @@
 import 'dart:io';
 
+import 'package:fixme/Services/network_service.dart';
 import 'package:fixme/Utils/Provider.dart';
 import 'package:fixme/Utils/utils.dart';
 import 'package:flutter/material.dart';
@@ -15,9 +16,11 @@ class ProfilePhotoPage extends StatefulWidget {
 }
 
 class ProfilePhotoPageState extends State<ProfilePhotoPage> {
+
   @override
   Widget build(BuildContext context) {
       var data = Provider.of<Utils>(context);
+      var network = Provider.of<WebServices>(context, listen: false);
     return Container(
       padding: const EdgeInsets.only(right: 24, left: 24),
       child: Column(
@@ -81,15 +84,20 @@ class ProfilePhotoPageState extends State<ProfilePhotoPage> {
               Spacer(),
               Align(
                 alignment: Alignment.center,
-                child: Container(          
+                child:!network.login_state? Container(
                   decoration: BoxDecoration(
                       border: Border.all(color: Colors.white),
                       borderRadius: BorderRadius.circular(26)),
                   child: FlatButton(
                     disabledColor: Color(0x909B049B),
                     onPressed:data.selected_image==null?null: () {
-                      widget.myPage.jumpToPage(3);
-                     
+                      network.Login_SetState();
+                      network.uploadPhoto(
+                        path: data.selected_image.path,
+                          context: context,
+                          uploadType: 'profilePicture',
+                        navigate:  widget.myPage,
+                      );
                        
                        
                           },
@@ -113,7 +121,10 @@ class ProfilePhotoPageState extends State<ProfilePhotoPage> {
                       ),
                     ),
                   ),
-                ),
+                ):Padding(
+                  padding: const EdgeInsets.only(bottom:50.0, top:20),
+                  child: CircularProgressIndicator(valueColor:  AlwaysStoppedAnimation<Color>(Color(0xFF9B049B)),),
+                )
               ),
         ],
       ),

@@ -38,7 +38,7 @@ class SignUpAddressState extends State<SignUpAddress> {
             Container(
               margin: EdgeInsets.only(bottom: 15),
               width: MediaQuery.of(context).size.width / 0.2,
-              height: 50,
+              height: 55,
               child: TextFormField(
                 onChanged: (value) {
                   data.sethomeAdress(value);
@@ -65,7 +65,7 @@ class SignUpAddressState extends State<SignUpAddress> {
             ),
             Container(
               width: MediaQuery.of(context).size.width / 0.2,
-              height: 50,
+              height: 55,
               child: TextFormField(
                 onChanged: (value) {
                   data.setofficeAddress(value);

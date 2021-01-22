@@ -1,3 +1,4 @@
+import 'package:clipboard/clipboard.dart';
 import 'package:flutter/material.dart';
 import "package:flutter_feather_icons/flutter_feather_icons.dart";
 import 'package:fixme/Model/UserBankInfo.dart';
@@ -14,18 +15,19 @@ class WalletFund extends StatefulWidget {
 
 class _WalletFundState extends State<WalletFund> {
   BorderRadiusGeometry radiusTop = BorderRadius.only(
-    topLeft: Radius.circular(24.0),
-    topRight: Radius.circular(24.0),
+    topLeft: Radius.circular(15.0),
+    topRight: Radius.circular(15.0),
   );
 
   BorderRadiusGeometry radiusBottom = BorderRadius.only(
-    bottomLeft: Radius.circular(24.0),
-    bottomRight: Radius.circular(24.0),
+    bottomLeft: Radius.circular(15.0),
+    bottomRight: Radius.circular(15.0),
   );
+
+
 
   @override
   Widget build(BuildContext context) {
-    var deviceSize = MediaQuery.of(context).size;
     return Scaffold(
       appBar: AppBar(
         backgroundColor: Colors.white,
@@ -49,28 +51,19 @@ class _WalletFundState extends State<WalletFund> {
           Row(
             children: [
               Container(
-                width: 12.0,
+                width: 20.0,
                 height: 40.0,
                 color: Colors.transparent,
               ),
-              Padding(
-                padding: const EdgeInsets.only(right: 8.0),
-                child: Container(
-                  height: 1.5,
-                  width: 19,
-                  color: Color(0xFFD1D1D3),
-                ),
-              ),
-              Text('Fund Wallet?',
+              Text('Fund Wallet with?',
                   style: TextStyle(
-                      fontFamily: 'Firesans',
-                      fontSize: 18,
-                      color: Color(0xFF333333),
-                      fontWeight: FontWeight.w600))
+                    fontSize: 18,
+                    color: Color(0xFF333333),
+                  ))
             ],
           ),
           Container(
-            margin: const EdgeInsets.only(right: 15, left: 15),
+            margin: const EdgeInsets.only(right: 20, left: 20),
             height: 120,
             decoration: BoxDecoration(
               borderRadius: BorderRadius.circular(24),
@@ -86,26 +79,28 @@ class _WalletFundState extends State<WalletFund> {
             child: Column(
               children: [
                 Padding(
-                  padding: const EdgeInsets.only(top: 20, bottom: 10),
-                  child: Text('Transaction fee is FREE',
-                      style: TextStyle(
-                          fontFamily: 'Firesans',
-                          fontSize: 18,
-                          color: Color(0xFF333333),
-                          fontWeight: FontWeight.w600)),
+                  padding: const EdgeInsets.only(top: 25, bottom: 10, left: 15),
+                  child: Row(
+                    children: [
+                      Text('Transaction fee is FREE',
+                          style: TextStyle(
+                              fontSize: 18,
+                              color: Color(0xFF333333),
+                              fontWeight: FontWeight.w600)),
+                    ],
+                  ),
                 ),
                 Padding(
-                  padding: const EdgeInsets.only(left: 10, right: 10),
-                  child: Divider(),
-                ),
-                Padding(
-                  padding: const EdgeInsets.only(top: 15),
-                  child: Text('BANK TRANSFER',
-                      style: TextStyle(
-                          fontFamily: 'Firesans',
-                          fontSize: 24,
-                          color: Color(0xFF333333),
-                          fontWeight: FontWeight.w600)),
+                  padding: const EdgeInsets.only(top: 5, left: 15),
+                  child: Row(
+                    children: [
+                      Text('Bank Transfer',
+                          style: TextStyle(
+                              fontSize: 30,
+                              color: Color(0xFF333333),
+                              fontWeight: FontWeight.w600)),
+                    ],
+                  ),
                 ),
               ],
             ),
@@ -127,20 +122,11 @@ class _WalletFundState extends State<WalletFund> {
                         height: 40.0,
                         color: Colors.transparent,
                       ),
-                      Padding(
-                        padding: const EdgeInsets.only(right: 8.0),
-                        child: Container(
-                          height: 1.5,
-                          width: 19,
-                          color: Color(0xFFD1D1D3),
-                        ),
-                      ),
                       Text('Account Information',
                           style: TextStyle(
-                              fontFamily: 'Firesans',
-                              fontSize: 17,
-                              color: Color(0xFF333333),
-                              fontWeight: FontWeight.w600))
+                            fontSize: 17,
+                            color: Color(0xFF333333),
+                          ))
                     ],
                   ),
                 ),
@@ -158,25 +144,24 @@ class _WalletFundState extends State<WalletFund> {
                           offset: Offset(0.3, 4.0))
                     ],
                   ),
-
                   child: Column(
                     children: <Widget>[
                       Row(
                         mainAxisAlignment: MainAxisAlignment.center,
                         children: <Widget>[
                           Padding(
-                            padding: const EdgeInsets.only(top: 5),
-                            child: Text('${widget.userBankInfo.accountName}'.toUpperCase(),
+                            padding: const EdgeInsets.only(top: 5, bottom: 5),
+                            child: Text(
+                                '${widget.userBankInfo.accountName}'
+                                    .toUpperCase(),
                                 style: TextStyle(
                                     color: Color(0xFF333333),
-                                    fontSize: 21,
-                                    fontFamily: 'Firesans',
+                                    fontSize: 24,
                                     height: 1.4,
-                                    fontWeight: FontWeight.w600)),
+                                    fontWeight: FontWeight.w400)),
                           ),
                         ],
                       ),
-                      Divider(),
                       Row(
                         mainAxisAlignment: MainAxisAlignment.center,
                         children: <Widget>[
@@ -184,11 +169,10 @@ class _WalletFundState extends State<WalletFund> {
                             padding: const EdgeInsets.only(top: 5),
                             child: Text('${widget.userBankInfo.bankName}',
                                 style: TextStyle(
-                                    color: Color(0xFF333333),
-                                    fontSize: 18,
-                                    fontFamily: 'Firesans',
-                                    height: 1,
-                                    fontWeight: FontWeight.w600)),
+                                  color: Color(0xFF333333),
+                                  fontSize: 20,
+                                  height: 1,
+                                )),
                           ),
                         ],
                       ),
@@ -197,16 +181,22 @@ class _WalletFundState extends State<WalletFund> {
                         children: [
                           Text(widget.userBankInfo.accountNumber,
                               style: TextStyle(
-                                // letterSpacing: 4,
+                                  // letterSpacing: 4,
                                   color: Color(0xFF333333),
                                   fontSize: 20,
-                                  fontFamily: 'Firesans',
                                   fontWeight: FontWeight.w600)),
                           IconButton(
                             icon: Icon(Icons.content_copy),
                             color: Color(0xFF333333),
-                            onPressed: (){
-
+                            onPressed: () async {
+                              FlutterClipboard.copy(
+                                      '${widget.userBankInfo.accountNumber}')
+                                  .then((value) {
+//                                ScaffoldMessenger.of(context)
+//                                    .showSnackBar(SnackBar(
+//                                  content: Text("Account number copied"),
+//                                ));
+                              });
                             },
                           )
                         ],

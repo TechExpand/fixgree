@@ -16,10 +16,13 @@ class WebServices extends ChangeNotifier {
   var login_state_second = false;
   var Bearer = '';
   var user_id = 0;
+  var  role = '';
   var phoneNum = '';
   var mobile_device_token = '';
   var profile_pic_file_name = '';
   var firstName = '';
+
+
 
   void Login_SetState() {
     if (login_state == false) {
@@ -67,6 +70,7 @@ class WebServices extends ChangeNotifier {
       profile_pic_file_name = body['profile_pic_file_name'];
       firstName = body['firstName'];
       phoneNum = body['fullNumber'];
+      role = body['role'];
       Bearer = response.headers['bearer'];
       if (body['reqRes'] == 'true') {
         datas.storeData('Bearer', Bearer);
@@ -75,6 +79,7 @@ class WebServices extends ChangeNotifier {
         datas.storeData('profile_pic_file_name', profile_pic_file_name);
         datas.storeData('firstName', firstName);
         datas.storeData('phoneNum', phoneNum);
+        datas.storeData('role', role);
         Login_SetState();
         return Navigator.push(
           context,
@@ -121,6 +126,7 @@ class WebServices extends ChangeNotifier {
       mobile_device_token = body['mobile_device_token'];
       profile_pic_file_name = body['profile_pic_file_name'];
       firstName = body['firstName'];
+      role = body['role'];
       phoneNum = body['fullNumber'];
       Bearer = response.headers['bearer'];
       if (body['reqRes'] == 'true') {
@@ -130,6 +136,7 @@ class WebServices extends ChangeNotifier {
         datas.storeData('profile_pic_file_name', profile_pic_file_name);
         datas.storeData('firstName', firstName);
         datas.storeData('phoneNum', phoneNum);
+        datas.storeData('role', role);
         Login_SetState();
         return Navigator.push(
           context,
@@ -160,13 +167,14 @@ class WebServices extends ChangeNotifier {
 
 initializeValues()async{
    SharedPreferences prefs = await SharedPreferences.getInstance();
+
            user_id = int.parse(prefs.getString('user_id'));
        Bearer = prefs.getString('Bearer');
          mobile_device_token = prefs.getString('mobile_device_token');
         profile_pic_file_name = prefs.getString('profile_pic_file_name');
          firstName = prefs.getString('firstName');
          phoneNum = prefs.getString('phoneNum');
-        
+         role = prefs.getString('role');
        notifyListeners(); 
 }
 
@@ -179,11 +187,8 @@ initializeValues()async{
     var data = Provider.of<DataProvider>(context, listen: false);
     var datas = Provider.of<Utils>(context, listen: false);
     PostRequestProvider postRequestProvider = Provider.of<PostRequestProvider>(context, listen:false);
-  print(postRequestProvider.selectedService.sn);
-  print(Bearer);
-  print(user_id);
-  print('${data.subcat}'.replaceAll('[','').replaceAll(']',''));
-  String sub_services = '${data.subcat}'.replaceAll('[','').replaceAll(']','');
+    SharedPreferences prefs = await SharedPreferences.getInstance();
+
     try {
       var response = await http
           .post(Uri.parse('https://manager.fixme.ng/business-account'), 
@@ -195,7 +200,7 @@ initializeValues()async{
         'sub_services': '${data.subcat}'.replaceAll('[','').replaceAll(']',''),
         'bio': data.overview?? '',
         'role': data.artisanVendorChoice,
-        'service_id': '${postRequestProvider.selectedService.sn}',
+        'service_id': '${postRequestProvider.selecteService.sn}',
        'user_id':'$user_id',
       }, headers: {
         "Content-type": "application/x-www-form-urlencoded",
@@ -204,7 +209,10 @@ initializeValues()async{
       var body = json.decode(response.body);
       print(body);
       if (body['reqRes'] == 'true') {
+        datas.storeData('role', data.artisanVendorChoice);
         Login_SetState();
+        role =  prefs.getString('role');
+        data.subcat.clear();
         return  Navigator.push(
                             context,
                             PageRouteBuilder(
@@ -242,10 +250,34 @@ initializeValues()async{
   }
 
 
-  Future<dynamic> getUserInfo() async {
+Future<dynamic> getArtisanReviews([userId]) async {
+
+    var response = await http
+        .post(Uri.parse('https://manager.fixme.ng/get-reviews'), body: {
+      'user_id': user_id.toString(),
+      'artisan_id': userId.toString(),
+    }, headers: {
+      "Content-type": "application/x-www-form-urlencoded",
+      'Authorization': 'Bearer $Bearer',
+    });
+    var body = json.decode(response.body);
+    print(body);
+    print(body);
+    notifyListeners();
+    if (body['reqRes'] == 'true') {
+      return body['reviews'];
+    } else if (body['reqRes'] == 'false') {
+      print(body['message']);
+    }
+  }
+
+
+
+  Future<dynamic> getUserInfo([userId]) async {
+    print(userId);
     var response = await http
         .post(Uri.parse('https://manager.fixme.ng/user-info'), body: {
-      'user_id': user_id.toString(),
+      'user_id': userId.toString(),
     }, headers: {
       "Content-type": "application/x-www-form-urlencoded",
       'Authorization': 'Bearer $Bearer',
@@ -259,17 +291,458 @@ initializeValues()async{
     }
   }
 
+  Future<dynamic> getServiceImage([userId]) async {
+    print(userId);
+    var response = await http
+        .post(Uri.parse('https://manager.fixme.ng/service-images'), body: {
+      'user_id': userId.toString(),
+    }, headers: {
+      "Content-type": "application/x-www-form-urlencoded",
+      'Authorization': 'Bearer $Bearer',
+    });
+    var body = json.decode(response.body);
+    notifyListeners();
+    if (body['reqRes'] == 'true') {
+      return body['servicePictures'];
+    } else if (body['reqRes'] == 'false') {
+      print(body['message']);
+    }
+  }
+
+
+  Future<dynamic> getProductImage([userId]) async {
+    print(userId);
+    var response = await http
+        .post(Uri.parse('https://manager.fixme.ng/get-catalog-products'), body: {
+      'user_id': userId.toString(),
+    }, headers: {
+      "Content-type": "application/x-www-form-urlencoded",
+      'Authorization': 'Bearer $Bearer',
+    });
+    var body = json.decode(response.body);
+    notifyListeners();
+    if (body['reqRes'] == 'true') {
+      return body['productCatalog'];
+    } else if (body['reqRes'] == 'false') {
+      print(body['message']);
+    }
+  }
+
+
+  Future uploadProductCatalog({
+    bio,
+    product_name,
+    price,
+    scaffoldKey,
+    context}) async {
+      print(user_id);
+       print(user_id);
+    try{
+       var res = await http
+          .post(Uri.parse('https://manager.fixme.ng/save-catlog-product'), 
+          body: {
+        'product_name': product_name.toString()?? '',
+        'price': price.toString()?? '',
+        'bio': bio.toString()??'',
+       'user_id':'$user_id',
+      }, headers: {
+        "Content-type": "application/x-www-form-urlencoded",
+        'Authorization':'Bearer $Bearer',
+      });
+     
+      var body = jsonDecode(res.body);
+      notifyListeners();
+      if (body['reqRes'] == 'true'){
+        Login_SetState();
+        showDialog(
+            barrierDismissible: false,
+            child: WillPopScope(
+              onWillPop: (){},
+              child: AlertDialog(
+                elevation: 6,
+                shape: RoundedRectangleBorder(
+                    borderRadius: BorderRadius.all(Radius.circular(32.0))),
+                content: Container(
+                  height: 150,
+                  child: Column(
+                    crossAxisAlignment: CrossAxisAlignment.center,
+                    mainAxisAlignment: MainAxisAlignment.center,
+                    children: <Widget>[
+                      Container(
+                        padding: EdgeInsets.only(top:15, bottom: 15),
+                        width: 250,
+                        child: Text(
+                          'Product Successfully Added to Catalog. Add Another Product?',
+                          textAlign: TextAlign.center,
+                          style: TextStyle(
+                            fontSize: 15,
+                            fontWeight: FontWeight.bold,
+                            color: Colors.black54,
+                          ),
+                        ),
+                      ),
+                      Row(
+                        mainAxisAlignment: MainAxisAlignment.center ,
+                        children: <Widget>[
+                          !login_state? Material(
+                            borderRadius: BorderRadius.circular(26),
+                            elevation: 2,
+                            child: Container(
+                              height: 40,
+                              width: 80,
+                              decoration: BoxDecoration(
+                                  border: Border.all(color: Color(0xFFE60016)),
+                                  borderRadius: BorderRadius.circular(26)
+                              ),
+                              child: FlatButton(
+                                onPressed: () {
+                                  Login_SetState();
+                                  BecomeArtisanOrBusiness(context: context,
+                                    scaffoldKey: scaffoldKey,
+                                  );
+                                  Navigator.pop(context);
+
+                                },
+                                color: Color(0xFFE60016),
+                                shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(26)),
+                                padding: EdgeInsets.all(0.0),
+                                child: Ink(
+                                  decoration: BoxDecoration(
+                                      borderRadius: BorderRadius.circular(26)
+                                  ),
+                                  child: Container(
+                                    constraints: BoxConstraints(maxWidth: 190.0, minHeight: 53.0),
+                                    alignment: Alignment.center,
+                                    child: Text(
+                                      "No Please!",
+                                      textAlign: TextAlign.center,
+                                      style: TextStyle(
+                                          fontSize: 14,
+                                          fontWeight: FontWeight.bold,
+                                          color: Colors.white
+                                      ),
+                                    ),
+                                  ),
+                                ),
+
+                              ),
+                            ),
+                          ): CircularProgressIndicator(valueColor:  AlwaysStoppedAnimation<Color>(Color(0xFF9B049B))),
+                          SizedBox(width: 5),
+                          Material(
+                            borderRadius: BorderRadius.circular(26),
+                            elevation: 2,
+                            child: Container(
+                              height: 40,
+                              width: 80,
+                              decoration: BoxDecoration(
+                                  border: Border.all(color: Colors.green),
+                                  borderRadius: BorderRadius.circular(26)
+                              ),
+                              child: FlatButton(
+                                onPressed: () {
+                                  Navigator.pop(context);
+                                },
+                                color: Colors.green,
+                                shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(26)),
+                                padding: EdgeInsets.all(0.0),
+                                child: Ink(
+                                  decoration: BoxDecoration(
+                                      borderRadius: BorderRadius.circular(26)
+                                  ),
+                                  child: Container(
+                                    constraints: BoxConstraints(maxWidth: 190.0, minHeight: 53.0),
+                                    alignment: Alignment.center,
+                                    child: Text(
+                                      "Yes Please!",
+                                      textAlign: TextAlign.center,
+                                      style: TextStyle(
+                                          fontSize: 14,
+                                          fontWeight: FontWeight.bold,
+                                          color: Colors.white
+                                      ),
+                                    ),
+                                  ),
+                                ),
+
+                              ),
+                            ),
+                          ),
+                        ],
+                      ),
+                    ],
+                  ),
+                ),
+              ),
+            ),
+            context: context);
+        return body;
+
+      } else if (body['reqRes'] == 'false') {
+        Login_SetState();
+        showDialog(
+            child: AlertDialog(
+              title: Center(
+                child: Text('There was a Problem Working on it!',
+                    style: TextStyle(color: Colors.blue)),
+              ),
+            ),
+            context: context);
+      }}catch(e){
+      showDialog(
+            child: AlertDialog(
+              title: Center(
+                child: Text('$e',
+                    style: TextStyle(color: Colors.blue)),
+              ),
+            ),
+            context: context);
+      Login_SetState();
+    }
+
+  }
+
+
+
+
+  Future uploadCatalog({
+    path,
+    uploadType,
+    scaffoldKey,
+    context}) async {
+    try{
+      var upload = http.MultipartRequest(
+          'POST',
+          Uri.parse(
+              'https://uploads.fixme.ng/uploads-processing'));
+      var file = await http.MultipartFile.fromPath('file', path);
+      upload.files.add(file);
+      upload.fields['uploadType'] = uploadType.toString();
+      upload.fields['firstName'] = firstName.toString();
+      upload.fields['user_id'] = user_id.toString();
+      upload.headers['authorization'] = 'Bearer $Bearer';
+
+      final stream = await upload.send();
+      var res = await http.Response.fromStream(stream);
+
+      var body = jsonDecode(res.body);
+      notifyListeners();
+      if (body['upldRes'] == 'true') {
+        Login_SetState();
+        showDialog(
+          barrierDismissible: false,
+            child: WillPopScope(
+              onWillPop: (){},
+              child: AlertDialog(
+                elevation: 6,
+                shape: RoundedRectangleBorder(
+                    borderRadius: BorderRadius.all(Radius.circular(32.0))),
+                content: Container(
+                  height: 150,
+                  child: Column(
+                    crossAxisAlignment: CrossAxisAlignment.center,
+                    mainAxisAlignment: MainAxisAlignment.center,
+                    children: <Widget>[
+                      Container(
+                        padding: EdgeInsets.only(top:15, bottom: 15),
+                        width: 250,
+                        child: Text(
+                          'Photo Successfully Added to Catalog. Add Another Photo?',
+                          textAlign: TextAlign.center,
+                          style: TextStyle(
+                            fontSize: 15,
+                            fontWeight: FontWeight.bold,
+                            color: Colors.black54,
+                          ),
+                        ),
+                      ),
+                      Row(
+                        mainAxisAlignment: MainAxisAlignment.center ,
+                        children: <Widget>[
+                         !login_state? Material(
+                            borderRadius: BorderRadius.circular(26),
+                            elevation: 2,
+                            child: Container(
+                              height: 40,
+                              width: 80,
+                              decoration: BoxDecoration(
+                                  border: Border.all(color: Color(0xFFE60016)),
+                                  borderRadius: BorderRadius.circular(26)
+                              ),
+                              child: FlatButton(
+                                onPressed: () {
+                                  Login_SetState();
+                                  BecomeArtisanOrBusiness(context: context,
+                                    scaffoldKey: scaffoldKey,
+                                  );
+                                  Navigator.pop(context);
+
+                                },
+                                color: Color(0xFFE60016),
+                                shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(26)),
+                                padding: EdgeInsets.all(0.0),
+                                child: Ink(
+                                  decoration: BoxDecoration(
+                                      borderRadius: BorderRadius.circular(26)
+                                  ),
+                                  child: Container(
+                                    constraints: BoxConstraints(maxWidth: 190.0, minHeight: 53.0),
+                                    alignment: Alignment.center,
+                                    child: Text(
+                                      "No Please!",
+                                      textAlign: TextAlign.center,
+                                      style: TextStyle(
+                                          fontSize: 14,
+                                          fontWeight: FontWeight.bold,
+                                          color: Colors.white
+                                      ),
+                                    ),
+                                  ),
+                                ),
+
+                              ),
+                            ),
+                          ): CircularProgressIndicator(valueColor:  AlwaysStoppedAnimation<Color>(Color(0xFF9B049B))),
+                           SizedBox(width: 5),
+                          Material(
+                            borderRadius: BorderRadius.circular(26),
+                            elevation: 2,
+                            child: Container(
+                              height: 40,
+                              width: 80,
+                              decoration: BoxDecoration(
+                                  border: Border.all(color: Colors.green),
+                                  borderRadius: BorderRadius.circular(26)
+                              ),
+                              child: FlatButton(
+                                onPressed: () {
+                                  Navigator.pop(context);
+                                },
+                                color: Colors.green,
+                                shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(26)),
+                                padding: EdgeInsets.all(0.0),
+                                child: Ink(
+                                  decoration: BoxDecoration(
+                                      borderRadius: BorderRadius.circular(26)
+                                  ),
+                                  child: Container(
+                                    constraints: BoxConstraints(maxWidth: 190.0, minHeight: 53.0),
+                                    alignment: Alignment.center,
+                                    child: Text(
+                                      "Yes Please!",
+                                      textAlign: TextAlign.center,
+                                      style: TextStyle(
+                                          fontSize: 14,
+                                          fontWeight: FontWeight.bold,
+                                          color: Colors.white
+                                      ),
+                                    ),
+                                  ),
+                                ),
+
+                              ),
+                            ),
+                          ),
+                        ],
+                      ),
+                    ],
+                  ),
+                ),
+              ),
+            ),
+            context: context);
+        return body;
+
+      } else if (body['upldRes'] == 'false') {
+        Login_SetState();
+        showDialog(
+            child: AlertDialog(
+              title: Center(
+                child: Text('There was a Problem Working on it!',
+                    style: TextStyle(color: Colors.blue)),
+              ),
+            ),
+            context: context);
+      }}catch(e){
+      print(e);
+    }
+
+  }
+
+
+
+
+
+  Future uploadPhoto({
+        path,
+        uploadType,
+    navigate,
+        context}) async {
+    try{
+      var upload = http.MultipartRequest(
+          'POST',
+          Uri.parse(
+              'https://uploads.fixme.ng/uploads-processing'));
+      var file = await http.MultipartFile.fromPath('file', path);
+      upload.files.add(file);
+      upload.fields['uploadType'] = uploadType.toString();
+      upload.fields['firstName'] = firstName.toString();
+      upload.fields['user_id'] = user_id.toString();
+      upload.headers['authorization'] = 'Bearer $Bearer';
+
+      final stream = await upload.send();
+      var res = await http.Response.fromStream(stream);
+
+      var body = jsonDecode(res.body);
+      notifyListeners();
+      if (body['upldRes'] == 'true') {
+        Login_SetState();
+        navigate.jumpToPage(3);
+        print(body['upldRes']);
+      return body;
+
+      } else if (body['upldRes'] == 'false') {
+        Login_SetState();
+        showDialog(
+            child: AlertDialog(
+              title: Center(
+                child: Text('There was a Problem Working on it!',
+                    style: TextStyle(color: Colors.blue)),
+              ),
+            ),
+            context: context);
+      }}catch(e){
+      showDialog(
+          child: AlertDialog(
+            title: Center(
+              child: Text('There was a Problem Working on it!',
+                  style: TextStyle(color: Colors.blue)),
+            ),
+          ),
+          context: context);
+      Login_SetState();
+      print(e);
+    }
+
+    }
+
+
+
+
+
+
 
 
 
 
 
   Future<dynamic> NearbyArtisans({longitude, latitude}) async {
+   
     var response = await http
         .post(Uri.parse('https://manager.fixme.ng/near-artisans'), body: {
       'user_id': user_id.toString(),
-      'longitude': longitude.toString(),
-      'latitude': latitude.toString(),
+        'longitude':'5.642040',
+      'latitude': '6.295660',
     }, headers: {
       "Content-type": "application/x-www-form-urlencoded",
       'Authorization': 'Bearer $Bearer',
@@ -293,10 +766,10 @@ initializeValues()async{
 
   Future<dynamic> NearbyShop({longitude, latitude}) async {
     var response = await http
-        .post(Uri.parse('https://api.fixme.ng/near-shops-business'), body: {
+        .post(Uri.parse('https://manager.fixme.ng/near-shops-business'), body: {
       'user_id': user_id.toString(),
-      'longitude':longitude.toString(),
-      'latitude': latitude.toString(),
+      'longitude':'5.642040',
+      'latitude': '6.295660',
     }, headers: {
       "Content-type": "application/x-www-form-urlencoded",
       'Authorization': 'Bearer $Bearer',

@@ -60,7 +60,7 @@ class _HomePageState extends State<HomePage> {
       drawer: SizedBox(
         width: 240,
         child: Drawer(
-          child: DrawerWidget(context),
+          child: DrawerWidget(context, _myPage),
         ),
       ),
       bottomNavigationBar: Container(

@@ -53,7 +53,7 @@ class ProductDetailPageState extends State<ProductDetailPage> {
                     cursorColor: Colors.black,
                     decoration: InputDecoration(
                       labelStyle: TextStyle(color: Colors.black38),
-                      labelText: postRequestProvider.selectedService==null?'Category':postRequestProvider.selectedService.service,
+                      labelText: postRequestProvider.selecteService==null?'Category':postRequestProvider.selecteService.service,
                       suffixIcon: Icon(Icons.arrow_downward, color:Colors.black38),
                       disabledBorder: OutlineInputBorder(
                           borderSide: const BorderSide(
@@ -138,7 +138,7 @@ class ProductDetailPageState extends State<ProductDetailPage> {
                       borderRadius: BorderRadius.circular(26)),
                   child: FlatButton(
                     disabledColor: Color(0x909B049B),
-                    onPressed: chips.isEmpty|| postRequestProvider.selectedService==null?null:      
+                    onPressed: chips.isEmpty|| postRequestProvider.selecteService==null?null:
                     () {
                             widget.myPage.jumpToPage(1);
                           },
@@ -217,7 +217,7 @@ Widget DialogPage(ctx){
                             return InkWell(
                               onTap:(){
                                 Navigator.pop(context);
-                                postRequestProvider.changeService(result[index]);
+                                postRequestProvider.changeSelectedService(result[index]);
                               },
                               child: ListTile(
                                 title: Text('${result[index].service}'),

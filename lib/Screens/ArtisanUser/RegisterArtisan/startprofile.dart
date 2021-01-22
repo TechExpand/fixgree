@@ -1,4 +1,5 @@
 import 'package:fixme/Screens/ArtisanUser/ProfileSetUp/profileArtisan.dart';
+import 'package:fixme/Screens/ArtisanUser/RegisterArtisan/address.dart';
 import 'package:fixme/Services/network_service.dart';
 import 'package:fixme/Services/postrequest_service.dart';
 import 'package:fixme/Utils/Provider.dart';
@@ -12,7 +13,15 @@ class SignStartProfile extends StatefulWidget {
 }
 
 class SignStartProfileState extends State<SignStartProfile> {
- 
+  @override
+  void initState(){
+    super.initState();
+    WidgetsBinding.instance.addPostFrameCallback((timeStamp) {
+      PostRequestProvider postRequestProvider = Provider.of<PostRequestProvider>(context, listen:false);
+      postRequestProvider.getAllServices();
+    });
+  }
+
   var password;
 
   @override
@@ -146,7 +155,7 @@ class SignStartProfileState extends State<SignStartProfile> {
                             PageRouteBuilder(
                               pageBuilder:
                                   (context, animation, secondaryAnimation) {
-                                return SignUpProfileSetupPage();
+                                return SignUpAddress();
                               },
                               transitionsBuilder: (context, animation,
                                   secondaryAnimation, child) {

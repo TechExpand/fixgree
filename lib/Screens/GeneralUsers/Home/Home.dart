@@ -1,6 +1,7 @@
 
 import 'package:fixme/Screens/GeneralUsers/Chat/Chats.dart';
 import 'package:fixme/Screens/GeneralUsers/Home/Search.dart';
+import 'package:fixme/Screens/ArtisanUser/Profile/ArtisanPage.dart';
 import 'package:fixme/Services/location_service.dart';
 import 'package:fixme/Services/network_service.dart';
 import 'package:fixme/Utils/Provider.dart';
@@ -543,36 +544,57 @@ class Home extends StatelessWidget {
                           scrollDirection: Axis.horizontal,
                           itemCount: snapshot.data.length,
                           itemBuilder: (context, index) {
-                            return Container(
-                              padding: const EdgeInsets.only(
-                                  top: 12.0, left: 6),
-                              height: 140,
-                              child: Column(
-                                children: [
-                                CircleAvatar(
-                                  child: Text(''),
-                                  radius: 35,
-                                  backgroundImage:NetworkImage(
-                                      snapshot.data[index].urlAvatar=='no_picture_upload'||
-                                          snapshot.data[index].urlAvatar==null ?'https://uploads.fixme.ng/originals/no_picture_upload':
-                                      'https://uploads.fixme.ng/originals/${snapshot.data[index].urlAvatar}',
+                            return InkWell(
+                              onTap:(){
+                                 Navigator.push(
+        context,
+        PageRouteBuilder(
+          pageBuilder: (context, animation, secondaryAnimation) {
+            return ArtisanPage(
+                snapshot.data[index]
+            );
+          },
+          transitionsBuilder: (context, animation, secondaryAnimation, child) {
+            return FadeTransition(
+              opacity: animation,
+              child: child,
+            );
+          },
+        ),
+      );
+         
+                              },
+                              child: Container(
+                                padding: const EdgeInsets.only(
+                                    top: 12.0, left: 6),
+                                height: 140,
+                                child: Column(
+                                  children: [
+                                  CircleAvatar(
+                                    child: Text(''),
+                                    radius: 35,
+                                    backgroundImage:NetworkImage(
+                                        snapshot.data[index].urlAvatar=='no_picture_upload'||
+                                            snapshot.data[index].urlAvatar==null ?'https://uploads.fixme.ng/originals/no_picture_upload':
+                                        'https://uploads.fixme.ng/originals/${snapshot.data[index].urlAvatar}',
+                                    ),
+                                    foregroundColor: Colors.white,
+                                    backgroundColor: Colors.white,
                                   ),
-                                  foregroundColor: Colors.white,
-                                  backgroundColor: Colors.white,
+                                    Padding(
+                                      padding: const EdgeInsets.only(
+                                          right: 8.0),
+                                      child: Text(
+                                          '${snapshot.data[index].name}'),
+                                    ),
+                                    Padding(
+                                      padding: const EdgeInsets.only(
+                                          right: 8.0),
+                                      child: Text(
+                                          '${snapshot.data[index].userLastName}'),
+                                    )
+                                  ],
                                 ),
-                                  Padding(
-                                    padding: const EdgeInsets.only(
-                                        right: 8.0),
-                                    child: Text(
-                                        '${snapshot.data[index].name}'),
-                                  ),
-                                  Padding(
-                                    padding: const EdgeInsets.only(
-                                        right: 8.0),
-                                    child: Text(
-                                        '${snapshot.data[index].userLastName}'),
-                                  )
-                                ],
                               ),
                             );
                           },
@@ -620,36 +642,56 @@ class Home extends StatelessWidget {
                           scrollDirection: Axis.horizontal,
                           itemCount: snapshot.data.length,
                           itemBuilder: (context, index) {
-                            return Container(
-                              padding: const EdgeInsets.only(
-                                  top: 12.0, left: 6),
-                              height: 140,
-                              child: Column(
-                                children: [
-                                CircleAvatar(
-                                  child: Text(''),
-                                  radius: 35,
-                                  backgroundImage:NetworkImage(
-                                      snapshot.data[index].urlAvatar=='no_picture_upload'||
-                                          snapshot.data[index].urlAvatar==null ?'https://uploads.fixme.ng/originals/no_picture_upload':
-                                      'https://uploads.fixme.ng/originals/${snapshot.data[index].urlAvatar}',
+                            return InkWell(
+                              onTap: (){
+                                Navigator.push(
+        context,
+        PageRouteBuilder(
+          pageBuilder: (context, animation, secondaryAnimation) {
+            return ArtisanPage(
+                snapshot.data[index]
+            );
+          },
+          transitionsBuilder: (context, animation, secondaryAnimation, child) {
+            return FadeTransition(
+              opacity: animation,
+              child: child,
+            );
+          },
+        ),
+      );
+                              },
+                              child: Container(
+                                padding: const EdgeInsets.only(
+                                    top: 12.0, left: 6),
+                                height: 140,
+                                child: Column(
+                                  children: [
+                                  CircleAvatar(
+                                    child: Text(''),
+                                    radius: 35,
+                                    backgroundImage:NetworkImage(
+                                        snapshot.data[index].urlAvatar=='no_picture_upload'||
+                                            snapshot.data[index].urlAvatar==null ?'https://uploads.fixme.ng/originals/no_picture_upload':
+                                        'https://uploads.fixme.ng/originals/${snapshot.data[index].urlAvatar}',
+                                    ),
+                                    foregroundColor: Colors.white,
+                                    backgroundColor: Colors.white,
                                   ),
-                                  foregroundColor: Colors.white,
-                                  backgroundColor: Colors.white,
+                                    Padding(
+                                      padding: const EdgeInsets.only(
+                                          right: 8.0),
+                                      child: Text(
+                                          '${snapshot.data[index].name}'),
+                                    ),
+                                    Padding(
+                                      padding: const EdgeInsets.only(
+                                          right: 8.0),
+                                      child: Text(
+                                          '${snapshot.data[index].userLastName}'),
+                                    )
+                                  ],
                                 ),
-                                  Padding(
-                                    padding: const EdgeInsets.only(
-                                        right: 8.0),
-                                    child: Text(
-                                        '${snapshot.data[index].name}'),
-                                  ),
-                                  Padding(
-                                    padding: const EdgeInsets.only(
-                                        right: 8.0),
-                                    child: Text(
-                                        '${snapshot.data[index].userLastName}'),
-                                  )
-                                ],
                               ),
                             );
                           },

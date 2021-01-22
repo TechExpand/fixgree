@@ -1,3 +1,4 @@
+import 'package:fixme/Screens/ArtisanUser/ProfileSetUp/profileArtisan.dart';
 import 'package:fixme/Screens/ArtisanUser/RegisterArtisan/thankyou.dart';
 import 'package:fixme/Services/postrequest_service.dart';
 import 'package:fixme/Utils/Provider.dart';
@@ -11,14 +12,7 @@ class SignUpBvn extends StatefulWidget {
 }
 
 class SignUpBvnState extends State<SignUpBvn> {
-   @override
- void initState(){
-   super.initState();
-     WidgetsBinding.instance.addPostFrameCallback((timeStamp) {
-     PostRequestProvider postRequestProvider = Provider.of<PostRequestProvider>(context, listen:false);
-    postRequestProvider.getAllServices();
-    });
- }
+
   var password;
 
   @override
@@ -43,7 +37,7 @@ class SignUpBvnState extends State<SignUpBvn> {
             ),
             Container(
               width: MediaQuery.of(context).size.width / 0.2,
-              height: 50,
+              height: 55,
               child: TextFormField(
                 onChanged: (value) {
                   data.setBVN(value);
@@ -122,7 +116,7 @@ class SignUpBvnState extends State<SignUpBvn> {
                             PageRouteBuilder(
                               pageBuilder:
                                   (context, animation, secondaryAnimation) {
-                                return SignThankyou();
+                                return SignUpProfileSetupPage();
                               },
                               transitionsBuilder: (context, animation,
                                   secondaryAnimation, child) {

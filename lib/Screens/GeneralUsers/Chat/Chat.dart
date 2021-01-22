@@ -617,7 +617,7 @@ _start() async {
                 widget.user.idUser.toString().isEmpty ||
                 network.mobile_device_token == null || (widget.user.block??false)
                 ? () {
-                    data.makePhoneCall(widget.user.idUser);
+                    data.makePhoneCall(widget.user.userMobile);
                   }
                 : () {
                     datas.onJoin(

@@ -23,13 +23,13 @@ class _WalletWithdrawState extends State<WalletWithdraw> {
   TextEditingController bankName = new TextEditingController();
 
   BorderRadiusGeometry radiusTop = BorderRadius.only(
-    topLeft: Radius.circular(24.0),
-    topRight: Radius.circular(24.0),
+    topLeft: Radius.circular(15.0),
+    topRight: Radius.circular(15.0),
   );
 
   BorderRadiusGeometry radiusBottom = BorderRadius.only(
-    bottomLeft: Radius.circular(24.0),
-    bottomRight: Radius.circular(24.0),
+    bottomLeft: Radius.circular(15.0),
+    bottomRight: Radius.circular(15.0),
   );
 
   @override
@@ -88,7 +88,6 @@ class _WalletWithdrawState extends State<WalletWithdraw> {
                           Expanded(
                             child: TextFormField(
                               style: TextStyle(
-                                  fontFamily: 'Firesans',
                                   fontSize: 16,
                                   color: Color(0xFF270F33),
                                   fontWeight: FontWeight.w600),
@@ -96,9 +95,7 @@ class _WalletWithdrawState extends State<WalletWithdraw> {
                               decoration: InputDecoration.collapsed(
                                 hintText: 'Search bank',
                                 hintStyle: TextStyle(
-                                    fontFamily: 'Firesans',
-                                    fontSize: 16,
-                                    fontWeight: FontWeight.w600),
+                                    fontSize: 16, fontWeight: FontWeight.w600),
                                 focusColor: Color(0xFF2B1137),
                                 fillColor: Color(0xFF2B1137),
                                 hoverColor: Color(0xFF2B1137),
@@ -138,7 +135,6 @@ class _WalletWithdrawState extends State<WalletWithdraw> {
                                               // letterSpacing: 4,
                                               color: Colors.white,
                                               fontSize: 18,
-                                              fontFamily: 'Firesans',
                                               fontWeight: FontWeight.w600)),
                                     ],
                                   ),
@@ -196,7 +192,6 @@ class _WalletWithdrawState extends State<WalletWithdraw> {
                                               bankInfo.name.substring(0, 1),
                                               style: TextStyle(
                                                   color: Colors.white,
-                                                  fontFamily: 'Firesans',
                                                   fontSize: 16,
                                                   fontWeight: FontWeight.w600)),
                                         ),
@@ -204,7 +199,6 @@ class _WalletWithdrawState extends State<WalletWithdraw> {
                                           bankInfo.name,
                                           style: TextStyle(
                                               color: Colors.white,
-                                              fontFamily: 'Firesans',
                                               fontSize: 16,
                                               fontWeight: FontWeight.w600),
                                         ),
@@ -226,7 +220,6 @@ class _WalletWithdrawState extends State<WalletWithdraw> {
                                             // letterSpacing: 4,
                                             color: Colors.white,
                                             fontSize: 18,
-                                            fontFamily: 'Firesans',
                                             fontWeight: FontWeight.w600)),
                                   ],
                                 ),
@@ -271,21 +264,12 @@ class _WalletWithdrawState extends State<WalletWithdraw> {
             Row(
               children: [
                 Container(
-                  width: 12.0,
+                  width: 20.0,
                   height: 40.0,
                   color: Colors.transparent,
                 ),
-                Padding(
-                  padding: const EdgeInsets.only(right: 8.0),
-                  child: Container(
-                    height: 1.5,
-                    width: 19,
-                    color: Color(0xFFD1D1D3),
-                  ),
-                ),
                 Text('Wallet Withdrawal',
                     style: TextStyle(
-                        fontFamily: 'Firesans',
                         fontSize: 18,
                         color: Color(0xFF333333),
                         fontWeight: FontWeight.w600))
@@ -295,7 +279,7 @@ class _WalletWithdrawState extends State<WalletWithdraw> {
               child: Column(
                 children: [
                   Container(
-                    margin: const EdgeInsets.only(top: 10, right: 15, left: 15),
+                    margin: const EdgeInsets.only(top: 10, right: 20, left: 20),
                     height: 55,
                     alignment: Alignment.centerLeft,
                     width: deviceSize.width,
@@ -310,26 +294,17 @@ class _WalletWithdrawState extends State<WalletWithdraw> {
                           height: 40.0,
                           color: Colors.transparent,
                         ),
-                        Padding(
-                          padding: const EdgeInsets.only(right: 8.0),
-                          child: Container(
-                            height: 1.5,
-                            width: 19,
-                            color: Color(0xFFD1D1D3),
-                          ),
-                        ),
-                        Text('Transfer from',
+                        Text('Transfer from:',
                             style: TextStyle(
-                                fontFamily: 'Firesans',
-                                fontSize: 17,
-                                color: Color(0xFF333333),
-                                fontWeight: FontWeight.w600))
+                              fontSize: 17,
+                              color: Color(0xFF333333),
+                            ))
                       ],
                     ),
                   ),
                   Container(
-                    margin: const EdgeInsets.only(right: 15, left: 15),
-                    height: 110,
+                    margin: const EdgeInsets.only(right: 20, left: 20),
+                    height: 125,
                     decoration: BoxDecoration(
                       borderRadius: radiusBottom,
                       color: Color(0xFFFFFFFF),
@@ -346,16 +321,15 @@ class _WalletWithdrawState extends State<WalletWithdraw> {
                           mainAxisAlignment: MainAxisAlignment.center,
                           children: <Widget>[
                             Padding(
-                              padding: const EdgeInsets.only(top: 5),
+                              padding: const EdgeInsets.only(top: 7, bottom: 5),
                               child: Text(
                                   '${widget.userBankInfo.accountName}'
-                                      .capitalizeFirstOfEach,
+                                      .toUpperCase(),
                                   style: TextStyle(
                                       color: Color(0xFF333333),
-                                      fontSize: 21,
-                                      fontFamily: 'Firesans',
+                                      fontSize: 24,
                                       height: 1.4,
-                                      fontWeight: FontWeight.w500)),
+                                      fontWeight: FontWeight.w400)),
                             ),
                           ],
                         ),
@@ -366,13 +340,12 @@ class _WalletWithdrawState extends State<WalletWithdraw> {
                                 style: TextStyle(
                                     color: Color(0xFF333333),
                                     fontSize: 24,
-                                    fontFamily: 'Firesans',
                                     height: 1.5,
-                                    fontWeight: FontWeight.w600)),
+                                    fontWeight: FontWeight.w500)),
                           ],
                         ),
                         Padding(
-                          padding: const EdgeInsets.only(top: 5),
+                          padding: const EdgeInsets.only(top: 10),
                           child: Row(
                             mainAxisAlignment: MainAxisAlignment.center,
                             children: [
@@ -380,16 +353,16 @@ class _WalletWithdrawState extends State<WalletWithdraw> {
                                   style: TextStyle(
                                       // letterSpacing: 4,
                                       color: Color(0xFF333333),
-                                      fontSize: 18,
-                                      fontFamily: 'Firesans',
-                                      fontWeight: FontWeight.w600)),
-                              Text(widget.userBankInfo.accountNumber,
+                                      fontSize: 21,
+                                      fontWeight: FontWeight.w400)),
+                              Text(
+                                  '***' +
+                                      widget.userBankInfo.accountNumber
+                                          .substring(6),
                                   style: TextStyle(
-                                      // letterSpacing: 4,
                                       color: Color(0xFF333333),
-                                      fontSize: 18,
-                                      fontFamily: 'Firesans',
-                                      fontWeight: FontWeight.w600)),
+                                      fontSize: 24,
+                                      fontWeight: FontWeight.w400)),
                             ],
                           ),
                         ),
@@ -403,7 +376,7 @@ class _WalletWithdrawState extends State<WalletWithdraw> {
               child: Column(
                 children: [
                   Container(
-                    margin: const EdgeInsets.only(top: 20, right: 15, left: 15),
+                    margin: const EdgeInsets.only(top: 20, right: 20, left: 20),
                     height: 55,
                     decoration: BoxDecoration(
                       borderRadius: radiusTop,
@@ -416,25 +389,16 @@ class _WalletWithdrawState extends State<WalletWithdraw> {
                           height: 40.0,
                           color: Colors.transparent,
                         ),
-                        Padding(
-                          padding: const EdgeInsets.only(right: 8.0),
-                          child: Container(
-                            height: 1.5,
-                            width: 19,
-                            color: Color(0xFFD1D1D3),
-                          ),
-                        ),
-                        Text('Transfer to',
+                        Text('Transfer to:',
                             style: TextStyle(
-                                fontFamily: 'Firesans',
-                                fontSize: 17,
-                                color: Color(0xFF333333),
-                                fontWeight: FontWeight.w600))
+                              fontSize: 17,
+                              color: Color(0xFF333333),
+                            ))
                       ],
                     ),
                   ),
                   Container(
-                    margin: const EdgeInsets.only(right: 15, left: 15),
+                    margin: const EdgeInsets.only(right: 20, left: 20),
                     height: 190,
                     decoration: BoxDecoration(
                       borderRadius: radiusBottom,
@@ -456,11 +420,11 @@ class _WalletWithdrawState extends State<WalletWithdraw> {
                             },
                             child: AbsorbPointer(
                               child: Container(
-                                height: 55,
+                                height: 50,
                                 alignment: Alignment.center,
-                                padding: const EdgeInsets.only(left: 12),
+                                padding: const EdgeInsets.only(left: 15),
                                 margin: const EdgeInsets.only(
-                                    bottom: 3, left: 12, right: 12, top: 12),
+                                    bottom: 3, left: 12, right: 12, top: 15),
                                 decoration: BoxDecoration(
                                     color: Color(0xFFFFFFFF),
                                     border: model.getBankNameStatus
@@ -474,7 +438,7 @@ class _WalletWithdrawState extends State<WalletWithdraw> {
                                           offset: Offset(0.3, 4.0))
                                     ],
                                     borderRadius:
-                                        BorderRadius.all(Radius.circular(7))),
+                                        BorderRadius.all(Radius.circular(35))),
                                 child: Row(
                                   mainAxisAlignment:
                                       MainAxisAlignment.spaceBetween,
@@ -483,7 +447,6 @@ class _WalletWithdrawState extends State<WalletWithdraw> {
                                       child: TextFormField(
                                         keyboardType: TextInputType.number,
                                         style: TextStyle(
-                                            fontFamily: 'Firesans',
                                             fontSize: 16,
                                             color: Color(0xFF270F33),
                                             fontWeight: FontWeight.w600),
@@ -491,7 +454,6 @@ class _WalletWithdrawState extends State<WalletWithdraw> {
                                         decoration: InputDecoration.collapsed(
                                           hintText: 'Select bank',
                                           hintStyle: TextStyle(
-                                              fontFamily: 'Firesans',
                                               fontSize: 16,
                                               fontWeight: FontWeight.w600),
                                           focusColor: Color(0xFF2B1137),
@@ -501,7 +463,7 @@ class _WalletWithdrawState extends State<WalletWithdraw> {
                                       ),
                                     ),
                                     Padding(
-                                      padding: const EdgeInsets.only(right: 10),
+                                      padding: const EdgeInsets.only(right: 13),
                                       child: Icon(
                                         FeatherIcons.arrowDown,
                                         color: Color(0xFF555555),
@@ -516,12 +478,11 @@ class _WalletWithdrawState extends State<WalletWithdraw> {
                           Row(
                             children: <Widget>[
                               Padding(
-                                padding: const EdgeInsets.only(left: 14),
+                                padding: const EdgeInsets.only(left: 16),
                                 child: Text('Account number',
                                     style: TextStyle(
                                         color: Color(0xFF4B4B4B),
-                                        fontSize: 18,
-                                        fontFamily: 'Firesans',
+                                        fontSize: 17,
                                         height: 1.4,
                                         fontWeight: FontWeight.w600)),
                               ),
@@ -530,11 +491,11 @@ class _WalletWithdrawState extends State<WalletWithdraw> {
                           Consumer<BankProvider>(
                               builder: (context, model, widget) {
                             return Container(
-                              height: 55,
+                              height: 50,
                               alignment: Alignment.center,
-                              padding: const EdgeInsets.only(left: 12),
+                              padding: const EdgeInsets.only(left: 17),
                               margin: const EdgeInsets.only(
-                                  bottom: 6, left: 12, right: 12, top: 6),
+                                  bottom: 6, left: 12, right: 12, top: 10),
                               decoration: BoxDecoration(
                                   color: Color(0xFFFFFFFF),
                                   border: model.getAccountNoStatus
@@ -548,19 +509,11 @@ class _WalletWithdrawState extends State<WalletWithdraw> {
                                         offset: Offset(0.3, 4.0))
                                   ],
                                   borderRadius:
-                                      BorderRadius.all(Radius.circular(7))),
+                                      BorderRadius.all(Radius.circular(35))),
                               child: Row(
                                 mainAxisAlignment:
                                     MainAxisAlignment.spaceBetween,
                                 children: [
-                                  Padding(
-                                    padding: const EdgeInsets.only(right: 10),
-                                    child: Icon(
-                                      FeatherIcons.user,
-                                      color: Color(0xFF555555),
-                                      size: 20,
-                                    ),
-                                  ),
                                   Expanded(
                                     child: TextFormField(
                                       onChanged: (val) {
@@ -569,7 +522,6 @@ class _WalletWithdrawState extends State<WalletWithdraw> {
                                       autofocus: false,
                                       keyboardType: TextInputType.number,
                                       style: TextStyle(
-                                          fontFamily: 'Firesans',
                                           fontSize: 16,
                                           color: Color(0xFF270F33),
                                           fontWeight: FontWeight.w600),
@@ -595,7 +547,6 @@ class _WalletWithdrawState extends State<WalletWithdraw> {
                                     style: TextStyle(
                                         color: Color(0xFF9B049B),
                                         fontSize: 16,
-                                        fontFamily: 'Firesans',
                                         height: 1.4,
                                         fontWeight: FontWeight.w600)),
                               ),
@@ -609,79 +560,83 @@ class _WalletWithdrawState extends State<WalletWithdraw> {
               ),
             ),
             Consumer<BankProvider>(builder: (context, model, widget) {
-              return Container(
-                height: 50,
-                margin: const EdgeInsets.only(
-                    top: 10, left: 15, right: 15, bottom: 20),
-                decoration: BoxDecoration(
-                  borderRadius: BorderRadius.all(Radius.circular(25)),
-                  color: Color(0xFF9B049B),
-                ),
-                child: new FlatButton(
-                  padding: EdgeInsets.all(10),
-                  onPressed: () async {
-                    if (bankName.text.isEmpty) {
-                      model.setBankNameStatus = true;
-                    } else if (model.getAccountNumber.isEmpty) {
-                      model.setAccountNoStatus = true;
-                    } else {
-                      model.setIsValidated = false;
-                      model.setAccountName =
-                          await network.validateUserAccountName(
-                              accountNumber: model.getAccountNumber,
-                              bankCode: model.getUserBankInfo.code);
-                      if (model.getAccountName.isNotEmpty) {
-                        Navigator.of(context).push(
-                          PageRouteBuilder(
-                            pageBuilder:
-                                (context, animation, secondaryAnimation) {
-                              return WalletWithdrawCompleteWithdrawal(
-                                  bankInfo: model.getUserBankInfo,
-                                  accountName: model.getAccountName,
-                                  accountNumber: model.getAccountNumber);
-                            },
-                            transitionsBuilder: (context, animation,
-                                secondaryAnimation, child) {
-                              return FadeTransition(
-                                opacity: animation,
-                                child: child,
+              return model.getIsValidated
+                  ? Container(
+                      height: 50,
+                      margin: const EdgeInsets.only(
+                          top: 25, left: 15, right: 15, bottom: 20),
+                      decoration: BoxDecoration(
+                        borderRadius: BorderRadius.all(Radius.circular(25)),
+                        color: Color(0xFF9B049B),
+                      ),
+                      child: new FlatButton(
+                        padding: EdgeInsets.all(10),
+                        onPressed: () async {
+                          if (bankName.text.isEmpty) {
+                            model.setBankNameStatus = true;
+                          } else if (model.getAccountNumber.isEmpty) {
+                            model.setAccountNoStatus = true;
+                          } else {
+                            model.setIsValidated = false;
+                            model.setAccountName =
+                                await network.validateUserAccountName(
+                                    accountNumber: model.getAccountNumber,
+                                    bankCode: model.getUserBankInfo.code);
+                            if (model.getAccountName.isNotEmpty) {
+                              Navigator.of(context).push(
+                                PageRouteBuilder(
+                                  pageBuilder:
+                                      (context, animation, secondaryAnimation) {
+                                    return WalletWithdrawCompleteWithdrawal(
+                                        bankInfo: model.getUserBankInfo,
+                                        accountName: model.getAccountName,
+                                        accountNumber: model.getAccountNumber);
+                                  },
+                                  transitionsBuilder: (context, animation,
+                                      secondaryAnimation, child) {
+                                    return FadeTransition(
+                                      opacity: animation,
+                                      child: child,
+                                    );
+                                  },
+                                ),
                               );
-                            },
-                          ),
-                        );
-                      } else {}
-                    }
-                  },
-                  child: Padding(
-                    padding: const EdgeInsets.only(left: 7, right: 7),
-                    child: Row(
-                      mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                      children: [
-                        Text(
-                          'Confirm Receiver',
-                          style: TextStyle(
-                              color: Colors.white,
-                              fontFamily: 'Firesans',
-                              fontSize: 17,
-                              fontWeight: FontWeight.w600),
-                        ),
-                        Container(
-                            height: 25,
-                            width: 25,
-                            child: model.getIsValidated
-                                ? Icon(
-                                    FeatherIcons.arrowRightCircle,
+                            } else {}
+                          }
+                        },
+                        child: Padding(
+                          padding: const EdgeInsets.only(left: 7, right: 7),
+                          child: Row(
+                            mainAxisAlignment: MainAxisAlignment.center,
+                            children: [
+                              Text(
+                                'Confirm Receiver',
+                                style: TextStyle(
                                     color: Colors.white,
-                                  )
-                                : CircularProgressIndicator(
-                                    strokeWidth: 2,
-                                    backgroundColor: Colors.white,
-                                  )),
-                      ],
-                    ),
-                  ),
-                ),
-              );
+                                    fontSize: 17,
+                                    fontWeight: FontWeight.w600),
+                              ),
+                            ],
+                          ),
+                        ),
+                      ),
+                    )
+                  : Container(
+                      margin: const EdgeInsets.only(top: 25, bottom: 20),
+                      child: Row(
+                        mainAxisAlignment: MainAxisAlignment.center,
+                        children: [
+                          SizedBox(
+                            width: 35,
+                            height: 35,
+                            child: CircularProgressIndicator(
+                              strokeWidth: 2,
+                              backgroundColor: Colors.white,
+                            ),
+                          ),
+                        ],
+                      ),
+                    );
             }),
           ],
         ),

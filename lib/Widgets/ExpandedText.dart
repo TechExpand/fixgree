@@ -26,7 +26,7 @@ class ExpandableTextState extends State<ExpandableText> {
   Widget build(BuildContext context) {
     final DefaultTextStyle defaultTextStyle = DefaultTextStyle.of(context);
     final colorClickableText = Color(0xFF9B049B);
-    final widgetColor = Colors.black;
+
     TextSpan link = TextSpan(
       text: _readMore ? "... more" : "... less",
       style: TextStyle(
@@ -69,13 +69,17 @@ class ExpandableTextState extends State<ExpandableText> {
                 ? widget.text.substring(0, endIndex)
                 : widget.text,
             style: TextStyle(
-              color: widgetColor,
+              color:  Colors.black,
               height: 1.5,
             ),
             children: <TextSpan>[link],
           );
         } else {
           textSpan = TextSpan(
+            style: TextStyle(
+              color:  Colors.black,
+              height: 1.5,
+            ),
             text: widget.text,
           );
         }
@@ -83,6 +87,7 @@ class ExpandableTextState extends State<ExpandableText> {
           softWrap: true,
           overflow: TextOverflow.clip,
           text: textSpan,
+
         );
       },
     );
