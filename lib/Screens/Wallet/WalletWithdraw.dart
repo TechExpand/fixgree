@@ -18,7 +18,7 @@ class WalletWithdraw extends StatefulWidget {
 }
 
 class _WalletWithdrawState extends State<WalletWithdraw> {
-  TextEditingController accountNo = new TextEditingController();
+  // TextEditingController accountNo = new TextEditingController();
   TextEditingController searchBank = new TextEditingController();
 
   BorderRadiusGeometry radiusTop = BorderRadius.only(
@@ -365,7 +365,7 @@ class _WalletWithdrawState extends State<WalletWithdraw> {
                                               fontSize: 16,
                                               color: Color(0xFF270F33),
                                               fontWeight: FontWeight.w600),
-                                          controller: accountNo,
+                                          controller: model.accountNumber,
                                           decoration: InputDecoration.collapsed(
                                             hintText: '',
                                             focusColor: Color(0xFF2B1137),
@@ -389,7 +389,8 @@ class _WalletWithdrawState extends State<WalletWithdraw> {
                                           PageRouteBuilder(
                                             pageBuilder: (context, animation,
                                                 secondaryAnimation) {
-                                              return SeeBeneficiaries();
+                                              return SeeBeneficiaries(
+                                                  model: model);
                                             },
                                             transitionsBuilder: (context,
                                                 animation,
@@ -444,26 +445,34 @@ class _WalletWithdrawState extends State<WalletWithdraw> {
                                         accountNumber: model.getAccountNumber,
                                         bankCode: model.getUserBankInfo.code);
                                 if (model.getAccountName.isNotEmpty) {
-                                  Navigator.of(context).push(
-                                    PageRouteBuilder(
-                                      pageBuilder: (context, animation,
-                                          secondaryAnimation) {
-                                        return WalletWithdrawCompleteWithdrawal(
-                                            bankInfo: model.getUserBankInfo,
-                                            accountName: model.getAccountName,
-                                            accountNumber:
-                                                model.getAccountNumber);
-                                      },
-                                      transitionsBuilder: (context, animation,
-                                          secondaryAnimation, child) {
-                                        return FadeTransition(
-                                          opacity: animation,
-                                          child: child,
-                                        );
-                                      },
-                                    ),
-                                  );
-                                } else {}
+                                  if (model.getAccountName ==
+                                      'Invalid Bank Info!') {
+                                    ScaffoldMessenger.of(context)
+                                        .showSnackBar(SnackBar(
+                                      content: Text("Invalid Bank Info!"),
+                                    ));
+                                  } else {
+                                    Navigator.of(context).push(
+                                      PageRouteBuilder(
+                                        pageBuilder: (context, animation,
+                                            secondaryAnimation) {
+                                          return WalletWithdrawCompleteWithdrawal(
+                                              bankInfo: model.getUserBankInfo,
+                                              accountName: model.getAccountName,
+                                              accountNumber:
+                                                  model.getAccountNumber);
+                                        },
+                                        transitionsBuilder: (context, animation,
+                                            secondaryAnimation, child) {
+                                          return FadeTransition(
+                                            opacity: animation,
+                                            child: child,
+                                          );
+                                        },
+                                      ),
+                                    );
+                                  }
+                                }
                               }
                             },
                             child: Padding(

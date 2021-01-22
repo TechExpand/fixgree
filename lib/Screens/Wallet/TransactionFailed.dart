@@ -34,7 +34,6 @@ class _TransactionFailedState extends State<TransactionFailed> {
                 style: TextStyle(
                     color: Colors.white,
                     fontSize: 18,
-                    fontFamily: 'Firesans',
                     height: 1.4,
                     fontWeight: FontWeight.w600)),
           )),
@@ -68,14 +67,12 @@ class _TransactionFailedState extends State<TransactionFailed> {
                         style: TextStyle(
                             color: Color(0xFF555555),
                             fontSize: 18,
-                            fontFamily: 'Firesans',
                             height: 1.4,
                             fontWeight: FontWeight.w600)),
                     Text('${widget.message} ',
                         style: TextStyle(
                             color: Color(0xFF555555),
                             fontSize: 16,
-                            fontFamily: 'Firesans',
                             height: 1.4,
                             fontWeight: FontWeight.w400)),
                   ],
@@ -102,7 +99,6 @@ class _TransactionFailedState extends State<TransactionFailed> {
                             'Try again',
                             style: TextStyle(
                                 color: Colors.white,
-                                fontFamily: 'Firesans',
                                 fontSize: 17,
                                 fontWeight: FontWeight.w600),
                           ),

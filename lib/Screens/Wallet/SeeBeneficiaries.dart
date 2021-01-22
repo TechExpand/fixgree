@@ -1,11 +1,16 @@
 import 'package:fixme/Model/Beneficiary.dart';
 import 'package:fixme/Services/network_service.dart';
 import 'package:flutter/material.dart';
+import 'package:fixme/Screens/Wallet/Providers/BankProvider.dart';
+import 'package:fixme/Model/BankInfo.dart';
 import "package:flutter_feather_icons/flutter_feather_icons.dart";
 import 'package:provider/provider.dart';
 
 class SeeBeneficiaries extends StatefulWidget {
-  SeeBeneficiaries({Key key}) : super(key: key);
+  BankProvider model;
+  bool isWalletTransfer;
+  SeeBeneficiaries({Key key, this.model, this.isWalletTransfer = false})
+      : super(key: key);
 
   @override
   _SeeBeneficiariesState createState() => _SeeBeneficiariesState();
@@ -152,13 +157,12 @@ class _SeeBeneficiariesState extends State<SeeBeneficiaries> {
                                             Radius.circular(13))),
                                     child: ListTile(
                                       onTap: () {
-                                        // widget.provider.bankName.text =
-                                        //     filteredItems[index].name;
-                                        // widget.provider.setUserBankInfo =
-                                        //     filteredItems[index];
-                                        // widget.provider.setBankNameStatus =
-                                        //     false;
-                                        // Navigator.pop(context);
+                                        widget.model.bankName.text =
+                                            filteredItems[index].accountName;
+                                        widget.model.setAccountNumber =
+                                            filteredItems[index].accountNumber;
+                                        widget.model.setBankNameStatus = false;
+                                        Navigator.pop(context);
                                       },
                                       leading: CircleAvatar(
                                         backgroundColor:
@@ -213,13 +217,18 @@ class _SeeBeneficiariesState extends State<SeeBeneficiaries> {
                                             Radius.circular(13))),
                                     child: ListTile(
                                       onTap: () {
-                                        // widget.provider.bankName.text =
-                                        //     userItems[index].name;
-                                        // widget.provider.setUserBankInfo =
-                                        //     userItems[index];
-                                        // widget.provider.setBankNameStatus =
-                                        //     false;
-                                        // Navigator.pop(context);
+                                        BankInfo bankInfo = BankInfo(
+                                            code: userItems[index].bankCode,
+                                            name: userItems[index].bankName);
+                                        widget.model.bankName.text =
+                                            userItems[index].bankName;
+                                        widget.model.accountNumber.text =
+                                            userItems[index].accountNumber;
+                                        widget.model.setAccountNumber =
+                                            userItems[index].accountNumber;
+                                        widget.model.setUserBankInfo = bankInfo;
+                                        widget.model.setBankNameStatus = false;
+                                        Navigator.pop(context);
                                       },
                                       leading: CircleAvatar(
                                         backgroundColor:

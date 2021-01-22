@@ -10,6 +10,7 @@ class BankProvider extends ChangeNotifier {
   }
 
   TextEditingController bankName = new TextEditingController();
+  TextEditingController accountNumber = new TextEditingController();
 
   bool _isAccountNoEmpty = false;
   bool get getAccountNoStatus => _isAccountNoEmpty;

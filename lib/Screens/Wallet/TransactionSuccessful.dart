@@ -31,7 +31,6 @@ class _TransactionSuccessfulState extends State<TransactionSuccessful> {
                 style: TextStyle(
                     color: Colors.white,
                     fontSize: 18,
-                    fontFamily: 'Firesans',
                     height: 1.4,
                     fontWeight: FontWeight.w600)),
           )),
@@ -61,14 +60,12 @@ class _TransactionSuccessfulState extends State<TransactionSuccessful> {
                         style: TextStyle(
                             color: Color(0xFF555555),
                             fontSize: 18,
-                            fontFamily: 'Firesans',
                             height: 1.4,
                             fontWeight: FontWeight.w600)),
                     Text('You will receive an alert soon ',
                         style: TextStyle(
                             color: Color(0xFF555555),
                             fontSize: 16,
-                            fontFamily: 'Firesans',
                             height: 1.4,
                             fontWeight: FontWeight.w400)),
                   ],
@@ -109,7 +106,6 @@ class _TransactionSuccessfulState extends State<TransactionSuccessful> {
                             'Continue',
                             style: TextStyle(
                                 color: Colors.white,
-                                fontFamily: 'Firesans',
                                 fontSize: 17,
                                 fontWeight: FontWeight.w600),
                           ),

@@ -274,13 +274,11 @@ class WebServices extends ChangeNotifier {
           'Authorization': 'Bearer $Bearer',
         });
     var body = json.decode(response.body);
-    return body['account_name'];
-    // notifyListeners();
-    // if (body['reqRes'] == 'true') {
-    //   return result;
-    // } else if (body['reqRes'] == 'false') {
-    //   print('failed');
-    // }
+    if (body['reqRes'] == 'true') {
+      return body['account_name'];
+    } else if (body['reqRes'] == 'false') {
+      return body['message'];
+    }
   }
 
   Future<dynamic> checkSecurePin() async {

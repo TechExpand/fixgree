@@ -355,7 +355,8 @@ class _WalletPayState extends State<WalletPay> {
                                                   pageBuilder: (context,
                                                       animation,
                                                       secondaryAnimation) {
-                                                    return SeeBeneficiaries();
+                                                    return SeeBeneficiaries(
+                                                        model: model);
                                                   },
                                                   transitionsBuilder: (context,
                                                       animation,
@@ -448,7 +449,6 @@ class _WalletPayState extends State<WalletPay> {
                               padding: EdgeInsets.all(10),
                               onPressed: () async {
                                 if (model.getAccountNumber.isEmpty) {
-                                  print('Its empty');
                                   model.setAccountNoStatus = true;
                                 } else {
                                   model.setIsValidated = false;
@@ -456,28 +456,41 @@ class _WalletPayState extends State<WalletPay> {
                                       await network.validateUserAccountName(
                                           accountNumber: model.getAccountNumber,
                                           bankCode: '101');
+                                  print('The name: ' + model.getAccountName);
                                   BankInfo bankInfo = BankInfo(
                                       code: '101', name: 'Providus Bank');
+
                                   if (model.getAccountName.isNotEmpty) {
-                                    Navigator.of(context).push(
-                                      PageRouteBuilder(
-                                        pageBuilder: (context, animation,
-                                            secondaryAnimation) {
-                                          return WalletPayCompletePayment(
-                                              accountNumber:
-                                                  model.getAccountNumber,
-                                              accountName: model.getAccountName,
-                                              bankInfo: bankInfo);
-                                        },
-                                        transitionsBuilder: (context, animation,
-                                            secondaryAnimation, child) {
-                                          return FadeTransition(
-                                            opacity: animation,
-                                            child: child,
-                                          );
-                                        },
-                                      ),
-                                    );
+                                    if (model.getAccountName ==
+                                        'Invalid Bank Info!') {
+                                      ScaffoldMessenger.of(context)
+                                          .showSnackBar(SnackBar(
+                                        content: Text("Invalid Bank Info!"),
+                                      ));
+                                    } else {
+                                      Navigator.of(context).push(
+                                        PageRouteBuilder(
+                                          pageBuilder: (context, animation,
+                                              secondaryAnimation) {
+                                            return WalletPayCompletePayment(
+                                                accountNumber:
+                                                    model.getAccountNumber,
+                                                accountName:
+                                                    model.getAccountName,
+                                                bankInfo: bankInfo);
+                                          },
+                                          transitionsBuilder: (context,
+                                              animation,
+                                              secondaryAnimation,
+                                              child) {
+                                            return FadeTransition(
+                                              opacity: animation,
+                                              child: child,
+                                            );
+                                          },
+                                        ),
+                                      );
+                                    }
                                   }
                                 }
                               },

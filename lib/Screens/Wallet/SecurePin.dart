@@ -9,8 +9,8 @@ import 'package:provider/provider.dart';
 import 'package:flutter_multi_formatter/flutter_multi_formatter.dart';
 
 BorderRadiusGeometry radiusTop = BorderRadius.only(
-  topLeft: Radius.circular(25.0),
-  topRight: Radius.circular(25.0),
+  topLeft: Radius.circular(15.0),
+  topRight: Radius.circular(15.0),
 );
 
 displayCreateSecurePinBottomModal(
@@ -61,7 +61,6 @@ displayCreateSecurePinBottomModal(
                       ),
                       Text('Set a secure pin',
                           style: TextStyle(
-                              fontFamily: 'Firesans',
                               fontSize: 17,
                               color: Color(0xFF333333),
                               fontWeight: FontWeight.w600))
@@ -77,7 +76,6 @@ displayCreateSecurePinBottomModal(
                             style: TextStyle(
                                 color: Color(0xFF555555),
                                 fontSize: 18,
-                                fontFamily: 'Firesans',
                                 height: 1.4,
                                 fontWeight: FontWeight.w500)),
                       ],
@@ -120,7 +118,6 @@ displayCreateSecurePinBottomModal(
                               model.setPin = val;
                             },
                             style: TextStyle(
-                                fontFamily: 'Firesans',
                                 fontSize: 16,
                                 color: Color(0xFF270F33),
                                 fontWeight: FontWeight.w600),
@@ -128,9 +125,7 @@ displayCreateSecurePinBottomModal(
                             decoration: InputDecoration.collapsed(
                               hintText: 'Enter secure pin',
                               hintStyle: TextStyle(
-                                  fontFamily: 'Firesans',
-                                  fontSize: 16,
-                                  fontWeight: FontWeight.w600),
+                                  fontSize: 16, fontWeight: FontWeight.w600),
                               focusColor: Color(0xFF2B1137),
                               fillColor: Color(0xFF2B1137),
                               hoverColor: Color(0xFF2B1137),
@@ -185,7 +180,6 @@ displayCreateSecurePinBottomModal(
                               'Add Pin',
                               style: TextStyle(
                                   color: Colors.white,
-                                  fontFamily: 'Firesans',
                                   fontSize: 17,
                                   fontWeight: FontWeight.w600),
                             ),
@@ -238,7 +232,7 @@ displayEnterSecurePinBottomModal(
               return Container(
                 height: deviceSize.height / 2,
                 decoration: BoxDecoration(
-                    color: Color(0xFFF0F0F0), borderRadius: radiusTop),
+                    color: Color(0xFFFFFFFF), borderRadius: radiusTop),
                 padding: EdgeInsets.only(bottom: viewInsets.bottom, top: 5),
                 child: Column(
                   mainAxisSize: MainAxisSize.min,
@@ -246,7 +240,7 @@ displayEnterSecurePinBottomModal(
                     Row(
                       children: [
                         Container(
-                          width: 12.0,
+                          width: 15.0,
                           height: 45.0,
                           color: Colors.transparent,
                         ),
@@ -405,7 +399,6 @@ displayEnterSecurePinBottomModal(
                                       'Pay',
                                       style: TextStyle(
                                           color: Colors.white,
-                                          fontFamily: 'Firesans',
                                           fontSize: 17,
                                           fontWeight: FontWeight.w600),
                                     ),
