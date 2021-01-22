@@ -113,7 +113,7 @@ class _WalletWithdrawCompleteWithdrawalState
                   ),
                   Container(
                     // margin: const EdgeInsets.only(right: 25, left: 25),
-                    height: 168,
+                    height: 165,
                     decoration: BoxDecoration(
                       borderRadius: radiusBottom,
                       color: Color(0xFFFFFFFF),
@@ -134,7 +134,7 @@ class _WalletWithdrawCompleteWithdrawalState
                               Text('${widget.accountName}',
                                   style: TextStyle(
                                     color: Color(0xFF333333),
-                                    fontSize: 24,
+                                    fontSize: 21,
                                     height: 1.4,
                                   )),
                             ],

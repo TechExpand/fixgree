@@ -105,7 +105,7 @@ class _WalletPayCompletePaymentState extends State<WalletPayCompletePayment> {
                   ),
                   Container(
                     // margin: const EdgeInsets.only(right: 25, left: 25),
-                    height: 130,
+                    height: 140,
                     decoration: BoxDecoration(
                       borderRadius: radiusBottom,
                       color: Color(0xFFFFFFFF),

@@ -154,7 +154,7 @@ class _WalletPayState extends State<WalletPay> {
                     ),
                     Container(
                       // margin: const EdgeInsets.only(right: 25, left: 25),
-                      height: 125,
+                      height: 135,
                       decoration: BoxDecoration(
                         borderRadius: radiusBottom,
                         color: Color(0xFFFFFFFF),
@@ -260,7 +260,7 @@ class _WalletPayState extends State<WalletPay> {
                             Container(
                               // margin:
                               //     const EdgeInsets.only(right: 25, left: 25),
-                              height: 140,
+                              height: 150,
                               decoration: BoxDecoration(
                                 borderRadius: radiusBottom,
                                 color: Color(0xFFFFFFFF),

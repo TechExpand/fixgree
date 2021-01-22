@@ -116,7 +116,7 @@ class _WalletWithdrawState extends State<WalletWithdraw> {
                       ),
                       Container(
                         // margin: const EdgeInsets.only(right: 25, left: 25),
-                        height: 125,
+                        height: 135,
                         decoration: BoxDecoration(
                           borderRadius: radiusBottom,
                           color: Color(0xFFFFFFFF),
@@ -217,7 +217,7 @@ class _WalletWithdrawState extends State<WalletWithdraw> {
                       ),
                       Container(
                         // margin: const EdgeInsets.only(right: 25, left: 25),
-                        height: 190,
+                        height: 200,
                         decoration: BoxDecoration(
                           borderRadius: radiusBottom,
                           color: Color(0xFFFFFFFF),

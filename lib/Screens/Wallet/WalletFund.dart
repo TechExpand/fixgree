@@ -136,7 +136,7 @@ class _WalletFundState extends State<WalletFund> {
                 ),
                 Container(
                   // margin: const EdgeInsets.only(bottom: 15),
-                  height: 115,
+                  height: 125,
                   decoration: BoxDecoration(
                     borderRadius: radiusBottom,
                     color: Color(0xFFFFFFFF),
