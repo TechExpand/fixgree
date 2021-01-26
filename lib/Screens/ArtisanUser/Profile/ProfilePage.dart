@@ -1,7 +1,9 @@
 import 'package:fixme/Screens/GeneralUsers/Home/HomePage.dart';
+import 'package:fixme/Services/location_service.dart';
 import 'package:fixme/Services/network_service.dart';
 import 'package:fixme/Widgets/photoView.dart';
 import 'package:flutter/material.dart';
+import 'package:geocoder/geocoder.dart';
 import 'package:provider/provider.dart';
 import 'package:fixme/Screens/ArtisanUser/Profile/ArtisanPage.dart';
 import 'package:fixme/Widgets/ExpandedText.dart';
@@ -13,7 +15,26 @@ class ProfilePage extends StatefulWidget {
 }
 
 class _ProfilePageState extends State<ProfilePage> {
-   
+    var first;
+  @override
+  void initState(){
+    super.initState();
+    address();
+  }
+
+
+
+  address()async{
+    var location = Provider.of<LocationService>(context);
+    final coordinates = new Coordinates(location.location_longitude, location.location_latitude);
+    var addresses = await Geocoder.local.findAddressesFromCoordinates(coordinates);
+    setState(() {
+      first = addresses.first;
+    });
+  }
+
+
+
   @override
   Widget build(BuildContext context) {
     var network = Provider.of<WebServices>(context, listen: false);
@@ -83,7 +104,9 @@ class _ProfilePageState extends State<ProfilePage> {
                               padding: const EdgeInsets.only(left:6.8, bottom: 6),
                               child: Row(children: [
                                 Icon(Icons.pin_drop, color: Color(0xFF9B049B)),
-                                Text('Calabar, Nigeria',  style: TextStyle(fontWeight: FontWeight.w500),),
+                                  Container(
+                              width: 200,
+                              child: Text('${first==null?'Location':first.addressLine}',  style: TextStyle(fontWeight: FontWeight.w500),)),
                                 ],
                                 ),
                             ),
@@ -162,7 +185,7 @@ SizedBox(width: 10,),
                       height: 1,),
              ),
                       snapshot.data['role']=='artisan'?FutureBuilder(
-   future: network.getServiceImage(network.user_id),
+   future: network.getServiceImage(network.user_id, network.user_id),
    builder: (context, snapshot) {
      return Column(
        crossAxisAlignment: CrossAxisAlignment.start ,
@@ -220,7 +243,7 @@ SizedBox(width: 10,),
      );
    }
  ):FutureBuilder(
-                          future: network.getProductImage(network.user_id),
+                          future: network.getProductImage(network.user_id,network.user_id),
                           builder: (context, snapshot) {
                             return Column(
                               crossAxisAlignment: CrossAxisAlignment.start ,

@@ -6,6 +6,7 @@ import 'package:fixme/Screens/GeneralUsers/Wallet/Wallet.dart';
 import 'package:fixme/Screens/GeneralUsers/pending/pendingpage.dart';
 import 'package:fixme/Screens/GeneralUsers/postrequest/postrequest.dart';
 import 'package:fixme/Utils/Provider.dart';
+import 'package:fixme/Services/postrequest_service.dart';
 import 'package:fixme/Utils/utils.dart';
 import 'package:fixme/Services/location_service.dart';
 import 'package:fixme/Services/network_service.dart';
@@ -40,6 +41,11 @@ class _HomePageState extends State<HomePage> {
     Provider.of<LocationService>(context, listen: false).getCurrentLocation();
     _myPage =
         PageController(initialPage: 0, viewportFraction: 1, keepPage: true);
+
+        WidgetsBinding.instance.addPostFrameCallback((timeStamp) {
+      PostRequestProvider postRequestProvider = Provider.of<PostRequestProvider>(context, listen:false);
+      postRequestProvider.getAllServices();
+    });
       
   }
 

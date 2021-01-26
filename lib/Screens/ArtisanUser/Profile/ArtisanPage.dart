@@ -84,8 +84,39 @@ class ArtisanPageState extends State<ArtisanPage> {
                         child: Row(children: [
                           Icon(Icons.pin_drop, color: Color(0xFF9B049B)),
                           Container(
-                              width: 200,
+                              width: 80,
                               child: Text('${first==null?'Location':first.addressLine}',  style: TextStyle(fontWeight: FontWeight.w500),)),
+                               Container(
+                    margin: EdgeInsets.only(left: 10),
+                    height: 45,
+                    decoration: BoxDecoration(
+                        border: Border.all(color: Colors.black),
+                        borderRadius: BorderRadius.circular(5)),
+                    child: FlatButton(
+                      disabledColor: Color(0x909B049B),
+                      onPressed:(){
+                        
+                      },
+                      color: Colors.transparent,
+                      shape: RoundedRectangleBorder(
+                          borderRadius: BorderRadius.circular(5)),
+                      padding: EdgeInsets.all(0.0),
+                      child: Ink(
+                        decoration:
+                        BoxDecoration(borderRadius: BorderRadius.circular(5)),
+                        child: Container(
+                          width:40,
+                              height: 30.0,
+                          alignment: Alignment.center,
+                          child: Text(
+                            "Get Direction",
+                            textAlign: TextAlign.center,
+                            style: TextStyle(color: Colors.black),
+                          ),
+                        ),
+                      ),
+                    ),
+                  ),
                         ],
                         ),
                       ),
@@ -267,7 +298,7 @@ class ArtisanPageState extends State<ArtisanPage> {
                   height: 1,),
               ),
               widget.userData.userRole=='artisan'?FutureBuilder(
-                  future: network.getServiceImage(widget.userData.id),
+                  future: network.getServiceImage(network.user_id,widget.userData.id),
                   builder: (context, snapshot) {
 
                     return Column(
@@ -326,7 +357,7 @@ class ArtisanPageState extends State<ArtisanPage> {
                     );
                   }
               ):FutureBuilder(
-                  future: network.getProductImage(widget.userData.id),
+                  future: network.getProductImage(network.user_id,widget.userData.id),
                   builder: (context, snapshot) {
                     return Column(
                       crossAxisAlignment: CrossAxisAlignment.start ,

@@ -1,6 +1,7 @@
 import 'dart:io';
 
 import 'package:fixme/Services/network_service.dart';
+import 'package:fixme/Utils/Provider.dart';
 import 'package:fixme/Utils/utils.dart';
 import 'package:flutter/material.dart';
 import 'package:fixme/Screens/ArtisanUser/Profile/ProfilePage.dart';
@@ -23,6 +24,7 @@ class PhotoCatelogPageState extends State<PhotoCatelogPage> {
   Widget build(BuildContext context) {
      WebServices network = Provider.of<WebServices>(context);
      Utils data = Provider.of<Utils>(context);
+     var datas = Provider.of<DataProvider>(context);
     return Scaffold(
       key: scaffoldKey,
       body: WillPopScope(
@@ -32,12 +34,10 @@ class PhotoCatelogPageState extends State<PhotoCatelogPage> {
           child: Column(
             crossAxisAlignment: CrossAxisAlignment.start,
             children: [
-
                   Padding(
                     padding: const EdgeInsets.only(top:15.0),
-                    child: Text('Upload your product catalog', style: TextStyle(fontWeight: FontWeight.w500)),
+                    child: Text('${datas.artisanVendorChoice=='business'?"Upload your product catalog":"Upload your service catalog"}', style: TextStyle(fontWeight: FontWeight.w500)),
                   ),
-
               /*    SizedBox(
                  child:  Center(
             child: SizedBox(

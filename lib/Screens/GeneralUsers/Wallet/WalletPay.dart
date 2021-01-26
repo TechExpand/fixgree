@@ -464,7 +464,7 @@ class _WalletPayState extends State<WalletPay> {
                                   if (model.getAccountName.isNotEmpty) {
                                     if (model.getAccountName ==
                                         'Invalid Bank Info!') {
-                                      ScaffoldMessenger.of(context)
+                                      Scaffold.of(context)
                                           .showSnackBar(SnackBar(
                                         content: Text("Invalid Bank Info!"),
                                       ));

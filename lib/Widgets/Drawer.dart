@@ -170,7 +170,9 @@ class _DrawerState extends State<DrawerWidget> {
             );
           },
         ),
-      ):Navigator.push(
+      ):
+      
+      Navigator.push(
                 context,
                 PageRouteBuilder(
                   pageBuilder: (context, animation, secondaryAnimation) {

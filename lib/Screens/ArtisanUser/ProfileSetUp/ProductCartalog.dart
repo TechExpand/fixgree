@@ -125,6 +125,63 @@ class ProductCatelogPageState extends State<ProductCatelogPage> {
                   ),
                 ),
               ),
+                Center(
+                        child: SizedBox(
+                          height: 100, // card height
+                          child: data.selected_image2 ==null?Text(''):Container(
+                            width: 100,
+                            child:Card(
+                                elevation: 2,
+                                shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(20)),
+                                child: Image.file(File(data.selected_image2.path,), fit: BoxFit.cover,)
+
+                            ),
+                          ),
+                        ),
+                      ),
+                      
+
+                 Material(
+                   elevation: 9,
+                        child: ClipRRect(
+                           borderRadius: BorderRadius.circular(26),
+                  child: Container(
+
+                          decoration: BoxDecoration(
+                              border: Border.all(color: Colors.white),
+                              borderRadius: BorderRadius.circular(26)),
+                          child: FlatButton(
+                            disabledColor: Colors.white,
+                            onPressed: () {
+                                  data.selectimage2(source: ImageSource.gallery);
+
+
+                                  },
+                            color:  Colors.white,
+                            shape: RoundedRectangleBorder(
+                                borderRadius: BorderRadius.circular(26)),
+                            padding: EdgeInsets.all(0.0),
+                            child: Ink(
+                              decoration:
+                                  BoxDecoration(borderRadius: BorderRadius.circular(26)),
+                              child: Container(
+                                constraints: BoxConstraints(
+                                    maxWidth: MediaQuery.of(context).size.width / 1.3,
+                                    minHeight: 45.0),
+                                alignment: Alignment.center,
+                                child: Text(
+                                  "Select Catalog Photo",
+                                  textAlign: TextAlign.center,
+                                  style: TextStyle(
+                                    fontSize: 17,
+                                    color: Colors.black),
+                                ),
+                              ),
+                            ),
+                          ),
+                      ),
+                        ),
+                 ),
               Spacer(),
               Align(
                   alignment: Alignment.center,
@@ -134,7 +191,7 @@ class ProductCatelogPageState extends State<ProductCatelogPage> {
                         borderRadius: BorderRadius.circular(26)),
                     child: FlatButton(
                       disabledColor: Color(0x909B049B),
-                      onPressed: datas.product_bio.isEmpty||datas.product_price.isEmpty||datas.product_name.isEmpty?(){}:() {
+                      onPressed: datas.product_bio.isEmpty||datas.product_price.isEmpty||datas.product_name.isEmpty|| data.selected_image2 ==null?(){}:() {
                         network.Login_SetState();
                         network.uploadProductCatalog(
                           scaffoldKey: scaffoldKey,
@@ -142,6 +199,7 @@ class ProductCatelogPageState extends State<ProductCatelogPage> {
                             bio: datas.product_bio ,
                             product_name: datas.product_name,
                             price: datas.product_price,
+                            path: data.selected_image2.path,
                         );
 
                       },

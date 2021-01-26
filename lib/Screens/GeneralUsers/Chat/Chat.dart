@@ -586,7 +586,7 @@ _start() async {
         actions: <Widget>[
           widget.user.idUser == null ||
                   widget.user.idUser.toString().isEmpty ||
-                  network.mobile_device_token == null || (widget.user.block??false)
+                  network.mobile_device_token == null
               ? Text('')
               : IconButton(
                   icon: Icon(
@@ -615,7 +615,7 @@ _start() async {
             ),
             onPressed: widget.user.idUser == null ||
                 widget.user.idUser.toString().isEmpty ||
-                network.mobile_device_token == null || (widget.user.block??false)
+                network.mobile_device_token == null 
                 ? () {
                     data.makePhoneCall(widget.user.userMobile);
                   }
@@ -659,7 +659,7 @@ _start() async {
             color: Color(0xFFA40C85),
             child: widget.user.idUser == null ||
                 widget.user.idUser.toString().isEmpty ||
-                network.mobile_device_token == null || (widget.user.block??false)
+                network.mobile_device_token == null 
                 ? Center(
                     child: Text(
                     'You Cannot Send Message',

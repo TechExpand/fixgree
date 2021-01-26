@@ -14,6 +14,7 @@ class DataProvider extends ChangeNotifier {
   String firebase_user_id = '';
   String overview = '';
   bool focus_value = false;
+  String description ='';
   bool focus_value1 = false;
   String product_name= '';
   String product_bio = '';
@@ -36,6 +37,14 @@ class DataProvider extends ChangeNotifier {
   String artisanVendorChoice = '';
   bool password_obscure = true;
 
+
+
+
+
+ setDescription(value) {
+    description  = value;
+    notifyListeners();
+  }
   //change password obcure text
   setSelectedBottomNavBar(value) {
     selectedPage = value;

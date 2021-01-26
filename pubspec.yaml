@@ -36,6 +36,7 @@ dependencies:
   cloud_firestore:
   firebase_storage:
   date_format:
+  firebase_messaging: ^7.0.3
   location: ^3.0.2
   agora_rtc_engine:
   flutter_audio_recorder: ^0.5.5

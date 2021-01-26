@@ -1,10 +1,11 @@
 import 'dart:convert';
+import 'package:fixme/Utils/Provider.dart';
+import 'package:http/http.dart' as http;
 import 'package:fixme/Model/service.dart';
 import 'package:fixme/Widgets/popup_widget.dart';
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 import 'package:shared_preferences/shared_preferences.dart';
-import 'package:http/http.dart' as http;
 import 'dart:math';
 
 
@@ -47,12 +48,8 @@ class PostRequestProvider with ChangeNotifier {
     Future<dynamic> postJob(BuildContext context) async {
       isLoading(true);
       SharedPreferences prefs = await SharedPreferences.getInstance();
-      String job = jobtitleController.text;
-      String description = jobdescriptionController.text;
-      String address = jobaddressController.text;
-      double amount = double.parse((amountController.text));
+      var data = Provider.of<DataProvider>(context, listen:false);
       String user_id = prefs.getString('user_id');
-     
       String bearer = prefs.getString('Bearer');
      
       
@@ -60,11 +57,8 @@ class PostRequestProvider with ChangeNotifier {
       var response = await http
           .post(Uri.parse('https://manager.fixme.ng/new-project'), body: {
         'user_id': user_id,
-        'job_title': job,
-        'job_description': description,
-        'service_id': selectedService.sn,        
-        'budget': amount.toString(),
-        'job_address': address,
+        'job_description': data.description.toString(),
+        'service_id': selecteService.sn,        
         }, headers: {
         'Authorization':
         'Bearer $bearer',
@@ -99,6 +93,9 @@ class PostRequestProvider with ChangeNotifier {
     isLoading(false);
 
     }
+
+
+
   Future<dynamic> getServices() async {
     isLoading(true);
     SharedPreferences prefs = await SharedPreferences.getInstance();
@@ -119,7 +116,6 @@ class PostRequestProvider with ChangeNotifier {
       var body1 = json.decode(response.body);
       List body = body1['services'];
       // user_id = body['id'];
-      print('final responssssssssssssssssssssssse');
       List<Services> serviceListz = body.map((data) {
         return Services.fromJson(data);
       }).toSet().toList();

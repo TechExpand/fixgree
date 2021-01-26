@@ -291,11 +291,12 @@ Future<dynamic> getArtisanReviews([userId]) async {
     }
   }
 
-  Future<dynamic> getServiceImage([userId]) async {
+  Future<dynamic> getServiceImage([userId, requestedId ]) async {
     print(userId);
     var response = await http
         .post(Uri.parse('https://manager.fixme.ng/service-images'), body: {
       'user_id': userId.toString(),
+       'requested_user_id': requestedId.toString()
     }, headers: {
       "Content-type": "application/x-www-form-urlencoded",
       'Authorization': 'Bearer $Bearer',
@@ -310,11 +311,12 @@ Future<dynamic> getArtisanReviews([userId]) async {
   }
 
 
-  Future<dynamic> getProductImage([userId]) async {
+  Future<dynamic> getProductImage([userId, requestedId]) async {
     print(userId);
     var response = await http
         .post(Uri.parse('https://manager.fixme.ng/get-catalog-products'), body: {
       'user_id': userId.toString(),
+      'requested_user_id': requestedId.toString(),
     }, headers: {
       "Content-type": "application/x-www-form-urlencoded",
       'Authorization': 'Bearer $Bearer',
@@ -334,9 +336,9 @@ Future<dynamic> getArtisanReviews([userId]) async {
     product_name,
     price,
     scaffoldKey,
+    path,
     context}) async {
-      print(user_id);
-       print(user_id);
+    
     try{
        var res = await http
           .post(Uri.parse('https://manager.fixme.ng/save-catlog-product'), 
@@ -353,8 +355,25 @@ Future<dynamic> getArtisanReviews([userId]) async {
       var body = jsonDecode(res.body);
       notifyListeners();
       if (body['reqRes'] == 'true'){
-        Login_SetState();
-        showDialog(
+     
+            var upload = http.MultipartRequest(
+          'POST',
+          Uri.parse(
+              'https://uploads.fixme.ng/product-image-upload'));
+      var file = await http.MultipartFile.fromPath('file', path);
+      upload.files.add(file);
+      upload.fields['product_id'] =  body['productId'].toString();
+      upload.fields['product_name'] = product_name.toString();
+      upload.fields['user_id'] = user_id.toString();
+      upload.headers['authorization'] = 'Bearer $Bearer';
+
+      final stream = await upload.send();
+      var resp = await http.Response.fromStream(stream);
+      var bodys = jsonDecode(resp.body);
+
+      if (bodys['upldRes'] == 'true'){
+           Login_SetState();
+           showDialog(
             barrierDismissible: false,
             child: WillPopScope(
               onWillPop: (){},
@@ -476,8 +495,19 @@ Future<dynamic> getArtisanReviews([userId]) async {
               ),
             ),
             context: context);
-        return body;
-
+        return bodys;
+      }else if(bodys['upldRes'] == 'false'){
+          Login_SetState();
+        showDialog(
+            child: AlertDialog(
+              title: Center(
+                child: Text('There was a Problem Working on it!',
+                    style: TextStyle(color: Colors.blue)),
+              ),
+            ),
+            context: context);
+      }
+        
       } else if (body['reqRes'] == 'false') {
         Login_SetState();
         showDialog(

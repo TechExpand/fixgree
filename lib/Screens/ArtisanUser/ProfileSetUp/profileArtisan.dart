@@ -158,12 +158,19 @@ class SignUpProfileSetupPageState extends State<SignUpProfileSetupPage> {
            });
               }
                },
-          physics: NeverScrollableScrollPhysics(),
-              children: [
-                data.artisanVendorChoice=='business'?ProductDetailPage(_myPage):ExpertisePage(_myPage),
+          //physics: NeverScrollableScrollPhysics(),
+              children: data.artisanVendorChoice=='business' ?[
+               ProductDetailPage(_myPage),
                 OverviewPage(_myPage),
                 ProfilePhotoPage(_myPage),
-                data.artisanVendorChoice=='business'?ProductCatelogPage(_myPage):PhotoCatelogPage(_myPage),
+               ProductCatelogPage(_myPage),
+               
+              ]:[
+                ExpertisePage(_myPage),
+                OverviewPage(_myPage),
+                ProfilePhotoPage(_myPage),
+               PhotoCatelogPage(_myPage),
+              
               ],
             ),
           )

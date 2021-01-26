@@ -1,6 +1,6 @@
+import 'package:fixme/Screens/GeneralUsers/Wallet/Providers/BankProvider.dart';
 import 'package:flutter/material.dart';
 import "package:flutter_feather_icons/flutter_feather_icons.dart";
-import 'package:fixme/Screens/Wallet/Providers/BankProvider.dart';
 import 'package:fixme/Services/network_service.dart';
 import 'package:fixme/Model/BankInfo.dart';
 import 'package:provider/provider.dart';
@@ -26,7 +26,6 @@ class _SelectBankState extends State<SelectBank> {
     return Scaffold(
       appBar: AppBar(
         backgroundColor: Colors.white,
-        leadingWidth: 0,
         title: Text('Select bank',
             style: TextStyle(
                 color: Color(0xFF333333),
