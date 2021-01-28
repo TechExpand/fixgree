@@ -70,7 +70,10 @@ class _WalletState extends State<Wallet> {
                                       crossAxisAlignment:
                                           CrossAxisAlignment.center,
                                       children: [
-                                        CircularProgressIndicator(),
+                                        Theme(
+                                            data: Theme.of(context).copyWith(
+                                                accentColor: Color(0xFF9B049B)),
+                                            child: CircularProgressIndicator()),
                                         SizedBox(
                                           height: 10,
                                         ),
@@ -78,7 +81,7 @@ class _WalletState extends State<Wallet> {
                                             style: TextStyle(
                                                 // letterSpacing: 4,
                                                 color: Color(0xFF333333),
-                                                fontSize: 18,
+                                                fontSize: 16,
                                                 fontWeight: FontWeight.w600)),
                                       ],
                                     ),
@@ -103,7 +106,7 @@ class _WalletState extends State<Wallet> {
                                                     .capitalizeFirstOfEach,
                                                 style: TextStyle(
                                                     color: Colors.white,
-                                                    fontSize: 21,
+                                                    fontSize: 18,
                                                     height: 1.4,
                                                     fontWeight:
                                                         FontWeight.w500)),
@@ -137,7 +140,7 @@ class _WalletState extends State<Wallet> {
                                               style: TextStyle(
                                                   // letterSpacing: 4,
                                                   color: Color(0xFF25262A),
-                                                  fontSize: 18,
+                                                  fontSize: 17,
                                                   fontWeight: FontWeight.w600)),
                                           Text('$accountNo',
                                               style: TextStyle(
@@ -157,7 +160,10 @@ class _WalletState extends State<Wallet> {
                                     crossAxisAlignment:
                                         CrossAxisAlignment.center,
                                     children: [
-                                      CircularProgressIndicator(),
+                                      Theme(
+                                          data: Theme.of(context).copyWith(
+                                              accentColor: Color(0xFF9B049B)),
+                                          child: CircularProgressIndicator()),
                                       SizedBox(
                                         height: 10,
                                       ),
@@ -165,7 +171,7 @@ class _WalletState extends State<Wallet> {
                                           style: TextStyle(
                                               // letterSpacing: 4,
                                               color: Color(0xFF333333),
-                                              fontSize: 18,
+                                              fontSize: 16,
                                               fontWeight: FontWeight.w600)),
                                     ],
                                   ),
@@ -223,7 +229,7 @@ class _WalletState extends State<Wallet> {
                         Text('Pay',
                             style: TextStyle(
                                 color: Colors.white,
-                                fontSize: 18,
+                                fontSize: 16,
                                 height: 1.4,
                                 fontWeight: FontWeight.w500)),
                       ],
@@ -262,7 +268,7 @@ class _WalletState extends State<Wallet> {
                         Text('Fund',
                             style: TextStyle(
                                 color: Colors.white,
-                                fontSize: 18,
+                                fontSize: 16,
                                 height: 1.4,
                                 fontWeight: FontWeight.w500)),
                       ],
@@ -302,7 +308,7 @@ class _WalletState extends State<Wallet> {
                         Text('Withdraw',
                             style: TextStyle(
                                 color: Colors.white,
-                                fontSize: 18,
+                                fontSize: 16,
                                 height: 1.4,
                                 fontWeight: FontWeight.w500)),
                       ],
@@ -345,7 +351,7 @@ class _WalletState extends State<Wallet> {
                       Text('Add payment card',
                           style: TextStyle(
                               color: Color(0xFF333333),
-                              fontSize: 18,
+                              fontSize: 16,
                               height: 1.4,
                               fontWeight: FontWeight.w500)),
                     ],
@@ -374,7 +380,7 @@ class _WalletState extends State<Wallet> {
                     children: <Widget>[
                       Text('Last Transactions',
                           style: TextStyle(
-                              fontSize: 17,
+                              fontSize: 16,
                               color: Color(0xFF333333),
                               fontWeight: FontWeight.w600)),
                       Padding(
@@ -399,7 +405,7 @@ class _WalletState extends State<Wallet> {
                           },
                           child: Text('See all',
                               style: TextStyle(
-                                  fontSize: 15,
+                                  fontSize: 14,
                                   color: Color(0xFFBD4591),
                                   fontWeight: FontWeight.w600)),
                         ),
@@ -418,7 +424,10 @@ class _WalletState extends State<Wallet> {
                               mainAxisAlignment: MainAxisAlignment.center,
                               crossAxisAlignment: CrossAxisAlignment.center,
                               children: [
-                                CircularProgressIndicator(),
+                                Theme(
+                                    data: Theme.of(context).copyWith(
+                                        accentColor: Color(0xFF9B049B)),
+                                    child: CircularProgressIndicator()),
                                 SizedBox(
                                   height: 10,
                                 ),
@@ -437,7 +446,10 @@ class _WalletState extends State<Wallet> {
                                 mainAxisAlignment: MainAxisAlignment.center,
                                 crossAxisAlignment: CrossAxisAlignment.center,
                                 children: [
-                                  CircularProgressIndicator(),
+                                  Theme(
+                                      data: Theme.of(context).copyWith(
+                                          accentColor: Color(0xFF9B049B)),
+                                      child: CircularProgressIndicator()),
                                   SizedBox(
                                     height: 10,
                                   ),
@@ -482,13 +494,13 @@ class _WalletState extends State<Wallet> {
                                         transactionDetails.paymentDescription
                                             .capitalizeFirstOfEach,
                                         style: TextStyle(
-                                            fontSize: 17,
+                                            fontSize: 16,
                                             color: Color(0xFF333333),
                                             fontWeight: FontWeight.w600)),
                                     subtitle: Text(
                                         '${DateFormat('MMM dd, y').format(transactionDetails.transactionDate)}',
                                         style: TextStyle(
-                                            fontSize: 16,
+                                            fontSize: 15,
                                             color: Color(0xFF555555),
                                             fontWeight: FontWeight.w600)),
                                     trailing: buildTransactionText(
@@ -514,14 +526,14 @@ class _WalletState extends State<Wallet> {
       case "credit":
         text = Text('+ ${currencySymbol(currency)}$amount',
             style: TextStyle(
-                fontSize: 17,
+                fontSize: 16,
                 color: Color(0xFF02FF1B),
                 fontWeight: FontWeight.w600));
         break;
       case "withdrawal":
         text = Text('- ${currencySymbol(currency)}$amount',
             style: TextStyle(
-                fontSize: 17,
+                fontSize: 16,
                 color: Color(0xFFFF0202),
                 fontWeight: FontWeight.w600));
         break;

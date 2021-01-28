@@ -1,8 +1,8 @@
 import 'package:flutter/material.dart';
 import 'package:fixme/Model/UserBankInfo.dart';
-import 'package:fixme/Screens/Wallet/CardPayment.dart';
+import 'package:fixme/Screens/GeneralUsers/Wallet/CardPayment.dart';
 import "package:flutter_feather_icons/flutter_feather_icons.dart";
-import 'package:fixme/Screens/Wallet/SeeBeneficiaries.dart';
+import 'package:fixme/Screens/GeneralUsers/Wallet/SeeBeneficiaries.dart';
 import 'package:fixme/Services/network_service.dart';
 import 'package:fixme/Model/BankInfo.dart';
 import 'package:provider/provider.dart';
@@ -75,7 +75,7 @@ class _WalletPayState extends State<WalletPay> {
                   ),
                   Text('Select Transfer Mode',
                       style: TextStyle(
-                          fontSize: 18,
+                          fontSize: 16,
                           color: Color(0xFF333333),
                           fontWeight: FontWeight.w600))
                 ],
@@ -112,7 +112,7 @@ class _WalletPayState extends State<WalletPay> {
                                       textAlign: TextAlign.center,
                                       style: TextStyle(
                                           color: Color(0xFF333333),
-                                          fontSize: 19,
+                                          fontSize: 17,
                                           fontWeight: FontWeight.w500))),
                             ),
                           );
@@ -147,7 +147,7 @@ class _WalletPayState extends State<WalletPay> {
                           ),
                           Text('Transfer from:',
                               style: TextStyle(
-                                fontSize: 17,
+                                fontSize: 16,
                                 color: Color(0xFF333333),
                               ))
                         ],
@@ -179,7 +179,7 @@ class _WalletPayState extends State<WalletPay> {
                                         .toUpperCase(),
                                     style: TextStyle(
                                         color: Color(0xFF333333),
-                                        fontSize: 24,
+                                        fontSize: 22,
                                         height: 1.4)),
                               ),
                             ],
@@ -204,7 +204,7 @@ class _WalletPayState extends State<WalletPay> {
                                     style: TextStyle(
                                         // letterSpacing: 4,
                                         color: Color(0xFF333333),
-                                        fontSize: 21,
+                                        fontSize: 20,
                                         fontWeight: FontWeight.w400)),
                                 Text(
                                     '***' +
@@ -212,7 +212,7 @@ class _WalletPayState extends State<WalletPay> {
                                             .substring(6),
                                     style: TextStyle(
                                         color: Color(0xFF333333),
-                                        fontSize: 24,
+                                        fontSize: 21,
                                         fontWeight: FontWeight.w400)),
                               ],
                             ),
@@ -252,7 +252,7 @@ class _WalletPayState extends State<WalletPay> {
                                   ),
                                   Text('Transfer to:',
                                       style: TextStyle(
-                                        fontSize: 17,
+                                        fontSize: 16,
                                         color: Color(0xFF333333),
                                       ))
                                 ],
@@ -285,7 +285,7 @@ class _WalletPayState extends State<WalletPay> {
                                               'Beneficiary account number',
                                               style: TextStyle(
                                                   color: Color(0xFF4B4B4B),
-                                                  fontSize: 18,
+                                                  fontSize: 16,
                                                   height: 1.4,
                                                   fontWeight: FontWeight.w600)),
                                         ),
@@ -374,7 +374,7 @@ class _WalletPayState extends State<WalletPay> {
                                             child: Text('Choose beneficiary',
                                                 style: TextStyle(
                                                     color: Color(0xFF9B049B),
-                                                    fontSize: 16,
+                                                    fontSize: 15,
                                                     height: 1.4,
                                                     fontWeight:
                                                         FontWeight.w600)),
@@ -521,9 +521,13 @@ class _WalletPayState extends State<WalletPay> {
                                 SizedBox(
                                   width: 35,
                                   height: 35,
-                                  child: CircularProgressIndicator(
-                                    strokeWidth: 2,
-                                    backgroundColor: Colors.white,
+                                  child: Theme(
+                                    data: Theme.of(context).copyWith(
+                                        accentColor: Color(0xFF9B049B)),
+                                    child: CircularProgressIndicator(
+                                      strokeWidth: 2,
+                                      backgroundColor: Colors.white,
+                                    ),
                                   ),
                                 ),
                               ],

@@ -1,8 +1,8 @@
 import 'package:flutter/material.dart';
 import "package:flutter_feather_icons/flutter_feather_icons.dart";
-import 'package:fixme/Screens/Wallet/SeeBeneficiaries.dart';
+import 'package:fixme/Screens/GeneralUsers/Wallet/SeeBeneficiaries.dart';
 import 'package:fixme/Services/network_service.dart';
-import 'package:fixme/Screens/Wallet/SelectBank.dart';
+import 'package:fixme/Screens/GeneralUsers/Wallet/SelectBank.dart';
 import 'package:provider/provider.dart';
 import 'package:fixme/Model/UserBankInfo.dart';
 import 'Providers/BankProvider.dart';
@@ -500,9 +500,13 @@ class _WalletWithdrawState extends State<WalletWithdraw> {
                               SizedBox(
                                 width: 35,
                                 height: 35,
-                                child: CircularProgressIndicator(
-                                  strokeWidth: 2,
-                                  backgroundColor: Colors.white,
+                                child: Theme(
+                                  data: Theme.of(context)
+                                      .copyWith(accentColor: Color(0xFF9B049B)),
+                                  child: CircularProgressIndicator(
+                                    strokeWidth: 2,
+                                    backgroundColor: Colors.white,
+                                  ),
                                 ),
                               ),
                             ],

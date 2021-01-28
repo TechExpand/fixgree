@@ -418,9 +418,13 @@ class _WalletPayCompletePaymentState extends State<WalletPayCompletePayment> {
                           SizedBox(
                             width: 35,
                             height: 35,
-                            child: CircularProgressIndicator(
-                              strokeWidth: 2,
-                              backgroundColor: Colors.white,
+                            child: Theme(
+                              data: Theme.of(context)
+                                  .copyWith(accentColor: Color(0xFF9B049B)),
+                              child: CircularProgressIndicator(
+                                strokeWidth: 2,
+                                backgroundColor: Colors.white,
+                              ),
                             ),
                           ),
                         ],

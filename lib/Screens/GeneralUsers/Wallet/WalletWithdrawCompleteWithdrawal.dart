@@ -8,7 +8,6 @@ import 'package:fixme/Model/BankInfo.dart';
 import 'Providers/BankProvider.dart';
 import 'SecurePin.dart';
 
-
 class WalletWithdrawCompleteWithdrawal extends StatefulWidget {
   final BankInfo bankInfo;
   final String accountNumber;
@@ -439,9 +438,13 @@ class _WalletWithdrawCompleteWithdrawalState
                           SizedBox(
                             width: 35,
                             height: 35,
-                            child: CircularProgressIndicator(
-                              strokeWidth: 2,
-                              backgroundColor: Colors.white,
+                            child: Theme(
+                              data: Theme.of(context)
+                                  .copyWith(accentColor: Color(0xFF9B049B)),
+                              child: CircularProgressIndicator(
+                                strokeWidth: 2,
+                                backgroundColor: Colors.white,
+                              ),
                             ),
                           ),
                         ],

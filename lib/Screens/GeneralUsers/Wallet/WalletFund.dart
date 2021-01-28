@@ -24,8 +24,6 @@ class _WalletFundState extends State<WalletFund> {
     bottomRight: Radius.circular(15.0),
   );
 
-
-
   @override
   Widget build(BuildContext context) {
     return Scaffold(
@@ -197,10 +195,9 @@ class _WalletFundState extends State<WalletFund> {
                               FlutterClipboard.copy(
                                       '${widget.userBankInfo.accountNumber}')
                                   .then((value) {
-//                                ScaffoldMessenger.of(context)
-//                                    .showSnackBar(SnackBar(
-//                                  content: Text("Account number copied"),
-//                                ));
+                                Scaffold.of(context).showSnackBar(SnackBar(
+                                  content: Text("Account number copied"),
+                                ));
                               });
                             },
                           )

@@ -108,7 +108,10 @@ class _SelectBankState extends State<SelectBank> {
                               mainAxisAlignment: MainAxisAlignment.center,
                               crossAxisAlignment: CrossAxisAlignment.center,
                               children: [
-                                CircularProgressIndicator(),
+                                Theme(
+                                    data: Theme.of(context).copyWith(
+                                        accentColor: Color(0xFF9B049B)),
+                                    child: CircularProgressIndicator()),
                                 SizedBox(
                                   height: 10,
                                 ),
@@ -249,7 +252,10 @@ class _SelectBankState extends State<SelectBank> {
                             mainAxisAlignment: MainAxisAlignment.center,
                             crossAxisAlignment: CrossAxisAlignment.center,
                             children: [
-                              CircularProgressIndicator(),
+                              Theme(
+                                  data: Theme.of(context)
+                                      .copyWith(accentColor: Color(0xFF9B049B)),
+                                  child: CircularProgressIndicator()),
                               SizedBox(
                                 height: 10,
                               ),
