@@ -1,7 +1,11 @@
 import 'package:fixme/Screens/GeneralUsers/Support/Providers/SupportProvider.dart';
 import 'package:fixme/Screens/GeneralUsers/Support/SupportChat.dart';
 import 'package:fixme/Screens/GeneralUsers/Support/SupportFeedbackSent.dart';
+import 'package:fixme/Services/network_service.dart';
+import 'package:fixme/Utils/utils.dart';
 import 'package:flutter/material.dart';
+import 'package:mailer/mailer.dart';
+import 'package:mailer/smtp_server.dart';
 import "package:flutter_feather_icons/flutter_feather_icons.dart";
 import 'package:fixme/Widgets/customdropdownbutton.dart';
 import 'package:provider/provider.dart';
@@ -14,6 +18,8 @@ class SupportFeedback extends StatefulWidget {
 }
 
 class _SupportFeedbackState extends State<SupportFeedback> {
+  final GlobalKey<ScaffoldState> scaffoldKey = GlobalKey<ScaffoldState>();
+
   List<String> _feedback = [
     'Something is wrong with your request',
     'Something is wrong with the payment',
@@ -22,12 +28,26 @@ class _SupportFeedbackState extends State<SupportFeedback> {
     'Other Feedback'
   ];
 
+  String username;
+
+  getUserDetails(BuildContext buildContext) async {
+    var data = Provider.of<Utils>(buildContext, listen: false);
+    String firstname = await data.getData('firstName');
+    String lastname = await data.getData('lastName');
+
+    username =
+        firstname.capitalizeFirstOfEach + ' ' + lastname.capitalizeFirstOfEach;
+  }
+
   @override
   Widget build(BuildContext context) {
+    getUserDetails(context);
+    var network = Provider.of<WebServices>(context, listen: false);
     return ChangeNotifierProvider<SupportProvider>(
         create: (_) => SupportProvider(),
         builder: (context, _) {
           return Scaffold(
+              key: scaffoldKey,
               appBar: AppBar(
                 backgroundColor: Colors.white,
                 elevation: 0,
@@ -207,55 +227,100 @@ class _SupportFeedbackState extends State<SupportFeedback> {
                           ],
                         ),
                       ),
-                      Container(
-                        height: 45,
-                        margin: const EdgeInsets.only(top: 25),
-                        decoration: BoxDecoration(
-                          borderRadius: BorderRadius.all(Radius.circular(25)),
-                          color: model.getIsButtonEnabled
-                              ? Color(0xFF9B049B)
-                              : Color(0xFFF6F6F6),
-                        ),
-                        child: new FlatButton(
-                          padding: EdgeInsets.all(10),
-                          onPressed: () {
-                            if (model.getIsButtonEnabled) {
-                              Navigator.of(context).push(
-                                PageRouteBuilder(
-                                  pageBuilder:
-                                      (context, animation, secondaryAnimation) {
-                                    return SupportFeedbackSent();
-                                  },
-                                  transitionsBuilder: (context, animation,
-                                      secondaryAnimation, child) {
-                                    return FadeTransition(
-                                      opacity: animation,
-                                      child: child,
-                                    );
-                                  },
+                      model.getSendStatus
+                          ? Container(
+                              height: 45,
+                              margin: const EdgeInsets.only(top: 25),
+                              decoration: BoxDecoration(
+                                borderRadius:
+                                    BorderRadius.all(Radius.circular(25)),
+                                color: model.getIsButtonEnabled
+                                    ? Color(0xFF9B049B)
+                                    : Color(0xFFF6F6F6),
+                              ),
+                              child: new FlatButton(
+                                padding: EdgeInsets.all(10),
+                                onPressed: () async {
+                                  if (model.getIsButtonEnabled) {
+                                    model.setSendStatus = false;
+                                    print(model.getIsFieldEnabled
+                                        ? model.getOtherFeedback
+                                        : model.getSelectedFeedback+': The message');
+                                    bool status =
+                                        await network.sendSupportRequest(
+                                            topic:
+                                                'Support Feedback - $username',
+                                            message: model.getIsFieldEnabled
+                                                ? model.getOtherFeedback
+                                                : model.getSelectedFeedback);
+                                    if (status) {
+                                      model.setSendStatus = true;
+                                      Navigator.of(context).push(
+                                        PageRouteBuilder(
+                                          pageBuilder: (context, animation,
+                                              secondaryAnimation) {
+                                            return SupportFeedbackSent();
+                                          },
+                                          transitionsBuilder: (context,
+                                              animation,
+                                              secondaryAnimation,
+                                              child) {
+                                            return FadeTransition(
+                                              opacity: animation,
+                                              child: child,
+                                            );
+                                          },
+                                        ),
+                                      );
+                                    } else {
+                                      scaffoldKey.currentState.showSnackBar(
+                                          SnackBar(
+                                              content:
+                                                  Text('Some error occured')));
+                                    }
+                                  } else {}
+                                },
+                                child: Padding(
+                                  padding:
+                                      const EdgeInsets.only(left: 7, right: 7),
+                                  child: Row(
+                                    mainAxisAlignment: MainAxisAlignment.center,
+                                    children: [
+                                      Text(
+                                        'Submit',
+                                        style: TextStyle(
+                                            color: model.getIsButtonEnabled
+                                                ? Colors.white
+                                                : Color(0xFF777777),
+                                            fontSize: 17,
+                                            fontWeight: FontWeight.w600),
+                                      ),
+                                    ],
+                                  ),
                                 ),
-                              );
-                            } else {}
-                          },
-                          child: Padding(
-                            padding: const EdgeInsets.only(left: 7, right: 7),
-                            child: Row(
-                              mainAxisAlignment: MainAxisAlignment.center,
-                              children: [
-                                Text(
-                                  'Submit',
-                                  style: TextStyle(
-                                      color: model.getIsButtonEnabled
-                                          ? Colors.white
-                                          : Color(0xFF777777),
-                                      fontSize: 17,
-                                      fontWeight: FontWeight.w600),
-                                ),
-                              ],
-                            ),
-                          ),
-                        ),
-                      )
+                              ),
+                            )
+                          : Container(
+                              margin:
+                                  const EdgeInsets.only(top: 25, bottom: 20),
+                              child: Row(
+                                mainAxisAlignment: MainAxisAlignment.center,
+                                children: [
+                                  SizedBox(
+                                    width: 35,
+                                    height: 35,
+                                    child: Theme(
+                                      data: Theme.of(context).copyWith(
+                                          accentColor: Color(0xFF9B049B)),
+                                      child: CircularProgressIndicator(
+                                        strokeWidth: 2,
+                                        backgroundColor: Colors.white,
+                                      ),
+                                    ),
+                                  ),
+                                ],
+                              ),
+                            )
                     ]);
               }));
         });

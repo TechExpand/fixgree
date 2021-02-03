@@ -13,37 +13,61 @@ class Profile extends StatefulWidget {
 }
 
 class _ProfileState extends State<Profile> {
-  //FocusNode textFieldFocus = FocusNode();
+  final _firstnameController = TextEditingController();
+  final _lastnameController = TextEditingController();
+  final _statusController = TextEditingController();
+  final _formKey1 = GlobalKey<FormState>();
+  final _formKey2 = GlobalKey<FormState>();
+  PickedFile selectedImage;
+  final picker = ImagePicker();
+  String firstname1;
+  String lastname1;
+  String bio1;
 
-  final _controller = TextEditingController();
-  final _controller2 = TextEditingController();
-  File selectedImage;
-  String message = '';
+  Future<Map> user;
 
   void pickImage({@required ImageSource source, context}) async {
-    final image = await ImagePicker.pickImage(source: source);
+    var network = Provider.of<WebServices>(context, listen: false);
+    var data = Provider.of<Utils>(context, listen: false);
+    var image = await picker.getImage(source: source);
     setState(() => selectedImage = image);
+
+    String imageName = await network.uploadProfilePhoto(
+      path: selectedImage.path,
+    );
+
+    data.storeData('profile_pic_file_name', imageName);
+    update(context);
   }
 
-  @override
-  void initState() {
-    super.initState();
+  update(BuildContext context) async {
+    setState(() {
+      user = getUserDetails(context);
+    });
   }
 
   Future<Map> getUserDetails(BuildContext buildContext) async {
     var data = Provider.of<Utils>(buildContext, listen: false);
-    String username = await data.getData('firstName');
+    String firstname = await data.getData('firstName');
+    String lastname = await data.getData('lastName');
     String about = await data.getData('about') ?? 'Nothing';
     String phone = await data.getData('phoneNum');
     String address = await data.getData('address') ?? 'Nothing here';
     String photoUrl = await data.getData('profile_pic_file_name');
 
+    firstname1 = firstname;
+    lastname1 = lastname;
+    bio1 = about;
+
+    print('The URL: $photoUrl');
+
     Map userDetails = {
-      'username': username,
+      'firstname': firstname,
+      'lastname': lastname,
       'about': about,
       'phone': phone,
       'address': address,
-      'photoUrl': photoUrl
+      'photoUrl': 'https://uploads.fixme.ng/originals/$photoUrl'
     };
 
     return userDetails;
@@ -51,6 +75,7 @@ class _ProfileState extends State<Profile> {
 
   @override
   Widget build(BuildContext context) {
+    update(context);
     return Scaffold(
       appBar: AppBar(
           backgroundColor: Color(0xFFA40C85),
@@ -66,7 +91,7 @@ class _ProfileState extends State<Profile> {
           title: Text("PROFILE")),
       backgroundColor: Colors.white,
       body: FutureBuilder<Map>(
-          future: getUserDetails(context),
+          future: user,
           builder: (context, AsyncSnapshot<Map> snapshot) {
             Widget mainWidget;
             if (snapshot.connectionState == ConnectionState.done) {
@@ -83,7 +108,7 @@ class _ProfileState extends State<Profile> {
                       SizedBox(
                         height: 10,
                       ),
-                      Text('No Network',
+                      Text('No Data',
                           style: TextStyle(
                               // letterSpacing: 4,
                               color: Color(0xFF333333),
@@ -96,17 +121,17 @@ class _ProfileState extends State<Profile> {
                 mainWidget = Column(
                   children: [
                     Padding(
-                      padding: EdgeInsets.symmetric(vertical: 10),
+                      padding: EdgeInsets.symmetric(vertical: 25),
                       child: GestureDetector(
                         child: Stack(children: <Widget>[
-                          selectedImage != null
+                          snapshot.data['photoUrl'] != 'no_picture_upload'
                               ? ClipRRect(
                                   borderRadius: BorderRadius.circular(100),
                                   child: Image.network(
                                     snapshot.data['photoUrl'],
                                     width: 150,
                                     height: 150,
-                                    fit: BoxFit.fitHeight,
+                                    fit: BoxFit.cover,
                                   ),
                                 )
                               : Icon(Icons.account_circle,
@@ -123,13 +148,13 @@ class _ProfileState extends State<Profile> {
                               child: Icon(
                                 Icons.camera_alt,
                                 color: Colors.white,
-                                size: 25,
+                                size: 21,
                               ),
                             ),
                           ),
                         ]),
                         onTap: () => pickImage(
-                            source: ImageSource.camera, context: context),
+                            source: ImageSource.gallery, context: context),
                       ),
                     ),
                     SizedBox(
@@ -161,7 +186,7 @@ class _ProfileState extends State<Profile> {
                                 height: 5,
                               ),
                               Text(
-                                snapshot.data['username'],
+                                '${snapshot.data['firstname']} ${snapshot.data['lastname']}',
                                 style: TextStyle(
                                     color: Colors.black, fontSize: 17),
                               ),
@@ -182,7 +207,7 @@ class _ProfileState extends State<Profile> {
                             color: Color(0xFF777777),
                             size: 18,
                           ),
-                          onTap: () => _editFullName(),
+                          onTap: () => _showEditNameModal(),
                         )
                       ],
                     ),
@@ -246,7 +271,7 @@ class _ProfileState extends State<Profile> {
                             color: Color(0xFF777777),
                             size: 18,
                           ),
-                          onTap: () => _editAbout(),
+                          onTap: () => _showAboutModal(),
                         )
                       ],
                     ),
@@ -298,55 +323,8 @@ class _ProfileState extends State<Profile> {
                                 style: TextStyle(
                                     color: Colors.black, fontSize: 17),
                               ),
-                            ],
-                          ),
-                        ),
-                      ],
-                    ),
-                    Row(
-                      mainAxisAlignment: MainAxisAlignment.end,
-                      children: [
-                        Padding(
-                          padding: EdgeInsets.only(right: 15),
-                          child: SizedBox(
-                            width: MediaQuery.of(context).size.width * 0.79,
-                            child: Divider(
-                              color: Color(0xff999999),
-                              thickness: 0.5,
-                            ),
-                          ),
-                        )
-                      ],
-                    ),
-                    Row(
-                      crossAxisAlignment: CrossAxisAlignment.start,
-                      children: [
-                        SizedBox(
-                          width: 70,
-                          child: Icon(
-                            Icons.location_on,
-                            color: Color(0xFFA40C85),
-                            size: 31,
-                          ),
-                        ),
-                        SizedBox(
-                          width: MediaQuery.of(context).size.width * 0.63,
-                          child: Column(
-                            mainAxisAlignment: MainAxisAlignment.start,
-                            crossAxisAlignment: CrossAxisAlignment.start,
-                            children: [
-                              Text(
-                                "Address",
-                                style: TextStyle(
-                                    fontWeight: FontWeight.w300, fontSize: 14),
-                              ),
                               SizedBox(
                                 height: 5,
-                              ),
-                              Text(
-                                snapshot.data['address'],
-                                style: TextStyle(
-                                    color: Colors.black, fontSize: 17),
                               ),
                             ],
                           ),
@@ -384,193 +362,242 @@ class _ProfileState extends State<Profile> {
     );
   }
 
-  void _editAbout() {
+  void _showAboutModal() {
+    var network = Provider.of<WebServices>(context, listen: false);
+    var data = Provider.of<Utils>(context, listen: false);
+    _statusController.text = bio1;
     showModalBottomSheet(
-        context: context,
-        isScrollControlled: true,
-        builder: (builder) {
-          return new Padding(
-              padding: MediaQuery.of(context).viewInsets,
-              child: Container(
-                  height: 155.0,
-                  padding: EdgeInsets.symmetric(vertical: 20, horizontal: 20),
-                  color: Colors.transparent,
-                  //could change this to Color(0xFF737373),
-                  //so you don't have to change MaterialApp canvasColor
-                  child: Column(
-                    mainAxisAlignment: MainAxisAlignment.start,
-                    crossAxisAlignment: CrossAxisAlignment.start,
-                    children: [
-                      Text(
-                        "Add About",
-                        style: TextStyle(
-                            fontWeight: FontWeight.w500, fontSize: 18),
-                      ),
-                      SizedBox(
-                        height: 10,
-                      ),
-                      Row(
-                        mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                        children: [
-                          Container(
-                            width: MediaQuery.of(context).size.width * 0.75,
-                            height: 33,
-                            child: TextField(
-                              controller: _controller2,
-                              inputFormatters: [
-                                LengthLimitingTextInputFormatter(25),
-                              ],
-                              decoration: InputDecoration(
-                                focusColor: Colors.black,
-                                border: InputBorder.none,
-                                enabledBorder: UnderlineInputBorder(
-                                  borderSide:
-                                      BorderSide(color: Color(0xFFA40C85)),
-                                ),
-                                focusedBorder: UnderlineInputBorder(
-                                  borderSide:
-                                      BorderSide(color: Color(0xFFA40C85)),
-                                ),
-                              ),
+      isScrollControlled: true,
+      context: context,
+      builder: (BuildContext context) {
+        return Container(
+          padding: EdgeInsets.only(
+            bottom: MediaQuery.of(context).viewInsets.bottom,
+          ),
+          child: Padding(
+            padding: EdgeInsets.symmetric(vertical: 20, horizontal: 20),
+            child: Form(
+              key: _formKey2,
+              child: Column(
+                  mainAxisSize: MainAxisSize.min,
+                  mainAxisAlignment: MainAxisAlignment.start,
+                  crossAxisAlignment: CrossAxisAlignment.start,
+                  children: <Widget>[
+                    Text(
+                      "Add About",
+                      style:
+                          TextStyle(fontWeight: FontWeight.w500, fontSize: 18),
+                    ),
+                    SizedBox(
+                      height: 10,
+                    ),
+                    Row(
+                      mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                      children: [
+                        Container(
+                          width: MediaQuery.of(context).size.width * 0.88,
+                          height: 33,
+                          child: TextFormField(
+                            controller: _statusController,
+                            inputFormatters: [
+                              LengthLimitingTextInputFormatter(25),
+                            ],
+                            style: TextStyle(fontSize: 18),
+                            validator: (text) {
+                              if (text == null || text.isEmpty) {
+                                return 'Text is empty';
+                              }
+                              return null;
+                            },
+                            decoration: InputDecoration(
+                              focusColor: Colors.black,
+                              // border: InputBorder.none,
                             ),
                           ),
-                          Padding(
-                            padding: EdgeInsets.only(top: 5),
-                            child: Icon(
-                              Icons.sentiment_satisfied,
-                              color: Color(0xFFA40C85),
-                              size: 25,
-                            ),
-                          )
-                        ],
+                        ),
+                      ],
+                    ),
+                    SizedBox(
+                      height: 30,
+                    ),
+                    Row(mainAxisAlignment: MainAxisAlignment.end, children: [
+                      InkWell(
+                        child: Text(
+                          "CANCEL",
+                          style: TextStyle(
+                              fontWeight: FontWeight.w400,
+                              fontSize: 16,
+                              color: Color(0xFFA40C85)),
+                        ),
+                        onTap: () => Navigator.pop(context),
                       ),
                       SizedBox(
-                        height: 30,
+                        width: 20,
                       ),
-                      Row(mainAxisAlignment: MainAxisAlignment.end, children: [
-                        InkWell(
-                          child: Text(
-                            "CANCEL",
-                            style: TextStyle(
-                                fontWeight: FontWeight.w400,
-                                fontSize: 16,
-                                color: Color(0xFFA40C85)),
-                          ),
-                          onTap: () => Navigator.pop(context),
+                      InkWell(
+                        child: Text(
+                          "SAVE",
+                          style: TextStyle(
+                              fontWeight: FontWeight.w400,
+                              fontSize: 16,
+                              color: Color(0xFFA40C85)),
                         ),
-                        SizedBox(
-                          width: 20,
-                        ),
-                        InkWell(
-                          child: Text(
-                            "SAVE",
-                            style: TextStyle(
-                                fontWeight: FontWeight.w400,
-                                fontSize: 16,
-                                color: Color(0xFFA40C85)),
-                          ),
-                          onTap: () {
-                            String bio = _controller2.text;
-                          },
-                        )
-                      ])
-                    ],
-                  )));
-        });
+                        onTap: () async {
+                          if (_formKey2.currentState.validate()) {
+                            String bio = _statusController.text;
+                            bool status =
+                                await network.editUserBio(status: bio);
+                            if (status) {
+                              await data.storeData('about', '$bio');
+                              update(context);
+                              Navigator.of(context).pop();
+                              _statusController.clear();
+                            }
+                          }
+                        },
+                      )
+                    ])
+                  ]),
+            ),
+          ),
+        );
+      },
+    );
   }
 
-  void _editFullName() {
+  void _showEditNameModal() {
+    var network = Provider.of<WebServices>(context, listen: false);
+    var data = Provider.of<Utils>(context, listen: false);
+    _firstnameController.text = firstname1;
+    _lastnameController.text = lastname1;
     showModalBottomSheet(
-        context: context,
-        isScrollControlled: true,
-        builder: (builder) {
-          return new Padding(
-              padding: MediaQuery.of(context).viewInsets,
-              child: Container(
-                  height: 155.0,
-                  padding: EdgeInsets.symmetric(vertical: 20, horizontal: 20),
-                  color: Colors.transparent,
-                  //could change this to Color(0xFF737373),
-                  //so you don't have to change MaterialApp canvasColor
-                  child: Column(
-                    mainAxisAlignment: MainAxisAlignment.start,
-                    crossAxisAlignment: CrossAxisAlignment.start,
-                    children: [
-                      Text(
-                        "Enter your name",
-                        style: TextStyle(
-                            fontWeight: FontWeight.w500, fontSize: 18),
-                      ),
-                      SizedBox(
-                        height: 10,
-                      ),
-                      Row(
-                        mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                        children: [
-                          Container(
-                            width: MediaQuery.of(context).size.width * 0.75,
-                            height: 33,
-                            child: TextField(
-                              controller: _controller,
-                              inputFormatters: [
-                                LengthLimitingTextInputFormatter(25),
-                              ],
-                              decoration: InputDecoration(
-                                focusColor: Colors.black,
-                                border: InputBorder.none,
-                                enabledBorder: UnderlineInputBorder(
-                                  borderSide:
-                                      BorderSide(color: Color(0xFFA40C85)),
-                                ),
-                                focusedBorder: UnderlineInputBorder(
-                                  borderSide:
-                                      BorderSide(color: Color(0xFFA40C85)),
-                                ),
-                              ),
+      isScrollControlled: true,
+      context: context,
+      builder: (BuildContext context) {
+        return Container(
+          padding: EdgeInsets.only(
+            bottom: MediaQuery.of(context).viewInsets.bottom,
+          ),
+          child: Padding(
+            padding: EdgeInsets.symmetric(vertical: 20, horizontal: 20),
+            child: Form(
+              key: _formKey1,
+              child: Column(
+                  mainAxisSize: MainAxisSize.min,
+                  mainAxisAlignment: MainAxisAlignment.start,
+                  crossAxisAlignment: CrossAxisAlignment.start,
+                  children: <Widget>[
+                    Text(
+                      "Enter your name",
+                      style:
+                          TextStyle(fontWeight: FontWeight.w500, fontSize: 18),
+                    ),
+                    SizedBox(
+                      height: 18,
+                    ),
+                    Row(
+                      mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                      children: [
+                        Container(
+                          width: MediaQuery.of(context).size.width * 0.88,
+                          height: 33,
+                          child: TextFormField(
+                            controller: _firstnameController,
+                            inputFormatters: [
+                              LengthLimitingTextInputFormatter(25),
+                            ],
+                            validator: (text) {
+                              if (text == null || text.isEmpty) {
+                                return 'Text is empty';
+                              }
+                              return null;
+                            },
+                            decoration: InputDecoration(
+                              hintText: 'Firstname',
+                              focusColor: Colors.black,
+                              // border: InputBorder.none,
                             ),
                           ),
-                          Padding(
-                            padding: EdgeInsets.only(top: 5),
-                            child: Icon(
-                              Icons.sentiment_satisfied,
-                              color: Color(0xFFA40C85),
-                              size: 25,
+                        ),
+                      ],
+                    ),
+                    SizedBox(
+                      height: 20,
+                    ),
+                    Row(
+                      mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                      children: [
+                        Container(
+                          width: MediaQuery.of(context).size.width * 0.88,
+                          height: 33,
+                          child: TextFormField(
+                            controller: _lastnameController,
+                            inputFormatters: [
+                              LengthLimitingTextInputFormatter(25),
+                            ],
+                            validator: (text) {
+                              if (text == null || text.isEmpty) {
+                                return 'Text is empty';
+                              }
+                              return null;
+                            },
+                            decoration: InputDecoration(
+                              hintText: 'Lastname',
+                              focusColor: Colors.black,
+                              // border: InputBorder.none,
                             ),
-                          )
-                        ],
+                          ),
+                        ),
+                      ],
+                    ),
+                    SizedBox(
+                      height: 30,
+                    ),
+                    Row(mainAxisAlignment: MainAxisAlignment.end, children: [
+                      InkWell(
+                        child: Text(
+                          "CANCEL",
+                          style: TextStyle(
+                              fontWeight: FontWeight.w400,
+                              fontSize: 16,
+                              color: Color(0xFFA40C85)),
+                        ),
+                        onTap: () => Navigator.pop(context),
                       ),
                       SizedBox(
-                        height: 30,
+                        width: 20,
                       ),
-                      Row(mainAxisAlignment: MainAxisAlignment.end, children: [
-                        InkWell(
-                          child: Text(
-                            "CANCEL",
-                            style: TextStyle(
-                                fontWeight: FontWeight.w400,
-                                fontSize: 16,
-                                color: Color(0xFFA40C85)),
-                          ),
-                          onTap: () => Navigator.pop(context),
+                      InkWell(
+                        child: Text(
+                          "SAVE",
+                          style: TextStyle(
+                              fontWeight: FontWeight.w400,
+                              fontSize: 16,
+                              color: Color(0xFFA40C85)),
                         ),
-                        SizedBox(
-                          width: 20,
-                        ),
-                        InkWell(
-                          child: Text(
-                            "SAVE",
-                            style: TextStyle(
-                                fontWeight: FontWeight.w400,
-                                fontSize: 16,
-                                color: Color(0xFFA40C85)),
-                          ),
-                          onTap: () {
-                            String name = _controller.text;
-                          },
-                        )
-                      ])
-                    ],
-                  )));
-        });
+                        onTap: () async {
+                          if (_formKey1.currentState.validate()) {
+                            String firstname = _firstnameController.text;
+                            String lastname = _lastnameController.text;
+                            bool status = await network.editUserName(
+                                firstname: firstname, lastname: lastname);
+                            if (status) {
+                              await data.storeData('firstName', '$firstname');
+                              await data.storeData('lastName', '$lastname');
+                              update(context);
+                              Navigator.of(context).pop();
+                              _firstnameController.clear();
+                              _lastnameController.clear();
+                            }
+                          }
+                        },
+                      )
+                    ])
+                  ]),
+            ),
+          ),
+        );
+      },
+    );
   }
 }

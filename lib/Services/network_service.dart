@@ -16,13 +16,13 @@ class WebServices extends ChangeNotifier {
   var login_state_second = false;
   var Bearer = '';
   var user_id = 0;
-  var  role = '';
+  var role = '';
   var phoneNum = '';
   var mobile_device_token = '';
   var profile_pic_file_name = '';
   var firstName = '';
-
-
+  var lastName = '';
+  var bio = '';
 
   void Login_SetState() {
     if (login_state == false) {
@@ -121,22 +121,35 @@ class WebServices extends ChangeNotifier {
         'Authorization':
             'Bearer FIXME_1U90P3444ANdroidAPP4HUisallOkayBY_FIXME_APP_UIONSISJGJANKKI3445fv',
       });
+
       var body = json.decode(response.body);
+      Bearer = response.headers['bearer'];
       user_id = body['id'];
       mobile_device_token = body['mobile_device_token'];
       profile_pic_file_name = body['profile_pic_file_name'];
       firstName = body['firstName'];
+      lastName = body['lastName'];
       role = body['role'];
       phoneNum = body['fullNumber'];
-      Bearer = response.headers['bearer'];
+
+      var response2 = await http.post(
+          Uri.parse('https://manager.fixme.ng/user-info?user_id=$user_id'),
+          headers: {
+            "Content-type": "application/json",
+            'Authorization': 'Bearer $Bearer',
+          });
+      var body2 = json.decode(response2.body);
+      bio = body2['bio'];
       if (body['reqRes'] == 'true') {
         datas.storeData('Bearer', Bearer);
         datas.storeData('mobile_device_token', mobile_device_token);
         datas.storeData('user_id', user_id.toString());
         datas.storeData('profile_pic_file_name', profile_pic_file_name);
         datas.storeData('firstName', firstName);
+        datas.storeData('lastName', lastName);
         datas.storeData('phoneNum', phoneNum);
         datas.storeData('role', role);
+        datas.storeData('about', bio);
         Login_SetState();
         return Navigator.push(
           context,
@@ -165,93 +178,85 @@ class WebServices extends ChangeNotifier {
     }
   }
 
-initializeValues()async{
-   SharedPreferences prefs = await SharedPreferences.getInstance();
+  initializeValues() async {
+    SharedPreferences prefs = await SharedPreferences.getInstance();
 
-           user_id = int.parse(prefs.getString('user_id'));
-       Bearer = prefs.getString('Bearer');
-         mobile_device_token = prefs.getString('mobile_device_token');
-        profile_pic_file_name = prefs.getString('profile_pic_file_name');
-         firstName = prefs.getString('firstName');
-         phoneNum = prefs.getString('phoneNum');
-         role = prefs.getString('role');
-       notifyListeners(); 
-}
+    user_id = int.parse(prefs.getString('user_id'));
+    Bearer = prefs.getString('Bearer');
+    mobile_device_token = prefs.getString('mobile_device_token');
+    profile_pic_file_name = prefs.getString('profile_pic_file_name');
+    firstName = prefs.getString('firstName');
+    phoneNum = prefs.getString('phoneNum');
+    role = prefs.getString('role');
+    notifyListeners();
+  }
 
-
-
-
-
-
- Future<dynamic> BecomeArtisanOrBusiness({context, scaffoldKey}) async {
+  Future<dynamic> BecomeArtisanOrBusiness({context, scaffoldKey}) async {
     var data = Provider.of<DataProvider>(context, listen: false);
     var datas = Provider.of<Utils>(context, listen: false);
-    PostRequestProvider postRequestProvider = Provider.of<PostRequestProvider>(context, listen:false);
+    PostRequestProvider postRequestProvider =
+        Provider.of<PostRequestProvider>(context, listen: false);
     SharedPreferences prefs = await SharedPreferences.getInstance();
 
     try {
       var response = await http
-          .post(Uri.parse('https://manager.fixme.ng/business-account'), 
-          body: {
-        'identification_number': data.bvn?? '',
-        'business_address': data.officeAddress?? '',
-        'house_address': data.homeAddress?? '',
+          .post(Uri.parse('https://manager.fixme.ng/business-account'), body: {
+        'identification_number': data.bvn ?? '',
+        'business_address': data.officeAddress ?? '',
+        'house_address': data.homeAddress ?? '',
         'business_name': data.firstName ?? '',
-        'sub_services': '${data.subcat}'.replaceAll('[','').replaceAll(']',''),
-        'bio': data.overview?? '',
+        'sub_services':
+            '${data.subcat}'.replaceAll('[', '').replaceAll(']', ''),
+        'bio': data.overview ?? '',
         'role': data.artisanVendorChoice,
         'service_id': '${postRequestProvider.selecteService.sn}',
-       'user_id':'$user_id',
+        'user_id': '$user_id',
       }, headers: {
         "Content-type": "application/x-www-form-urlencoded",
-        'Authorization':'Bearer $Bearer',
+        'Authorization': 'Bearer $Bearer',
       });
       var body = json.decode(response.body);
       print(body);
       if (body['reqRes'] == 'true') {
         datas.storeData('role', data.artisanVendorChoice);
         Login_SetState();
-        role =  prefs.getString('role');
+        role = prefs.getString('role');
         data.subcat.clear();
-        return  Navigator.push(
-                            context,
-                            PageRouteBuilder(
-                              pageBuilder:
-                                  (context, animation, secondaryAnimation) {
-                                return ProfilePage();
-                              },
-                              transitionsBuilder: (context, animation,
-                                  secondaryAnimation, child) {
-                                return FadeTransition(
-                                  opacity: animation,
-                                  child: child,
-                                );
-                              },
-                            ),
-                          );
-      } 
-      else if(body['message'] == 'Duplicate Sub-Service Entry' && body['reqRes'] == 'false'){
-          scaffoldKey.currentState
-            .showSnackBar(SnackBar(content: Text('Duplicate Sub-Service Entry')));
+        return Navigator.push(
+          context,
+          PageRouteBuilder(
+            pageBuilder: (context, animation, secondaryAnimation) {
+              return ProfilePage();
+            },
+            transitionsBuilder:
+                (context, animation, secondaryAnimation, child) {
+              return FadeTransition(
+                opacity: animation,
+                child: child,
+              );
+            },
+          ),
+        );
+      } else if (body['message'] == 'Duplicate Sub-Service Entry' &&
+          body['reqRes'] == 'false') {
+        scaffoldKey.currentState.showSnackBar(
+            SnackBar(content: Text('Duplicate Sub-Service Entry')));
         Login_SetState();
-      }
-      else if (body['reqRes'] == 'false') {
-        scaffoldKey.currentState
-            .showSnackBar(SnackBar(content: Text('There was a Problem. Working on it.')));
+      } else if (body['reqRes'] == 'false') {
+        scaffoldKey.currentState.showSnackBar(
+            SnackBar(content: Text('There was a Problem. Working on it.')));
         Login_SetState();
       }
       notifyListeners();
     } catch (e) {
       print(e);
       Login_SetState();
-    scaffoldKey.currentState
-            .showSnackBar(SnackBar(content: Text('There was a Problem. Working on it.')));
+      scaffoldKey.currentState.showSnackBar(
+          SnackBar(content: Text('There was a Problem. Working on it.')));
     }
   }
 
-
-Future<dynamic> getArtisanReviews([userId]) async {
-
+  Future<dynamic> getArtisanReviews([userId]) async {
     var response = await http
         .post(Uri.parse('https://manager.fixme.ng/get-reviews'), body: {
       'user_id': user_id.toString(),
@@ -271,17 +276,13 @@ Future<dynamic> getArtisanReviews([userId]) async {
     }
   }
 
-
-
   Future<dynamic> getUserInfo([userId]) async {
-    print(userId);
-    var response = await http
-        .post(Uri.parse('https://manager.fixme.ng/user-info'), body: {
-      'user_id': userId.toString(),
-    }, headers: {
-      "Content-type": "application/x-www-form-urlencoded",
-      'Authorization': 'Bearer $Bearer',
-    });
+    var response = await http.post(
+        Uri.parse('https://manager.fixme.ng/user-info?user_id=$user_id'),
+        headers: {
+          "Content-type": "application/json",
+          'Authorization': 'Bearer $Bearer',
+        });
     var body = json.decode(response.body);
     notifyListeners();
     if (body['reqRes'] == 'true') {
@@ -291,12 +292,12 @@ Future<dynamic> getArtisanReviews([userId]) async {
     }
   }
 
-  Future<dynamic> getServiceImage([userId, requestedId ]) async {
+  Future<dynamic> getServiceImage([userId, requestedId]) async {
     print(userId);
     var response = await http
         .post(Uri.parse('https://manager.fixme.ng/service-images'), body: {
       'user_id': userId.toString(),
-       'requested_user_id': requestedId.toString()
+      'requested_user_id': requestedId.toString()
     }, headers: {
       "Content-type": "application/x-www-form-urlencoded",
       'Authorization': 'Bearer $Bearer',
@@ -310,17 +311,18 @@ Future<dynamic> getArtisanReviews([userId]) async {
     }
   }
 
-
   Future<dynamic> getProductImage([userId, requestedId]) async {
     print(userId);
-    var response = await http
-        .post(Uri.parse('https://manager.fixme.ng/get-catalog-products'), body: {
-      'user_id': userId.toString(),
-      'requested_user_id': requestedId.toString(),
-    }, headers: {
-      "Content-type": "application/x-www-form-urlencoded",
-      'Authorization': 'Bearer $Bearer',
-    });
+    var response = await http.post(
+        Uri.parse('https://manager.fixme.ng/get-catalog-products'),
+        body: {
+          'user_id': userId.toString(),
+          'requested_user_id': requestedId.toString(),
+        },
+        headers: {
+          "Content-type": "application/x-www-form-urlencoded",
+          'Authorization': 'Bearer $Bearer',
+        });
     var body = json.decode(response.body);
     notifyListeners();
     if (body['reqRes'] == 'true') {
@@ -330,184 +332,180 @@ Future<dynamic> getArtisanReviews([userId]) async {
     }
   }
 
-
-  Future uploadProductCatalog({
-    bio,
-    product_name,
-    price,
-    scaffoldKey,
-    path,
-    context}) async {
-    
-    try{
-       var res = await http
-          .post(Uri.parse('https://manager.fixme.ng/save-catlog-product'), 
+  Future uploadProductCatalog(
+      {bio, product_name, price, scaffoldKey, path, context}) async {
+    try {
+      var res = await http.post(
+          Uri.parse('https://manager.fixme.ng/save-catlog-product'),
           body: {
-        'product_name': product_name.toString()?? '',
-        'price': price.toString()?? '',
-        'bio': bio.toString()??'',
-       'user_id':'$user_id',
-      }, headers: {
-        "Content-type": "application/x-www-form-urlencoded",
-        'Authorization':'Bearer $Bearer',
-      });
-     
+            'product_name': product_name.toString() ?? '',
+            'price': price.toString() ?? '',
+            'bio': bio.toString() ?? '',
+            'user_id': '$user_id',
+          },
+          headers: {
+            "Content-type": "application/x-www-form-urlencoded",
+            'Authorization': 'Bearer $Bearer',
+          });
+
       var body = jsonDecode(res.body);
       notifyListeners();
-      if (body['reqRes'] == 'true'){
-     
-            var upload = http.MultipartRequest(
-          'POST',
-          Uri.parse(
-              'https://uploads.fixme.ng/product-image-upload'));
-      var file = await http.MultipartFile.fromPath('file', path);
-      upload.files.add(file);
-      upload.fields['product_id'] =  body['productId'].toString();
-      upload.fields['product_name'] = product_name.toString();
-      upload.fields['user_id'] = user_id.toString();
-      upload.headers['authorization'] = 'Bearer $Bearer';
+      if (body['reqRes'] == 'true') {
+        var upload = http.MultipartRequest(
+            'POST', Uri.parse('https://uploads.fixme.ng/product-image-upload'));
+        var file = await http.MultipartFile.fromPath('file', path);
+        upload.files.add(file);
+        upload.fields['product_id'] = body['productId'].toString();
+        upload.fields['product_name'] = product_name.toString();
+        upload.fields['user_id'] = user_id.toString();
+        upload.headers['authorization'] = 'Bearer $Bearer';
 
-      final stream = await upload.send();
-      var resp = await http.Response.fromStream(stream);
-      var bodys = jsonDecode(resp.body);
+        final stream = await upload.send();
+        var resp = await http.Response.fromStream(stream);
+        var bodys = jsonDecode(resp.body);
 
-      if (bodys['upldRes'] == 'true'){
-           Login_SetState();
-           showDialog(
-            barrierDismissible: false,
-            child: WillPopScope(
-              onWillPop: (){},
-              child: AlertDialog(
-                elevation: 6,
-                shape: RoundedRectangleBorder(
-                    borderRadius: BorderRadius.all(Radius.circular(32.0))),
-                content: Container(
-                  height: 150,
-                  child: Column(
-                    crossAxisAlignment: CrossAxisAlignment.center,
-                    mainAxisAlignment: MainAxisAlignment.center,
-                    children: <Widget>[
-                      Container(
-                        padding: EdgeInsets.only(top:15, bottom: 15),
-                        width: 250,
-                        child: Text(
-                          'Product Successfully Added to Catalog. Add Another Product?',
-                          textAlign: TextAlign.center,
-                          style: TextStyle(
-                            fontSize: 15,
-                            fontWeight: FontWeight.bold,
-                            color: Colors.black54,
+        if (bodys['upldRes'] == 'true') {
+          Login_SetState();
+          showDialog(
+              barrierDismissible: false,
+              child: WillPopScope(
+                onWillPop: () {},
+                child: AlertDialog(
+                  elevation: 6,
+                  shape: RoundedRectangleBorder(
+                      borderRadius: BorderRadius.all(Radius.circular(32.0))),
+                  content: Container(
+                    height: 150,
+                    child: Column(
+                      crossAxisAlignment: CrossAxisAlignment.center,
+                      mainAxisAlignment: MainAxisAlignment.center,
+                      children: <Widget>[
+                        Container(
+                          padding: EdgeInsets.only(top: 15, bottom: 15),
+                          width: 250,
+                          child: Text(
+                            'Product Successfully Added to Catalog. Add Another Product?',
+                            textAlign: TextAlign.center,
+                            style: TextStyle(
+                              fontSize: 15,
+                              fontWeight: FontWeight.bold,
+                              color: Colors.black54,
+                            ),
                           ),
                         ),
-                      ),
-                      Row(
-                        mainAxisAlignment: MainAxisAlignment.center ,
-                        children: <Widget>[
-                          !login_state? Material(
-                            borderRadius: BorderRadius.circular(26),
-                            elevation: 2,
-                            child: Container(
-                              height: 40,
-                              width: 80,
-                              decoration: BoxDecoration(
-                                  border: Border.all(color: Color(0xFFE60016)),
-                                  borderRadius: BorderRadius.circular(26)
-                              ),
-                              child: FlatButton(
-                                onPressed: () {
-                                  Login_SetState();
-                                  BecomeArtisanOrBusiness(context: context,
-                                    scaffoldKey: scaffoldKey,
-                                  );
-                                  Navigator.pop(context);
-
-                                },
-                                color: Color(0xFFE60016),
-                                shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(26)),
-                                padding: EdgeInsets.all(0.0),
-                                child: Ink(
-                                  decoration: BoxDecoration(
-                                      borderRadius: BorderRadius.circular(26)
-                                  ),
-                                  child: Container(
-                                    constraints: BoxConstraints(maxWidth: 190.0, minHeight: 53.0),
-                                    alignment: Alignment.center,
-                                    child: Text(
-                                      "No Please!",
-                                      textAlign: TextAlign.center,
-                                      style: TextStyle(
-                                          fontSize: 14,
-                                          fontWeight: FontWeight.bold,
-                                          color: Colors.white
+                        Row(
+                          mainAxisAlignment: MainAxisAlignment.center,
+                          children: <Widget>[
+                            !login_state
+                                ? Material(
+                                    borderRadius: BorderRadius.circular(26),
+                                    elevation: 2,
+                                    child: Container(
+                                      height: 40,
+                                      width: 80,
+                                      decoration: BoxDecoration(
+                                          border: Border.all(
+                                              color: Color(0xFFE60016)),
+                                          borderRadius:
+                                              BorderRadius.circular(26)),
+                                      child: FlatButton(
+                                        onPressed: () {
+                                          Login_SetState();
+                                          BecomeArtisanOrBusiness(
+                                            context: context,
+                                            scaffoldKey: scaffoldKey,
+                                          );
+                                          Navigator.pop(context);
+                                        },
+                                        color: Color(0xFFE60016),
+                                        shape: RoundedRectangleBorder(
+                                            borderRadius:
+                                                BorderRadius.circular(26)),
+                                        padding: EdgeInsets.all(0.0),
+                                        child: Ink(
+                                          decoration: BoxDecoration(
+                                              borderRadius:
+                                                  BorderRadius.circular(26)),
+                                          child: Container(
+                                            constraints: BoxConstraints(
+                                                maxWidth: 190.0,
+                                                minHeight: 53.0),
+                                            alignment: Alignment.center,
+                                            child: Text(
+                                              "No Please!",
+                                              textAlign: TextAlign.center,
+                                              style: TextStyle(
+                                                  fontSize: 14,
+                                                  fontWeight: FontWeight.bold,
+                                                  color: Colors.white),
+                                            ),
+                                          ),
+                                        ),
+                                      ),
+                                    ),
+                                  )
+                                : CircularProgressIndicator(
+                                    valueColor: AlwaysStoppedAnimation<Color>(
+                                        Color(0xFF9B049B))),
+                            SizedBox(width: 5),
+                            Material(
+                              borderRadius: BorderRadius.circular(26),
+                              elevation: 2,
+                              child: Container(
+                                height: 40,
+                                width: 80,
+                                decoration: BoxDecoration(
+                                    border: Border.all(color: Colors.green),
+                                    borderRadius: BorderRadius.circular(26)),
+                                child: FlatButton(
+                                  onPressed: () {
+                                    Navigator.pop(context);
+                                  },
+                                  color: Colors.green,
+                                  shape: RoundedRectangleBorder(
+                                      borderRadius: BorderRadius.circular(26)),
+                                  padding: EdgeInsets.all(0.0),
+                                  child: Ink(
+                                    decoration: BoxDecoration(
+                                        borderRadius:
+                                            BorderRadius.circular(26)),
+                                    child: Container(
+                                      constraints: BoxConstraints(
+                                          maxWidth: 190.0, minHeight: 53.0),
+                                      alignment: Alignment.center,
+                                      child: Text(
+                                        "Yes Please!",
+                                        textAlign: TextAlign.center,
+                                        style: TextStyle(
+                                            fontSize: 14,
+                                            fontWeight: FontWeight.bold,
+                                            color: Colors.white),
                                       ),
                                     ),
                                   ),
                                 ),
-
                               ),
                             ),
-                          ): CircularProgressIndicator(valueColor:  AlwaysStoppedAnimation<Color>(Color(0xFF9B049B))),
-                          SizedBox(width: 5),
-                          Material(
-                            borderRadius: BorderRadius.circular(26),
-                            elevation: 2,
-                            child: Container(
-                              height: 40,
-                              width: 80,
-                              decoration: BoxDecoration(
-                                  border: Border.all(color: Colors.green),
-                                  borderRadius: BorderRadius.circular(26)
-                              ),
-                              child: FlatButton(
-                                onPressed: () {
-                                  Navigator.pop(context);
-                                },
-                                color: Colors.green,
-                                shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(26)),
-                                padding: EdgeInsets.all(0.0),
-                                child: Ink(
-                                  decoration: BoxDecoration(
-                                      borderRadius: BorderRadius.circular(26)
-                                  ),
-                                  child: Container(
-                                    constraints: BoxConstraints(maxWidth: 190.0, minHeight: 53.0),
-                                    alignment: Alignment.center,
-                                    child: Text(
-                                      "Yes Please!",
-                                      textAlign: TextAlign.center,
-                                      style: TextStyle(
-                                          fontSize: 14,
-                                          fontWeight: FontWeight.bold,
-                                          color: Colors.white
-                                      ),
-                                    ),
-                                  ),
-                                ),
-
-                              ),
-                            ),
-                          ),
-                        ],
-                      ),
-                    ],
+                          ],
+                        ),
+                      ],
+                    ),
                   ),
                 ),
               ),
-            ),
-            context: context);
-        return bodys;
-      }else if(bodys['upldRes'] == 'false'){
+              context: context);
+          return bodys;
+        } else if (bodys['upldRes'] == 'false') {
           Login_SetState();
-        showDialog(
-            child: AlertDialog(
-              title: Center(
-                child: Text('There was a Problem Working on it!',
-                    style: TextStyle(color: Colors.blue)),
+          showDialog(
+              child: AlertDialog(
+                title: Center(
+                  child: Text('There was a Problem Working on it!',
+                      style: TextStyle(color: Colors.blue)),
+                ),
               ),
-            ),
-            context: context);
-      }
-        
+              context: context);
+        }
       } else if (body['reqRes'] == 'false') {
         Login_SetState();
         showDialog(
@@ -518,33 +516,23 @@ Future<dynamic> getArtisanReviews([userId]) async {
               ),
             ),
             context: context);
-      }}catch(e){
+      }
+    } catch (e) {
       showDialog(
-            child: AlertDialog(
-              title: Center(
-                child: Text('$e',
-                    style: TextStyle(color: Colors.blue)),
-              ),
+          child: AlertDialog(
+            title: Center(
+              child: Text('$e', style: TextStyle(color: Colors.blue)),
             ),
-            context: context);
+          ),
+          context: context);
       Login_SetState();
     }
-
   }
 
-
-
-
-  Future uploadCatalog({
-    path,
-    uploadType,
-    scaffoldKey,
-    context}) async {
-    try{
+  Future uploadCatalog({path, uploadType, scaffoldKey, context}) async {
+    try {
       var upload = http.MultipartRequest(
-          'POST',
-          Uri.parse(
-              'https://uploads.fixme.ng/uploads-processing'));
+          'POST', Uri.parse('https://uploads.fixme.ng/uploads-processing'));
       var file = await http.MultipartFile.fromPath('file', path);
       upload.files.add(file);
       upload.fields['uploadType'] = uploadType.toString();
@@ -560,9 +548,9 @@ Future<dynamic> getArtisanReviews([userId]) async {
       if (body['upldRes'] == 'true') {
         Login_SetState();
         showDialog(
-          barrierDismissible: false,
+            barrierDismissible: false,
             child: WillPopScope(
-              onWillPop: (){},
+              onWillPop: () {},
               child: AlertDialog(
                 elevation: 6,
                 shape: RoundedRectangleBorder(
@@ -574,7 +562,7 @@ Future<dynamic> getArtisanReviews([userId]) async {
                     mainAxisAlignment: MainAxisAlignment.center,
                     children: <Widget>[
                       Container(
-                        padding: EdgeInsets.only(top:15, bottom: 15),
+                        padding: EdgeInsets.only(top: 15, bottom: 15),
                         width: 250,
                         child: Text(
                           'Photo Successfully Added to Catalog. Add Another Photo?',
@@ -587,53 +575,59 @@ Future<dynamic> getArtisanReviews([userId]) async {
                         ),
                       ),
                       Row(
-                        mainAxisAlignment: MainAxisAlignment.center ,
+                        mainAxisAlignment: MainAxisAlignment.center,
                         children: <Widget>[
-                         !login_state? Material(
-                            borderRadius: BorderRadius.circular(26),
-                            elevation: 2,
-                            child: Container(
-                              height: 40,
-                              width: 80,
-                              decoration: BoxDecoration(
-                                  border: Border.all(color: Color(0xFFE60016)),
-                                  borderRadius: BorderRadius.circular(26)
-                              ),
-                              child: FlatButton(
-                                onPressed: () {
-                                  Login_SetState();
-                                  BecomeArtisanOrBusiness(context: context,
-                                    scaffoldKey: scaffoldKey,
-                                  );
-                                  Navigator.pop(context);
-
-                                },
-                                color: Color(0xFFE60016),
-                                shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(26)),
-                                padding: EdgeInsets.all(0.0),
-                                child: Ink(
-                                  decoration: BoxDecoration(
-                                      borderRadius: BorderRadius.circular(26)
-                                  ),
+                          !login_state
+                              ? Material(
+                                  borderRadius: BorderRadius.circular(26),
+                                  elevation: 2,
                                   child: Container(
-                                    constraints: BoxConstraints(maxWidth: 190.0, minHeight: 53.0),
-                                    alignment: Alignment.center,
-                                    child: Text(
-                                      "No Please!",
-                                      textAlign: TextAlign.center,
-                                      style: TextStyle(
-                                          fontSize: 14,
-                                          fontWeight: FontWeight.bold,
-                                          color: Colors.white
+                                    height: 40,
+                                    width: 80,
+                                    decoration: BoxDecoration(
+                                        border: Border.all(
+                                            color: Color(0xFFE60016)),
+                                        borderRadius:
+                                            BorderRadius.circular(26)),
+                                    child: FlatButton(
+                                      onPressed: () {
+                                        Login_SetState();
+                                        BecomeArtisanOrBusiness(
+                                          context: context,
+                                          scaffoldKey: scaffoldKey,
+                                        );
+                                        Navigator.pop(context);
+                                      },
+                                      color: Color(0xFFE60016),
+                                      shape: RoundedRectangleBorder(
+                                          borderRadius:
+                                              BorderRadius.circular(26)),
+                                      padding: EdgeInsets.all(0.0),
+                                      child: Ink(
+                                        decoration: BoxDecoration(
+                                            borderRadius:
+                                                BorderRadius.circular(26)),
+                                        child: Container(
+                                          constraints: BoxConstraints(
+                                              maxWidth: 190.0, minHeight: 53.0),
+                                          alignment: Alignment.center,
+                                          child: Text(
+                                            "No Please!",
+                                            textAlign: TextAlign.center,
+                                            style: TextStyle(
+                                                fontSize: 14,
+                                                fontWeight: FontWeight.bold,
+                                                color: Colors.white),
+                                          ),
+                                        ),
                                       ),
                                     ),
                                   ),
-                                ),
-
-                              ),
-                            ),
-                          ): CircularProgressIndicator(valueColor:  AlwaysStoppedAnimation<Color>(Color(0xFF9B049B))),
-                           SizedBox(width: 5),
+                                )
+                              : CircularProgressIndicator(
+                                  valueColor: AlwaysStoppedAnimation<Color>(
+                                      Color(0xFF9B049B))),
+                          SizedBox(width: 5),
                           Material(
                             borderRadius: BorderRadius.circular(26),
                             elevation: 2,
@@ -642,21 +636,21 @@ Future<dynamic> getArtisanReviews([userId]) async {
                               width: 80,
                               decoration: BoxDecoration(
                                   border: Border.all(color: Colors.green),
-                                  borderRadius: BorderRadius.circular(26)
-                              ),
+                                  borderRadius: BorderRadius.circular(26)),
                               child: FlatButton(
                                 onPressed: () {
                                   Navigator.pop(context);
                                 },
                                 color: Colors.green,
-                                shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(26)),
+                                shape: RoundedRectangleBorder(
+                                    borderRadius: BorderRadius.circular(26)),
                                 padding: EdgeInsets.all(0.0),
                                 child: Ink(
                                   decoration: BoxDecoration(
-                                      borderRadius: BorderRadius.circular(26)
-                                  ),
+                                      borderRadius: BorderRadius.circular(26)),
                                   child: Container(
-                                    constraints: BoxConstraints(maxWidth: 190.0, minHeight: 53.0),
+                                    constraints: BoxConstraints(
+                                        maxWidth: 190.0, minHeight: 53.0),
                                     alignment: Alignment.center,
                                     child: Text(
                                       "Yes Please!",
@@ -664,12 +658,10 @@ Future<dynamic> getArtisanReviews([userId]) async {
                                       style: TextStyle(
                                           fontSize: 14,
                                           fontWeight: FontWeight.bold,
-                                          color: Colors.white
-                                      ),
+                                          color: Colors.white),
                                     ),
                                   ),
                                 ),
-
                               ),
                             ),
                           ),
@@ -682,7 +674,6 @@ Future<dynamic> getArtisanReviews([userId]) async {
             ),
             context: context);
         return body;
-
       } else if (body['upldRes'] == 'false') {
         Login_SetState();
         showDialog(
@@ -693,44 +684,62 @@ Future<dynamic> getArtisanReviews([userId]) async {
               ),
             ),
             context: context);
-      }}catch(e){
+      }
+    } catch (e) {
       print(e);
     }
-
   }
 
-
-
-
-
-  Future uploadPhoto({
-        path,
-        uploadType,
-    navigate,
-        context}) async {
-    try{
+  Future<String> uploadProfilePhoto({path}) async {
+      String imageName;
+    try {
       var upload = http.MultipartRequest(
-          'POST',
-          Uri.parse(
-              'https://uploads.fixme.ng/uploads-processing'));
+          'POST', Uri.parse('https://uploads.fixme.ng/uploads-processing'));
+      upload.headers['Authorization'] = 'Bearer $Bearer';
+      upload.headers['Content-type'] = 'application/json';
       var file = await http.MultipartFile.fromPath('file', path);
-      upload.files.add(file);
-      upload.fields['uploadType'] = uploadType.toString();
-      upload.fields['firstName'] = firstName.toString();
+
       upload.fields['user_id'] = user_id.toString();
-      upload.headers['authorization'] = 'Bearer $Bearer';
+      upload.fields['firstName'] = firstName.toString();
+      upload.fields['uploadType'] = 'profilePicture';
+      upload.files.add(file);
 
       final stream = await upload.send();
       var res = await http.Response.fromStream(stream);
+      var body = jsonDecode(res.body);
+      notifyListeners();
+    
+      if (body['upldRes'] == 'true') {
+        imageName = body['imageFileName'];
+      } else if (body['upldRes'] == 'false') {}
+    } catch (e) {
+      print(e);
+    }
+    return imageName;
+  }
 
+  Future uploadPhoto({path, uploadType, navigate, context}) async {
+    try {
+      var upload = http.MultipartRequest(
+          'POST', Uri.parse('https://uploads.fixme.ng/uploads-processing'));
+      upload.headers['Authorization'] = 'Bearer $Bearer';
+      upload.headers['Content-type'] = 'application/json';
+      var file = await http.MultipartFile.fromPath('file', path);
+
+      upload.fields['user_id'] = user_id.toString();
+      upload.fields['firstName'] = firstName.toString();
+      upload.fields['uploadType'] = uploadType.toString();
+      upload.files.add(file);
+
+      final stream = await upload.send();
+      var res = await http.Response.fromStream(stream);
       var body = jsonDecode(res.body);
       notifyListeners();
       if (body['upldRes'] == 'true') {
         Login_SetState();
         navigate.jumpToPage(3);
         print(body['upldRes']);
-      return body;
-
+        return body;
       } else if (body['upldRes'] == 'false') {
         Login_SetState();
         showDialog(
@@ -741,7 +750,8 @@ Future<dynamic> getArtisanReviews([userId]) async {
               ),
             ),
             context: context);
-      }}catch(e){
+      }
+    } catch (e) {
       showDialog(
           child: AlertDialog(
             title: Center(
@@ -753,24 +763,13 @@ Future<dynamic> getArtisanReviews([userId]) async {
       Login_SetState();
       print(e);
     }
-
-    }
-
-
-
-
-
-
-
-
-
+  }
 
   Future<dynamic> NearbyArtisans({longitude, latitude}) async {
-   
     var response = await http
         .post(Uri.parse('https://manager.fixme.ng/near-artisans'), body: {
       'user_id': user_id.toString(),
-        'longitude':'5.642040',
+      'longitude': '5.642040',
       'latitude': '6.295660',
     }, headers: {
       "Content-type": "application/x-www-form-urlencoded",
@@ -788,22 +787,18 @@ Future<dynamic> getArtisanReviews([userId]) async {
       print(body['message']);
     }
   }
-
-
-
-
 
   Future<dynamic> NearbyShop({longitude, latitude}) async {
     var response = await http
         .post(Uri.parse('https://manager.fixme.ng/near-shops-business'), body: {
       'user_id': user_id.toString(),
-      'longitude':'5.642040',
+      'longitude': '5.642040',
       'latitude': '6.295660',
     }, headers: {
       "Content-type": "application/x-www-form-urlencoded",
       'Authorization': 'Bearer $Bearer',
     });
-        print(response.body);
+    print(response.body);
     var body = json.decode(response.body);
     List result = body['sortedUsers'];
     List<UserSearch> nearebyList = result.map((data) {
@@ -816,8 +811,6 @@ Future<dynamic> getArtisanReviews([userId]) async {
       print(body['message']);
     }
   }
-
-
 
   Future Search({longitude, latitude, searchquery}) async {
     try {
@@ -845,6 +838,42 @@ Future<dynamic> getArtisanReviews([userId]) async {
     } catch (e) {}
   }
 
+  Future<bool> editUserName({firstname, lastname}) async {
+    var response = await http.post(
+        Uri.parse(
+            'https://manager.fixme.ng/e-f-n?user_id=$user_id&firstName=$firstname&lastName=$lastname'),
+        headers: {
+          "Content-type": "application/json",
+          'Authorization': 'Bearer $Bearer',
+        });
+    var body = json.decode(response.body);
+    var res;
+    if (body['reqRes'] == 'true') {
+      res = true;
+    } else if (body['reqRes'] == 'false') {
+      res = false;
+    }
+    return res;
+  }
+
+  Future<bool> editUserBio({status}) async {
+    var response = await http.post(
+        Uri.parse(
+            'https://manager.fixme.ng/update-bio?user_id=$user_id&bio=$status'),
+        headers: {
+          "Content-type": "application/json",
+          'Authorization': 'Bearer $Bearer',
+        });
+    var body = json.decode(response.body);
+    var res;
+    if (body['reqRes'] == 'true') {
+      res = true;
+    } else if (body['reqRes'] == 'false') {
+      res = false;
+    }
+    return res;
+  }
+
   Future<List> getAvailableBanks() async {
     var response = await http.post(
         Uri.parse('https://manager.fixme.ng/g-b-info?user_id=$user_id'),
@@ -854,7 +883,6 @@ Future<dynamic> getArtisanReviews([userId]) async {
         });
     var body = json.decode(response.body);
     return body['bankInfo'];
- 
   }
 
   Future<Map> getUserWalletInfo() async {
@@ -867,7 +895,6 @@ Future<dynamic> getArtisanReviews([userId]) async {
         });
     var body = json.decode(response.body);
     return body['accountInfo'];
- 
   }
 
   Future<List> getUserTransactions() async {
@@ -967,5 +994,23 @@ Future<dynamic> getArtisanReviews([userId]) async {
       'message': body['message'] == null ? null : body['message']
     };
     return result;
+  }
+
+  Future<bool> sendSupportRequest({String topic, String message}) async {
+    var response = await http.post(
+        Uri.parse(
+            'https://manager.fixme.ng/support-request?user_id=264&topic=$topic&message=$message'),
+        headers: {
+          "Content-type": "application/json",
+          'Authorization': 'Bearer $Bearer',
+        });
+    var body = json.decode(response.body);
+    bool res;
+    if (body['reqRes'] == 'true') {
+      res = true;
+    } else if (body['reqRes'] == 'false') {
+      res = false;
+    }
+    return res;
   }
 }

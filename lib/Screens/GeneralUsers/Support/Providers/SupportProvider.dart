@@ -37,4 +37,11 @@ class SupportProvider extends ChangeNotifier {
       notifyListeners();
     }
   }
+
+  bool _sendStatus = true;
+  bool get getSendStatus => _sendStatus;
+  set setSendStatus(bool newInfo) {
+    _sendStatus = newInfo;
+    notifyListeners();
+  }
 }
