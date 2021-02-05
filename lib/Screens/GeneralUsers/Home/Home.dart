@@ -1,4 +1,6 @@
 import 'package:fixme/Screens/GeneralUsers/Chat/Chats.dart';
+import 'package:fixme/Screens/GeneralUsers/Home/NearbyArtisansSeeAll.dart';
+import 'package:fixme/Screens/GeneralUsers/Home/NearbyShopsSeeAll.dart';
 import 'package:fixme/Screens/GeneralUsers/Home/Search.dart';
 import 'package:fixme/Screens/ArtisanUser/Profile/ArtisanPage.dart';
 import 'package:fixme/Services/location_service.dart';
@@ -173,8 +175,13 @@ class Home extends StatelessWidget {
                         'Popular Services',
                         style: TextStyle(fontWeight: FontWeight.w500),
                       ),
-                      Text('See all',
-                          style: TextStyle(color: Color(0xFF9B049B)))
+                      InkWell(
+                        onTap: () {
+                          //TODO: here
+                        },
+                        child: Text('See all',
+                            style: TextStyle(color: Color(0xFF9B049B))),
+                      )
                     ],
                   ),
                 ),
@@ -516,8 +523,28 @@ class Home extends StatelessWidget {
                         'Nearby Shops',
                         style: TextStyle(fontWeight: FontWeight.w500),
                       ),
-                      Text('See all',
-                          style: TextStyle(color: Color(0xFF9B049B)))
+                      InkWell(
+                        onTap: () {
+                          Navigator.push(
+                            context,
+                            PageRouteBuilder(
+                              pageBuilder:
+                                  (context, animation, secondaryAnimation) {
+                                return NearbyShopsSeeAll();
+                              },
+                              transitionsBuilder: (context, animation,
+                                  secondaryAnimation, child) {
+                                return FadeTransition(
+                                  opacity: animation,
+                                  child: child,
+                                );
+                              },
+                            ),
+                          );
+                        },
+                        child: Text('See all',
+                            style: TextStyle(color: Color(0xFF9B049B))),
+                      )
                     ],
                   ),
                 ),
@@ -625,8 +652,28 @@ class Home extends StatelessWidget {
                         'Nearby Artisans',
                         style: TextStyle(fontWeight: FontWeight.w500),
                       ),
-                      Text('See all',
-                          style: TextStyle(color: Color(0xFF9B049B)))
+                      InkWell(
+                        onTap: () {
+                          Navigator.push(
+                            context,
+                            PageRouteBuilder(
+                              pageBuilder:
+                                  (context, animation, secondaryAnimation) {
+                                return NearbyArtisansSeeAll();
+                              },
+                              transitionsBuilder: (context, animation,
+                                  secondaryAnimation, child) {
+                                return FadeTransition(
+                                  opacity: animation,
+                                  child: child,
+                                );
+                              },
+                            ),
+                          );
+                        },
+                        child: Text('See all',
+                            style: TextStyle(color: Color(0xFF9B049B))),
+                      )
                     ],
                   ),
                 ),

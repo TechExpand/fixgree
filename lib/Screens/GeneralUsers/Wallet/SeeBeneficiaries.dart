@@ -35,6 +35,7 @@ class _SeeBeneficiariesState extends State<SeeBeneficiaries> {
                 height: 1.4,
                 fontWeight: FontWeight.w500)),
         elevation: 0,
+        leadingWidth: 10,
         actions: [
           IconButton(
             onPressed: () {
