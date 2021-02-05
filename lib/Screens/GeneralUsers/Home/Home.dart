@@ -1,4 +1,3 @@
-
 import 'package:fixme/Screens/GeneralUsers/Chat/Chats.dart';
 import 'package:fixme/Screens/GeneralUsers/Home/Search.dart';
 import 'package:fixme/Screens/ArtisanUser/Profile/ArtisanPage.dart';
@@ -7,7 +6,6 @@ import 'package:fixme/Services/network_service.dart';
 import 'package:fixme/Utils/Provider.dart';
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
-
 
 class Home extends StatelessWidget {
   var scafold_key;
@@ -28,7 +26,8 @@ class Home extends StatelessWidget {
           forceElevated: true,
           backgroundColor: Colors.white,
           titleSpacing: 0.0,
-          elevation: 4,
+          elevation: 2.5,
+          shadowColor: Color(0xFFF1F1FD),
           automaticallyImplyLeading: false,
           title: Row(
             mainAxisAlignment: MainAxisAlignment.spaceBetween,
@@ -36,7 +35,6 @@ class Home extends StatelessWidget {
               InkWell(
                 onTap: () {
                   scafold_key.currentState.openDrawer();
-              
                 },
                 child: Padding(
                   padding: const EdgeInsets.all(4.0),
@@ -44,10 +42,11 @@ class Home extends StatelessWidget {
                     CircleAvatar(
                       child: Text(''),
                       radius: 19,
-                      backgroundImage:NetworkImage(
-                        network.profile_pic_file_name=='no_picture_upload'||
-                            network.profile_pic_file_name  ==null ?'https://uploads.fixme.ng/originals/no_picture_upload':
-                        'https://uploads.fixme.ng/originals/${network.profile_pic_file_name}',
+                      backgroundImage: NetworkImage(
+                        network.profile_pic_file_name == 'no_picture_upload' ||
+                                network.profile_pic_file_name == null
+                            ? 'https://uploads.fixme.ng/originals/no_picture_upload'
+                            : 'https://uploads.fixme.ng/originals/${network.profile_pic_file_name}',
                       ),
                       foregroundColor: Colors.white,
                       backgroundColor: Colors.white,
@@ -68,16 +67,21 @@ class Home extends StatelessWidget {
                   ]),
                 ),
               ),
-              Image.asset('assets/images/fixme1.png', height: 70, width: 70,),
+              Image.asset(
+                'assets/images/fixme1.png',
+                height: 70,
+                width: 70,
+              ),
               InkWell(
-                onTap: (){
+                onTap: () {
                   Navigator.push(
                     context,
                     PageRouteBuilder(
                       pageBuilder: (context, animation, secondaryAnimation) {
                         return ListenIncoming();
                       },
-                      transitionsBuilder: (context, animation, secondaryAnimation, child) {
+                      transitionsBuilder:
+                          (context, animation, secondaryAnimation, child) {
                         return FadeTransition(
                           opacity: animation,
                           child: child,
@@ -90,7 +94,7 @@ class Home extends StatelessWidget {
                   padding: const EdgeInsets.all(8.0),
                   child: Icon(
                     Icons.chat,
-                    color:Color(0xFF9B049B),
+                    color: Color(0xFF9B049B),
                     size: 25,
                   ),
                 ),
@@ -177,46 +181,42 @@ class Home extends StatelessWidget {
                 Container(
                   padding: const EdgeInsets.only(top: 12.0, left: 6),
                   height: 150,
-                  child: ListView(
-                    scrollDirection: Axis.horizontal,
-                    children:[
-                    Container(
-                    width: 115,
-                    child: Card(
-                      child: Column(
-                        children: [
-                          Padding(
-                            padding: const EdgeInsets.only(bottom: 15.0),
-                            child: Container(
-                              height: 90,
-                              width: 115,
-                              child: Image.asset(
-              'assets/images/p1.png', 
-              fit: BoxFit.cover,
-            ),
-                            )
-                          ),
-                          Text('UI/UX Designer'),
-                        ],
-                      ),
-                    ),
-                  ),
+                  child: ListView(scrollDirection: Axis.horizontal, children: [
                     Container(
                       width: 115,
                       child: Card(
                         child: Column(
                           children: [
                             Padding(
-                            padding: const EdgeInsets.only(bottom: 15.0),
-                            child: Container(
-                              height: 90,
-                              width: 115,
-                              child: Image.asset(
-              'assets/images/p2.png', 
-              fit: BoxFit.cover,
-            ),
-                            )
-                          ),
+                                padding: const EdgeInsets.only(bottom: 15.0),
+                                child: Container(
+                                  height: 90,
+                                  width: 115,
+                                  child: Image.asset(
+                                    'assets/images/p1.png',
+                                    fit: BoxFit.cover,
+                                  ),
+                                )),
+                            Text('UI/UX Designer'),
+                          ],
+                        ),
+                      ),
+                    ),
+                    Container(
+                      width: 115,
+                      child: Card(
+                        child: Column(
+                          children: [
+                            Padding(
+                                padding: const EdgeInsets.only(bottom: 15.0),
+                                child: Container(
+                                  height: 90,
+                                  width: 115,
+                                  child: Image.asset(
+                                    'assets/images/p2.png',
+                                    fit: BoxFit.cover,
+                                  ),
+                                )),
                             Text('Plumber'),
                           ],
                         ),
@@ -228,39 +228,35 @@ class Home extends StatelessWidget {
                         child: Column(
                           children: [
                             Padding(
-                            padding: const EdgeInsets.only(bottom: 15.0),
-                            child: Container(
-                              height: 90,
-                              width: 115,
-                              child: Image.asset(
-                                
-              'assets/images/p3.png', 
-              fit: BoxFit.cover,
-            ),
-                            )
-                          ),
+                                padding: const EdgeInsets.only(bottom: 15.0),
+                                child: Container(
+                                  height: 90,
+                                  width: 115,
+                                  child: Image.asset(
+                                    'assets/images/p3.png',
+                                    fit: BoxFit.cover,
+                                  ),
+                                )),
                             Text('Electrician'),
                           ],
                         ),
                       ),
                     ),
-                    
                     Container(
                       width: 115,
                       child: Card(
                         child: Column(
                           children: [
-                           Padding(
-                            padding: const EdgeInsets.only(bottom: 15.0),
-                            child: Container(
-                              height: 90,
-                              width: 115,
-                              child: Image.asset(
-              'assets/images/p1.png', 
-              fit: BoxFit.cover,
-            ),
-                            )
-                          ),
+                            Padding(
+                                padding: const EdgeInsets.only(bottom: 15.0),
+                                child: Container(
+                                  height: 90,
+                                  width: 115,
+                                  child: Image.asset(
+                                    'assets/images/p1.png',
+                                    fit: BoxFit.cover,
+                                  ),
+                                )),
                             Text('Mechanic'),
                           ],
                         ),
@@ -402,8 +398,7 @@ class Home extends StatelessWidget {
                         ),
                       ),
                     ),
-                    ]
-                  ),
+                  ]),
                 ),
                 Padding(
                   padding:
@@ -428,90 +423,90 @@ class Home extends StatelessWidget {
                     itemCount: 6,
                     itemBuilder: (context, index) {
                       return ClipRRect(
-                         borderRadius: BorderRadius.circular(18),
+                        borderRadius: BorderRadius.circular(18),
                         child: Container(
-                        width: 115,
-                        child: Card(
-                          child: Column(
-                            children: [
-                              Padding(
-                                padding: const EdgeInsets.only(bottom: 4.0),
-                                child: Container(
-                              height: 90,
-                              width: 115,
-                              child: Image.asset(
-                                
-              'assets/images/p3.png', 
-              fit: BoxFit.cover,
-            ),
-                            )
-                              ),
-                              Row(
-                                children: [
-                                  Padding(
-                                    padding: const EdgeInsets.only(left: 4.0),
-                                    child: Icon(
-                                      Icons.star,
-                                      color: Colors.amber,
-                                      size: 15,
+                          width: 115,
+                          child: Card(
+                            child: Column(
+                              children: [
+                                Padding(
+                                    padding: const EdgeInsets.only(bottom: 4.0),
+                                    child: Container(
+                                      height: 90,
+                                      width: 115,
+                                      child: Image.asset(
+                                        'assets/images/p3.png',
+                                        fit: BoxFit.cover,
+                                      ),
+                                    )),
+                                Row(
+                                  children: [
+                                    Padding(
+                                      padding: const EdgeInsets.only(left: 4.0),
+                                      child: Icon(
+                                        Icons.star,
+                                        color: Colors.amber,
+                                        size: 15,
+                                      ),
                                     ),
-                                  ),
-                                  Padding(
-                                    padding: const EdgeInsets.only(right: 4.0),
-                                    child: Text(
-                                      '5.0',
+                                    Padding(
+                                      padding:
+                                          const EdgeInsets.only(right: 4.0),
+                                      child: Text(
+                                        '5.0',
+                                        style: TextStyle(fontSize: 12),
+                                      ),
+                                    ),
+                                    Text(
+                                      '(9)',
                                       style: TextStyle(fontSize: 12),
                                     ),
-                                  ),
-                                  Text(
-                                    '(9)',
-                                    style: TextStyle(fontSize: 12),
-                                  ),
-                                  Spacer(),
-                                  Padding(
-                                    padding: const EdgeInsets.only(right: 7.0),
-                                    child: Icon(
-                                      Icons.favorite,
-                                      color: Colors.red,
-                                      size: 14,
+                                    Spacer(),
+                                    Padding(
+                                      padding:
+                                          const EdgeInsets.only(right: 7.0),
+                                      child: Icon(
+                                        Icons.favorite,
+                                        color: Colors.red,
+                                        size: 14,
+                                      ),
+                                    )
+                                  ],
+                                ),
+                                Padding(
+                                  padding: const EdgeInsets.only(
+                                      top: 2.0, left: 8, right: 8),
+                                  child: Container(
+                                    child: Text(
+                                      'Design you an inspired brochure for your branch',
+                                      style: TextStyle(fontSize: 13),
+                                      maxLines: 3,
+                                      softWrap: true,
+                                      overflow: TextOverflow.ellipsis,
                                     ),
-                                  )
-                                ],
-                              ),
-                              Padding(
-                                padding: const EdgeInsets.only(
-                                    top: 2.0, left: 8, right: 8),
-                                child: Container(
-                                  child: Text(
-                                    'Design you an inspired brochure for your branch',
-                                    style: TextStyle(fontSize: 13),
-                                    maxLines: 3,
-                                    softWrap: true,
-                                    overflow: TextOverflow.ellipsis,
                                   ),
                                 ),
-                              ),
-                              Align(
-                                  alignment: Alignment.bottomRight,
-                                  child: Padding(
-                                    padding: const EdgeInsets.only(
-                                        right: 5.0, top: 8),
-                                    child: Text(
-                                      'From 150\₦',
-                                      style: TextStyle(
-                                          fontSize: 11,
-                                          color: Color(0xFF27AE60)),
-                                    ),
-                                  )),
-                            ],
+                                Align(
+                                    alignment: Alignment.bottomRight,
+                                    child: Padding(
+                                      padding: const EdgeInsets.only(
+                                          right: 5.0, top: 8),
+                                      child: Text(
+                                        'From 150\₦',
+                                        style: TextStyle(
+                                            fontSize: 11,
+                                            color: Color(0xFF27AE60)),
+                                      ),
+                                    )),
+                              ],
+                            ),
                           ),
                         ),
-                      ),
                       );
                     },
                   ),
                 ),
-                  Padding(
+                Padding(
                   padding:
                       const EdgeInsets.only(top: 16.0, left: 10, right: 10),
                   child: Row(
@@ -531,83 +526,94 @@ class Home extends StatelessWidget {
                         latitude: location.location_latitude,
                         longitude: location.location_longitude),
                     builder: (context, snapshot) {
-                      return !snapshot.hasData?Padding(
-                        padding: const EdgeInsets.all(8.0),
-                        child: Text(
-                          'Loading Shops',
-                          style: TextStyle(fontWeight: FontWeight.w500),
-                        ),
-                      ):snapshot.hasData && !snapshot.data.isEmpty
-                          ? Container(
-                        height: 140,
-                        child: ListView.builder(
-                          scrollDirection: Axis.horizontal,
-                          itemCount: snapshot.data.length,
-                          itemBuilder: (context, index) {
-                            return InkWell(
-                              onTap:(){
-                                 Navigator.push(
-        context,
-        PageRouteBuilder(
-          pageBuilder: (context, animation, secondaryAnimation) {
-            return ArtisanPage(
-                snapshot.data[index]
-            );
-          },
-          transitionsBuilder: (context, animation, secondaryAnimation, child) {
-            return FadeTransition(
-              opacity: animation,
-              child: child,
-            );
-          },
-        ),
-      );
-         
-                              },
-                              child: Container(
-                                padding: const EdgeInsets.only(
-                                    top: 12.0, left: 6),
-                                height: 140,
-                                child: Column(
-                                  children: [
-                                  CircleAvatar(
-                                    child: Text(''),
-                                    radius: 35,
-                                    backgroundImage:NetworkImage(
-                                        snapshot.data[index].urlAvatar=='no_picture_upload'||
-                                            snapshot.data[index].urlAvatar==null ?'https://uploads.fixme.ng/originals/no_picture_upload':
-                                        'https://uploads.fixme.ng/originals/${snapshot.data[index].urlAvatar}',
-                                    ),
-                                    foregroundColor: Colors.white,
-                                    backgroundColor: Colors.white,
-                                  ),
-                                    Padding(
-                                      padding: const EdgeInsets.only(
-                                          right: 8.0),
-                                      child: Text(
-                                          '${snapshot.data[index].name}'),
-                                    ),
-                                    Padding(
-                                      padding: const EdgeInsets.only(
-                                          right: 8.0),
-                                      child: Text(
-                                          '${snapshot.data[index].userLastName}'),
-                                    )
-                                  ],
-                                ),
+                      return !snapshot.hasData
+                          ? Padding(
+                              padding: const EdgeInsets.all(8.0),
+                              child: Text(
+                                'Loading Shops',
+                                style: TextStyle(fontWeight: FontWeight.w500),
                               ),
-                            );
-                          },
-                        ),
-                      )
-                          : snapshot.data.isEmpty ? Padding(
-                        padding: const EdgeInsets.all(8.0),
-                        child: Text(
-                          'No Nearby Shops',
-                          style:
-                          TextStyle(fontWeight: FontWeight.w500),
-                        ),
-                      ):Container();
+                            )
+                          : snapshot.hasData && !snapshot.data.isEmpty
+                              ? Container(
+                                  height: 140,
+                                  child: ListView.builder(
+                                    scrollDirection: Axis.horizontal,
+                                    itemCount: snapshot.data.length,
+                                    itemBuilder: (context, index) {
+                                      return InkWell(
+                                        onTap: () {
+                                          Navigator.push(
+                                            context,
+                                            PageRouteBuilder(
+                                              pageBuilder: (context, animation,
+                                                  secondaryAnimation) {
+                                                return ArtisanPage(
+                                                    snapshot.data[index]);
+                                              },
+                                              transitionsBuilder: (context,
+                                                  animation,
+                                                  secondaryAnimation,
+                                                  child) {
+                                                return FadeTransition(
+                                                  opacity: animation,
+                                                  child: child,
+                                                );
+                                              },
+                                            ),
+                                          );
+                                        },
+                                        child: Container(
+                                          padding: const EdgeInsets.only(
+                                              top: 12.0, left: 6),
+                                          height: 140,
+                                          child: Column(
+                                            children: [
+                                              CircleAvatar(
+                                                child: Text(''),
+                                                radius: 35,
+                                                backgroundImage: NetworkImage(
+                                                  snapshot.data[index]
+                                                                  .urlAvatar ==
+                                                              'no_picture_upload' ||
+                                                          snapshot.data[index]
+                                                                  .urlAvatar ==
+                                                              null
+                                                      ? 'https://uploads.fixme.ng/originals/no_picture_upload'
+                                                      : 'https://uploads.fixme.ng/originals/${snapshot.data[index].urlAvatar}',
+                                                ),
+                                                foregroundColor: Colors.white,
+                                                backgroundColor: Colors.white,
+                                              ),
+                                              Padding(
+                                                padding: const EdgeInsets.only(
+                                                    right: 8.0),
+                                                child: Text(
+                                                    '${snapshot.data[index].name}'),
+                                              ),
+                                              Padding(
+                                                padding: const EdgeInsets.only(
+                                                    right: 8.0),
+                                                child: Text(
+                                                    '${snapshot.data[index].userLastName}'),
+                                              )
+                                            ],
+                                          ),
+                                        ),
+                                      );
+                                    },
+                                  ),
+                                )
+                              : snapshot.data.isEmpty
+                                  ? Padding(
+                                      padding: const EdgeInsets.all(8.0),
+                                      child: Text(
+                                        'No Nearby Shops',
+                                        style: TextStyle(
+                                            fontWeight: FontWeight.w500),
+                                      ),
+                                    )
+                                  : Container();
                     }),
                 Padding(
                   padding:
@@ -629,84 +635,95 @@ class Home extends StatelessWidget {
                         latitude: location.location_latitude,
                         longitude: location.location_longitude),
                     builder: (context, snapshot) {
-                      return !snapshot.hasData?Padding(
-                        padding: const EdgeInsets.all(8.0),
-                        child: Text(
-                          'Loading Artisans',
-                          style: TextStyle(fontWeight: FontWeight.w500),
-                        ),
-                      ):snapshot.hasData && !snapshot.data.isEmpty
-                          ? Container(
-                        height: 140,
-                        child: ListView.builder(
-                          scrollDirection: Axis.horizontal,
-                          itemCount: snapshot.data.length,
-                          itemBuilder: (context, index) {
-                            return InkWell(
-                              onTap: (){
-                                Navigator.push(
-        context,
-        PageRouteBuilder(
-          pageBuilder: (context, animation, secondaryAnimation) {
-            return ArtisanPage(
-                snapshot.data[index]
-            );
-          },
-          transitionsBuilder: (context, animation, secondaryAnimation, child) {
-            return FadeTransition(
-              opacity: animation,
-              child: child,
-            );
-          },
-        ),
-      );
-                              },
-                              child: Container(
-                                padding: const EdgeInsets.only(
-                                    top: 12.0, left: 6),
-                                height: 140,
-                                child: Column(
-                                  children: [
-                                  CircleAvatar(
-                                    child: Text(''),
-                                    radius: 35,
-                                    backgroundImage:NetworkImage(
-                                        snapshot.data[index].urlAvatar=='no_picture_upload'||
-                                            snapshot.data[index].urlAvatar==null ?'https://uploads.fixme.ng/originals/no_picture_upload':
-                                        'https://uploads.fixme.ng/originals/${snapshot.data[index].urlAvatar}',
-                                    ),
-                                    foregroundColor: Colors.white,
-                                    backgroundColor: Colors.white,
-                                  ),
-                                    Padding(
-                                      padding: const EdgeInsets.only(
-                                          right: 8.0),
-                                      child: Text(
-                                          '${snapshot.data[index].name}'),
-                                    ),
-                                    Padding(
-                                      padding: const EdgeInsets.only(
-                                          right: 8.0),
-                                      child: Text(
-                                          '${snapshot.data[index].userLastName}'),
-                                    )
-                                  ],
-                                ),
+                      return !snapshot.hasData
+                          ? Padding(
+                              padding: const EdgeInsets.all(8.0),
+                              child: Text(
+                                'Loading Artisans',
+                                style: TextStyle(fontWeight: FontWeight.w500),
                               ),
-                            );
-                          },
-                        ),
-                      )
-                          : snapshot.data.isEmpty ? Padding(
-                        padding: const EdgeInsets.all(8.0),
-                        child: Text(
-                          'No Nearby Artisans',
-                          style:
-                          TextStyle(fontWeight: FontWeight.w500),
-                        ),
-                      ):Container();
+                            )
+                          : snapshot.hasData && !snapshot.data.isEmpty
+                              ? Container(
+                                  height: 140,
+                                  child: ListView.builder(
+                                    scrollDirection: Axis.horizontal,
+                                    itemCount: snapshot.data.length,
+                                    itemBuilder: (context, index) {
+                                      return InkWell(
+                                        onTap: () {
+                                          Navigator.push(
+                                            context,
+                                            PageRouteBuilder(
+                                              pageBuilder: (context, animation,
+                                                  secondaryAnimation) {
+                                                return ArtisanPage(
+                                                    snapshot.data[index]);
+                                              },
+                                              transitionsBuilder: (context,
+                                                  animation,
+                                                  secondaryAnimation,
+                                                  child) {
+                                                return FadeTransition(
+                                                  opacity: animation,
+                                                  child: child,
+                                                );
+                                              },
+                                            ),
+                                          );
+                                        },
+                                        child: Container(
+                                          padding: const EdgeInsets.only(
+                                              top: 12.0, left: 6),
+                                          height: 140,
+                                          child: Column(
+                                            children: [
+                                              CircleAvatar(
+                                                child: Text(''),
+                                                radius: 35,
+                                                backgroundImage: NetworkImage(
+                                                  snapshot.data[index]
+                                                                  .urlAvatar ==
+                                                              'no_picture_upload' ||
+                                                          snapshot.data[index]
+                                                                  .urlAvatar ==
+                                                              null
+                                                      ? 'https://uploads.fixme.ng/originals/no_picture_upload'
+                                                      : 'https://uploads.fixme.ng/originals/${snapshot.data[index].urlAvatar}',
+                                                ),
+                                                foregroundColor: Colors.white,
+                                                backgroundColor: Colors.white,
+                                              ),
+                                              Padding(
+                                                padding: const EdgeInsets.only(
+                                                    right: 8.0),
+                                                child: Text(
+                                                    '${snapshot.data[index].name}'),
+                                              ),
+                                              Padding(
+                                                padding: const EdgeInsets.only(
+                                                    right: 8.0),
+                                                child: Text(
+                                                    '${snapshot.data[index].userLastName}'),
+                                              )
+                                            ],
+                                          ),
+                                        ),
+                                      );
+                                    },
+                                  ),
+                                )
+                              : snapshot.data.isEmpty
+                                  ? Padding(
+                                      padding: const EdgeInsets.all(8.0),
+                                      child: Text(
+                                        'No Nearby Artisans',
+                                        style: TextStyle(
+                                            fontWeight: FontWeight.w500),
+                                      ),
+                                    )
+                                  : Container();
                     }),
-                    
                 Padding(
                   padding: const EdgeInsets.all(8.0),
                   child: Text(
@@ -718,9 +735,8 @@ class Home extends StatelessWidget {
                   alignment: Alignment.center,
                   child: Container(
                     padding: EdgeInsets.only(top: 8, bottom: 10),
-                    decoration: BoxDecoration(
-                        border: Border.all(color: Colors.white),
-                        borderRadius: BorderRadius.circular(7)),
+                    decoration:
+                        BoxDecoration(borderRadius: BorderRadius.circular(7)),
                     child: FlatButton(
                       onPressed: () {
 //                    formKey.currentState.validate();
@@ -751,12 +767,10 @@ class Home extends StatelessWidget {
                     ),
                   ),
                 ),
-            
               ],
             ),
           ),
         ),
-       
       ],
     );
   }

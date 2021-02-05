@@ -1,5 +1,6 @@
 import 'package:fixme/Screens/ArtisanUser/Profile/ProfilePage.dart';
-import 'package:fixme/Screens/ArtisanUser/RegisterArtisan/address.dart';
+import "package:flutter_feather_icons/flutter_feather_icons.dart";
+import 'package:share/share.dart';
 import 'package:fixme/Screens/ArtisanUser/RegisterArtisan/thankyou.dart';
 import 'package:fixme/Screens/GeneralUsers/Chat/Chats.dart';
 import 'package:fixme/Screens/GeneralUsers/LoginSignup/Login.dart';
@@ -71,58 +72,59 @@ class _DrawerState extends State<DrawerWidget> {
                         TextStyle(fontSize: 18, fontWeight: FontWeight.w500)),
               )),
           InkWell(
-            onTap: () async {
-              SharedPreferences prefs = await SharedPreferences.getInstance();
-              prefs.getString('role') == null ||
-                      prefs.getString('role') == '' ||
-                      prefs.getString('role') == 'user'
-                  ? Navigator.push(
-                      context,
-                      PageRouteBuilder(
-                        pageBuilder: (context, animation, secondaryAnimation) {
-                          return Profile();
-                        },
-                        transitionsBuilder:
-                            (context, animation, secondaryAnimation, child) {
-                          return FadeTransition(
-                            opacity: animation,
-                            child: child,
-                          );
-                        },
-                      ),
-                    )
-                  : Navigator.push(
-                      context,
-                      PageRouteBuilder(
-                        pageBuilder: (context, animation, secondaryAnimation) {
-                          return ProfilePage();
-                        },
-                        transitionsBuilder:
-                            (context, animation, secondaryAnimation, child) {
-                          return FadeTransition(
-                            opacity: animation,
-                            child: child,
-                          );
-                        },
-                      ),
-                    );
-            },
-            child: Padding(
-              padding: const EdgeInsets.all(8.0),
-              child: Row(
-                children: [
-                  Icon(Icons.person_outline, color: Color(0xF0A40C85)),
-                  Padding(
-                    padding: const EdgeInsets.only(left: 10.0),
-                    child: Text('Profile'),
+              onTap: () async {
+                SharedPreferences prefs = await SharedPreferences.getInstance();
+                prefs.getString('role') == null ||
+                        prefs.getString('role') == '' ||
+                        prefs.getString('role') == 'user'
+                    ? Navigator.push(
+                        context,
+                        PageRouteBuilder(
+                          pageBuilder:
+                              (context, animation, secondaryAnimation) {
+                            return Profile();
+                          },
+                          transitionsBuilder:
+                              (context, animation, secondaryAnimation, child) {
+                            return FadeTransition(
+                              opacity: animation,
+                              child: child,
+                            );
+                          },
+                        ),
+                      )
+                    : Navigator.push(
+                        context,
+                        PageRouteBuilder(
+                          pageBuilder:
+                              (context, animation, secondaryAnimation) {
+                            return ProfilePage();
+                          },
+                          transitionsBuilder:
+                              (context, animation, secondaryAnimation, child) {
+                            return FadeTransition(
+                              opacity: animation,
+                              child: child,
+                            );
+                          },
+                        ),
+                      );
+              },
+              child: SizedBox(
+                height: 40,
+                child: ListTile(
+                  leading: Icon(Icons.person_outline, color: Color(0xF0A40C85)),
+                  contentPadding: const EdgeInsets.only(
+                    left: 10,
                   ),
-                ],
-              ),
-            ),
-          ),
-          Padding(
-            padding: const EdgeInsets.all(8.0),
-            child: InkWell(
+                  minLeadingWidth: 10,
+                  title: Text(
+                    'Profile',
+                    style: TextStyle(fontSize: 16, fontWeight: FontWeight.w400),
+                  ),
+                ),
+              )),
+          InkWell(
               onTap: () {
                 Navigator.push(
                   context,
@@ -140,17 +142,20 @@ class _DrawerState extends State<DrawerWidget> {
                   ),
                 );
               },
-              child: Row(
-                children: [
-                  Icon(Icons.chat, color: Color(0xF0A40C85)),
-                  Padding(
-                    padding: const EdgeInsets.only(left: 10.0),
-                    child: Text('My Chats'),
+              child: SizedBox(
+                height: 45,
+                child: ListTile(
+                  leading: Icon(Icons.chat, color: Color(0xF0A40C85)),
+                  contentPadding: const EdgeInsets.only(
+                    left: 10,
                   ),
-                ],
-              ),
-            ),
-          ),
+                  minLeadingWidth: 10,
+                  title: Text(
+                    'My Chats',
+                    style: TextStyle(fontSize: 16, fontWeight: FontWeight.w400),
+                  ),
+                ),
+              )),
           Divider(),
           Align(
               alignment: Alignment.topLeft,
@@ -161,62 +166,68 @@ class _DrawerState extends State<DrawerWidget> {
                         TextStyle(fontSize: 18, fontWeight: FontWeight.w500)),
               )),
           InkWell(
-            onTap: () {
-              network.role == 'artisan' || network.role == 'business'
-                  ? Navigator.push(
-                      context,
-                      PageRouteBuilder(
-                        pageBuilder: (context, animation, secondaryAnimation) {
-                          return ProfilePage();
-                        },
-                        transitionsBuilder:
-                            (context, animation, secondaryAnimation, child) {
-                          return FadeTransition(
-                            opacity: animation,
-                            child: child,
-                          );
-                        },
-                      ),
-                    )
-                  : Navigator.push(
-                      context,
-                      PageRouteBuilder(
-                        pageBuilder: (context, animation, secondaryAnimation) {
-                          return SignThankyou();
-                        },
-                        transitionsBuilder:
-                            (context, animation, secondaryAnimation, child) {
-                          return FadeTransition(
-                            opacity: animation,
-                            child: child,
-                          );
-                        },
-                      ),
-                    );
-            },
-            child: Padding(
-              padding: const EdgeInsets.all(8.0),
-              child: Row(
-                children: [
-                  Icon(Icons.assignment_return, color: Color(0xF0A40C85)),
-                  Padding(
-                    padding: const EdgeInsets.only(left: 10.0),
-                    child: Text('Become an Arisan'),
+              onTap: () {
+                network.role == 'artisan' || network.role == 'business'
+                    ? Navigator.push(
+                        context,
+                        PageRouteBuilder(
+                          pageBuilder:
+                              (context, animation, secondaryAnimation) {
+                            return ProfilePage();
+                          },
+                          transitionsBuilder:
+                              (context, animation, secondaryAnimation, child) {
+                            return FadeTransition(
+                              opacity: animation,
+                              child: child,
+                            );
+                          },
+                        ),
+                      )
+                    : Navigator.push(
+                        context,
+                        PageRouteBuilder(
+                          pageBuilder:
+                              (context, animation, secondaryAnimation) {
+                            return SignThankyou();
+                          },
+                          transitionsBuilder:
+                              (context, animation, secondaryAnimation, child) {
+                            return FadeTransition(
+                              opacity: animation,
+                              child: child,
+                            );
+                          },
+                        ),
+                      );
+              },
+              child: SizedBox(
+                height: 40,
+                child: ListTile(
+                  leading:
+                      Icon(Icons.assignment_return, color: Color(0xF0A40C85)),
+                  contentPadding: const EdgeInsets.only(
+                    left: 10,
                   ),
-                ],
-              ),
-            ),
-          ),
-          Padding(
-            padding: const EdgeInsets.all(8.0),
-            child: Row(
-              children: [
-                Icon(Icons.assignment, color: Color(0xF0A40C85)),
-                Padding(
-                  padding: const EdgeInsets.only(left: 10.0),
-                  child: Text('Manage orders'),
+                  minLeadingWidth: 10,
+                  title: Text(
+                    'Become an Artisan',
+                    style: TextStyle(fontSize: 16, fontWeight: FontWeight.w400),
+                  ),
                 ),
-              ],
+              )),
+          SizedBox(
+            height: 40,
+            child: ListTile(
+              leading: Icon(Icons.assignment, color: Color(0xF0A40C85)),
+              contentPadding: const EdgeInsets.only(
+                left: 10,
+              ),
+              minLeadingWidth: 10,
+              title: Text(
+                'Manage orders',
+                style: TextStyle(fontSize: 16, fontWeight: FontWeight.w400),
+              ),
             ),
           ),
           InkWell(
@@ -225,16 +236,19 @@ class _DrawerState extends State<DrawerWidget> {
               widget.controller.jumpToPage(2);
               data.setSelectedBottomNavBar(2);
             },
-            child: Padding(
-              padding: const EdgeInsets.all(8.0),
-              child: Row(
-                children: [
-                  Icon(FontAwesomeIcons.penSquare, color: Color(0xF0A40C85)),
-                  Padding(
-                    padding: const EdgeInsets.only(left: 10.0),
-                    child: Text('Post a request'),
-                  ),
-                ],
+            child: SizedBox(
+              height: 45,
+              child: ListTile(
+                leading:
+                    Icon(FontAwesomeIcons.penSquare, color: Color(0xF0A40C85)),
+                contentPadding: const EdgeInsets.only(
+                  left: 10,
+                ),
+                minLeadingWidth: 10,
+                title: Text(
+                  'Post a request',
+                  style: TextStyle(fontSize: 16, fontWeight: FontWeight.w400),
+                ),
               ),
             ),
           ),
@@ -247,112 +261,128 @@ class _DrawerState extends State<DrawerWidget> {
                     style:
                         TextStyle(fontSize: 18, fontWeight: FontWeight.w500)),
               )),
-          Padding(
-            padding: const EdgeInsets.all(8.0),
-            child: Row(
-              children: [
-                Icon(Icons.offline_pin, color: Color(0xF0A40C85)),
-                Padding(
-                  padding: const EdgeInsets.only(left: 10.0),
-                  child: Text('Online status'),
-                ),
-                Spacer(),
-                Switch(value: true, onChanged: null)
-              ],
+          SizedBox(
+            height: 40,
+            child: ListTile(
+              leading: Icon(Icons.offline_pin, color: Color(0xF0A40C85)),
+              contentPadding: const EdgeInsets.only(
+                left: 10,
+              ),
+              minLeadingWidth: 10,
+              title: Text(
+                'Online status',
+                style: TextStyle(fontSize: 16, fontWeight: FontWeight.w400),
+              ),
+              trailing: Switch(value: true, onChanged: null),
             ),
           ),
           InkWell(
-              onTap: () {
-                Navigator.pop(context);
-                widget.controller.jumpToPage(1);
-                data.setSelectedBottomNavBar(1);
-              },
-              child: Padding(
-                padding: const EdgeInsets.all(8.0),
-                child: Row(
-                  children: [
-                    Icon(Icons.account_balance_wallet,
-                        color: Color(0xF0A40C85)),
-                    Padding(
-                      padding: const EdgeInsets.only(left: 10.0),
-                      child: Text('Payments'),
-                    ),
-                  ],
+            onTap: () {
+              Navigator.pop(context);
+              widget.controller.jumpToPage(1);
+              data.setSelectedBottomNavBar(1);
+            },
+            child: SizedBox(
+              height: 40,
+              child: ListTile(
+                leading: Icon(Icons.account_balance_wallet,
+                    color: Color(0xF0A40C85)),
+                contentPadding: const EdgeInsets.only(
+                  left: 10,
                 ),
-              )),
-          Padding(
-            padding: const EdgeInsets.all(8.0),
-            child: Row(
-              children: [
-                Icon(Icons.send, color: Color(0xF0A40C85)),
-                Padding(
-                  padding: const EdgeInsets.only(left: 10.0),
-                  child: Text('Invite friends'),
+                minLeadingWidth: 10,
+                title: Text(
+                  'Payments',
+                  style: TextStyle(fontSize: 16, fontWeight: FontWeight.w400),
                 ),
-              ],
-            ),
-          ),
-          Padding(
-            padding: const EdgeInsets.all(8.0),
-            child: InkWell(
-              onTap: () {
-                Navigator.push(
-                  context,
-                  PageRouteBuilder(
-                    pageBuilder: (context, animation, secondaryAnimation) {
-                      return SupportFeedback();
-                    },
-                    transitionsBuilder:
-                        (context, animation, secondaryAnimation, child) {
-                      return FadeTransition(
-                        opacity: animation,
-                        child: child,
-                      );
-                    },
-                  ),
-                );
-              },
-              child: Row(
-                children: [
-                  Icon(Icons.headset_mic, color: Color(0xF0A40C85)),
-                  Padding(
-                    padding: const EdgeInsets.only(left: 10.0),
-                    child: Text('Support'),
-                  ),
-                ],
               ),
             ),
           ),
-          Padding(
-            padding: const EdgeInsets.all(8.0),
-            child: GestureDetector(
-              onTap: () async {
-                SharedPreferences prefs = await SharedPreferences.getInstance();
-                prefs.clear();
-                Navigator.push(
-                  context,
-                  PageRouteBuilder(
-                    pageBuilder: (context, animation, secondaryAnimation) {
-                      return Login();
-                    },
-                    transitionsBuilder:
-                        (context, animation, secondaryAnimation, child) {
-                      return FadeTransition(
-                        opacity: animation,
-                        child: child,
-                      );
-                    },
-                  ),
-                );
-              },
-              child: Row(
-                children: [
-                  Icon(Icons.assignment_ind, color: Color(0xF0A40C85)),
-                  Padding(
-                    padding: const EdgeInsets.only(left: 10.0, bottom: 10.0),
-                    child: Text('Logout'),
-                  ),
-                ],
+          InkWell(
+            onTap: () {
+              Share.share('Check out this website https://example.com',
+                  subject: 'Share Fixme');
+            },
+            child: SizedBox(
+              height: 40,
+              child: ListTile(
+                leading: Icon(Icons.share, color: Color(0xF0A40C85)),
+                contentPadding: const EdgeInsets.only(
+                  left: 10,
+                ),
+                minLeadingWidth: 10,
+                title: Text(
+                  'Invite friends',
+                  style: TextStyle(fontSize: 16, fontWeight: FontWeight.w400),
+                ),
+              ),
+            ),
+          ),
+          InkWell(
+            onTap: () {
+              Navigator.push(
+                context,
+                PageRouteBuilder(
+                  pageBuilder: (context, animation, secondaryAnimation) {
+                    return SupportFeedback();
+                  },
+                  transitionsBuilder:
+                      (context, animation, secondaryAnimation, child) {
+                    return FadeTransition(
+                      opacity: animation,
+                      child: child,
+                    );
+                  },
+                ),
+              );
+            },
+            child: SizedBox(
+              height: 40,
+              child: ListTile(
+                leading: Icon(Icons.headset_mic, color: Color(0xF0A40C85)),
+                contentPadding: const EdgeInsets.only(
+                  left: 10,
+                ),
+                minLeadingWidth: 10,
+                title: Text(
+                  'Support',
+                  style: TextStyle(fontSize: 16, fontWeight: FontWeight.w400),
+                ),
+              ),
+            ),
+          ),
+          GestureDetector(
+            onTap: () async {
+              SharedPreferences prefs = await SharedPreferences.getInstance();
+              prefs.clear();
+              Navigator.push(
+                context,
+                PageRouteBuilder(
+                  pageBuilder: (context, animation, secondaryAnimation) {
+                    return Login();
+                  },
+                  transitionsBuilder:
+                      (context, animation, secondaryAnimation, child) {
+                    return FadeTransition(
+                      opacity: animation,
+                      child: child,
+                    );
+                  },
+                ),
+              );
+            },
+            child: SizedBox(
+              height: 45,
+              child: ListTile(
+                leading: Icon(Icons.logout, color: Color(0xF0A40C85)),
+                contentPadding: const EdgeInsets.only(
+                  left: 10,
+                ),
+                minLeadingWidth: 10,
+                title: Text(
+                  'Logout',
+                  style: TextStyle(fontSize: 16, fontWeight: FontWeight.w400),
+                ),
               ),
             ),
           ),

@@ -4,8 +4,6 @@ import 'package:fixme/Screens/GeneralUsers/Support/SupportFeedbackSent.dart';
 import 'package:fixme/Services/network_service.dart';
 import 'package:fixme/Utils/utils.dart';
 import 'package:flutter/material.dart';
-import 'package:mailer/mailer.dart';
-import 'package:mailer/smtp_server.dart';
 import "package:flutter_feather_icons/flutter_feather_icons.dart";
 import 'package:fixme/Widgets/customdropdownbutton.dart';
 import 'package:provider/provider.dart';
@@ -245,7 +243,8 @@ class _SupportFeedbackState extends State<SupportFeedback> {
                                     model.setSendStatus = false;
                                     print(model.getIsFieldEnabled
                                         ? model.getOtherFeedback
-                                        : model.getSelectedFeedback+': The message');
+                                        : model.getSelectedFeedback +
+                                            ': The message');
                                     bool status =
                                         await network.sendSupportRequest(
                                             topic:

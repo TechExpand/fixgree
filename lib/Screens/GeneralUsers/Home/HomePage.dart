@@ -11,11 +11,10 @@ import 'package:fixme/Utils/utils.dart';
 import 'package:fixme/Services/location_service.dart';
 import 'package:fixme/Services/network_service.dart';
 import 'package:provider/provider.dart';
-import 'package:fixme/Utils/Provider.dart';
+import 'package:flat_icons_flutter/flat_icons_flutter.dart';
 import 'package:fixme/Widgets/Drawer.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_feather_icons/flutter_feather_icons.dart';
-
 
 import 'Home.dart';
 
@@ -34,7 +33,7 @@ class _HomePageState extends State<HomePage> {
   @override
   void initState() {
     super.initState();
-     var data = Provider.of<Utils>(context, listen: false);
+    var data = Provider.of<Utils>(context, listen: false);
 
     // data.getData('firstName','Bearer','phoneNum', 'profile_pic_file_name', 'user_id', 'mobile_device_token',context);
 
@@ -42,11 +41,11 @@ class _HomePageState extends State<HomePage> {
     _myPage =
         PageController(initialPage: 0, viewportFraction: 1, keepPage: true);
 
-        WidgetsBinding.instance.addPostFrameCallback((timeStamp) {
-      PostRequestProvider postRequestProvider = Provider.of<PostRequestProvider>(context, listen:false);
+    WidgetsBinding.instance.addPostFrameCallback((timeStamp) {
+      PostRequestProvider postRequestProvider =
+          Provider.of<PostRequestProvider>(context, listen: false);
       postRequestProvider.getAllServices();
     });
-      
   }
 
   @override
@@ -59,7 +58,7 @@ class _HomePageState extends State<HomePage> {
   Widget build(BuildContext context) {
     var data = Provider.of<DataProvider>(context);
     var datas = Provider.of<Utils>(context, listen: false);
-    
+
     // FirebaseApi.updateUsertoOnline(datas.mobile_device_token);
     var widget = Scaffold(
       key: scafold_key,
@@ -72,50 +71,67 @@ class _HomePageState extends State<HomePage> {
       bottomNavigationBar: Container(
         height: 60,
         child: BottomNavigationBar(
-          onTap: (index){
-           _myPage.jumpToPage(index);
-           data.setSelectedBottomNavBar(index);
-          
-          },
-          elevation: 20,
-           type: BottomNavigationBarType.fixed,
-        currentIndex: data.selectedPage,
-          unselectedItemColor: Color(0xFF555555),
-          selectedItemColor: Color(0xFFA40C85),
-          selectedLabelStyle: TextStyle(
-            fontSize: 13,
-              fontFamily: 'Firesans'),
-          unselectedLabelStyle: TextStyle(
-              fontSize: 13,
-              fontFamily: 'Firesans'),
-          items:[
-                BottomNavigationBarItem(
-                
-              icon: Icon(FeatherIcons.home),
-              title: Text('Home'),
-            ),
-            BottomNavigationBarItem(
-              icon: Icon(FeatherIcons.briefcase),
-              title:Text('Wallet'),
-            ),
-            BottomNavigationBarItem(
-              icon: Icon(FeatherIcons.plusCircle),
-              title: Text('Post'),
-            ),
-            BottomNavigationBarItem(
-              icon: Icon(FeatherIcons.bell),
-              title:Text('Notifications'),
-            ),
-            BottomNavigationBarItem(
-              icon: Icon(FeatherIcons.clock),
-              title:Text('Pending'),
-            )
-                              
-          ] 
-        ),
-
-            ),
-      
+            onTap: (index) {
+              _myPage.jumpToPage(index);
+              data.setSelectedBottomNavBar(index);
+            },
+            elevation: 20,
+            type: BottomNavigationBarType.fixed,
+            currentIndex: data.selectedPage,
+            unselectedItemColor: Color(0xFF555555),
+            selectedItemColor: Color(0xFFA40C85),
+            selectedLabelStyle: TextStyle(fontSize: 13),
+            unselectedLabelStyle: TextStyle(fontSize: 13),
+            items: [
+              BottomNavigationBarItem(
+                icon: Padding(
+                  padding: const EdgeInsets.only(bottom: 1),
+                  child: Icon(
+                    data.selectedPage == 0
+                        ? Icons.home_rounded
+                        : Icons.home_outlined,
+                    size: 28,
+                  ),
+                ),
+                label: 'Home',
+              ),
+              BottomNavigationBarItem(
+                icon: Padding(
+                  padding: const EdgeInsets.only(bottom: 3),
+                  child: Icon(data.selectedPage == 1
+                      ? Icons.account_balance_wallet
+                      : Icons.account_balance_wallet_outlined),
+                ),
+                label: 'Wallet',
+              ),
+              BottomNavigationBarItem(
+                icon: Padding(
+                  padding: const EdgeInsets.only(bottom: 3),
+                  child: data.selectedPage == 2
+                      ? Icon(
+                          Icons.add_circle_rounded,
+                          size: 25,
+                        )
+                      : Icon(FeatherIcons.plusCircle),
+                ),
+                label: 'Post',
+              ),
+              BottomNavigationBarItem(
+                icon: Padding(
+                  padding: const EdgeInsets.only(bottom: 3),
+                  child: Icon(FeatherIcons.bell),
+                ),
+                label: 'Notifications',
+              ),
+              BottomNavigationBarItem(
+                icon: Padding(
+                  padding: const EdgeInsets.only(bottom: 3),
+                  child: Icon(FeatherIcons.clock),
+                ),
+                label: 'Pending',
+              )
+            ]),
+      ),
       body: WillPopScope(
         onWillPop: () {
           return showDialog(
@@ -142,11 +158,9 @@ class _HomePageState extends State<HomePage> {
                           children: [
                             Container(
                               padding: EdgeInsets.only(top: 15, bottom: 15),
-                             
                               child: Center(
                                 child: Text(
                                   'DO YOU WANT TO EXIT THIS APP?',
-                                 
                                   style: TextStyle(
                                     fontSize: 14,
                                     fontWeight: FontWeight.bold,
@@ -261,7 +275,7 @@ class _HomePageState extends State<HomePage> {
         ),
       ),
     );
-           
+
     return PickupLayout(scaffold: widget);
   }
 }

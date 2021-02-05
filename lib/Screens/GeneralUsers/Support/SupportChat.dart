@@ -1,11 +1,28 @@
+import 'package:fixme/Utils/utils.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_tawk/flutter_tawk.dart';
 import 'package:flutter_feather_icons/flutter_feather_icons.dart';
+import 'package:provider/provider.dart';
 
 class SupportChat extends StatefulWidget {
   SupportChat({Key key}) : super(key: key);
   @override
   _SupportChatState createState() => _SupportChatState();
+}
+
+String username;
+String email;
+
+getUserDetails(BuildContext buildContext) async {
+  var data = Provider.of<Utils>(buildContext, listen: false);
+  String firstname = await data.getData('firstName');
+  String lastname = await data.getData('lastName');
+  email = await data.getData('email');
+
+  print('The email: $email');
+
+  username =
+      firstname.capitalizeFirstOfEach + ' ' + lastname.capitalizeFirstOfEach;
 }
 
 class _SupportChatState extends State<SupportChat> {
@@ -46,12 +63,9 @@ class _SupportChatState extends State<SupportChat> {
                       directChatLink:
                           'https://tawk.to/chat/60141f68c31c9117cb73db41/1et79lcnl',
                       visitor: TawkVisitor(
-                        name: 'Emmanuel Joshua',
-                        email: 'emmanueljoshua145@gmail.com',
+                        name: '$username',
+                        email: '$email',
                       ),
-                      onLoad: () {
-                        print('Hello Tawk!');
-                      },
                       onLinkTap: (String url) {
                         print(url);
                       },

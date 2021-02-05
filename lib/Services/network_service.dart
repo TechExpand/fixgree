@@ -23,6 +23,7 @@ class WebServices extends ChangeNotifier {
   var firstName = '';
   var lastName = '';
   var bio = '';
+  var email = '';
 
   void Login_SetState() {
     if (login_state == false) {
@@ -131,6 +132,7 @@ class WebServices extends ChangeNotifier {
       lastName = body['lastName'];
       role = body['role'];
       phoneNum = body['fullNumber'];
+      email = body['email'];
 
       var response2 = await http.post(
           Uri.parse('https://manager.fixme.ng/user-info?user_id=$user_id'),
@@ -148,6 +150,7 @@ class WebServices extends ChangeNotifier {
         datas.storeData('firstName', firstName);
         datas.storeData('lastName', lastName);
         datas.storeData('phoneNum', phoneNum);
+        datas.storeData('email', email);
         datas.storeData('role', role);
         datas.storeData('about', bio);
         Login_SetState();
@@ -691,7 +694,7 @@ class WebServices extends ChangeNotifier {
   }
 
   Future<String> uploadProfilePhoto({path}) async {
-      String imageName;
+    String imageName;
     try {
       var upload = http.MultipartRequest(
           'POST', Uri.parse('https://uploads.fixme.ng/uploads-processing'));
@@ -708,7 +711,7 @@ class WebServices extends ChangeNotifier {
       var res = await http.Response.fromStream(stream);
       var body = jsonDecode(res.body);
       notifyListeners();
-    
+
       if (body['upldRes'] == 'true') {
         imageName = body['imageFileName'];
       } else if (body['upldRes'] == 'false') {}
