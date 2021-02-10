@@ -106,7 +106,7 @@ class _WalletWithdrawState extends State<WalletWithdraw> {
                               height: 40.0,
                               color: Colors.transparent,
                             ),
-                            Text('Transfer from:',
+                            Text('Transfer from',
                                 style: TextStyle(
                                   fontSize: 17,
                                   color: Color(0xFF333333),
@@ -207,7 +207,7 @@ class _WalletWithdrawState extends State<WalletWithdraw> {
                               height: 40.0,
                               color: Colors.transparent,
                             ),
-                            Text('Transfer to:',
+                            Text('Transfer to',
                                 style: TextStyle(
                                   fontSize: 17,
                                   color: Color(0xFF333333),
@@ -447,8 +447,7 @@ class _WalletWithdrawState extends State<WalletWithdraw> {
                                 if (model.getAccountName.isNotEmpty) {
                                   if (model.getAccountName ==
                                       'Invalid Bank Info!') {
-                                    Scaffold.of(context)
-                                        .showSnackBar(SnackBar(
+                                    Scaffold.of(context).showSnackBar(SnackBar(
                                       content: Text("Invalid Bank Info!"),
                                     ));
                                   } else {

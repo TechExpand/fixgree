@@ -14,9 +14,9 @@ class DataProvider extends ChangeNotifier {
   String firebase_user_id = '';
   String overview = '';
   bool focus_value = false;
-  String description ='';
+  String description = '';
   bool focus_value1 = false;
-  String product_name= '';
+  String product_name = '';
   String product_bio = '';
   String product_price = '';
   List<Services> servicesList = [];
@@ -36,15 +36,18 @@ class DataProvider extends ChangeNotifier {
   String lastName = '';
   String artisanVendorChoice = '';
   bool password_obscure = true;
+  bool showCallToAction = true;
 
-
-
-
-
- setDescription(value) {
-    description  = value;
+  set setCallToActionStatus(bool newVal) {
+    showCallToAction = newVal;
     notifyListeners();
   }
+
+  setDescription(value) {
+    description = value;
+    notifyListeners();
+  }
+
   //change password obcure text
   setSelectedBottomNavBar(value) {
     selectedPage = value;
@@ -63,36 +66,34 @@ class DataProvider extends ChangeNotifier {
         "${cont1.text}${cont2.text}${cont3.text}${cont4.text}${cont5.text}${cont6.text}";
     notifyListeners();
   }
+
   // check if  textfield firstNAme is empty or not
   setFirstName(value) {
     firstName = value;
     notifyListeners();
   }
 
+  setSubCat(value) {
+    subcat.add(value);
+    notifyListeners();
+  }
 
+  setdelSubCat(value) {
+    subcat.remove(value);
+    notifyListeners();
+  }
 
-setSubCat(value){
-  subcat.add(value);
-  notifyListeners();
-}
+  setclrSubCat() {
+    subcat.clear();
+    notifyListeners();
+  }
 
-setdelSubCat(value){
-  subcat.remove(value);
-  notifyListeners();
-}
-
-setclrSubCat(){
-  subcat.clear();
-  notifyListeners();
-}
-
-  setOverView(value){
+  setOverView(value) {
     overview = value;
     notifyListeners();
   }
 
-
- setArtisanVendorChoice(value) {
+  setArtisanVendorChoice(value) {
     artisanVendorChoice = value;
     notifyListeners();
   }
@@ -109,7 +110,7 @@ setclrSubCat(){
     notifyListeners();
   }
 
- // check if  textfield homeAdress is empty or not
+  // check if  textfield homeAdress is empty or not
   sethomeAdress(value) {
     homeAddress = value;
     notifyListeners();
@@ -120,24 +121,22 @@ setclrSubCat(){
     notifyListeners();
   }
 
-
   setProductBio(value) {
     product_bio = value;
     notifyListeners();
   }
-
 
   setProductPrice(value) {
     product_price = value;
     notifyListeners();
   }
 
-
 // check if  textfield officeAdress is empty or not
-setofficeAddress(value) {
+  setofficeAddress(value) {
     officeAddress = value;
     notifyListeners();
   }
+
   // check if  textfield email is empty or not
   setEmail(value) {
     emails = value;
@@ -177,7 +176,14 @@ setofficeAddress(value) {
   }
 
   Future<void> onJoin(
-      {channelID, callerId, context, reciever, userID, myusername, myavater, calltype}) async {
+      {channelID,
+      callerId,
+      context,
+      reciever,
+      userID,
+      myusername,
+      myavater,
+      calltype}) async {
     // update input validation
     var data = Provider.of<CallApi>(context, listen: false);
     if (channelID.isNotEmpty) {
@@ -224,11 +230,10 @@ setofficeAddress(value) {
           result.contains('xlsx') ||
           result.contains('ods') ||
           result.contains('txt') ||
-           result.contains('csv') ||
+          result.contains('csv') ||
           result.contains('html')) {
         return 'doc';
-      }else if (result.contains('wav') ||
-          result.contains('mp3')) {
+      } else if (result.contains('wav') || result.contains('mp3')) {
         return 'audio';
       }
     } else {

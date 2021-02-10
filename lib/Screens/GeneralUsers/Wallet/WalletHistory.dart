@@ -109,7 +109,9 @@ class _WalletHistoryState extends State<WalletHistory> {
                                 ),
                                 child: Icon(FeatherIcons.checkCircle),
                               ),
-                              title: Text(transactionDetails.paymentDescription,
+                              title: Text(
+                                  transactionDetails
+                                      .paymentDescription.capitalizeFirstOfEach,
                                   style: TextStyle(
                                       fontSize: 17,
                                       color: Color(0xFF333333),

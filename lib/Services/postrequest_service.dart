@@ -8,24 +8,22 @@ import 'package:provider/provider.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 import 'dart:math';
 
-
-
-
 class PostRequestProvider with ChangeNotifier {
   PostRequestProvider() {
     getServices();
   }
   bool gotit = true;
-  changeGotit(){
+  changeGotit() {
     gotit = false;
     notifyListeners();
   }
+
   bool _loading = false;
   final jobtitleController = TextEditingController();
   final jobdescriptionController = TextEditingController();
   final jobaddressController = TextEditingController();
   final amountController = TextEditingController();
-  
+
   String baseUrl = 'https://manager.fixme.ng/new-project';
 
   bool get loading => _loading;
@@ -40,34 +38,32 @@ class PostRequestProvider with ChangeNotifier {
     notifyListeners();
   }
 
-  double roundDouble(double value, int places){ 
-   double mod = pow(10.0, places); 
-   return ((value * mod).round().toDouble() / mod); 
-}
+  double roundDouble(double value, int places) {
+    double mod = pow(10.0, places);
+    return ((value * mod).round().toDouble() / mod);
+  }
 
-    Future<dynamic> postJob(BuildContext context) async {
-      isLoading(true);
-      SharedPreferences prefs = await SharedPreferences.getInstance();
-      var data = Provider.of<DataProvider>(context, listen:false);
-      String user_id = prefs.getString('user_id');
-      String bearer = prefs.getString('Bearer');
-     
-      
-      try {
+  Future<dynamic> postJob(BuildContext context) async {
+    isLoading(true);
+    SharedPreferences prefs = await SharedPreferences.getInstance();
+    var data = Provider.of<DataProvider>(context, listen: false);
+    String user_id = prefs.getString('user_id');
+    String bearer = prefs.getString('Bearer');
+
+    try {
       var response = await http
           .post(Uri.parse('https://manager.fixme.ng/new-project'), body: {
         'user_id': user_id,
         'job_description': data.description.toString(),
-        'service_id': selecteService.sn,        
-        }, headers: {
-        'Authorization':
-        'Bearer $bearer',
+        'service_id': selecteService.sn,
+      }, headers: {
+        'Authorization': 'Bearer $bearer',
       });
       var statusCode = response.statusCode;
       print(statusCode);
       print('startedd');
       var body1 = json.decode(response.body);
-      if (statusCode<400){
+      if (statusCode < 400) {
         String theresponse = body1['reqRes'].toString();
         if (theresponse == 'true') {
           isLoading(false);
@@ -76,7 +72,6 @@ class PostRequestProvider with ChangeNotifier {
           isLoading(false);
           popDialog(context, 'Unable To Post', 'assets/images/fail.jpg');
         }
-        
       } else {
         isLoading(false);
         popDialog(context, 'Unable To Post', 'assets/images/fail.jpg');
@@ -84,17 +79,13 @@ class PostRequestProvider with ChangeNotifier {
       print(body1);
       isLoading(false);
     } catch (e) {
-      
       print(e);
       print('na error b tat');
       isLoading(false);
       popDialog(context, 'Unable To Post', 'assets/images/fail.jpg');
     }
     isLoading(false);
-
-    }
-
-
+  }
 
   Future<dynamic> getServices() async {
     isLoading(true);
@@ -102,23 +93,25 @@ class PostRequestProvider with ChangeNotifier {
     String bearer = prefs.getString('Bearer');
     String user_id = prefs.getString('user_id');
     //var data = Provider.of<DataProvider>(context, listen: false);
-      try {
+    try {
       var response = await http
           .post(Uri.parse('https://manager.fixme.ng/service-list'), body: {
         'user_id': user_id,
-        }, headers: {
+      }, headers: {
         // "Content-type": "application/json",
         //"Content-type": "application/x-www-form-urlencoded",
-        'Authorization':
-        'Bearer $bearer',
+        'Authorization': 'Bearer $bearer',
       });
       var statusCode = response.statusCode;
       var body1 = json.decode(response.body);
       List body = body1['services'];
       // user_id = body['id'];
-      List<Services> serviceListz = body.map((data) {
-        return Services.fromJson(data);
-      }).toSet().toList();
+      List<Services> serviceListz = body
+          .map((data) {
+            return Services.fromJson(data);
+          })
+          .toSet()
+          .toList();
       servicesList = serviceListz;
       notifyListeners();
     } catch (e) {
@@ -129,23 +122,19 @@ class PostRequestProvider with ChangeNotifier {
     isLoading(false);
   }
 
-
-
- Future<dynamic> getAllServices() async {
-    
+  Future<dynamic> getAllServices() async {
     SharedPreferences prefs = await SharedPreferences.getInstance();
     String bearer = prefs.getString('Bearer');
     String user_id = prefs.getString('user_id');
     //var data = Provider.of<DataProvider>(context, listen: false);
-      try {
+    try {
       var response = await http
           .post(Uri.parse('https://manager.fixme.ng/service-list'), body: {
         'user_id': user_id,
-        }, headers: {
+      }, headers: {
         // "Content-type": "application/json",
         //"Content-type": "application/x-www-form-urlencoded",
-        'Authorization':
-        'Bearer $bearer',
+        'Authorization': 'Bearer $bearer',
       });
       var statusCode = response.statusCode;
       var body1 = json.decode(response.body);
@@ -163,20 +152,16 @@ class PostRequestProvider with ChangeNotifier {
       print(e);
       print('na error b tat');
     }
-   
   }
 
-  changeService(Services services) {  
+  changeService(Services services) {
     selectedService = services;
     print(selectedService.service);
     notifyListeners();
-
   }
 
   changeSelectedService(Services services) {
     selecteService = services;
     notifyListeners();
-
   }
-
 }

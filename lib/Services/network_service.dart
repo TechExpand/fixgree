@@ -194,6 +194,11 @@ class WebServices extends ChangeNotifier {
     notifyListeners();
   }
 
+  //Plumber = 165
+  //Electrician = 1
+  //Mechanic = 2
+  //Designer = 68
+
   Future<dynamic> BecomeArtisanOrBusiness({context, scaffoldKey}) async {
     var data = Provider.of<DataProvider>(context, listen: false);
     var datas = Provider.of<Utils>(context, listen: false);
@@ -256,6 +261,23 @@ class WebServices extends ChangeNotifier {
       Login_SetState();
       scaffoldKey.currentState.showSnackBar(
           SnackBar(content: Text('There was a Problem. Working on it.')));
+    }
+  }
+
+  Future<dynamic> getServiceProviderByServiceID(
+      {longitude, latitude, serviceID}) async {
+    var response = await http.post(
+        Uri.parse(
+            'https://manager.fixme.ng/service-area-business-artisans?user_id=$user_id&service_id=$serviceID&longitude=$longitude&latitude=$latitude'),
+        headers: {
+          "Content-type": "application/json",
+          'Authorization': 'Bearer $Bearer',
+        });
+    var body = json.decode(response.body);
+    if (body['reqRes'] == 'true') {
+      return body['sortedUsers'];
+    } else if (body['reqRes'] == 'false') {
+      return body['message'];
     }
   }
 

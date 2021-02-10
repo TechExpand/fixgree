@@ -122,23 +122,25 @@ class _ProfileState extends State<Profile> {
                   children: [
                     Padding(
                       padding: EdgeInsets.symmetric(vertical: 25),
-                      child: GestureDetector(
-                        child: Stack(children: <Widget>[
-                          snapshot.data['photoUrl'] != 'no_picture_upload'
-                              ? ClipRRect(
-                                  borderRadius: BorderRadius.circular(100),
-                                  child: Image.network(
-                                    snapshot.data['photoUrl'],
-                                    width: 150,
-                                    height: 150,
-                                    fit: BoxFit.cover,
-                                  ),
-                                )
-                              : Icon(Icons.account_circle,
-                                  size: 160, color: Colors.black38),
-                          Positioned(
-                            left: 107,
-                            top: 103,
+                      child: Stack(children: <Widget>[
+                        snapshot.data['photoUrl'] != 'no_picture_upload'
+                            ? ClipRRect(
+                                borderRadius: BorderRadius.circular(100),
+                                child: Image.network(
+                                  snapshot.data['photoUrl'],
+                                  width: 150,
+                                  height: 150,
+                                  fit: BoxFit.cover,
+                                ),
+                              )
+                            : Icon(Icons.account_circle,
+                                size: 160, color: Colors.black38),
+                        Positioned(
+                          left: 107,
+                          top: 103,
+                          child: InkWell(
+                            onTap: () => pickImage(
+                                source: ImageSource.gallery, context: context),
                             child: Container(
                               height: 43,
                               width: 43,
@@ -152,10 +154,8 @@ class _ProfileState extends State<Profile> {
                               ),
                             ),
                           ),
-                        ]),
-                        onTap: () => pickImage(
-                            source: ImageSource.gallery, context: context),
-                      ),
+                        ),
+                      ]),
                     ),
                     SizedBox(
                       height: 10,

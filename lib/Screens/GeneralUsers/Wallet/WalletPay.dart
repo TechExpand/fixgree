@@ -145,7 +145,7 @@ class _WalletPayState extends State<WalletPay> {
                             height: 40.0,
                             color: Colors.transparent,
                           ),
-                          Text('Transfer from:',
+                          Text('Transfer from',
                               style: TextStyle(
                                 fontSize: 16,
                                 color: Color(0xFF333333),
@@ -250,7 +250,7 @@ class _WalletPayState extends State<WalletPay> {
                                     height: 40.0,
                                     color: Colors.transparent,
                                   ),
-                                  Text('Transfer to:',
+                                  Text('Transfer to',
                                       style: TextStyle(
                                         fontSize: 16,
                                         color: Color(0xFF333333),

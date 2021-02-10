@@ -1,5 +1,4 @@
 import 'package:fixme/Screens/ArtisanUser/Profile/ProfilePage.dart';
-import "package:flutter_feather_icons/flutter_feather_icons.dart";
 import 'package:share/share.dart';
 import 'package:fixme/Screens/ArtisanUser/RegisterArtisan/thankyou.dart';
 import 'package:fixme/Screens/GeneralUsers/Chat/Chats.dart';
@@ -53,7 +52,7 @@ class _DrawerState extends State<DrawerWidget> {
                   backgroundColor: Colors.white,
                 ),
                 title: Text(
-                  network.firstName,
+                  '${network.firstName} ${network.lastName}',
                   style: TextStyle(color: Colors.white),
                 ),
                 subtitle: Text(
@@ -66,7 +65,7 @@ class _DrawerState extends State<DrawerWidget> {
           Align(
               alignment: Alignment.topLeft,
               child: Padding(
-                padding: const EdgeInsets.all(8.0),
+                padding: const EdgeInsets.only(top: 8, left: 8, right: 8),
                 child: Text('Account',
                     style:
                         TextStyle(fontSize: 18, fontWeight: FontWeight.w500)),
@@ -160,7 +159,7 @@ class _DrawerState extends State<DrawerWidget> {
           Align(
               alignment: Alignment.topLeft,
               child: Padding(
-                padding: const EdgeInsets.all(8.0),
+                padding: const EdgeInsets.only(top: 8, left: 8, right: 8),
                 child: Text('Services',
                     style:
                         TextStyle(fontSize: 18, fontWeight: FontWeight.w500)),
@@ -256,7 +255,7 @@ class _DrawerState extends State<DrawerWidget> {
           Align(
               alignment: Alignment.topLeft,
               child: Padding(
-                padding: const EdgeInsets.all(8.0),
+                padding: const EdgeInsets.only(top: 8, left: 8, right: 8),
                 child: Text('General',
                     style:
                         TextStyle(fontSize: 18, fontWeight: FontWeight.w500)),

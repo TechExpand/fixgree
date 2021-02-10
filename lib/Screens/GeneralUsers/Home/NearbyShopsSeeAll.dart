@@ -1,3 +1,4 @@
+import 'package:fixme/Screens/ArtisanUser/Profile/ArtisanPage.dart';
 import 'package:fixme/Services/location_service.dart';
 import 'package:fixme/Services/network_service.dart';
 import 'package:flutter/material.dart';
@@ -45,7 +46,7 @@ class _NearbyShopsSeeAllState extends State<NearbyShopsSeeAll> {
               border: Border.all(color: Color(0xFFF1F1FD)),
               boxShadow: [
                 BoxShadow(
-                    color: Color(0xFFF1F1FD),
+                    color: Color(0xFFF1F1FD).withOpacity(0.5),
                     blurRadius: 15.0,
                     offset: Offset(0.3, 1.0))
               ],
@@ -130,6 +131,25 @@ class _NearbyShopsSeeAllState extends State<NearbyShopsSeeAll> {
                                 margin:
                                     const EdgeInsets.only(bottom: 5, top: 5),
                                 child: ListTile(
+                                  onTap: () {
+                                    Navigator.push(
+                                      context,
+                                      PageRouteBuilder(
+                                        pageBuilder: (context, animation,
+                                            secondaryAnimation) {
+                                          return ArtisanPage(
+                                              snapshot.data[index]);
+                                        },
+                                        transitionsBuilder: (context, animation,
+                                            secondaryAnimation, child) {
+                                          return FadeTransition(
+                                            opacity: animation,
+                                            child: child,
+                                          );
+                                        },
+                                      ),
+                                    );
+                                  },
                                   leading: CircleAvatar(
                                     child: Text(''),
                                     radius: 35,
