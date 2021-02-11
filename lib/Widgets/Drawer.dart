@@ -68,7 +68,7 @@ class _DrawerState extends State<DrawerWidget> {
                 padding: const EdgeInsets.only(top: 8, left: 8, right: 8),
                 child: Text('Account',
                     style:
-                        TextStyle(fontSize: 18, fontWeight: FontWeight.w500)),
+                        TextStyle(fontSize: 18, fontWeight: FontWeight.w600)),
               )),
           InkWell(
               onTap: () async {
@@ -162,7 +162,7 @@ class _DrawerState extends State<DrawerWidget> {
                 padding: const EdgeInsets.only(top: 8, left: 8, right: 8),
                 child: Text('Services',
                     style:
-                        TextStyle(fontSize: 18, fontWeight: FontWeight.w500)),
+                        TextStyle(fontSize: 18, fontWeight: FontWeight.w600)),
               )),
           InkWell(
               onTap: () {
@@ -258,7 +258,7 @@ class _DrawerState extends State<DrawerWidget> {
                 padding: const EdgeInsets.only(top: 8, left: 8, right: 8),
                 child: Text('General',
                     style:
-                        TextStyle(fontSize: 18, fontWeight: FontWeight.w500)),
+                        TextStyle(fontSize: 18, fontWeight: FontWeight.w600)),
               )),
           SizedBox(
             height: 40,

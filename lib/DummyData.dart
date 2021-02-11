@@ -1,10 +1,10 @@
 Map<String, String> data = {'': ''};
 
 List<Map<String, String>> popularServices = [
-  {'text': 'UI/UX Designer', 'image': 'assets/images/p1.png'},
-  {'text': 'Plumber', 'image': 'assets/images/p2.png'},
-  {'text': 'Electrician', 'image': 'assets/images/p3.png'},
-  {'text': 'Mechanic', 'image': 'assets/images/p1.png'},
+  {'text': 'Web Designer', 'image': 'assets/images/p1.png', 'id': '68'},
+  {'text': 'Plumber', 'image': 'assets/images/p2.png', 'id': '165'},
+  {'text': 'Electrician', 'image': 'assets/images/p3.png', 'id': '1'},
+  {'text': 'Mechanic', 'image': 'assets/images/p1.png', 'id': '2'},
 ];
 
 List<Map<String, String>> featuredServices = [

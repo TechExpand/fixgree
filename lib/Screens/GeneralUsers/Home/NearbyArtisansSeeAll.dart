@@ -123,7 +123,7 @@ class _NearbyArtisansSeeAllState extends State<NearbyArtisansSeeAll> {
                               return Divider();
                             },
                             itemCount: snapshot.data.length,
-                            padding: const EdgeInsets.only(left: 15, right: 15),
+                            padding: const EdgeInsets.only(left: 5, right: 5),
                             itemBuilder: (context, index) {
                               return Container(
                                 alignment: Alignment.center,
@@ -171,6 +171,33 @@ class _NearbyArtisansSeeAllState extends State<NearbyArtisansSeeAll> {
                                         color: Color(0xFF333333),
                                         fontSize: 16,
                                         fontWeight: FontWeight.w600),
+                                  ),
+                                  subtitle: Text(
+                                    '${snapshot.data[index].serviceArea}'
+                                        .capitalizeFirstOfEach,
+                                    style: TextStyle(
+                                        color: Color(0xFF333333),
+                                        fontSize: 15,
+                                        fontWeight: FontWeight.w500),
+                                  ),
+                                  trailing: Column(
+                                    crossAxisAlignment:
+                                        CrossAxisAlignment.center,
+                                    mainAxisAlignment: MainAxisAlignment.center,
+                                    children: [
+                                      Icon(
+                                        Icons.star,
+                                        color: Colors.amber,
+                                        size: 23,
+                                      ),
+                                      Text(
+                                        '${snapshot.data[index].userRating}',
+                                        style: TextStyle(
+                                            color: Color(0xFF333333),
+                                            fontSize: 15,
+                                            fontWeight: FontWeight.w600),
+                                      ),
+                                    ],
                                   ),
                                 ),
                               );

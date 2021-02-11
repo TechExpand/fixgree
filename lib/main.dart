@@ -134,7 +134,7 @@ class _MyAppState extends State<MyApp> {
     return MaterialApp(
       theme: ThemeData(
         accentColor: Colors.white10,
-        textTheme: GoogleFonts.publicSansTextTheme(
+        textTheme: GoogleFonts.openSansTextTheme(
           Theme.of(context).textTheme,
         ),
       ),

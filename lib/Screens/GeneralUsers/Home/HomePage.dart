@@ -70,8 +70,11 @@ class _HomePageState extends State<HomePage> {
         height: 60,
         child: BottomNavigationBar(
             onTap: (index) {
-              _myPage.jumpToPage(index);
-              data.setSelectedBottomNavBar(index);
+              if (index == data.selectedPage) {
+              } else {
+                _myPage.jumpToPage(index);
+                data.setSelectedBottomNavBar(index);
+              }
             },
             elevation: 20,
             type: BottomNavigationBarType.fixed,

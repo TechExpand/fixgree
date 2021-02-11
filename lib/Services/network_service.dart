@@ -194,11 +194,6 @@ class WebServices extends ChangeNotifier {
     notifyListeners();
   }
 
-  //Plumber = 165
-  //Electrician = 1
-  //Mechanic = 2
-  //Designer = 68
-
   Future<dynamic> BecomeArtisanOrBusiness({context, scaffoldKey}) async {
     var data = Provider.of<DataProvider>(context, listen: false);
     var datas = Provider.of<Utils>(context, listen: false);
@@ -273,6 +268,7 @@ class WebServices extends ChangeNotifier {
           "Content-type": "application/json",
           'Authorization': 'Bearer $Bearer',
         });
+    print(response.body);
     var body = json.decode(response.body);
     if (body['reqRes'] == 'true') {
       return body['sortedUsers'];
@@ -823,7 +819,6 @@ class WebServices extends ChangeNotifier {
       "Content-type": "application/x-www-form-urlencoded",
       'Authorization': 'Bearer $Bearer',
     });
-    print(response.body);
     var body = json.decode(response.body);
     List result = body['sortedUsers'];
     List<UserSearch> nearebyList = result.map((data) {

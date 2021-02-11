@@ -32,6 +32,7 @@ class _SeeBeneficiariesState extends State<SeeBeneficiaries> {
             style: TextStyle(
                 color: Color(0xFF333333),
                 fontSize: 21,
+                fontFamily: '',
                 height: 1.4,
                 fontWeight: FontWeight.w500)),
         elevation: 0,
