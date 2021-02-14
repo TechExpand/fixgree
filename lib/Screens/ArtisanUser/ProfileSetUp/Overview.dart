@@ -20,7 +20,6 @@ class OverviewPageState extends State<OverviewPage> {
       child: Column(
         crossAxisAlignment: CrossAxisAlignment.start,
         children: [
-          
               Padding(
                 padding: const EdgeInsets.only(top:15.0, bottom: 15),
                 child: Text('Proffessional Overview', style: TextStyle(fontWeight: FontWeight.w500)),

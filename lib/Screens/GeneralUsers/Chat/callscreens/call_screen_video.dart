@@ -281,8 +281,7 @@ class _CallVideoPageState extends State<CallVideoPage> {
 
   void _onCallEnd(BuildContext context) {
     var datas = Provider.of<CallApi>(context, listen: false);
-    print(widget.idUser);
-    print(widget.idUser);
+   
     datas.deleteCallLogs(widget.idUser);
     Navigator.pop(context);
 

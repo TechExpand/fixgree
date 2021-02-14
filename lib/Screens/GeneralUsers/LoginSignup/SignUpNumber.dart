@@ -134,7 +134,7 @@ class SignUpState extends State<SignUp>{
                                         },
                                         
                                         onInputValidated: (bool value) {
-                                            print(value);
+                                           
                                         },
                                         selectorConfig: SelectorConfig(
                                             selectorType: PhoneInputSelectorType.DIALOG,

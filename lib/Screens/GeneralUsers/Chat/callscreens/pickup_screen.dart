@@ -96,9 +96,7 @@ class _PickupScreenState extends State<PickupScreen> {
                 InkWell(
                     onTap: () async {
                       FlutterRingtonePlayer.stop();
-                      print(widget.message.idUser);
-                       print(widget.message.idUser);
-                        print(widget.message.idUser);
+                      
                        datas.updateCallStatus(widget.message.idUser, 'Connected');
                       widget.message.calltype == 'video'
                           ? Navigator.push(

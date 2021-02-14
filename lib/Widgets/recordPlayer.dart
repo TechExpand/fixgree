@@ -129,13 +129,13 @@ class _AudioAppState extends State<AudioApp> {
         child: Column(
           mainAxisSize: MainAxisSize.min,
           children: [
-            audioPlayer.loading
-                ? Text(
-                    'Loading...',
-                    style: TextStyle(
-                        fontWeight: FontWeight.bold, color: Colors.black),
-                  )
-                : Container(),
+//            audioPlayer.loading
+//                ? Text(
+//                    'Loading...',
+//                    style: TextStyle(
+//                        fontWeight: FontWeight.bold, color: Colors.black),
+//                  )
+//                : Container(),
             if (duration != null)
               SliderTheme(
                 data: SliderTheme.of(context).copyWith(

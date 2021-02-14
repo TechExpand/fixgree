@@ -1,5 +1,6 @@
 import 'dart:convert';
 import 'package:fixme/Model/UserSearch.dart';
+import 'package:fixme/Model/info.dart';
 import 'package:fixme/Screens/ArtisanUser/Profile/ProfilePage.dart';
 import 'package:fixme/Screens/GeneralUsers/Home/HomePage.dart';
 import 'package:fixme/Services/postrequest_service.dart';
@@ -14,6 +15,7 @@ import 'package:shared_preferences/shared_preferences.dart';
 class WebServices extends ChangeNotifier {
   var login_state = false;
   var login_state_second = false;
+  var login_pop_state = false;
   var Bearer = '';
   var user_id = 0;
   var role = '';
@@ -30,6 +32,15 @@ class WebServices extends ChangeNotifier {
       login_state = true;
     } else {
       login_state = false;
+    }
+    notifyListeners();
+  }
+
+  void Login_Pop_SetState() {
+    if (login_pop_state == false) {
+      login_pop_state = true;
+    } else {
+      login_pop_state = false;
     }
     notifyListeners();
   }
@@ -56,6 +67,7 @@ class WebServices extends ChangeNotifier {
         'device_token': data.firebase_user_id.toString() ?? '',
         'device_os': 'Andriod',
         'device_type': 'phone',
+        'firebaseId': data.firebase_user_id.toString(),
         'email':
             data.emails.toString() == null || data.emails.toString().isEmpty
                 ? data.firstName + '@Fixme.com'
@@ -67,7 +79,7 @@ class WebServices extends ChangeNotifier {
       });
       var body = json.decode(response.body);
       user_id = body['id'];
-      mobile_device_token = body['mobile_device_token'];
+      mobile_device_token = body['firebaseId'];
       profile_pic_file_name = body['profile_pic_file_name'];
       firstName = body['firstName'];
       phoneNum = body['fullNumber'];
@@ -81,6 +93,7 @@ class WebServices extends ChangeNotifier {
         datas.storeData('firstName', firstName);
         datas.storeData('phoneNum', phoneNum);
         datas.storeData('role', role);
+
         Login_SetState();
         return Navigator.push(
           context,
@@ -98,9 +111,9 @@ class WebServices extends ChangeNotifier {
           ),
         );
       } else if (body['reqRes'] == 'false') {
+        Login_SetState();
         scaffoldKey.currentState
             .showSnackBar(SnackBar(content: Text(body['message'])));
-        Login_SetState();
       }
       notifyListeners();
     } catch (e) {
@@ -122,18 +135,6 @@ class WebServices extends ChangeNotifier {
         'Authorization':
             'Bearer FIXME_1U90P3444ANdroidAPP4HUisallOkayBY_FIXME_APP_UIONSISJGJANKKI3445fv',
       });
-
-      var body = json.decode(response.body);
-      Bearer = response.headers['bearer'];
-      user_id = body['id'];
-      mobile_device_token = body['mobile_device_token'];
-      profile_pic_file_name = body['profile_pic_file_name'];
-      firstName = body['firstName'];
-      lastName = body['lastName'];
-      role = body['role'];
-      phoneNum = body['fullNumber'];
-      email = body['email'];
-
       var response2 = await http.post(
           Uri.parse('https://manager.fixme.ng/user-info?user_id=$user_id'),
           headers: {
@@ -142,6 +143,18 @@ class WebServices extends ChangeNotifier {
           });
       var body2 = json.decode(response2.body);
       bio = body2['bio'];
+      var body = json.decode(response.body);
+      Bearer = response.headers['bearer'];
+      user_id = body['id'];
+      mobile_device_token = body['mobile_device_token'];
+      mobile_device_token = body['firebaseId'];
+      profile_pic_file_name = body['profile_pic_file_name'];
+      firstName = body['firstName'];
+      lastName = body2['lastName'];
+      role = body['role'];
+      phoneNum = body['fullNumber'];
+      email = body['email'];
+
       if (body['reqRes'] == 'true') {
         datas.storeData('Bearer', Bearer);
         datas.storeData('mobile_device_token', mobile_device_token);
@@ -183,7 +196,6 @@ class WebServices extends ChangeNotifier {
 
   initializeValues() async {
     SharedPreferences prefs = await SharedPreferences.getInstance();
-
     user_id = int.parse(prefs.getString('user_id'));
     Bearer = prefs.getString('Bearer');
     mobile_device_token = prefs.getString('mobile_device_token');
@@ -192,6 +204,48 @@ class WebServices extends ChangeNotifier {
     phoneNum = prefs.getString('phoneNum');
     role = prefs.getString('role');
     notifyListeners();
+  }
+
+  Future<dynamic> initiateProject(project_owner_user_id, bid_id, project_id,
+      service_id, budget, context, setStates) async {
+    try {
+      var response = await http
+          .post(Uri.parse('https://manager.fixme.ng/save-send-budget'), body: {
+        'user_id': user_id.toString(),
+        'project_owner_user_id': '$project_owner_user_id',
+        'bid_id': '$bid_id',
+        'project_id': '$project_id',
+        'service_id': '$service_id',
+        'budget': '$budget',
+      }, headers: {
+        "Content-type": "application/x-www-form-urlencoded",
+        'Authorization': 'Bearer $Bearer',
+      });
+      var body = json.decode(response.body);
+      notifyListeners();
+      if (body['reqRes'] == 'true') {
+        setStates(() {});
+        Login_Pop_SetState();
+        Navigator.pop(context);
+//      scaffoldKey.showSnackBar(
+//          new SnackBar(content: new Text("JOB INITIATED")));
+        print(body['reqRes']);
+        return body;
+      } else if (body['reqRes'] == 'false') {
+        setStates(() {});
+        Login_Pop_SetState();
+        Navigator.pop(context);
+//      scaffoldKey.showSnackBar(
+//          new SnackBar(content: new Text("JOB INITIATION FAILED")));
+        print(body);
+      }
+    } catch (e) {
+      setStates(() {});
+      Login_Pop_SetState();
+      print(e);
+//      scaffoldKey.showSnackBar(
+//          new SnackBar(content: new Text("Failed")));
+    }
   }
 
   Future<dynamic> BecomeArtisanOrBusiness({context, scaffoldKey}) async {
@@ -268,7 +322,6 @@ class WebServices extends ChangeNotifier {
           "Content-type": "application/json",
           'Authorization': 'Bearer $Bearer',
         });
-    print(response.body);
     var body = json.decode(response.body);
     if (body['reqRes'] == 'true') {
       return body['sortedUsers'];
@@ -297,17 +350,88 @@ class WebServices extends ChangeNotifier {
     }
   }
 
-  Future<dynamic> getUserInfo([userId]) async {
+  Future<dynamic> confirmBudget([bidder_user_id, bid_id, scaffoldKey]) async {
     var response = await http.post(
-        Uri.parse('https://manager.fixme.ng/user-info?user_id=$user_id'),
+        Uri.parse('https://manager.fixme.ng/approve-bid'
+            ''),
+        body: {
+          'user_id': user_id.toString(),
+          'bidder_user_id': bidder_user_id.toString(),
+          'bid_id': bid_id.toString(),
+        },
         headers: {
-          "Content-type": "application/json",
+          "Content-type": "application/x-www-form-urlencoded",
           'Authorization': 'Bearer $Bearer',
         });
     var body = json.decode(response.body);
     notifyListeners();
     if (body['reqRes'] == 'true') {
+      print(body['reqRes']);
+      scaffoldKey.currentState.showSnackBar(
+          SnackBar(content: Text('Project Confirmed Successfully')));
+      return body['reviews'];
+    } else if (body['reqRes'] == 'false') {
+      print(body['message']);
+    }
+  }
+
+  Future<dynamic> bidProject([userId, jobId, scaffoldKey]) async {
+    var response = await http
+        .post(Uri.parse('https://manager.fixme.ng/bid-project'), body: {
+      'user_id': userId.toString(),
+      'job_id': jobId.toString(),
+    }, headers: {
+      "Content-type": "application/x-www-form-urlencoded",
+      'Authorization': 'Bearer $Bearer',
+    });
+    var body = json.decode(response.body);
+    notifyListeners();
+    if (body['reqRes'] == 'true') {
+      print(body['reqRes']);
+      scaffoldKey.currentState
+          .showSnackBar(SnackBar(content: Text('Project Bid Successfully')));
+      return body['reviews'];
+    } else if (body['reqRes'] == 'false') {
+      print(body['message']);
+    }
+  }
+
+  Future<dynamic> getUserInfo([userId]) async {
+    var response =
+        await http.post(Uri.parse('https://manager.fixme.ng/user-info'), body: {
+      'user_id': userId.toString(),
+    }, headers: {
+      "Content-type": "application/x-www-form-urlencoded",
+      'Authorization': 'Bearer $Bearer',
+    });
+    var body = json.decode(response.body);
+    notifyListeners();
+    if (body['reqRes'] == 'true') {
       return body;
+    } else if (body['reqRes'] == 'false') {
+      print(body['message']);
+    }
+  }
+
+  // getUserJobInfo
+
+  Future<dynamic> getUserJobInfo([userId, artisan_id]) async {
+    var response = await http.post(
+        Uri.parse('https://manager.fixme.ng/get-artisan-business-profile'),
+        body: {
+          'requesting_user_id': userId.toString(),
+          'artisan_user_id': artisan_id,
+        },
+        headers: {
+          "Content-type": "application/x-www-form-urlencoded",
+          'Authorization': 'Bearer $Bearer',
+        });
+    var body = json.decode(response.body);
+    Map carMap = jsonDecode(response.body.toString());
+    Info info = Info.fromJson(carMap);
+    notifyListeners();
+    if (body['reqRes'] == 'true') {
+      return info;
     } else if (body['reqRes'] == 'false') {
       print(body['message']);
     }
@@ -550,6 +674,112 @@ class WebServices extends ChangeNotifier {
     }
   }
 
+  Future addProductCatalog(
+      {bio, product_name, price, scaffoldKey, path, context}) async {
+    try {
+      var res = await http.post(
+          Uri.parse('https://manager.fixme.ng/save-catlog-product'),
+          body: {
+            'product_name': product_name.toString() ?? '',
+            'price': price.toString() ?? '',
+            'bio': bio.toString() ?? '',
+            'user_id': '$user_id',
+          },
+          headers: {
+            "Content-type": "application/x-www-form-urlencoded",
+            'Authorization': 'Bearer $Bearer',
+          });
+
+      var body = jsonDecode(res.body);
+      notifyListeners();
+      if (body['reqRes'] == 'true') {
+        var upload = http.MultipartRequest(
+            'POST', Uri.parse('https://uploads.fixme.ng/product-image-upload'));
+        var file = await http.MultipartFile.fromPath('file', path);
+        upload.files.add(file);
+        upload.fields['product_id'] = body['productId'].toString();
+        upload.fields['product_name'] = product_name.toString();
+        upload.fields['user_id'] = user_id.toString();
+        upload.headers['authorization'] = 'Bearer $Bearer';
+
+        final stream = await upload.send();
+        var resp = await http.Response.fromStream(stream);
+        var bodys = jsonDecode(resp.body);
+
+        if (bodys['upldRes'] == 'true') {
+          return bodys;
+        } else if (bodys['upldRes'] == 'false') {
+          showDialog(
+              child: AlertDialog(
+                title: Center(
+                  child: Text('There was a Problem Working on it!',
+                      style: TextStyle(color: Colors.blue)),
+                ),
+              ),
+              context: context);
+        }
+      } else if (body['reqRes'] == 'false') {
+        showDialog(
+            child: AlertDialog(
+              title: Center(
+                child: Text('There was a Problem Working on it!',
+                    style: TextStyle(color: Colors.blue)),
+              ),
+            ),
+            context: context);
+      }
+    } catch (e) {
+      showDialog(
+          child: AlertDialog(
+            title: Center(
+              child: Text('$e', style: TextStyle(color: Colors.blue)),
+            ),
+          ),
+          context: context);
+    }
+  }
+
+  Future addSerPic({path, uploadType, scaffoldKey, context}) async {
+    try {
+      var upload = http.MultipartRequest(
+          'POST', Uri.parse('https://uploads.fixme.ng/uploads-processing'));
+      var file = await http.MultipartFile.fromPath('file', path);
+      upload.files.add(file);
+      upload.fields['uploadType'] = uploadType.toString();
+      upload.fields['firstName'] = firstName.toString();
+      upload.fields['user_id'] = user_id.toString();
+      upload.headers['authorization'] = 'Bearer $Bearer';
+
+      final stream = await upload.send();
+      var res = await http.Response.fromStream(stream);
+
+      var body = jsonDecode(res.body);
+      notifyListeners();
+      if (body['upldRes'] == 'true') {
+        return body;
+      } else if (body['upldRes'] == 'false') {
+        showDialog(
+            child: AlertDialog(
+              title: Center(
+                child: Text('There was a Problem Working on it!',
+                    style: TextStyle(color: Colors.blue)),
+              ),
+            ),
+            context: context);
+      }
+    } catch (e) {
+      showDialog(
+          child: AlertDialog(
+            title: Center(
+              child: Text('There was a Problem Working on it!',
+                  style: TextStyle(color: Colors.blue)),
+            ),
+          ),
+          context: context);
+      print(e);
+    }
+  }
+
   Future uploadCatalog({path, uploadType, scaffoldKey, context}) async {
     try {
       var upload = http.MultipartRequest(
@@ -739,6 +969,42 @@ class WebServices extends ChangeNotifier {
     return imageName;
   }
 
+  Future<bool> editUserName({firstname, lastname}) async {
+    var response = await http.post(
+        Uri.parse(
+            'https://manager.fixme.ng/e-f-n?user_id=$user_id&firstName=$firstname&lastName=$lastname'),
+        headers: {
+          "Content-type": "application/json",
+          'Authorization': 'Bearer $Bearer',
+        });
+    var body = json.decode(response.body);
+    var res;
+    if (body['reqRes'] == 'true') {
+      res = true;
+    } else if (body['reqRes'] == 'false') {
+      res = false;
+    }
+    return res;
+  }
+
+  Future<bool> editUserBio({status}) async {
+    var response = await http.post(
+        Uri.parse(
+            'https://manager.fixme.ng/update-bio?user_id=$user_id&bio=$status'),
+        headers: {
+          "Content-type": "application/json",
+          'Authorization': 'Bearer $Bearer',
+        });
+    var body = json.decode(response.body);
+    var res;
+    if (body['reqRes'] == 'true') {
+      res = true;
+    } else if (body['reqRes'] == 'false') {
+      res = false;
+    }
+    return res;
+  }
+
   Future uploadPhoto({path, uploadType, navigate, context}) async {
     try {
       var upload = http.MultipartRequest(
@@ -786,6 +1052,101 @@ class WebServices extends ChangeNotifier {
     }
   }
 
+  Future<dynamic> updateFCMToken(user_id, fcm_token) async {
+    var response = await http
+        .post(Uri.parse('https://manager.fixme.ng/mtk-details-update'), body: {
+      'user_id': user_id.toString(),
+      'device_token': fcm_token.toString(),
+      'device_os': 'andriod',
+      'device_type': 'techno',
+    }, headers: {
+      "Content-type": "application/x-www-form-urlencoded",
+      'Authorization': 'Bearer $Bearer',
+    });
+    var body = json.decode(response.body);
+    notifyListeners();
+    if (body['reqRes'] == 'true') {
+      return body;
+    } else if (body['reqRes'] == 'false') {
+      print(body);
+    }
+  }
+
+  Future<dynamic> updateBio(bio) async {
+    var response = await http
+        .post(Uri.parse('https://manager.fixme.ng/update-bio'), body: {
+      'user_id': user_id.toString(),
+      'bio': '$bio',
+    }, headers: {
+      "Content-type": "application/x-www-form-urlencoded",
+      'Authorization': 'Bearer $Bearer',
+    });
+    var body = json.decode(response.body);
+    notifyListeners();
+    if (body['reqRes'] == 'true') {
+      print(body['reqRes']);
+      return body;
+    } else if (body['reqRes'] == 'false') {
+      print(body);
+    }
+  }
+
+  Future<dynamic> updateService(sn) async {
+    var response = await http
+        .post(Uri.parse('https://manager.fixme.ng/change-service'), body: {
+      'user_id': user_id.toString(),
+      'service_id': '$sn',
+    }, headers: {
+      "Content-type": "application/x-www-form-urlencoded",
+      'Authorization': 'Bearer $Bearer',
+    });
+    var body = json.decode(response.body);
+    notifyListeners();
+    if (body['reqRes'] == 'true') {
+      print(body['reqRes']);
+      return body;
+    } else if (body['reqRes'] == 'false') {
+      print(body);
+    }
+  }
+
+  Future<dynamic> updateFullName(firstName, lastName) async {
+    var response =
+        await http.post(Uri.parse('https://manager.fixme.ng/e-f-n'), body: {
+      'user_id': user_id.toString(),
+      'firstName': '$lastName',
+      'lastName': '$firstName',
+    }, headers: {
+      "Content-type": "application/x-www-form-urlencoded",
+      'Authorization': 'Bearer $Bearer',
+    });
+    var body = json.decode(response.body);
+    notifyListeners();
+    if (body['reqRes'] == 'true') {
+      print(body['reqRes']);
+      return body;
+    } else if (body['reqRes'] == 'false') {
+      print(body);
+    }
+  }
+
+  Future<dynamic> getUndoneProject() async {
+    var response = await http
+        .post(Uri.parse('https://manager.fixme.ng/all-new-projects'), body: {
+      'user_id': user_id.toString(),
+    }, headers: {
+      "Content-type": "application/x-www-form-urlencoded",
+      'Authorization': 'Bearer $Bearer',
+    });
+    var body = json.decode(response.body);
+    notifyListeners();
+    if (body['reqRes'] == 'true') {
+      return body['projects'];
+    } else if (body['reqRes'] == 'false') {
+      print(body['message']);
+    }
+  }
+
   Future<dynamic> NearbyArtisans({longitude, latitude}) async {
     var response = await http
         .post(Uri.parse('https://manager.fixme.ng/near-artisans'), body: {
@@ -819,6 +1180,7 @@ class WebServices extends ChangeNotifier {
       "Content-type": "application/x-www-form-urlencoded",
       'Authorization': 'Bearer $Bearer',
     });
+    print(response.body);
     var body = json.decode(response.body);
     List result = body['sortedUsers'];
     List<UserSearch> nearebyList = result.map((data) {
@@ -856,42 +1218,6 @@ class WebServices extends ChangeNotifier {
         print('failed');
       }
     } catch (e) {}
-  }
-
-  Future<bool> editUserName({firstname, lastname}) async {
-    var response = await http.post(
-        Uri.parse(
-            'https://manager.fixme.ng/e-f-n?user_id=$user_id&firstName=$firstname&lastName=$lastname'),
-        headers: {
-          "Content-type": "application/json",
-          'Authorization': 'Bearer $Bearer',
-        });
-    var body = json.decode(response.body);
-    var res;
-    if (body['reqRes'] == 'true') {
-      res = true;
-    } else if (body['reqRes'] == 'false') {
-      res = false;
-    }
-    return res;
-  }
-
-  Future<bool> editUserBio({status}) async {
-    var response = await http.post(
-        Uri.parse(
-            'https://manager.fixme.ng/update-bio?user_id=$user_id&bio=$status'),
-        headers: {
-          "Content-type": "application/json",
-          'Authorization': 'Bearer $Bearer',
-        });
-    var body = json.decode(response.body);
-    var res;
-    if (body['reqRes'] == 'true') {
-      res = true;
-    } else if (body['reqRes'] == 'false') {
-      res = false;
-    }
-    return res;
   }
 
   Future<List> getAvailableBanks() async {

@@ -3,6 +3,7 @@ import 'package:fixme/Model/User.dart';
 import 'package:fixme/Model/UserChat.dart';
 import 'package:fixme/Services/Firebase_service.dart';
 import 'package:fixme/Services/network_service.dart';
+import 'package:fixme/Utils/Provider.dart';
 import 'package:fixme/Utils/utils.dart';
 import 'package:flutter/material.dart';
 import 'package:font_awesome_flutter/font_awesome_flutter.dart';
@@ -27,6 +28,7 @@ class _ListenIncomingState extends State<ListenIncoming> {
   @override
   Widget build(BuildContext context) {
     var data = Provider.of<Utils>(context, listen:false);
+    var datas = Provider.of<DataProvider>(context, listen:false);
     
     var network = Provider.of<WebServices>(context, listen:false);
     Widget buildText(String text) => Center(
@@ -105,7 +107,7 @@ List<UserChat> user;
                   SizedBox(width: 8),
                   Icon(Icons.search),
                   SizedBox(width: 8),
-                  Text('Search messages'),
+                  Text('${network.mobile_device_token}', style:TextStyle(color:Colors.black)),
                   Spacer(),
                   InkWell(
                       onTap:data.isExpanded?(){
@@ -298,7 +300,7 @@ List<UserChat> user;
                             return Center(child: CircularProgressIndicator());
                           default:
                             if (snapshot.hasError) {
-                              print(snapshot.error);
+                             
                               return buildText('Something Went Wrong Try later');
                             } else {
                               final users = chat_data;
@@ -377,7 +379,7 @@ List<UserChat> user;
                             return Center(child: CircularProgressIndicator());
                           default:
                             if (snapshot.hasError) {
-                              print(snapshot.error);
+                             
                               return buildText('Something Went Wrong Try later');
                             } else {
                               final users = chat_data;

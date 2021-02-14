@@ -1,5 +1,6 @@
 import 'package:fixme/Screens/GeneralUsers/Chat/Chat.dart';
 import 'package:fixme/Services/Firebase_service.dart';
+import 'package:fixme/Services/location_service.dart';
 import 'package:fixme/Services/network_service.dart';
 import 'package:fixme/Widgets/photoView.dart';
 import 'package:flutter/material.dart';
@@ -38,6 +39,7 @@ class ArtisanPageState extends State<ArtisanPage> {
   @override
   Widget build(BuildContext context) {
     var data = Provider.of<Utils>(context, listen:false);
+    var location = Provider.of<LocationService>(context);
     var network = Provider.of<WebServices>(context, listen: false);
     return Material(
         child: Container(
@@ -52,8 +54,8 @@ class ArtisanPageState extends State<ArtisanPage> {
                       child: Text(''),
                       radius: 40,
                       backgroundImage:NetworkImage(
-                        network.profile_pic_file_name=='no_picture_upload'||
-                            network.profile_pic_file_name  ==null ?'https://uploads.fixme.ng/originals/no_picture_upload':
+                        widget.userData=='no_picture_upload'||
+                            widget.userData  ==null ?'https://uploads.fixme.ng/originals/no_picture_upload':
                         'https://uploads.fixme.ng/originals/${widget.userData.urlAvatar}',
                       ),
                       foregroundColor: Colors.white,
@@ -86,27 +88,18 @@ class ArtisanPageState extends State<ArtisanPage> {
                           Container(
                               width: 80,
                               child: Text('${first==null?'Location':first.addressLine}',  style: TextStyle(fontWeight: FontWeight.w500),)),
-                               Container(
-                    margin: EdgeInsets.only(left: 10),
-                    height: 45,
-                    decoration: BoxDecoration(
-                        border: Border.all(color: Colors.black),
-                        borderRadius: BorderRadius.circular(5)),
-                    child: FlatButton(
-                      disabledColor: Color(0x909B049B),
-                      onPressed:(){
+                               InkWell(
+                      onTap: (){
+                        data.makeOpenUrl('https://www.google.com/maps?saddr=${location.location_latitude},${location.location_longitude}&daddr= ${widget.userData.latitude}, ${widget.userData.longitude}');
                         
                       },
-                      color: Colors.transparent,
-                      shape: RoundedRectangleBorder(
+                      child:  Container(
+                          decoration:
+                        BoxDecoration(
+                            border: Border.all(color: Colors.black),
                           borderRadius: BorderRadius.circular(5)),
-                      padding: EdgeInsets.all(0.0),
-                      child: Ink(
-                        decoration:
-                        BoxDecoration(borderRadius: BorderRadius.circular(5)),
-                        child: Container(
-                          width:40,
-                              height: 30.0,
+                          width:100,
+                              height: 20.0,
                           alignment: Alignment.center,
                           child: Text(
                             "Get Direction",
@@ -115,8 +108,7 @@ class ArtisanPageState extends State<ArtisanPage> {
                           ),
                         ),
                       ),
-                    ),
-                  ),
+                  
                         ],
                         ),
                       ),
@@ -149,7 +141,7 @@ class ArtisanPageState extends State<ArtisanPage> {
               ),
               Padding(
                 padding: const EdgeInsets.only(top:0.0, bottom: 5, left: 18, right:18),
-                child: Text('About', style: TextStyle(fontWeight: FontWeight.w500, fontSize: 19),),
+                child: Text('About ${widget.userData.idUser}', style: TextStyle(fontWeight: FontWeight.w500, fontSize: 19),),
               ),
               Padding(
                 padding: const EdgeInsets.only(top:0.0, left: 18,bottom: 15, right:18),
@@ -176,7 +168,7 @@ class ArtisanPageState extends State<ArtisanPage> {
                           'https://uploads.fixme.ng/originals/${widget.userData.urlAvatar}',
                           name: widget.userData.name,
                         );
-
+                        
                         Navigator.push(
                           context,
                           PageRouteBuilder(

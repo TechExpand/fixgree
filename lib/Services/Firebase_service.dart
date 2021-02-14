@@ -22,16 +22,16 @@ class FirebaseApi {
       String idUser, String idArtisan, String message, context, chatId) async {
     var network = Provider.of<WebServices>(context, listen: false);
     final refMessages =
-        FirebaseFirestore.instance.collection('chats/$idUser/messages');
+    FirebaseFirestore.instance.collection('chats/$idUser/messages');
     final refMessages2 =
-        FirebaseFirestore.instance.collection('chats/$idArtisan/messages');
+    FirebaseFirestore.instance.collection('chats/$idArtisan/messages');
 
     final newMessage = Message(
       chatId: chatId ?? '',
       idUser: network.mobile_device_token ?? '',
       urlAvatar:
-          'https://uploads.fixme.ng/originals/${network.profile_pic_file_name}' ??
-              '',
+      'https://uploads.fixme.ng/originals/${network.profile_pic_file_name}' ??
+          '',
       username: network.firstName ?? '',
       message: message ?? '',
       createdAt: DateTime.now(),
@@ -58,9 +58,9 @@ class FirebaseApi {
       String idUser, idArtisan, message, context, chatId) async {
     var network = Provider.of<WebServices>(context, listen: false);
     final refMessages =
-        FirebaseFirestore.instance.collection('chats/$idUser/messages');
+    FirebaseFirestore.instance.collection('chats/$idUser/messages');
     final refMessages2 =
-        FirebaseFirestore.instance.collection('chats/$idArtisan/messages');
+    FirebaseFirestore.instance.collection('chats/$idArtisan/messages');
 
     Reference storageReferenceImage = FirebaseStorage.instance
         .ref()
@@ -83,10 +83,10 @@ class FirebaseApi {
       });
     });
 
-     Navigator.pop(context);
+    Navigator.pop(context);
 
     final refUsers = FirebaseFirestore.instance.collection('UserChat/$idUser/individual');
- final refArtisan = FirebaseFirestore.instance.collection('UserChat/$idArtisan/individual');
+    final refArtisan = FirebaseFirestore.instance.collection('UserChat/$idArtisan/individual');
     await refArtisan.doc(idUser).update({
       UserField.lastMessageTime: DateTime.now(),
       'lastMessage': 'A File',
@@ -108,9 +108,9 @@ class FirebaseApi {
       String idUser, idArtisan, message, context, chatId) async {
     var network = Provider.of<WebServices>(context, listen: false);
     final refMessages =
-        FirebaseFirestore.instance.collection('chats/$idUser/messages');
+    FirebaseFirestore.instance.collection('chats/$idUser/messages');
     final refMessages2 =
-        FirebaseFirestore.instance.collection('chats/$idArtisan/messages');
+    FirebaseFirestore.instance.collection('chats/$idArtisan/messages');
 
     Reference storageReferenceImage = FirebaseStorage.instance
         .ref()
@@ -133,7 +133,7 @@ class FirebaseApi {
       });
     });
     final refUsers = FirebaseFirestore.instance.collection('UserChat/$idUser/individual');
- final refArtisan = FirebaseFirestore.instance.collection('UserChat/$idArtisan/individual');
+    final refArtisan = FirebaseFirestore.instance.collection('UserChat/$idArtisan/individual');
     await refArtisan.doc(idUser).update({
       UserField.lastMessageTime: DateTime.now(),
       'lastMessage': 'A File',
@@ -152,27 +152,42 @@ class FirebaseApi {
       FirebaseFirestore.instance
           .collection('chats/$idUser/messages')
           .where('chatId', whereIn: [chatId1,chatId2])
-         .orderBy(MessageField.createdAt, descending: true)
+          .orderBy(MessageField.createdAt, descending: true)
           .snapshots()
           .transform(Utils.transformer(Message.fromJson));
 
 
 
-static clearMessage(String idUser, chatId1, chatId2){
-var documentReference = FirebaseFirestore.instance
-          .collection('chats/$idUser/messages')
-          .where('chatId', whereIn: [chatId1,chatId2]);
+  static clearMessage(String idUser, chatId1, chatId2){
+    var documentReference = FirebaseFirestore.instance
+        .collection('chats/$idUser/messages')
+        .where('chatId', whereIn: [chatId1,chatId2]);
 
-          documentReference .get().then((querySnapshot) {
-  querySnapshot.docs.forEach((doc) {
- doc.reference.delete();
-  });
-});
-}
+    documentReference .get().then((querySnapshot) {
+      querySnapshot.docs.forEach((doc) {
+        doc.reference.delete();
+      });
+    });
+  }
+
+
+
+  static clearJobBids(String id){
+    var documentReference = FirebaseFirestore.instance
+        .collection('JOB_BIDS')
+        .where('project_owner_user_id', isEqualTo: id);
+
+    documentReference .get().then((querySnapshot) {
+      querySnapshot.docs.forEach((doc) {
+        doc.reference.delete();
+      });
+    });
+  }
 
 
 
   static Future addUserChat({
+    bid_data,
     idUser,
     name,
     urlAvatar,
@@ -184,8 +199,12 @@ var documentReference = FirebaseFirestore.instance
     artisanMobile,
   }) async {
     final refUsers = FirebaseFirestore.instance.collection('UserChat/$idArtisan/individual');
-   final refAritisan = FirebaseFirestore.instance.collection('UserChat/$idUser/individual');
+    final refAritisan = FirebaseFirestore.instance.collection('UserChat/$idUser/individual');
     await refUsers.doc(idUser).set({
+      'bid_id': bid_data.bid_id??'',
+      'project_id': bid_data.job_id??'',
+      'project_owner_user_id': bid_data.project_owner_user_id??'',
+      'service_id': bid_data.service_id??'',
       'chatid': idArtisan,
       'read': false,
       'idUser': idUser,
@@ -197,6 +216,10 @@ var documentReference = FirebaseFirestore.instance
       'lastMessageTime': DateTime.now(),
     });
     await refAritisan.doc(idArtisan).set({
+      'bid_id': bid_data.bid_id??'',
+      'project_id': bid_data.job_id??'',
+      'project_owner_user_id': bid_data.project_owner_user_id??'',
+      'service_id': bid_data.service_id??'',
       'chatid': idUser,
       'read': false,
       'block': false,
@@ -211,7 +234,7 @@ var documentReference = FirebaseFirestore.instance
 
 
 
- /*  static Stream<List<User>> SearchUserChatStream(chatid) => FirebaseFirestore.instance
+  /*  static Stream<List<User>> SearchUserChatStream(chatid) => FirebaseFirestore.instance
       .collection('UserChat/$chatid/individual')
       .where('chatid', isEqualTo: chatid).where('')
       .snapshots()
@@ -220,32 +243,87 @@ var documentReference = FirebaseFirestore.instance
 
 
 
-  static Stream<QuerySnapshot> UserChatStream(chatid) { 
+  static Stream<QuerySnapshot> UserChatStream(chatid) {
     print(chatid);
     print(chatid);
     var data = FirebaseFirestore.instance
-      .collection('UserChat/$chatid/individual')
-      .where('chatid', isEqualTo: chatid);
-      return data.snapshots();
+        .collection('UserChat/$chatid/individual')
+        .where('chatid', isEqualTo: chatid);
+    return data.snapshots();
+  }
+
+
+
+  static Stream<QuerySnapshot> UserNotificatioStream(id) {
+    var data = FirebaseFirestore.instance
+        .collection('Notification')
+        .where('userid', isEqualTo: id);
+    return data.snapshots();
+  }
+
+  static Stream<QuerySnapshot> UserBidStream(id) {
+    var data = FirebaseFirestore.instance
+        .collection('JOB_BIDS')
+        .where('project_owner_user_id', isEqualTo: id);
+    return data.snapshots();
+  }
+
+
+
+
+  static Future uploadNotification(String id, String message, type,name, jobId,bidId, bidderId) async {
+    print('bcbbcbcbcbcbcbc');
+    final refMessages =
+    FirebaseFirestore.instance.collection('Notification');
+
+    await refMessages.doc().set({
+      'userid': id,
+      'message': message,
+      'jobId':jobId,
+      'type': type,
+      'name': name,
+      'bidded': 'bid',
+      'bidderId': bidderId??'',
+      'bidId': bidId??'',
+      'createdAt': DateTime.now(),
+    });
+
+
+  }
+
+
+
+
+
+  static Future updateNotification(String id, message) async {
+    final refMessages =
+    FirebaseFirestore.instance.collection('Notification');
+
+    await refMessages.doc(id).update({
+      'type': message,
+      'createdAt': DateTime.now(),
+    });
+
+
   }
 
 
   static Stream<QuerySnapshot> UserChatStreamUnread(chatid){
     var data =  FirebaseFirestore.instance
-          .collection('UserChat/$chatid/individual')
-          .where('chatid', isEqualTo: chatid)
-          .where('read', isEqualTo: false);
-           return data.snapshots();
+        .collection('UserChat/$chatid/individual')
+        .where('chatid', isEqualTo: chatid)
+        .where('read', isEqualTo: false);
+    return data.snapshots();
   }
 
 
 
   static Stream<QuerySnapshot> UserChatStreamread(chatid){
     var data =   FirebaseFirestore.instance
-          .collection('UserChat/$chatid/individual')
-          .where('chatid', isEqualTo: chatid)
-          .where('read', isEqualTo: true);
-           return data.snapshots();
+        .collection('UserChat/$chatid/individual')
+        .where('chatid', isEqualTo: chatid)
+        .where('read', isEqualTo: true);
+    return data.snapshots();
   }
 
 
@@ -254,7 +332,7 @@ var documentReference = FirebaseFirestore.instance
     String idUser,
     String idArtisan,
   }) async {
-  
+
     final refUsers = FirebaseFirestore.instance.collection('UserChat/$idArtisan/individual');
     await refUsers.doc(idUser).update({
       'read': true,

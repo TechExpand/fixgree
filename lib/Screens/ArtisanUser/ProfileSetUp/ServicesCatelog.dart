@@ -123,15 +123,6 @@ class PhotoCatelogPageState extends State<PhotoCatelogPage> {
                         ),
                  ),
 
-//                  Padding(
-//                      padding: const EdgeInsets.only(top:30.0),
-//                      child: InkWell(
-//                        onTap:(){
-//                           data.image.clear();
-//                           setState((){ });
-//                        },
-//                        child: Text('Clear All',style: TextStyle(color: Color(0xFF9B049B),fontWeight: FontWeight.bold))),
-//                    ),
                   Spacer(),
                   Align(
                     alignment: Alignment.center,

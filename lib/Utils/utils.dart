@@ -11,17 +11,18 @@ import 'package:shared_preferences/shared_preferences.dart';
 class Utils with ChangeNotifier {
   String random_num = '';
   bool isExpanded = false;
-   bool isExpanded1 = true;
+  String fcm_token = '';
+  bool isExpanded1 = true;
 
   static StreamTransformer transformer<T>(
-          T Function(Map<String, dynamic> json) fromJson) =>
+      T Function(Map<String, dynamic> json) fromJson) =>
       StreamTransformer<QuerySnapshot, List<T>>.fromHandlers(
-        handleData: (QuerySnapshot data, EventSink<List<T>> sink) {
-          final snaps = data.docs.map((doc) => doc.data()).toList();
-          final users = snaps.map((json) => fromJson(json)).toList();
-          sink.add(users);
-        },
-      );
+  handleData: (QuerySnapshot data, EventSink<List<T>> sink) {
+  final snaps = data.docs.map((doc) => doc.data()).toList();
+  final users = snaps.map((json) => fromJson(json)).toList();
+  sink.add(users);
+  },
+  );
 
   static DateTime toDateTime(Timestamp value) {
     if (value == null) return null;
@@ -44,6 +45,13 @@ class Utils with ChangeNotifier {
     return random_num;
   }
 
+
+  setFCMToken(value) {
+    fcm_token = value;
+    notifyListeners();
+  }
+
+
   compareDate(DateTime date) {
     if (date.difference(DateTime.now()).inHours.abs() <= 24) {
       var value = formatTime(date);
@@ -65,7 +73,7 @@ class Utils with ChangeNotifier {
   }
 
   formatTime(DateTime now) {
-    final DateFormat formatter = DateFormat().add_jms();
+    final DateFormat formatter = DateFormat().add_jm();
     final String formatted = formatter.format(now);
     return formatted;
   }
@@ -85,25 +93,40 @@ class Utils with ChangeNotifier {
     }
   }
 
+  makeOpenUrl(url) async {
 
-
-  PickedFile selected_image;
-   final picker = ImagePicker();
-  Future selectimage({@required ImageSource source, context}) async {
-    var image = await picker.getImage(source: source);
-    selected_image = image;
-    
-      notifyListeners();
+    if (await canLaunch(url)) {
+      await launch(url);
+    } else {
+      throw 'Could not launch $url';
+    }
   }
 
 
+
+
+  PickedFile selected_image;
+  final picker = ImagePicker();
+  Future selectimage({@required ImageSource source, context}) async {
+    var image = await picker.getImage(source: source);
+    selected_image = image;
+
+    notifyListeners();
+  }
+
+
+
+
+
+
+
   PickedFile selected_image2;
-   final picker2 = ImagePicker();
+  final picker2 = ImagePicker();
   Future selectimage2({@required ImageSource source, context}) async {
     var images = await picker.getImage(source: source);
     selected_image2 = images;
 
-      notifyListeners();
+    notifyListeners();
   }
 
 
@@ -121,11 +144,11 @@ class Utils with ChangeNotifier {
     isExpanded = val;
   }
 
-  
+
   onExpansionChanged1(bool val) {
     isExpanded1 = val;
     print(val);
-    
+
   }
 
   Future storeData(String name, String data) async {
@@ -143,12 +166,12 @@ class Utils with ChangeNotifier {
 
 
 extension CapExtension on String {
-  String capitalize() {
-    return '${this[0].toUpperCase()}${this.substring(1)}';
-  }
+String capitalize() {
+  return '${this[0].toUpperCase()}${this.substring(1)}';
+}
 
-  String get capitalizeFirstOfEach =>
-      this.split(" ").map((str) => str.capitalize()).join(" ");
+String get capitalizeFirstOfEach =>
+    this.split(" ").map((str) => str.capitalize()).join(" ");
 }
 
 String formatCurrency(String country, double number) =>

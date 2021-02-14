@@ -5,7 +5,6 @@ return showDialog(context: context,
 child: AlertDialog(
   title: Text(message),
   actions: <Widget>[
-    
     Center(
       child: Container(
         height: 100,

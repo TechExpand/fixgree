@@ -76,7 +76,7 @@ class UserSearch {
            businessAddress: json['business_address'],
         userAddress: json['user_address'],
         fullNumber: json['full_number'],
-        idUser: json['mobile_device_token'],
+        idUser: json['firebase_id'],
         locationTimeUpdated: json['locationTimeUpdated'],
         userRole: json['user_role'],
         name: json['user_first_name'],

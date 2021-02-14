@@ -22,9 +22,11 @@ import 'package:provider/provider.dart';
 
 class ChatPage extends StatefulWidget {
   var user;
+  var pop_data;
    final LocalFileSystem localFileSystem;
 
   ChatPage({
+    this.pop_data,
     localFileSystem,
     @required this.user,
   }): this.localFileSystem = localFileSystem ?? LocalFileSystem();
@@ -75,19 +77,19 @@ init() async {
         await _recorder.initialized;
         // after initialization
         var current = await _recorder.current(channel: 0);
-        print(current);
+    
         // should be "Initialized", if all working fine
         setState(() {
           _current = current;
           _currentStatus = current.status;
-          print(_currentStatus);
+         
         });
       } else {
         Scaffold.of(context).showSnackBar(
             new SnackBar(content: new Text("You must accept permissions")));
       }
     } catch (e) {
-      print(e);
+     
     }
   }
 
@@ -234,7 +236,7 @@ _start() async {
         });
       });
     } catch (e) {
-      print(e);
+     
     } 
   }
 
@@ -251,7 +253,7 @@ _start() async {
   _stop() async {
     var result = await _recorder.stop();
     File file = widget.localFileSystem.file(result.path);
-    print("File length: ${await file.length()}");
+   
     setState(() {
       _current = result;
       _currentStatus = _current.status;
@@ -285,19 +287,19 @@ _start() async {
         await _recorder.initialized;
         // after initialization
         var current = await _recorder.current(channel: 0);
-        print(current);
+       
         // should be "Initialized", if all working fine
         setState(() {
           _current = current;
           _currentStatus = current.status;
-          print(_currentStatus);
+          
         });
       } else {
         Scaffold.of(context).showSnackBar(
             new SnackBar(content: new Text("You must accept permissions")));
       }
     } catch (e) {
-      print(e);
+   
     }
   }
 
@@ -581,7 +583,7 @@ _start() async {
         ),
         centerTitle: false,
         title: Text(
-          widget.user.name,
+          '${widget.user.name}',
         ),
         actions: <Widget>[
           widget.user.idUser == null ||
@@ -635,7 +637,7 @@ _start() async {
           ),
           Padding(
             padding: const EdgeInsets.only(right: 10.0),
-            child: PopUpMenu(idUser: widget.user.idUser, user: widget.user),
+            child: PopUpMenu(idUser: widget.user.idUser, user: widget.user, pop_data:widget.pop_data),
           ),
         ],
       ),
