@@ -3,6 +3,7 @@ import 'package:fixme/Screens/ArtisanUser/Profile/ArtisanPage.dart';
 import 'package:fixme/Services/network_service.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_feather_icons/flutter_feather_icons.dart';
+import 'package:google_fonts/google_fonts.dart';
 import 'package:provider/provider.dart';
 import 'package:fixme/Utils/utils.dart';
 
@@ -20,7 +21,7 @@ class _NearbyArtisansSeeAllState extends State<NearbyArtisansSeeAll> {
       appBar: AppBar(
         backgroundColor: Colors.white,
         title: Text('Nearby artisans',
-            style: TextStyle(
+            style: GoogleFonts.openSans(
                 color: Color(0xFF9B049B),
                 fontSize: 18,
                 height: 1.4,

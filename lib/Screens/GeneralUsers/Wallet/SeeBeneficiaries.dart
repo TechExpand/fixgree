@@ -3,6 +3,7 @@ import 'package:fixme/Screens/GeneralUsers/Wallet/Providers/BankProvider.dart';
 import 'package:fixme/Services/network_service.dart';
 import 'package:flutter/material.dart';
 import 'package:fixme/Model/BankInfo.dart';
+import 'package:google_fonts/google_fonts.dart';
 import "package:flutter_feather_icons/flutter_feather_icons.dart";
 import 'package:provider/provider.dart';
 
@@ -29,10 +30,9 @@ class _SeeBeneficiariesState extends State<SeeBeneficiaries> {
       appBar: AppBar(
         backgroundColor: Colors.white,
         title: Text('Select beneficiary',
-            style: TextStyle(
+            style: GoogleFonts.openSans(
                 color: Color(0xFF333333),
                 fontSize: 21,
-                fontFamily: '',
                 height: 1.4,
                 fontWeight: FontWeight.w500)),
         elevation: 0,

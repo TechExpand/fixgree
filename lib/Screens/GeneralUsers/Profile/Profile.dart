@@ -37,6 +37,7 @@ class _ProfileState extends State<Profile> {
     );
 
     data.storeData('profile_pic_file_name', imageName);
+    network.initializeValues();
     update(context);
   }
 
@@ -450,6 +451,7 @@ class _ProfileState extends State<Profile> {
                             if (status) {
                               await data.storeData('about', '$bio');
                               update(context);
+                              network.initializeValues();
                               Navigator.of(context).pop();
                               _statusController.clear();
                             }
@@ -585,6 +587,7 @@ class _ProfileState extends State<Profile> {
                               await data.storeData('firstName', '$firstname');
                               await data.storeData('lastName', '$lastname');
                               update(context);
+                              network.initializeValues();
                               Navigator.of(context).pop();
                               _firstnameController.clear();
                               _lastnameController.clear();

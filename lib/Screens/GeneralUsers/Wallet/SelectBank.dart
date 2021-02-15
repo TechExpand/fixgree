@@ -2,6 +2,7 @@ import 'package:fixme/Screens/GeneralUsers/Wallet/Providers/BankProvider.dart';
 import 'package:flutter/material.dart';
 import "package:flutter_feather_icons/flutter_feather_icons.dart";
 import 'package:fixme/Services/network_service.dart';
+import 'package:google_fonts/google_fonts.dart';
 import 'package:fixme/Model/BankInfo.dart';
 import 'package:provider/provider.dart';
 
@@ -27,13 +28,13 @@ class _SelectBankState extends State<SelectBank> {
       appBar: AppBar(
         backgroundColor: Colors.white,
         title: Text('Select bank',
-            style: TextStyle(
+            style: GoogleFonts.openSans(
                 color: Color(0xFF333333),
                 fontSize: 21,
                 height: 1.4,
                 fontWeight: FontWeight.w500)),
         elevation: 0,
-         leadingWidth: 10,
+        leadingWidth: 10,
         actions: [
           IconButton(
             onPressed: () {

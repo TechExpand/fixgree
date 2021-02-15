@@ -267,7 +267,7 @@ class _HomePageState extends State<HomePage> {
           controller: _myPage,
           physics: NeverScrollableScrollPhysics(),
           children: [
-            Home(scafold_key, data),
+            Home(scafold_key, data, _myPage),
             Wallet(),
             PostScreen(),
             NotificationPage(scafold_key),

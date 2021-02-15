@@ -135,6 +135,17 @@ class WebServices extends ChangeNotifier {
         'Authorization':
             'Bearer FIXME_1U90P3444ANdroidAPP4HUisallOkayBY_FIXME_APP_UIONSISJGJANKKI3445fv',
       });
+      var body = json.decode(response.body);
+      Bearer = response.headers['bearer'];
+
+      user_id = body['id'];
+      mobile_device_token = body['firebaseId'];
+      profile_pic_file_name = body['profile_pic_file_name'];
+      firstName = body['firstName'];
+      lastName = body['lastName'];
+      role = body['role'];
+      phoneNum = body['fullNumber'];
+      email = body['email'];
       var response2 = await http.post(
           Uri.parse('https://manager.fixme.ng/user-info?user_id=$user_id'),
           headers: {
@@ -143,17 +154,6 @@ class WebServices extends ChangeNotifier {
           });
       var body2 = json.decode(response2.body);
       bio = body2['bio'];
-      var body = json.decode(response.body);
-      Bearer = response.headers['bearer'];
-      user_id = body['id'];
-      mobile_device_token = body['mobile_device_token'];
-      mobile_device_token = body['firebaseId'];
-      profile_pic_file_name = body['profile_pic_file_name'];
-      firstName = body['firstName'];
-      lastName = body2['lastName'];
-      role = body['role'];
-      phoneNum = body['fullNumber'];
-      email = body['email'];
 
       if (body['reqRes'] == 'true') {
         datas.storeData('Bearer', Bearer);
@@ -201,7 +201,9 @@ class WebServices extends ChangeNotifier {
     mobile_device_token = prefs.getString('mobile_device_token');
     profile_pic_file_name = prefs.getString('profile_pic_file_name');
     firstName = prefs.getString('firstName');
+    lastName = prefs.getString('lastName');
     phoneNum = prefs.getString('phoneNum');
+    bio = prefs.getString('about');
     role = prefs.getString('role');
     notifyListeners();
   }

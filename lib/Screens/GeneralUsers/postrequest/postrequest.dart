@@ -1,6 +1,7 @@
 import 'package:fixme/Services/network_service.dart';
 import 'package:fixme/Services/postrequest_service.dart';
 import 'package:flutter/material.dart';
+import 'package:google_fonts/google_fonts.dart';
 import 'package:provider/provider.dart';
 import 'package:fixme/Model/service.dart';
 import 'package:fixme/Screens/GeneralUsers/postrequest/describe.dart';
@@ -44,8 +45,8 @@ class PostScreenState extends State<PostScreen> {
         backgroundColor: Colors.white,
         elevation: 2.5,
         shadowColor: Color(0xFFF1F1FD).withOpacity(0.5),
-        title:
-            Text('Post A Request', style: TextStyle(color: Color(0xFF333333))),
+        title: Text('Post A Request',
+            style: GoogleFonts.openSans(color: Color(0xFF333333))),
       ),
       body: Padding(
         padding: const EdgeInsets.all(15.0),

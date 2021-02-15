@@ -17,8 +17,9 @@ class Home extends StatelessWidget {
   var scafold_key;
   var search;
   var data;
+  var controller;
 
-  Home(this.scafold_key, this.data);
+  Home(this.scafold_key, this.data, this.controller);
 
   @override
   Widget build(BuildContext context) {
@@ -871,6 +872,8 @@ class Home extends StatelessWidget {
                           child: FlatButton(
                             onPressed: () {
                               data.setCallToActionStatus = false;
+                              controller.jumpToPage(2);
+                              data.setSelectedBottomNavBar(2);
                             },
                             color: Color(0xFF9B049B),
                             shape: RoundedRectangleBorder(
