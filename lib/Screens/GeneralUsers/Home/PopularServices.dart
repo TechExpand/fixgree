@@ -152,16 +152,16 @@ class _PopularServicesState extends State<PopularServices> {
                                     backgroundColor: Colors.white,
                                   ),
                                   title: Text(
-                                    '${snapshot.data[index].name} ${snapshot.data[index].userLastName}'
-                                        .capitalizeFirstOfEach,
+                                    '${snapshot.data[index].name} ${snapshot.data[index].userLastName}',
+                                    // .capitalizeFirstOfEach,
                                     style: TextStyle(
                                         color: Color(0xFF333333),
                                         fontSize: 16,
                                         fontWeight: FontWeight.w600),
                                   ),
                                   subtitle: Text(
-                                    '${snapshot.data[index].serviceArea}'
-                                        .capitalizeFirstOfEach,
+                                    '${snapshot.data[index].serviceArea}',
+                                    // .capitalizeFirstOfEach,
                                     style: TextStyle(
                                         color: Color(0xFF333333),
                                         fontSize: 15,

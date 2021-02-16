@@ -43,7 +43,8 @@ class _ListenIncomingState extends State<ListenIncoming> {
     Widget widget = Scaffold(
       appBar: AppBar(
         backgroundColor: Color(0xFFA40C85),
-        title: Text('CHATS', style: GoogleFonts.openSans()),
+        title: Text('CHATS',
+            style: GoogleFonts.openSans(fontWeight: FontWeight.w600)),
         actions: [
           InkWell(
             onTap: () {

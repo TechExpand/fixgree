@@ -3,7 +3,6 @@ import 'package:location/location.dart' as locator;
 import 'package:provider/provider.dart';
 import 'package:firebase_core/firebase_core.dart';
 import 'package:shared_preferences/shared_preferences.dart';
-import 'Screens/ArtisanUser/RegisterArtisan/address.dart';
 import 'package:google_fonts/google_fonts.dart';
 import 'Screens/GeneralUsers/Wallet/Providers/PinProvider.dart';
 import 'Screens/GeneralUsers/Wallet/Providers/WalletProvider.dart';

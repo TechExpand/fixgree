@@ -1153,8 +1153,8 @@ class WebServices extends ChangeNotifier {
     var response = await http
         .post(Uri.parse('https://manager.fixme.ng/near-artisans'), body: {
       'user_id': user_id.toString(),
-      'longitude': '5.642040',
-      'latitude': '6.295660',
+      'longitude': longitude.toString(),
+      'latitude': latitude.toString(),
     }, headers: {
       "Content-type": "application/x-www-form-urlencoded",
       'Authorization': 'Bearer $Bearer',
@@ -1176,8 +1176,8 @@ class WebServices extends ChangeNotifier {
     var response = await http
         .post(Uri.parse('https://manager.fixme.ng/near-shops-business'), body: {
       'user_id': user_id.toString(),
-      'longitude': '5.642040',
-      'latitude': '6.295660',
+      'longitude': longitude.toString(),
+      'latitude': latitude.toString(),
     }, headers: {
       "Content-type": "application/x-www-form-urlencoded",
       'Authorization': 'Bearer $Bearer',

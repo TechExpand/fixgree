@@ -46,7 +46,8 @@ class PostScreenState extends State<PostScreen> {
         elevation: 2.5,
         shadowColor: Color(0xFFF1F1FD).withOpacity(0.5),
         title: Text('Post A Request',
-            style: GoogleFonts.openSans(color: Color(0xFF333333))),
+            style: GoogleFonts.openSans(
+                color: Color(0xFF333333), fontWeight: FontWeight.w600)),
       ),
       body: Padding(
         padding: const EdgeInsets.all(15.0),

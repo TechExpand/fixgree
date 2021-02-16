@@ -1,4 +1,4 @@
-
+import 'package:fixme/Utils/Provider.dart';
 import 'package:flutter/material.dart';
 import 'ArtisanUser/RegisterArtisan/address.dart';
 import 'GeneralUsers/Home/HomePage.dart';
@@ -12,7 +12,6 @@ import 'package:provider/provider.dart';
 import 'package:fixme/Services/network_service.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 
-
 class SplashScreen extends StatefulWidget {
   @override
   State<StatefulWidget> createState() {
@@ -22,84 +21,83 @@ class SplashScreen extends StatefulWidget {
 }
 
 class SPLASHSTATE extends State<SplashScreen> {
-
   @override
   void initState() {
     super.initState();
-     Provider.of<WebServices>(context, listen: false).initializeValues();
-    Future.delayed(Duration(seconds: 5), ()async{
-        getit();
-    return decideFirstWidget();
-  
+
+    Provider.of<WebServices>(context, listen: false).initializeValues();
+    Future.delayed(Duration(seconds: 5), () async {
+      //sendAndRetrieveMessage();
+      getit();
+
+      return decideFirstWidget();
     });
   }
 
-
-
-
 // Replace with server token from firebase console settings.
-final String serverToken = '<Server-Token>';
-final FirebaseMessaging firebaseMessaging = FirebaseMessaging();
+  final String serverToken =
+      'AAAA2lAKGZU:APA91bFmok2miRE6jWBUgfmu5jhvxQGJ5ITwrcwrHMghkPOZCIYYxLu-rIs-ub6HQ5YdiEGx3jG2tMvmiEjq-KW4rEgGrckHNkGdFrO2iUDoidvmh867VQj0FKx-_cxbi8AQpR1S3cCu';
+  final FirebaseMessaging firebaseMessaging = FirebaseMessaging();
 
-getit()async{
- await firebaseMessaging.getToken().then((value){
-   print('e dey work oooo ha ha ha $value');
-     print('e dey work oooo ha ha ha $value');
-     print('e dey work oooo ha ha ha $value');
-      print('e dey work oooo ha ha ha $value');
- });
-}
+  getit() async {
+    var data = Provider.of<Utils>(context, listen: false);
+    await firebaseMessaging.getToken().then((value) {
+      data.setFCMToken(value);
+    });
+  }
 
+  Future<Map<String, dynamic>> sendAndRetrieveMessage() async {
+    try {
+      var data = Provider.of<Utils>(context, listen: false);
+      await firebaseMessaging.requestNotificationPermissions(
+        const IosNotificationSettings(
+            sound: true, badge: true, alert: true, provisional: false),
+      );
 
+      await http.post(
+        'https://fcm.googleapis.com/fcm/send',
+        headers: <String, String>{
+          'Content-Type': 'application/json',
+          'Authorization': 'key=$serverToken',
+        },
+        body: jsonEncode(
+          <String, dynamic>{
+            'notification': <String, dynamic>{
+              'body': 'this is a body',
+              'title': 'this is a title'
+            },
+            'priority': 'high',
+            'data': <String, dynamic>{
+              'click_action': 'FLUTTER_NOTIFICATION_CLICK',
+              'id': '1',
+              'status': 'done'
+            },
+            'to': await firebaseMessaging.getToken(),
+          },
+        ),
+      );
 
-Future<Map<String, dynamic>> sendAndRetrieveMessage() async {
-  await firebaseMessaging.requestNotificationPermissions(
-    const IosNotificationSettings(sound: true, badge: true, alert: true, provisional: false),
-  );
+      final Completer<Map<String, dynamic>> completer =
+          Completer<Map<String, dynamic>>();
 
+      firebaseMessaging.configure(
+        onMessage: (Map<String, dynamic> message) async {
+          completer.complete(message);
+        },
+      );
 
-
-  await http.post(
-    'https://fcm.googleapis.com/fcm/send',
-     headers: <String, String>{
-       'Content-Type': 'application/json',
-       'Authorization': 'key=$serverToken',
-     },
-     body: jsonEncode(
-     <String, dynamic>{
-       'notification': <String, dynamic>{
-         'body': 'this is a body',
-         'title': 'this is a title'
-       },
-       'priority': 'high',
-       'data': <String, dynamic>{
-         'click_action': 'FLUTTER_NOTIFICATION_CLICK',
-         'id': '1',
-         'status': 'done'
-       },
-       'to': await firebaseMessaging.getToken(),
-     },
-    ),
-  );
-
-  final Completer<Map<String, dynamic>> completer =
-     Completer<Map<String, dynamic>>();
-
-  firebaseMessaging.configure(
-    onMessage: (Map<String, dynamic> message) async {
-      completer.complete(message);
-    },
-  );
-
-  return completer.future;
-}
+      return completer.future;
+    } catch (e) {}
+  }
 
   Future<Widget> decideFirstWidget() async {
     SharedPreferences prefs = await SharedPreferences.getInstance();
     var token = prefs.getString('Bearer');
-  
-    if (token == null || token == 'null'|| token == ''){
-     return  Navigator.pushReplacement(
+    var data = Provider.of<DataProvider>(context, listen: false);
+    data.setSplash(true);
+
+    if (token == null || token == 'null' || token == '') {
+      return Navigator.pushAndRemoveUntil(
         context,
         PageRouteBuilder(
           pageBuilder: (context, animation, secondaryAnimation) {
@@ -112,13 +110,14 @@ Future<Map<String, dynamic>> sendAndRetrieveMessage() async {
             );
           },
         ),
+        (route) => false,
       );
     } else {
-      return  Navigator.pushReplacement(
+      return Navigator.pushAndRemoveUntil(
         context,
         PageRouteBuilder(
           pageBuilder: (context, animation, secondaryAnimation) {
-            return HomePage();//SignUpAddress();
+            return HomePage(); //SignUpAddress();
           },
           transitionsBuilder: (context, animation, secondaryAnimation, child) {
             return FadeTransition(
@@ -127,15 +126,13 @@ Future<Map<String, dynamic>> sendAndRetrieveMessage() async {
             );
           },
         ),
+        (route) => false,
       );
     }
   }
 
- 
-
   @override
   Widget build(BuildContext context) {
-    
     return Material(
       child: Container(
         width: MediaQuery.of(context).size.width,

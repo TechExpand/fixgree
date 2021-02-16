@@ -16,6 +16,7 @@ class DataProvider extends ChangeNotifier {
   bool focus_value = false;
   String description = '';
   bool focus_value1 = false;
+  bool splash = false;
   String product_name = '';
   String product_bio = '';
   String product_price = '';
@@ -211,6 +212,11 @@ class DataProvider extends ChangeNotifier {
 
   setWritingTo(bool val) {
     isWriting = val;
+    notifyListeners();
+  }
+
+  setSplash(bool val) {
+    splash = val;
     notifyListeners();
   }
 

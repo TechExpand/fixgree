@@ -1,11 +1,15 @@
 import 'dart:io';
 import 'dart:ui';
+import 'package:fixme/Services/Firebase_service.dart';
+import 'package:fixme/Services/network_service.dart';
+import 'package:firebase_messaging/firebase_messaging.dart';
 import 'package:fixme/Screens/GeneralUsers/Chat/callscreens/listen_incoming_call.dart';
 import 'package:fixme/Screens/GeneralUsers/Notification/Notification.dart';
 import 'package:fixme/Screens/GeneralUsers/Wallet/Wallet.dart';
 import 'package:fixme/Screens/GeneralUsers/pending/pendingpage.dart';
 import 'package:fixme/Screens/GeneralUsers/postrequest/postrequest.dart';
 import 'package:fixme/Utils/Provider.dart';
+import 'package:flutter_local_notifications/flutter_local_notifications.dart';
 import 'package:fixme/Services/postrequest_service.dart';
 import 'package:fixme/Utils/utils.dart';
 import 'package:fixme/Services/location_service.dart';
@@ -27,14 +31,29 @@ class _HomePageState extends State<HomePage> {
   PageController _myPage;
   var search;
   final scafold_key = GlobalKey<ScaffoldState>();
+  String _message = '';
+
+  final FirebaseMessaging _firebaseMessaging = FirebaseMessaging();
+  FlutterLocalNotificationsPlugin flutterLocalNotificationsPlugin =
+      FlutterLocalNotificationsPlugin();
 
   @override
   void initState() {
     super.initState();
+    getMessage();
     var data = Provider.of<Utils>(context, listen: false);
+    var network = Provider.of<WebServices>(context, listen: false);
 
-    // data.getData('firstName','Bearer','phoneNum', 'profile_pic_file_name', 'user_id', 'mobile_device_token',context);
+    var initializationSettingsAndroid =
+        new AndroidInitializationSettings('@mipmap/ic_launcher');
+    var initializationSettingsIOs = IOSInitializationSettings();
+    var initSetttings = InitializationSettings(
+        android: initializationSettingsAndroid, iOS: initializationSettingsIOs);
 
+    flutterLocalNotificationsPlugin.initialize(initSetttings,
+        onSelectNotification: onSelectNotification);
+
+    network.updateFCMToken(network.user_id, data.fcm_token);
     Provider.of<LocationService>(context, listen: false).getCurrentLocation();
     _myPage =
         PageController(initialPage: 0, viewportFraction: 1, keepPage: true);
@@ -44,6 +63,49 @@ class _HomePageState extends State<HomePage> {
           Provider.of<PostRequestProvider>(context, listen: false);
       postRequestProvider.getAllServices();
     });
+  }
+
+  Future onSelectNotification(String payload) {
+    var data = Provider.of<DataProvider>(context);
+    _myPage.jumpToPage(3);
+    data.setSelectedBottomNavBar(3);
+  }
+
+  void getMessage() {
+    var network = Provider.of<WebServices>(context, listen: false);
+    _firebaseMessaging.configure(
+        onMessage: (Map<String, dynamic> message) async {
+      // if(message["notification"]["title"].toString() == 'new_bid'){
+      FirebaseApi.uploadNotification(
+        network.user_id.toString(),
+        message["notification"]["title"],
+        message["data"]["notification_type"],
+        '${message["data"]["lastName"]} ${message["data"]["firstName"]}',
+        '${message["data"]["jobId"]}',
+        '${message["data"]["bidId"]}',
+        '${message["data"]["bidderId"]}',
+      );
+      showNotification(message["notification"]["body"]);
+      print(message);
+      print(message);
+      //}
+
+      setState(() => _message = message["notification"]["title"]);
+    }, onResume: (Map<String, dynamic> message) async {
+      setState(() => _message = message["notification"]["title"]);
+    }, onLaunch: (Map<String, dynamic> message) async {
+      setState(() => _message = message["notification"]["title"]);
+    });
+  }
+
+  showNotification(value) async {
+    var android = AndroidNotificationDetails('id', 'channel ', 'description',
+        priority: Priority.high, importance: Importance.max);
+    var iOS = IOSNotificationDetails();
+    var platform = new NotificationDetails(android: android, iOS: iOS);
+    await flutterLocalNotificationsPlugin.show(
+        0, 'New bid on project', '${value}', platform,
+        payload: 'New job is available around you');
   }
 
   @override

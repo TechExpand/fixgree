@@ -557,11 +557,16 @@ class Home extends StatelessWidget {
                                     )
                                   : snapshot.data.isEmpty
                                       ? Padding(
-                                          padding: const EdgeInsets.all(8.0),
-                                          child: Text(
-                                            'No Nearby Shops',
-                                            style: TextStyle(
-                                                fontWeight: FontWeight.w500),
+                                          padding: const EdgeInsets.all(18.0),
+                                          child: Container(
+                                            color: Color(0xFFBBBBBB),
+                                            padding: const EdgeInsets.all(4),
+                                            child: Text(
+                                              'No Nearby Shops',
+                                              style: TextStyle(
+                                                  color: Colors.white,
+                                                  fontWeight: FontWeight.w500),
+                                            ),
                                           ),
                                         )
                                       : Container();
@@ -734,7 +739,8 @@ class Home extends StatelessWidget {
                                                         child: Wrap(
                                                           children: [
                                                             Text(
-                                                              '${snapshot.data[index].name} ${snapshot.data[index].userLastName}',
+                                                              '${snapshot.data[index].name} ${snapshot.data[index].userLastName}'
+                                                                  .capitalizeFirstOfEach,
                                                               style: TextStyle(
                                                                 fontSize: 13,
                                                               ),
@@ -784,11 +790,16 @@ class Home extends StatelessWidget {
                                     )
                                   : snapshot.data.isEmpty
                                       ? Padding(
-                                          padding: const EdgeInsets.all(8.0),
-                                          child: Text(
-                                            'No Nearby Artisans',
-                                            style: TextStyle(
-                                                fontWeight: FontWeight.w500),
+                                          padding: const EdgeInsets.all(18.0),
+                                          child: Container(
+                                            color: Color(0xFFBBBBBB),
+                                            padding: const EdgeInsets.all(4),
+                                            child: Text(
+                                              'No Nearby Artisans',
+                                              style: TextStyle(
+                                                  color: Colors.white,
+                                                  fontWeight: FontWeight.w500),
+                                            ),
                                           ),
                                         )
                                       : Container();
