@@ -47,13 +47,13 @@ class PostRequestProvider with ChangeNotifier {
     isLoading(true);
     SharedPreferences prefs = await SharedPreferences.getInstance();
     var data = Provider.of<DataProvider>(context, listen: false);
-    String user_id = prefs.getString('user_id');
+    String userId = prefs.getString('user_id');
     String bearer = prefs.getString('Bearer');
 
     try {
       var response = await http
           .post(Uri.parse('https://manager.fixme.ng/new-project'), body: {
-        'user_id': user_id,
+        'user_id': userId,
         'job_description': data.description.toString(),
         'service_id': selecteService.sn,
       }, headers: {
@@ -91,18 +91,18 @@ class PostRequestProvider with ChangeNotifier {
     isLoading(true);
     SharedPreferences prefs = await SharedPreferences.getInstance();
     String bearer = prefs.getString('Bearer');
-    String user_id = prefs.getString('user_id');
+    String userId = prefs.getString('user_id');
     //var data = Provider.of<DataProvider>(context, listen: false);
     try {
       var response = await http
           .post(Uri.parse('https://manager.fixme.ng/service-list'), body: {
-        'user_id': user_id,
+        'user_id': userId,
       }, headers: {
         // "Content-type": "application/json",
         //"Content-type": "application/x-www-form-urlencoded",
         'Authorization': 'Bearer $bearer',
       });
-      var statusCode = response.statusCode;
+      // var statusCode = response.statusCode;
       var body1 = json.decode(response.body);
       List body = body1['services'];
       // user_id = body['id'];
@@ -125,22 +125,22 @@ class PostRequestProvider with ChangeNotifier {
   Future<dynamic> getAllServices() async {
     SharedPreferences prefs = await SharedPreferences.getInstance();
     String bearer = prefs.getString('Bearer');
-    String user_id = prefs.getString('user_id');
+    String userId = prefs.getString('user_id');
     //var data = Provider.of<DataProvider>(context, listen: false);
     try {
       var response = await http
           .post(Uri.parse('https://manager.fixme.ng/service-list'), body: {
-        'user_id': user_id,
+        'user_id': userId,
       }, headers: {
         // "Content-type": "application/json",
         //"Content-type": "application/x-www-form-urlencoded",
         'Authorization': 'Bearer $bearer',
       });
-      var statusCode = response.statusCode;
+      // var statusCode = response.statusCode;
       var body1 = json.decode(response.body);
       List body = body1['services'];
       // user_id = body['id'];
-      print('final responssssssssssssssssssssssse');
+
       List<Services> serviceLists = body.map((data) {
         return Services.fromJson(data);
       }).toList();

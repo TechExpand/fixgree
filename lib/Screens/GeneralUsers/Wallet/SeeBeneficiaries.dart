@@ -8,8 +8,8 @@ import "package:flutter_feather_icons/flutter_feather_icons.dart";
 import 'package:provider/provider.dart';
 
 class SeeBeneficiaries extends StatefulWidget {
-  BankProvider model;
-  bool isWalletTransfer;
+  final BankProvider model;
+  final bool isWalletTransfer;
   SeeBeneficiaries({Key key, this.model, this.isWalletTransfer = false})
       : super(key: key);
 

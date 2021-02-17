@@ -31,8 +31,8 @@ class _ProfilePageState extends State<ProfilePage> {
 
   address() async {
     var location = Provider.of<LocationService>(context);
-    final coordinates = new Coordinates(
-        location.location_longitude, location.location_latitude);
+    final coordinates =
+        new Coordinates(location.locationLongitude, location.locationLatitude);
     var addresses =
         await Geocoder.local.findAddressesFromCoordinates(coordinates);
     setState(() {
@@ -46,9 +46,6 @@ class _ProfilePageState extends State<ProfilePage> {
 
   @override
   Widget build(BuildContext context) {
-    PostRequestProvider postRequestProvider =
-        Provider.of<PostRequestProvider>(context);
-
     var network = Provider.of<WebServices>(context, listen: false);
     return WillPopScope(
       onWillPop: () {
@@ -70,7 +67,7 @@ class _ProfilePageState extends State<ProfilePage> {
       },
       child: Material(
         child: FutureBuilder(
-            future: network.getUserInfo(network.user_id),
+            future: network.getUserInfo(network.userId),
             builder: (context, snapshot) {
               return snapshot.hasData
                   ? Container(
@@ -87,12 +84,11 @@ class _ProfilePageState extends State<ProfilePage> {
                                     child: Text(''),
                                     radius: 40,
                                     backgroundImage: NetworkImage(
-                                      network.profile_pic_file_name ==
+                                      network.profilePicFileName ==
                                                   'no_picture_upload' ||
-                                              network.profile_pic_file_name ==
-                                                  null
+                                              network.profilePicFileName == null
                                           ? 'https://uploads.fixme.ng/originals/no_picture_upload'
-                                          : 'https://uploads.fixme.ng/originals/${network.profile_pic_file_name}',
+                                          : 'https://uploads.fixme.ng/originals/${network.profilePicFileName}',
                                     ),
                                     foregroundColor: Colors.white,
                                     backgroundColor: Colors.white,
@@ -249,17 +245,15 @@ class _ProfilePageState extends State<ProfilePage> {
                               height: 1,
                             ),
                           ),
-
-                            Padding(
-                              padding: const EdgeInsets.only(
-                                  top: 13.0, bottom: 5, left: 18, right: 18),
-                              child: Text(
-                                'Business Address',
-                                style: TextStyle(
-                                    fontWeight: FontWeight.w500, fontSize: 19),
-                              ),
+                          Padding(
+                            padding: const EdgeInsets.only(
+                                top: 13.0, bottom: 5, left: 18, right: 18),
+                            child: Text(
+                              'Business Address',
+                              style: TextStyle(
+                                  fontWeight: FontWeight.w500, fontSize: 19),
                             ),
-
+                          ),
                           Padding(
                             padding: const EdgeInsets.only(
                                 top: 5.0, bottom: 15, left: 18, right: 18),
@@ -302,10 +296,9 @@ class _ProfilePageState extends State<ProfilePage> {
                             ),
                           ),
                           snapshot.data['role'] == 'artisan'
-                              ?
-                          FutureBuilder(
+                              ? FutureBuilder(
                                   future: network.getServiceImage(
-                                      network.user_id, network.user_id),
+                                      network.userId, network.userId),
                                   builder: (context, snapshot) {
                                     return Column(
                                       crossAxisAlignment:
@@ -326,7 +319,8 @@ class _ProfilePageState extends State<ProfilePage> {
                                             ),
                                             InkWell(
                                                 onTap: () {
-                                                  _addService('Add Service Picture');
+                                                  _addService(
+                                                      'Add Service Picture');
                                                 },
                                                 child: Icon(Icons.add,
                                                     color: Color(0xFF747474))),
@@ -404,7 +398,7 @@ class _ProfilePageState extends State<ProfilePage> {
                                   })
                               : FutureBuilder(
                                   future: network.getProductImage(
-                                      network.user_id, network.user_id),
+                                      network.userId, network.userId),
                                   builder: (context, snapshots) {
                                     return Column(
                                       crossAxisAlignment:
@@ -722,7 +716,7 @@ class _ProfilePageState extends State<ProfilePage> {
   void _editService(value) {
     PostRequestProvider postRequestProvider =
         Provider.of<PostRequestProvider>(context, listen: false);
-    final _controller2 = TextEditingController();
+
     var network = Provider.of<WebServices>(context, listen: false);
     showModalBottomSheet(
         context: context,
@@ -749,7 +743,7 @@ class _ProfilePageState extends State<ProfilePage> {
                         highlightColor: Colors.transparent,
                         onTap: () {
                           result = postRequestProvider.allservicesList;
-                          DialogPage(context);
+                          dialogPage(context);
                         },
                         child: TextFormField(
                           keyboardType: TextInputType.multiline,
@@ -814,320 +808,191 @@ class _ProfilePageState extends State<ProfilePage> {
   }
 
   void _addProduct(value) {
-    DataProvider datas = Provider.of<DataProvider>(context,listen: false);
-    Utils data = Provider.of<Utils>(context,listen: false);
+    DataProvider datas = Provider.of<DataProvider>(context, listen: false);
+    Utils data = Provider.of<Utils>(context, listen: false);
     var network = Provider.of<WebServices>(context, listen: false);
     showModalBottomSheet(
         context: context,
         //isScrollControlled: true,
         builder: (builder) {
-          return new StatefulBuilder(
-            builder:(context, setStat){
-              return Padding(
-                  padding: MediaQuery.of(context).viewInsets,
-                  child: Container(
-                      height: 1000.0,
-                      padding: EdgeInsets.symmetric(vertical: 20, horizontal: 20),
-                      color: Colors.transparent,
-                      child: ListView(
-                        children: [
-                          Text(
-                            "$value",
-                            style: TextStyle(
-                                fontWeight: FontWeight.w500, fontSize: 18),
-                          ),
-                          Container(
-                            margin: EdgeInsets.only(bottom: 15),
-                            width: MediaQuery.of(context).size.width / 0.2,
-                            height: 55,
-                            child: TextFormField(
-                              onChanged: (value) {
-                                datas.setProductName(value);
-                              },
-                              style: TextStyle(color: Colors.black),
-                              cursorColor: Colors.black,
-                              decoration: InputDecoration(
-                                labelStyle: TextStyle(color: Colors.black38),
-                                labelText: 'Product Name',
-                                enabledBorder: OutlineInputBorder(
-                                    borderSide: const BorderSide(
-                                        color: Color(0xFF9B049B), width: 0.0),
-                                    borderRadius:
-                                    BorderRadius.all(Radius.circular(12))),
-                                focusedBorder: OutlineInputBorder(
-                                    borderSide: const BorderSide(
-                                        color: Color(0xFF9B049B), width: 0.0),
-                                    borderRadius:
-                                    BorderRadius.all(Radius.circular(12))),
-                                border: OutlineInputBorder(
-                                    borderSide: const BorderSide(
-                                        color: Color(0xFF9B049B), width: 0.0),
-                                    borderRadius:
-                                    BorderRadius.all(Radius.circular(12))),
-                              ),
+          return new StatefulBuilder(builder: (context, setStat) {
+            return Padding(
+                padding: MediaQuery.of(context).viewInsets,
+                child: Container(
+                    height: 1000.0,
+                    padding: EdgeInsets.symmetric(vertical: 20, horizontal: 20),
+                    color: Colors.transparent,
+                    child: ListView(
+                      children: [
+                        Text(
+                          "$value",
+                          style: TextStyle(
+                              fontWeight: FontWeight.w500, fontSize: 18),
+                        ),
+                        Container(
+                          margin: EdgeInsets.only(bottom: 15),
+                          width: MediaQuery.of(context).size.width / 0.2,
+                          height: 55,
+                          child: TextFormField(
+                            onChanged: (value) {
+                              datas.setProductName(value);
+                            },
+                            style: TextStyle(color: Colors.black),
+                            cursorColor: Colors.black,
+                            decoration: InputDecoration(
+                              labelStyle: TextStyle(color: Colors.black38),
+                              labelText: 'Product Name',
+                              enabledBorder: OutlineInputBorder(
+                                  borderSide: const BorderSide(
+                                      color: Color(0xFF9B049B), width: 0.0),
+                                  borderRadius:
+                                      BorderRadius.all(Radius.circular(12))),
+                              focusedBorder: OutlineInputBorder(
+                                  borderSide: const BorderSide(
+                                      color: Color(0xFF9B049B), width: 0.0),
+                                  borderRadius:
+                                      BorderRadius.all(Radius.circular(12))),
+                              border: OutlineInputBorder(
+                                  borderSide: const BorderSide(
+                                      color: Color(0xFF9B049B), width: 0.0),
+                                  borderRadius:
+                                      BorderRadius.all(Radius.circular(12))),
                             ),
                           ),
-                          Container(
-                            margin: EdgeInsets.only(bottom: 15),
-                            width: MediaQuery.of(context).size.width / 0.2,
-                            height: 55,
-                            child: TextFormField(
-                              keyboardType: TextInputType.number,
-                              onChanged: (value) {
-                                datas.setProductPrice(value);
-                              },
-                              style: TextStyle(color: Colors.black),
-                              cursorColor: Colors.black,
-                              decoration: InputDecoration(
-                                labelStyle: TextStyle(color: Colors.black38),
-                                labelText: 'Product Price',
-                                enabledBorder: OutlineInputBorder(
-                                    borderSide: const BorderSide(
-                                        color: Color(0xFF9B049B), width: 0.0),
-                                    borderRadius:
-                                    BorderRadius.all(Radius.circular(12))),
-                                focusedBorder: OutlineInputBorder(
-                                    borderSide: const BorderSide(
-                                        color: Color(0xFF9B049B), width: 0.0),
-                                    borderRadius:
-                                    BorderRadius.all(Radius.circular(12))),
-                                border: OutlineInputBorder(
-                                    borderSide: const BorderSide(
-                                        color: Color(0xFF9B049B), width: 0.0),
-                                    borderRadius:
-                                    BorderRadius.all(Radius.circular(12))),
-                              ),
+                        ),
+                        Container(
+                          margin: EdgeInsets.only(bottom: 15),
+                          width: MediaQuery.of(context).size.width / 0.2,
+                          height: 55,
+                          child: TextFormField(
+                            keyboardType: TextInputType.number,
+                            onChanged: (value) {
+                              datas.setProductPrice(value);
+                            },
+                            style: TextStyle(color: Colors.black),
+                            cursorColor: Colors.black,
+                            decoration: InputDecoration(
+                              labelStyle: TextStyle(color: Colors.black38),
+                              labelText: 'Product Price',
+                              enabledBorder: OutlineInputBorder(
+                                  borderSide: const BorderSide(
+                                      color: Color(0xFF9B049B), width: 0.0),
+                                  borderRadius:
+                                      BorderRadius.all(Radius.circular(12))),
+                              focusedBorder: OutlineInputBorder(
+                                  borderSide: const BorderSide(
+                                      color: Color(0xFF9B049B), width: 0.0),
+                                  borderRadius:
+                                      BorderRadius.all(Radius.circular(12))),
+                              border: OutlineInputBorder(
+                                  borderSide: const BorderSide(
+                                      color: Color(0xFF9B049B), width: 0.0),
+                                  borderRadius:
+                                      BorderRadius.all(Radius.circular(12))),
                             ),
                           ),
-                          Container(
-                            margin: EdgeInsets.only(bottom: 15),
-                            width: MediaQuery.of(context).size.width / 0.2,
-                            height: 55,
-                            child: TextFormField(
-                              onChanged: (value) {
-                                datas.setProductBio(value);
-                              },
-                              style: TextStyle(color: Colors.black),
-                              cursorColor: Colors.black,
-                              decoration: InputDecoration(
-                                labelStyle: TextStyle(color: Colors.black38),
-                                labelText: 'Product Description',
-                                enabledBorder: OutlineInputBorder(
-                                    borderSide: const BorderSide(
-                                        color: Color(0xFF9B049B), width: 0.0),
-                                    borderRadius:
-                                    BorderRadius.all(Radius.circular(12))),
-                                focusedBorder: OutlineInputBorder(
-                                    borderSide: const BorderSide(
-                                        color: Color(0xFF9B049B), width: 0.0),
-                                    borderRadius:
-                                    BorderRadius.all(Radius.circular(12))),
-                                border: OutlineInputBorder(
-                                    borderSide: const BorderSide(
-                                        color: Color(0xFF9B049B), width: 0.0),
-                                    borderRadius:
-                                    BorderRadius.all(Radius.circular(12))),
-                              ),
+                        ),
+                        Container(
+                          margin: EdgeInsets.only(bottom: 15),
+                          width: MediaQuery.of(context).size.width / 0.2,
+                          height: 55,
+                          child: TextFormField(
+                            onChanged: (value) {
+                              datas.setProductBio(value);
+                            },
+                            style: TextStyle(color: Colors.black),
+                            cursorColor: Colors.black,
+                            decoration: InputDecoration(
+                              labelStyle: TextStyle(color: Colors.black38),
+                              labelText: 'Product Description',
+                              enabledBorder: OutlineInputBorder(
+                                  borderSide: const BorderSide(
+                                      color: Color(0xFF9B049B), width: 0.0),
+                                  borderRadius:
+                                      BorderRadius.all(Radius.circular(12))),
+                              focusedBorder: OutlineInputBorder(
+                                  borderSide: const BorderSide(
+                                      color: Color(0xFF9B049B), width: 0.0),
+                                  borderRadius:
+                                      BorderRadius.all(Radius.circular(12))),
+                              border: OutlineInputBorder(
+                                  borderSide: const BorderSide(
+                                      color: Color(0xFF9B049B), width: 0.0),
+                                  borderRadius:
+                                      BorderRadius.all(Radius.circular(12))),
                             ),
                           ),
-                          Center(
-                            child: SizedBox(
-                              height: 100, // card height
-                              child: data.selected_image2 == null
-                                  ? Text('No Image Selected')
-                                  : Container(
-                                width: 100,
-                                child: Card(
-                                    elevation: 2,
-                                    shape: RoundedRectangleBorder(
-                                        borderRadius:
-                                        BorderRadius.circular(20)),
-                                    child: Image.file(
-                                      File(
-                                        data.selected_image2.path,
-                                      ),
-                                      fit: BoxFit.cover,
-                                    )),
-                              ),
-                            ),
-                          ),
-                          Padding(
-                            padding: const EdgeInsets.all(8.0),
-                            child: ClipRRect(
-                              borderRadius: BorderRadius.circular(26),
-                              child: Container(
-                                decoration: BoxDecoration(
-                                    border: Border.all(color: Colors.white),
-                                    borderRadius: BorderRadius.circular(26)),
-                                child: FlatButton(
-                                  disabledColor: Color(0xFF9B049B),
-                                  onPressed: () {
-                                    data.selectimage2(source: ImageSource.gallery).then((value){
-                                      setStat((){});
-                                    });
-                                  },
-                                  color: Color(0xFF9B049B),
-                                  shape: RoundedRectangleBorder(
-                                      borderRadius: BorderRadius.circular(26)),
-                                  padding: EdgeInsets.all(0.0),
-                                  child: Ink(
-                                    decoration: BoxDecoration(
-                                        borderRadius: BorderRadius.circular(26)),
-                                    child: Container(
-                                      constraints: BoxConstraints(
-                                          maxWidth:
-                                          MediaQuery.of(context).size.width /
-                                              1.3,
-                                          minHeight: 45.0),
-                                      alignment: Alignment.center,
-                                      child: Text(
-                                        "Select Catalog Photo",
-                                        textAlign: TextAlign.center,
-                                        style: TextStyle(
-                                            fontSize: 17, color: Colors.white),
-                                      ),
-                                    ),
+                        ),
+                        Center(
+                          child: SizedBox(
+                            height: 100, // card height
+                            child: data.selectedImage2 == null
+                                ? Text('No Image Selected')
+                                : Container(
+                                    width: 100,
+                                    child: Card(
+                                        elevation: 2,
+                                        shape: RoundedRectangleBorder(
+                                            borderRadius:
+                                                BorderRadius.circular(20)),
+                                        child: Image.file(
+                                          File(
+                                            data.selectedImage2.path,
+                                          ),
+                                          fit: BoxFit.cover,
+                                        )),
                                   ),
-                                ),
-                              ),
-                            ),
                           ),
-
-                          SizedBox(
-                            height: 30,
-                          ),
-                          Row(mainAxisAlignment: MainAxisAlignment.end, children: [
-                            InkWell(
-                              child: Text(
-                                "CANCEL",
-                                style: TextStyle(
-                                    fontWeight: FontWeight.w400,
-                                    fontSize: 16,
-                                    color: Color(0xFFA40C85)),
-                              ),
-                              onTap: () => Navigator.pop(context),
-                            ),
-                            SizedBox(
-                              width: 20,
-                            ),
-                            InkWell(
-                              child: Text(
-                                "SAVE",
-                                style: TextStyle(
-                                    fontWeight: FontWeight.w400,
-                                    fontSize: 16,
-                                    color: Color(0xFFA40C85)),
-                              ),
-                              onTap:(){
-                                Navigator.pop(context);
-                                network.addProductCatalog(
-                                  scaffoldKey: scaffoldKey,
-                                  context: context,
-                                  bio: datas.product_bio,
-                                  product_name: datas.product_name,
-                                  price: datas.product_price,
-                                  path: data.selected_image2.path,
-                                ).then((value){
-                                  setState((){
+                        ),
+                        Padding(
+                          padding: const EdgeInsets.all(8.0),
+                          child: ClipRRect(
+                            borderRadius: BorderRadius.circular(26),
+                            child: Container(
+                              decoration: BoxDecoration(
+                                  border: Border.all(color: Colors.white),
+                                  borderRadius: BorderRadius.circular(26)),
+                              child: FlatButton(
+                                disabledColor: Color(0xFF9B049B),
+                                onPressed: () {
+                                  data
+                                      .selectimage2(source: ImageSource.gallery)
+                                      .then((value) {
+                                    setStat(() {});
                                   });
-                                });
-                              },
-                            )
-                          ])
-                        ],
-                      )));
-            }
-          );
-        });
-  }
-
-
-
-
-  void _addService(value) {
-    DataProvider datas = Provider.of<DataProvider>(context,listen: false);
-    Utils data = Provider.of<Utils>(context,listen: false);
-    var network = Provider.of<WebServices>(context, listen: false);
-    showModalBottomSheet(
-        context: context,
-        builder: (builder) {
-          return new StatefulBuilder(
-              builder:(context, setStat){
-                return Padding(
-                    padding: MediaQuery.of(context).viewInsets,
-                    child: Container(
-                        height: 1000.0,
-                        padding: EdgeInsets.symmetric(vertical: 20, horizontal: 20),
-                        color: Colors.transparent,
-                        child: ListView(
-                          children: [
-                            Text(
-                              "$value",
-                              style: TextStyle(
-                                  fontWeight: FontWeight.w500, fontSize: 18),
-                            ),
-                            SizedBox(
-                                child:  Center(
-                                  child: SizedBox(
-                                    height: 200, // card height
-                                    child: data.selected_image2 ==null?Text(''):Container(
-                                      width: 200,
-                                      child:Card(
-                                          elevation: 2,
-                                          shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(20)),
-                                          child: Image.file(File(data.selected_image2.path,), fit: BoxFit.cover,)
-
-                                      ),
-                                    ),
-                                  ),
-                                ),
-                                height: MediaQuery.of(context).size.height/3),
-
-                            Material(
-                              elevation: 9,
-                              child: ClipRRect(
-                                borderRadius: BorderRadius.circular(26),
-                                child: Container(
-
+                                },
+                                color: Color(0xFF9B049B),
+                                shape: RoundedRectangleBorder(
+                                    borderRadius: BorderRadius.circular(26)),
+                                padding: EdgeInsets.all(0.0),
+                                child: Ink(
                                   decoration: BoxDecoration(
-                                      border: Border.all(color: Colors.white),
                                       borderRadius: BorderRadius.circular(26)),
-                                  child: FlatButton(
-                                    disabledColor: Colors.white,
-                                    onPressed: () {
-                                      data.selectimage2(source: ImageSource.gallery);
-
-
-                                    },
-                                    color:  Colors.white,
-                                    shape: RoundedRectangleBorder(
-                                        borderRadius: BorderRadius.circular(26)),
-                                    padding: EdgeInsets.all(0.0),
-                                    child: Ink(
-                                      decoration:
-                                      BoxDecoration(borderRadius: BorderRadius.circular(26)),
-                                      child: Container(
-                                        constraints: BoxConstraints(
-                                            maxWidth: MediaQuery.of(context).size.width / 1.3,
-                                            minHeight: 45.0),
-                                        alignment: Alignment.center,
-                                        child: Text(
-                                          "Select Catalog Photo",
-                                          textAlign: TextAlign.center,
-                                          style: TextStyle(
-                                              fontSize: 17,
-                                              color: Colors.black),
-                                        ),
-                                      ),
+                                  child: Container(
+                                    constraints: BoxConstraints(
+                                        maxWidth:
+                                            MediaQuery.of(context).size.width /
+                                                1.3,
+                                        minHeight: 45.0),
+                                    alignment: Alignment.center,
+                                    child: Text(
+                                      "Select Catalog Photo",
+                                      textAlign: TextAlign.center,
+                                      style: TextStyle(
+                                          fontSize: 17, color: Colors.white),
                                     ),
                                   ),
                                 ),
                               ),
                             ),
-                            SizedBox(
-                              height: 30,
-                            ),
-                            Row(mainAxisAlignment: MainAxisAlignment.end, children: [
+                          ),
+                        ),
+                        SizedBox(
+                          height: 30,
+                        ),
+                        Row(
+                            mainAxisAlignment: MainAxisAlignment.end,
+                            children: [
                               InkWell(
                                 child: Text(
                                   "CANCEL",
@@ -1151,29 +1016,157 @@ class _ProfilePageState extends State<ProfilePage> {
                                 ),
                                 onTap: () {
                                   Navigator.pop(context);
-                                  network.addSerPic(
+                                  network
+                                      .addProductCatalog(
                                     scaffoldKey: scaffoldKey,
-                                    path: data.selected_image2.path,
                                     context: context,
-                                    uploadType: 'servicePicture',
-                                  ).then((value){
-                                    setState((){
-
-                                    });
+                                    bio: datas.productBio,
+                                    productName: datas.productName,
+                                    price: datas.productPrice,
+                                    path: data.selectedImage2.path,
+                                  )
+                                      .then((value) {
+                                    setState(() {});
                                   });
-
                                 },
                               )
                             ])
-                          ],
-                        )));
-              }
-          );
+                      ],
+                    )));
+          });
         });
   }
 
-
-
+  void _addService(value) {
+    Utils data = Provider.of<Utils>(context, listen: false);
+    var network = Provider.of<WebServices>(context, listen: false);
+    showModalBottomSheet(
+        context: context,
+        builder: (builder) {
+          return new StatefulBuilder(builder: (context, setStat) {
+            return Padding(
+                padding: MediaQuery.of(context).viewInsets,
+                child: Container(
+                    height: 1000.0,
+                    padding: EdgeInsets.symmetric(vertical: 20, horizontal: 20),
+                    color: Colors.transparent,
+                    child: ListView(
+                      children: [
+                        Text(
+                          "$value",
+                          style: TextStyle(
+                              fontWeight: FontWeight.w500, fontSize: 18),
+                        ),
+                        SizedBox(
+                            child: Center(
+                              child: SizedBox(
+                                height: 200, // card height
+                                child: data.selectedImage2 == null
+                                    ? Text('')
+                                    : Container(
+                                        width: 200,
+                                        child: Card(
+                                            elevation: 2,
+                                            shape: RoundedRectangleBorder(
+                                                borderRadius:
+                                                    BorderRadius.circular(20)),
+                                            child: Image.file(
+                                              File(
+                                                data.selectedImage2.path,
+                                              ),
+                                              fit: BoxFit.cover,
+                                            )),
+                                      ),
+                              ),
+                            ),
+                            height: MediaQuery.of(context).size.height / 3),
+                        Material(
+                          elevation: 9,
+                          child: ClipRRect(
+                            borderRadius: BorderRadius.circular(26),
+                            child: Container(
+                              decoration: BoxDecoration(
+                                  border: Border.all(color: Colors.white),
+                                  borderRadius: BorderRadius.circular(26)),
+                              child: FlatButton(
+                                disabledColor: Colors.white,
+                                onPressed: () {
+                                  data.selectimage2(
+                                      source: ImageSource.gallery);
+                                },
+                                color: Colors.white,
+                                shape: RoundedRectangleBorder(
+                                    borderRadius: BorderRadius.circular(26)),
+                                padding: EdgeInsets.all(0.0),
+                                child: Ink(
+                                  decoration: BoxDecoration(
+                                      borderRadius: BorderRadius.circular(26)),
+                                  child: Container(
+                                    constraints: BoxConstraints(
+                                        maxWidth:
+                                            MediaQuery.of(context).size.width /
+                                                1.3,
+                                        minHeight: 45.0),
+                                    alignment: Alignment.center,
+                                    child: Text(
+                                      "Select Catalog Photo",
+                                      textAlign: TextAlign.center,
+                                      style: TextStyle(
+                                          fontSize: 17, color: Colors.black),
+                                    ),
+                                  ),
+                                ),
+                              ),
+                            ),
+                          ),
+                        ),
+                        SizedBox(
+                          height: 30,
+                        ),
+                        Row(
+                            mainAxisAlignment: MainAxisAlignment.end,
+                            children: [
+                              InkWell(
+                                child: Text(
+                                  "CANCEL",
+                                  style: TextStyle(
+                                      fontWeight: FontWeight.w400,
+                                      fontSize: 16,
+                                      color: Color(0xFFA40C85)),
+                                ),
+                                onTap: () => Navigator.pop(context),
+                              ),
+                              SizedBox(
+                                width: 20,
+                              ),
+                              InkWell(
+                                child: Text(
+                                  "SAVE",
+                                  style: TextStyle(
+                                      fontWeight: FontWeight.w400,
+                                      fontSize: 16,
+                                      color: Color(0xFFA40C85)),
+                                ),
+                                onTap: () {
+                                  Navigator.pop(context);
+                                  network
+                                      .addSerPic(
+                                    scaffoldKey: scaffoldKey,
+                                    path: data.selectedImage2.path,
+                                    context: context,
+                                    uploadType: 'servicePicture',
+                                  )
+                                      .then((value) {
+                                    setState(() {});
+                                  });
+                                },
+                              )
+                            ])
+                      ],
+                    )));
+          });
+        });
+  }
 
   void _editAddress(value) {
     final _controller = TextEditingController();
@@ -1270,69 +1263,70 @@ class _ProfilePageState extends State<ProfilePage> {
         });
   }
 
-  Widget DialogPage(ctx) {
+  dialogPage(ctx) {
     PostRequestProvider postRequestProvider =
         Provider.of<PostRequestProvider>(context, listen: false);
     showDialog(
-      context: context,
-      child: StatefulBuilder(
-        builder: (BuildContext context, StateSetter setStates) {
-          return AlertDialog(
-            title: TextFormField(
-              onChanged: (value) {
-                setStates(() {
-                  searchServices(value);
-                });
-              },
-              style: TextStyle(color: Colors.black),
-              decoration: InputDecoration(
-                labelText: 'Search Services',
-                disabledBorder: OutlineInputBorder(
-                    borderSide: const BorderSide(width: 0.0),
-                    borderRadius: BorderRadius.all(Radius.circular(12))),
-                focusedBorder: OutlineInputBorder(
-                    borderSide: const BorderSide(width: 0.0),
-                    borderRadius: BorderRadius.all(Radius.circular(12))),
-                border: OutlineInputBorder(
-                    borderSide: const BorderSide(width: 0.0),
-                    borderRadius: BorderRadius.all(Radius.circular(12))),
-              ),
-            ),
-            content: Container(
-              decoration: BoxDecoration(
-                borderRadius: BorderRadius.all(new Radius.circular(50.0)),
-              ),
-              height: 500,
-              child: SingleChildScrollView(
-                child: Column(
-                  children: <Widget>[
-                    Container(
-                      width: 300,
-                      height: 500,
-                      child: ListView.builder(
-                        itemCount: result == null ? 0 : result.length,
-                        itemBuilder: (context, index) {
-                          return InkWell(
-                            onTap: () {
-                              Navigator.pop(context);
-                              postRequestProvider
-                                  .changeSelectedService(result[index]);
-                            },
-                            child: ListTile(
-                              title: Text('${result[index].service}'),
-                            ),
-                          );
-                        },
-                      ),
-                    )
-                  ],
+        context: context,
+        builder: (ctx) {
+          return StatefulBuilder(
+            builder: (BuildContext context, StateSetter setStates) {
+              return AlertDialog(
+                title: TextFormField(
+                  onChanged: (value) {
+                    setStates(() {
+                      searchServices(value);
+                    });
+                  },
+                  style: TextStyle(color: Colors.black),
+                  decoration: InputDecoration(
+                    labelText: 'Search Services',
+                    disabledBorder: OutlineInputBorder(
+                        borderSide: const BorderSide(width: 0.0),
+                        borderRadius: BorderRadius.all(Radius.circular(12))),
+                    focusedBorder: OutlineInputBorder(
+                        borderSide: const BorderSide(width: 0.0),
+                        borderRadius: BorderRadius.all(Radius.circular(12))),
+                    border: OutlineInputBorder(
+                        borderSide: const BorderSide(width: 0.0),
+                        borderRadius: BorderRadius.all(Radius.circular(12))),
+                  ),
                 ),
-              ),
-            ),
+                content: Container(
+                  decoration: BoxDecoration(
+                    borderRadius: BorderRadius.all(new Radius.circular(50.0)),
+                  ),
+                  height: 500,
+                  child: SingleChildScrollView(
+                    child: Column(
+                      children: <Widget>[
+                        Container(
+                          width: 300,
+                          height: 500,
+                          child: ListView.builder(
+                            itemCount: result == null ? 0 : result.length,
+                            itemBuilder: (context, index) {
+                              return InkWell(
+                                onTap: () {
+                                  Navigator.pop(context);
+                                  postRequestProvider
+                                      .changeSelectedService(result[index]);
+                                },
+                                child: ListTile(
+                                  title: Text('${result[index].service}'),
+                                ),
+                              );
+                            },
+                          ),
+                        )
+                      ],
+                    ),
+                  ),
+                ),
+              );
+            },
           );
-        },
-      ),
-    ).then((v) {
+        }).then((v) {
       setState(() {});
     });
   }

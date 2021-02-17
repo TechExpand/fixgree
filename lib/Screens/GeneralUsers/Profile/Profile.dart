@@ -1,9 +1,7 @@
-import 'dart:io';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:image_picker/image_picker.dart';
 import 'package:fixme/Utils/utils.dart';
-import 'package:fixme/Model/User.dart';
 import 'package:fixme/Services/network_service.dart';
 import 'package:provider/provider.dart';
 

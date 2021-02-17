@@ -550,9 +550,9 @@ class WaveClipper extends CustomClipper<Path> {
     path.lineTo(0,
         size.height * 1.2); //start path with this if you are making at bottom
 
-    var firstStart = Offset(size.width / 2.24, size.height);
-    //fist point of quadratic bezier curve
-    var firstEnd = Offset(size.width / 2.25, size.height - 50.0);
+    // var firstStart = Offset(size.width / 2.24, size.height);
+    // //fist point of quadratic bezier curve
+    // var firstEnd = Offset(size.width / 2.25, size.height - 50.0);
     //second point of quadratic bezier curve
     // path.quadraticBezierTo(
     // firstStart.dx, firstStart.dy, firstEnd.dx, firstEnd.dy);

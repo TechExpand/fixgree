@@ -13,8 +13,8 @@ import 'package:fixme/Utils/Provider.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 
 class DrawerWidget extends StatefulWidget {
-  var currentContext;
-  var controller;
+  final currentContext;
+  final controller;
 
   DrawerWidget(this.currentContext, this.controller);
 
@@ -43,10 +43,10 @@ class _DrawerState extends State<DrawerWidget> {
                   child: Text(''),
                   radius: 22,
                   backgroundImage: NetworkImage(
-                    network.profile_pic_file_name == 'no_picture_upload' ||
-                            network.profile_pic_file_name == null
+                    network.profilePicFileName == 'no_picture_upload' ||
+                            network.profilePicFileName == null
                         ? 'https://uploads.fixme.ng/originals/no_picture_upload'
-                        : 'https://uploads.fixme.ng/originals/${network.profile_pic_file_name}',
+                        : 'https://uploads.fixme.ng/originals/${network.profilePicFileName}',
                   ),
                   foregroundColor: Colors.white,
                   backgroundColor: Colors.white,

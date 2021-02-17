@@ -8,11 +8,11 @@ import 'package:fixme/Services/network_service.dart';
 
 class OTPPAGE extends StatefulWidget {
   var verificationID;
-  var data;
-  var Credential;
+  final data;
+  final mainCredential;
   String page;
 
-  OTPPAGE({this.verificationID, this.data, this.Credential, this.page});
+  OTPPAGE({this.verificationID, this.data, this.mainCredential, this.page});
 
   @override
   OTPState createState() => OTPState();
@@ -80,21 +80,21 @@ class OTPState extends State<OTPPAGE> {
     var network = Provider.of<WebServices>(context);
 
     //register user if code is correct after code has been sent again
-    signinWithPhoneAndSMScode(id, sms_code) async {
+    signinWithPhoneAndSMScode(id, smsCode) async {
       try {
         AuthCredential authcred =
-            PhoneAuthProvider.credential(verificationId: id, smsCode: sms_code);
+            PhoneAuthProvider.credential(verificationId: id, smsCode: smsCode);
 
         final User user =
             (await FirebaseAuth.instance.signInWithCredential(authcred)).user;
         data.setUserID(user.uid);
         //otpTimer.cancel();
-        await widget.page == "SignUp"
+        widget.page == "SignUp"
             ? Navigator.pushReplacement(
                 context,
                 PageRouteBuilder(
                   pageBuilder: (context, animation, secondaryAnimation) {
-                    network.Login_SetState();
+                    network.loginSetState();
                     return SignUpPassword();
                   },
                   transitionsBuilder:
@@ -106,9 +106,9 @@ class OTPState extends State<OTPPAGE> {
                   },
                 ),
               )
-            : network.Login(context: context, scaffoldKey: scaffoldKey);
+            : network.login(context: context, scaffoldKey: scaffoldKey);
       } catch (e) {
-        network.Login_SetState();
+        network.loginSetState();
         scaffoldKey.currentState
             .showSnackBar(SnackBar(content: Text(e.message)));
       }
@@ -170,7 +170,7 @@ class OTPState extends State<OTPPAGE> {
                     child: TextField(
                       onChanged: (value) {
                         if (controller1.text.length == 1) {
-                          data.setOTPfocus_value(
+                          data.setOTPfocusValue(
                             focus1: false,
                             focus2: true,
                             focus3: false,
@@ -194,7 +194,7 @@ class OTPState extends State<OTPPAGE> {
                       keyboardType: TextInputType.phone,
                       maxLength: 1,
                       onTap: () {
-                        data.setOTPfocus_value(
+                        data.setOTPfocusValue(
                           focus1: true,
                           focus2: false,
                           focus3: false,
@@ -204,7 +204,7 @@ class OTPState extends State<OTPPAGE> {
                         );
                       },
                       decoration: InputDecoration(
-                          fillColor: data.focus_value
+                          fillColor: data.focusValue
                               ? Colors.white
                               : Color(0xFFE5E5E5),
                           filled: true,
@@ -230,7 +230,7 @@ class OTPState extends State<OTPPAGE> {
                     child: TextField(
                       onChanged: (value) {
                         if (controller2.text.length == 1) {
-                          data.setOTPfocus_value(
+                          data.setOTPfocusValue(
                             focus1: false,
                             focus2: false,
                             focus3: true,
@@ -254,7 +254,7 @@ class OTPState extends State<OTPPAGE> {
                       keyboardType: TextInputType.phone,
                       maxLength: 1,
                       onTap: () {
-                        data.setOTPfocus_value(
+                        data.setOTPfocusValue(
                           focus1: false,
                           focus2: true,
                           focus3: false,
@@ -264,7 +264,7 @@ class OTPState extends State<OTPPAGE> {
                         );
                       },
                       decoration: InputDecoration(
-                          fillColor: data.focus_value1
+                          fillColor: data.focusValue1
                               ? Colors.white
                               : Color(0xFFE5E5E5),
                           filled: true,
@@ -290,7 +290,7 @@ class OTPState extends State<OTPPAGE> {
                     child: TextField(
                       onChanged: (value) {
                         if (controller3.text.length == 1) {
-                          data.setOTPfocus_value(
+                          data.setOTPfocusValue(
                             focus1: false,
                             focus2: false,
                             focus3: false,
@@ -314,7 +314,7 @@ class OTPState extends State<OTPPAGE> {
                       keyboardType: TextInputType.phone,
                       maxLength: 1,
                       onTap: () {
-                        data.setOTPfocus_value(
+                        data.setOTPfocusValue(
                           focus1: false,
                           focus2: false,
                           focus3: true,
@@ -324,7 +324,7 @@ class OTPState extends State<OTPPAGE> {
                         );
                       },
                       decoration: InputDecoration(
-                          fillColor: data.focus_value2
+                          fillColor: data.focusValue2
                               ? Colors.white
                               : Color(0xFFE5E5E5),
                           filled: true,
@@ -350,7 +350,7 @@ class OTPState extends State<OTPPAGE> {
                     child: TextField(
                       onChanged: (value) {
                         if (controller4.text.length == 1) {
-                          data.setOTPfocus_value(
+                          data.setOTPfocusValue(
                             focus1: false,
                             focus2: false,
                             focus3: false,
@@ -374,7 +374,7 @@ class OTPState extends State<OTPPAGE> {
                       keyboardType: TextInputType.phone,
                       maxLength: 1,
                       onTap: () {
-                        data.setOTPfocus_value(
+                        data.setOTPfocusValue(
                           focus1: false,
                           focus2: false,
                           focus3: false,
@@ -384,7 +384,7 @@ class OTPState extends State<OTPPAGE> {
                         );
                       },
                       decoration: InputDecoration(
-                          fillColor: data.focus_value3
+                          fillColor: data.focusValue3
                               ? Colors.white
                               : Color(0xFFE5E5E5),
                           filled: true,
@@ -410,7 +410,7 @@ class OTPState extends State<OTPPAGE> {
                     child: TextField(
                       onChanged: (value) {
                         if (controller5.text.length == 1) {
-                          data.setOTPfocus_value(
+                          data.setOTPfocusValue(
                             focus1: false,
                             focus2: false,
                             focus3: false,
@@ -434,7 +434,7 @@ class OTPState extends State<OTPPAGE> {
                       keyboardType: TextInputType.phone,
                       maxLength: 1,
                       onTap: () {
-                        data.setOTPfocus_value(
+                        data.setOTPfocusValue(
                           focus1: false,
                           focus2: false,
                           focus3: false,
@@ -444,7 +444,7 @@ class OTPState extends State<OTPPAGE> {
                         );
                       },
                       decoration: InputDecoration(
-                          fillColor: data.focus_value4
+                          fillColor: data.focusValue4
                               ? Colors.white
                               : Color(0xFFE5E5E5),
                           filled: true,
@@ -470,7 +470,7 @@ class OTPState extends State<OTPPAGE> {
                     child: TextField(
                       onChanged: (value) {
                         if (controller6.text.length == 1) {
-                          data.setOTPfocus_value(
+                          data.setOTPfocusValue(
                             focus1: false,
                             focus2: false,
                             focus3: false,
@@ -494,7 +494,7 @@ class OTPState extends State<OTPPAGE> {
                       keyboardType: TextInputType.phone,
                       maxLength: 1,
                       onTap: () {
-                        data.setOTPfocus_value(
+                        data.setOTPfocusValue(
                           focus1: false,
                           focus2: false,
                           focus3: false,
@@ -504,7 +504,7 @@ class OTPState extends State<OTPPAGE> {
                         );
                       },
                       decoration: InputDecoration(
-                          fillColor: data.focus_value5
+                          fillColor: data.focusValue5
                               ? Colors.white
                               : Color(0xFFE5E5E5),
                           filled: true,
@@ -596,7 +596,7 @@ class OTPState extends State<OTPPAGE> {
               Spacer(),
               Align(
                   alignment: Alignment.center,
-                  child: !network.login_state
+                  child: !network.loginState
                       ? Container(
                           margin: EdgeInsets.only(
                             bottom: 50,
@@ -614,7 +614,7 @@ class OTPState extends State<OTPPAGE> {
                                     controller6.text.isEmpty
                                 ? null
                                 : () {
-                                    network.Login_SetState();
+                                    network.loginSetState();
                                     signinWithPhoneAndSMScode(
                                         widget.verificationID, data.otp);
                                   },

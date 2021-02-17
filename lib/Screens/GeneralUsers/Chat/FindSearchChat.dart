@@ -1,8 +1,6 @@
-
 import 'package:fixme/Services/Firebase_service.dart';
 import 'package:fixme/Services/location_service.dart';
 import 'package:fixme/Services/network_service.dart';
-import 'package:fixme/Utils/utils.dart';
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 
@@ -10,10 +8,10 @@ import 'Chat.dart';
 
 class SearchChatPage extends StatefulWidget {
   @override
-  _searchchatState createState() => _searchchatState();
+  _SearchChatState createState() => _SearchChatState();
 }
 
-class _searchchatState extends State<SearchChatPage> {
+class _SearchChatState extends State<SearchChatPage> {
   var searchvalue;
 
   @override
@@ -22,7 +20,7 @@ class _searchchatState extends State<SearchChatPage> {
       appBar: AppBar(
         title: Text('New message'),
         backgroundColor: Color(0xFFA40C85),
-        leading:  InkWell(
+        leading: InkWell(
             onTap: () {
               Navigator.pop(context);
             },
@@ -41,11 +39,13 @@ class _searchchatState extends State<SearchChatPage> {
                     crossAxisAlignment: CrossAxisAlignment.center,
                     mainAxisAlignment: MainAxisAlignment.center,
                     children: [
-                     Container(
-                       child: Text('To:', style: TextStyle(fontSize: 16, fontWeight: FontWeight.bold)),
-                     ),
                       Container(
-                        margin: EdgeInsets.only(top:20),
+                        child: Text('To:',
+                            style: TextStyle(
+                                fontSize: 16, fontWeight: FontWeight.bold)),
+                      ),
+                      Container(
+                        margin: EdgeInsets.only(top: 20),
                         width: MediaQuery.of(context).size.width / 1.15,
                         child: TextFormField(
                           cursorColor: Colors.black87,
@@ -78,9 +78,9 @@ class _searchchatState extends State<SearchChatPage> {
 }
 
 class SearchResult extends StatefulWidget {
-  var search_value;
+  final searchValue;
 
-  SearchResult(this.search_value);
+  SearchResult(this.searchValue);
 
   @override
   State<StatefulWidget> createState() {
@@ -93,19 +93,18 @@ class SearchResultState extends State<SearchResult> {
   @override
   Widget build(BuildContext context) {
     var network = Provider.of<WebServices>(context, listen: false);
-    var datas = Provider.of<Utils>(context, listen: false);
     var location = Provider.of<LocationService>(context);
 
     return FutureBuilder(
-      future: network.Search(
-        searchquery: widget.search_value,
-        latitude: location.location_latitude,
-        longitude: location.location_longitude,
+      future: network.search(
+        searchquery: widget.searchValue,
+        latitude: location.locationLatitude,
+        longitude: location.locationLongitude,
       ),
       builder: (context, snapshot) {
         return snapshot.connectionState == ConnectionState.waiting
             ? Expanded(child: Center(child: Text('Loading')))
-            : widget.search_value == '' || widget.search_value == null
+            : widget.searchValue == '' || widget.searchValue == null
                 ? Expanded(
                     child: Center(child: Text('Search for Artisans/Services')))
                 : !snapshot.hasData
@@ -119,14 +118,16 @@ class SearchResultState extends State<SearchResult> {
                                   return InkWell(
                                     onTap: () {
                                       FirebaseApi.addUserChat(
-                                        urlAvatar2: 'https://uploads.fixme.ng/originals/${network.profile_pic_file_name}',
+                                        urlAvatar2:
+                                            'https://uploads.fixme.ng/originals/${network.profilePicFileName}',
                                         name2: network.firstName,
-                                        idArtisan: network.mobile_device_token,
-                                        artisanMobile: network.phoneNum ,
-                                        userMobile: snapshot.data[index].userMobile,
+                                        idArtisan: network.mobileDeviceToken,
+                                        artisanMobile: network.phoneNum,
+                                        userMobile:
+                                            snapshot.data[index].userMobile,
                                         idUser: snapshot.data[index].idUser,
                                         urlAvatar:
-                                        'https://uploads.fixme.ng/originals/${snapshot.data[index].urlAvatar}',
+                                            'https://uploads.fixme.ng/originals/${snapshot.data[index].urlAvatar}',
                                         name: snapshot.data[index].name,
                                       );
                                       Navigator.push(
@@ -157,14 +158,21 @@ class SearchResultState extends State<SearchResult> {
                                               MainAxisAlignment.start,
                                           children: [
                                             Padding(
-                                              padding: const EdgeInsets.only(top:8.0, left:8,right:8),
+                                              padding: const EdgeInsets.only(
+                                                  top: 8.0, left: 8, right: 8),
                                               child: CircleAvatar(
-                                                  backgroundColor: Colors.white70 ,
-                                                  radius: 18, backgroundImage: NetworkImage(
-                                                  snapshot.data[index].urlAvatar=='no_picture_upload'||
-                                                      snapshot.data[index].urlAvatar==null ?'https://uploads.fixme.ng/originals/no_picture_upload':
-                                                  'https://uploads.fixme.ng/originals/${snapshot.data[index].urlAvatar}'
-                                              )),
+                                                  backgroundColor:
+                                                      Colors.white70,
+                                                  radius: 18,
+                                                  backgroundImage: NetworkImage(snapshot
+                                                                  .data[index]
+                                                                  .urlAvatar ==
+                                                              'no_picture_upload' ||
+                                                          snapshot.data[index]
+                                                                  .urlAvatar ==
+                                                              null
+                                                      ? 'https://uploads.fixme.ng/originals/no_picture_upload'
+                                                      : 'https://uploads.fixme.ng/originals/${snapshot.data[index].urlAvatar}')),
                                             ),
                                             Column(
                                                 crossAxisAlignment:
@@ -179,36 +187,51 @@ class SearchResultState extends State<SearchResult> {
                                                                 .width /
                                                             1.2,
                                                     child: Padding(
-                                                      padding: const EdgeInsets.only(top:8.0,left:5, right:5,bottom: 3),
+                                                      padding:
+                                                          const EdgeInsets.only(
+                                                              top: 8.0,
+                                                              left: 5,
+                                                              right: 5,
+                                                              bottom: 3),
                                                       child: Text(
-                                                          snapshot.data[index]
-                                                              .userLastName
-                                                              .toString() +' '+snapshot.data[index]
-                                                          .name
-                                                              .toString(),
-                                                          maxLines: 1,
-                                                          softWrap: true,
-                                                          overflow: TextOverflow
-                                                              .ellipsis,
-                                                      style: TextStyle(fontWeight:FontWeight.bold),),
+                                                        snapshot.data[index]
+                                                                .userLastName
+                                                                .toString() +
+                                                            ' ' +
+                                                            snapshot.data[index]
+                                                                .name
+                                                                .toString(),
+                                                        maxLines: 1,
+                                                        softWrap: true,
+                                                        overflow: TextOverflow
+                                                            .ellipsis,
+                                                        style: TextStyle(
+                                                            fontWeight:
+                                                                FontWeight
+                                                                    .bold),
+                                                      ),
                                                     ),
                                                   ),
                                                   Container(
                                                     width:
-                                                    MediaQuery.of(context)
-                                                        .size
-                                                        .width /
-                                                        1.2,
+                                                        MediaQuery.of(context)
+                                                                .size
+                                                                .width /
+                                                            1.2,
                                                     child: Padding(
-                                                      padding: const EdgeInsets.only(bottom:8.0,left:5, right:5),
+                                                      padding:
+                                                          const EdgeInsets.only(
+                                                              bottom: 8.0,
+                                                              left: 5,
+                                                              right: 5),
                                                       child: Text(
                                                         snapshot.data[index]
-                                                        .serviceArea
+                                                            .serviceArea
                                                             .toString(),
                                                         maxLines: 1,
                                                         softWrap: true,
-                                                        overflow:
-                                                        TextOverflow.ellipsis,
+                                                        overflow: TextOverflow
+                                                            .ellipsis,
                                                       ),
                                                     ),
                                                   ),
@@ -228,10 +251,13 @@ class SearchResultState extends State<SearchResult> {
 //                                                            .ellipsis),
 //                                                  ),
                                                   Container(
-
-                                                    height:1,
-                                                    color:Colors.black12,
-                                                    width: MediaQuery.of(context).size.width/1.14,
+                                                    height: 1,
+                                                    color: Colors.black12,
+                                                    width:
+                                                        MediaQuery.of(context)
+                                                                .size
+                                                                .width /
+                                                            1.14,
                                                   )
                                                 ])
                                           ]),

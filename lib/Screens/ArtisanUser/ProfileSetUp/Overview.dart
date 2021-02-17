@@ -3,7 +3,7 @@ import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 
 class OverviewPage extends StatefulWidget {
-  var myPage;
+  final myPage;
   OverviewPage(this.myPage);
   @override
   OverviewPageState createState() => OverviewPageState();

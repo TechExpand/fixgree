@@ -1,6 +1,5 @@
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:fixme/Model/Notify.dart';
-import 'package:fixme/Screens/ArtisanUser/Profile/ProfilePage.dart';
 import 'package:fixme/Screens/GeneralUsers/Bids/Bidders.dart';
 import 'package:fixme/Services/Firebase_service.dart';
 import 'package:fixme/Services/network_service.dart';
@@ -14,8 +13,8 @@ class BidPage extends StatefulWidget {
 
 class _BidPageState extends State<BidPage> {
   List<Bidify> notify;
-  PageController  myPage =
-  PageController(initialPage: 0, viewportFraction: 1, keepPage: true);
+  PageController myPage =
+      PageController(initialPage: 0, viewportFraction: 1, keepPage: true);
   int selectedIndex = 0;
 
   @override
@@ -32,7 +31,7 @@ class _BidPageState extends State<BidPage> {
                   height: MediaQuery.of(context).size.height,
                   child: StreamBuilder(
                     stream:
-                        FirebaseApi.UserBidStream(network.user_id.toString()),
+                        FirebaseApi.userBidStream(network.userId.toString()),
                     builder: (context, AsyncSnapshot<QuerySnapshot> snapshot) {
                       if (snapshot.hasData) {
                         notify = snapshot.data.docs
@@ -55,7 +54,7 @@ class _BidPageState extends State<BidPage> {
                                   children: [
                                     Container(
                                       child: PageView.builder(
-                                controller: myPage,
+                                        controller: myPage,
                                         itemBuilder: (context, index) {
                                           return Material(
                                             color: Colors.white,
@@ -117,8 +116,8 @@ class _BidPageState extends State<BidPage> {
                                                                       animation,
                                                                       secondaryAnimation) {
                                                                     return BidderPage(
-                                                                        users[index]
-                                                                            ); //SignUpAddress();
+                                                                        users[
+                                                                            index]); //SignUpAddress();
                                                                   },
                                                                   transitionsBuilder: (context,
                                                                       animation,
@@ -163,15 +162,22 @@ class _BidPageState extends State<BidPage> {
                                                             ),
                                                           ),
                                                           InkWell(
-                                                            onTap:(){
-                                                              FirebaseApi.clearJobBids(
-                                                                users[index].project_owner_user_id,
+                                                            onTap: () {
+                                                              FirebaseApi
+                                                                  .clearJobBids(
+                                                                users[index]
+                                                                    .project_owner_user_id,
                                                               );
                                                             },
                                                             child: Container(
-                                                                alignment:Alignment.center,
-                                                                child:Text('CANCEL ALL', style:TextStyle(fontStyle:FontStyle.italic))
-                                                            ),
+                                                                alignment:
+                                                                    Alignment
+                                                                        .center,
+                                                                child: Text(
+                                                                    'CANCEL ALL',
+                                                                    style: TextStyle(
+                                                                        fontStyle:
+                                                                            FontStyle.italic))),
                                                           ),
                                                         ],
                                                       ),
@@ -190,16 +196,16 @@ class _BidPageState extends State<BidPage> {
                                         itemCount: users.length,
                                       ),
                                     ),
-
                                     Container(
-                                      alignment:Alignment.center,
-                                      margin: EdgeInsets.only(
-                                          top: MediaQuery.of(context)
-                                                  .size
-                                                  .height /
-                                              1.4),
-                                      child:Text('Slide Through To See All', style:TextStyle(fontStyle:FontStyle.italic))
-                                    ),
+                                        alignment: Alignment.center,
+                                        margin: EdgeInsets.only(
+                                            top: MediaQuery.of(context)
+                                                    .size
+                                                    .height /
+                                                1.4),
+                                        child: Text('Slide Through To See All',
+                                            style: TextStyle(
+                                                fontStyle: FontStyle.italic))),
                                   ],
                                 );
                             }

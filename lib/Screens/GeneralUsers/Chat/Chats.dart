@@ -1,9 +1,7 @@
 import 'package:cloud_firestore/cloud_firestore.dart';
-import 'package:fixme/Model/User.dart';
 import 'package:fixme/Model/UserChat.dart';
 import 'package:fixme/Services/Firebase_service.dart';
 import 'package:fixme/Services/network_service.dart';
-import 'package:fixme/Utils/Provider.dart';
 import 'package:fixme/Utils/utils.dart';
 import 'package:flutter/material.dart';
 import 'package:font_awesome_flutter/font_awesome_flutter.dart';
@@ -30,7 +28,6 @@ class _ListenIncomingState extends State<ListenIncoming> {
   @override
   Widget build(BuildContext context) {
     var data = Provider.of<Utils>(context, listen: false);
-    var datas = Provider.of<DataProvider>(context, listen: false);
 
     var network = Provider.of<WebServices>(context, listen: false);
     Widget buildText(String text) => Center(
@@ -108,7 +105,7 @@ class _ListenIncomingState extends State<ListenIncoming> {
                   SizedBox(width: 8),
                   Icon(Icons.search),
                   SizedBox(width: 8),
-                  Text('${network.mobile_device_token}',
+                  Text('${network.mobileDeviceToken}',
                       style: TextStyle(color: Colors.black)),
                   Spacer(),
                   InkWell(
@@ -215,17 +212,17 @@ class _ListenIncomingState extends State<ListenIncoming> {
                   height: MediaQuery.of(context).size.height,
                   child: StreamBuilder(
                     stream:
-                        FirebaseApi.UserChatStream(network.mobile_device_token),
+                        FirebaseApi.userChatStream(network.mobileDeviceToken),
                     builder: (context, AsyncSnapshot<QuerySnapshot> snapshot) {
                       if (snapshot.hasData) {
                         user = snapshot.data.docs
                             .map((doc) => UserChat.fromMap(doc.data(), doc.id))
                             .toList();
-                        List<UserChat> chat_data = [];
+                        List<UserChat> chatData = [];
                         for (var v in user) {
-                          chat_data.add(v);
+                          chatData.add(v);
                         }
-                        chat_data
+                        chatData
                           ..sort((b, a) =>
                               a.lastMessageTime.compareTo(b.lastMessageTime));
                         switch (snapshot.connectionState) {
@@ -236,7 +233,7 @@ class _ListenIncomingState extends State<ListenIncoming> {
                               return buildText(
                                   'Something Went Wrong Try later');
                             } else {
-                              final users = chat_data;
+                              final users = chatData;
                               if (users.isEmpty) {
                                 return buildText('No Users Found');
                               } else
@@ -246,7 +243,7 @@ class _ListenIncomingState extends State<ListenIncoming> {
                                     itemBuilder: (context, index) {
                                       var date = data.compareDate(
                                           users[index].lastMessageTime);
-                                      ;
+
                                       return Container(
                                         height: 75,
                                         child: ListTile(
@@ -254,8 +251,8 @@ class _ListenIncomingState extends State<ListenIncoming> {
                                             // users[index].idUser
                                             FirebaseApi.updateUsertoRead(
                                                 idUser: users[index].idUser,
-                                                idArtisan: network
-                                                    .mobile_device_token);
+                                                idArtisan:
+                                                    network.mobileDeviceToken);
                                             Navigator.of(context)
                                                 .push(MaterialPageRoute(
                                               builder: (context) {
@@ -307,18 +304,18 @@ class _ListenIncomingState extends State<ListenIncoming> {
                   padding: EdgeInsets.only(top: 10),
                   height: MediaQuery.of(context).size.height,
                   child: StreamBuilder(
-                    stream: FirebaseApi.UserChatStreamUnread(
-                        network.mobile_device_token),
+                    stream: FirebaseApi.userChatStreamUnread(
+                        network.mobileDeviceToken),
                     builder: (context, AsyncSnapshot<QuerySnapshot> snapshot) {
                       if (snapshot.hasData) {
                         user = snapshot.data.docs
                             .map((doc) => UserChat.fromMap(doc.data(), doc.id))
                             .toList();
-                        List<UserChat> chat_data = [];
+                        List<UserChat> chatData = [];
                         for (var v in user) {
-                          chat_data.add(v);
+                          chatData.add(v);
                         }
-                        chat_data
+                        chatData
                           ..sort((b, a) =>
                               a.lastMessageTime.compareTo(b.lastMessageTime));
                         switch (snapshot.connectionState) {
@@ -329,7 +326,7 @@ class _ListenIncomingState extends State<ListenIncoming> {
                               return buildText(
                                   'Something Went Wrong Try later');
                             } else {
-                              final users = chat_data;
+                              final users = chatData;
                               if (users.isEmpty) {
                                 return buildText('No Users Found');
                               } else
@@ -345,8 +342,8 @@ class _ListenIncomingState extends State<ListenIncoming> {
                                           onTap: () {
                                             FirebaseApi.updateUsertoRead(
                                                 idUser: users[index].idUser,
-                                                idArtisan: network
-                                                    .mobile_device_token);
+                                                idArtisan:
+                                                    network.mobileDeviceToken);
                                             Navigator.of(context)
                                                 .push(MaterialPageRoute(
                                               builder: (context) {
@@ -398,18 +395,18 @@ class _ListenIncomingState extends State<ListenIncoming> {
                   padding: EdgeInsets.only(top: 10),
                   height: MediaQuery.of(context).size.height,
                   child: StreamBuilder(
-                    stream: FirebaseApi.UserChatStreamread(
-                        network.mobile_device_token),
+                    stream: FirebaseApi.userChatStreamread(
+                        network.mobileDeviceToken),
                     builder: (context, AsyncSnapshot<QuerySnapshot> snapshot) {
                       if (snapshot.hasData) {
                         user = snapshot.data.docs
                             .map((doc) => UserChat.fromMap(doc.data(), doc.id))
                             .toList();
-                        List<UserChat> chat_data = [];
+                        List<UserChat> chatData = [];
                         for (var v in user) {
-                          chat_data.add(v);
+                          chatData.add(v);
                         }
-                        chat_data
+                        chatData
                           ..sort((b, a) =>
                               a.lastMessageTime.compareTo(b.lastMessageTime));
                         switch (snapshot.connectionState) {
@@ -420,7 +417,7 @@ class _ListenIncomingState extends State<ListenIncoming> {
                               return buildText(
                                   'Something Went Wrong Try later');
                             } else {
-                              final users = chat_data;
+                              final users = chatData;
                               if (users.isEmpty) {
                                 return buildText('No Users Found');
                               } else
@@ -436,8 +433,8 @@ class _ListenIncomingState extends State<ListenIncoming> {
                                           onTap: () {
                                             FirebaseApi.updateUsertoRead(
                                                 idUser: users[index].idUser,
-                                                idArtisan: network
-                                                    .mobile_device_token);
+                                                idArtisan:
+                                                    network.mobileDeviceToken);
                                             Navigator.of(context)
                                                 .push(MaterialPageRoute(
                                               builder: (context) {

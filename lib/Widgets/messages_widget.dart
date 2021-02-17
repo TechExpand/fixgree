@@ -47,7 +47,7 @@ class MessagesWidget extends StatelessWidget {
                           final message = messages[index];
                           return MessageWidget(
                             message: message,
-                            isMe: message.idUser == network.mobile_device_token,
+                            isMe: message.idUser == network.mobileDeviceToken,
                           );
                         },
                       );

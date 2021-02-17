@@ -1,7 +1,5 @@
-import 'package:fixme/Screens/GeneralUsers/Support/Providers/SupportProvider.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_feather_icons/flutter_feather_icons.dart';
-import 'package:provider/provider.dart';
 
 class SupportFeedbackSent extends StatefulWidget {
   SupportFeedbackSent({Key key}) : super(key: key);

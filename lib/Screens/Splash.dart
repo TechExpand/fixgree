@@ -1,6 +1,5 @@
 import 'package:fixme/Utils/Provider.dart';
 import 'package:flutter/material.dart';
-import 'ArtisanUser/RegisterArtisan/address.dart';
 import 'GeneralUsers/Home/HomePage.dart';
 import 'GeneralUsers/LoginSignup/Login.dart';
 import 'package:fixme/Utils/utils.dart';

@@ -14,12 +14,12 @@ import 'package:fixme/Utils/utils.dart';
 import 'package:provider/provider.dart';
 
 class Home extends StatelessWidget {
-  var scafold_key;
+  final scafoldKey;
   var search;
-  var data;
-  var controller;
+  final data;
+  final controller;
 
-  Home(this.scafold_key, this.data, this.controller);
+  Home(this.scafoldKey, this.data, this.controller);
 
   @override
   Widget build(BuildContext context) {
@@ -43,7 +43,7 @@ class Home extends StatelessWidget {
                 children: [
                   InkWell(
                     onTap: () {
-                      scafold_key.currentState.openDrawer();
+                      scafoldKey.currentState.openDrawer();
                     },
                     child: Padding(
                       padding: const EdgeInsets.all(4.0),
@@ -52,11 +52,10 @@ class Home extends StatelessWidget {
                           child: Text(''),
                           radius: 19,
                           backgroundImage: NetworkImage(
-                            network.profile_pic_file_name ==
-                                        'no_picture_upload' ||
-                                    network.profile_pic_file_name == null
+                            network.profilePicFileName == 'no_picture_upload' ||
+                                    network.profilePicFileName == null
                                 ? 'https://uploads.fixme.ng/originals/no_picture_upload'
-                                : 'https://uploads.fixme.ng/originals/${network.profile_pic_file_name}',
+                                : 'https://uploads.fixme.ng/originals/${network.profilePicFileName}',
                           ),
                           foregroundColor: Colors.white,
                           backgroundColor: Colors.white,
@@ -247,9 +246,9 @@ class Home extends StatelessWidget {
                                         serviceName: popularServices[index]
                                             ['text'],
                                         serviceId: popularServices[index]['id'],
-                                        latitude: location.location_latitude
+                                        latitude: location.locationLatitude
                                             .toString(),
-                                        longitude: location.location_longitude
+                                        longitude: location.locationLongitude
                                             .toString(),
                                       );
                                     },
@@ -450,9 +449,9 @@ class Home extends StatelessWidget {
                       ),
                     ),
                     FutureBuilder(
-                        future: network.NearbyShop(
-                            latitude: location.location_latitude,
-                            longitude: location.location_longitude),
+                        future: network.nearbyShop(
+                            latitude: location.locationLatitude,
+                            longitude: location.locationLongitude),
                         builder: (context, snapshot) {
                           return !snapshot.hasData
                               ? Padding(
@@ -608,9 +607,9 @@ class Home extends StatelessWidget {
                       ),
                     ),
                     FutureBuilder(
-                        future: network.NearbyArtisans(
-                            latitude: location.location_latitude,
-                            longitude: location.location_longitude),
+                        future: network.nearbyArtisans(
+                            latitude: location.locationLatitude,
+                            longitude: location.locationLongitude),
                         builder: (context, snapshot) {
                           return !snapshot.hasData
                               ? Padding(

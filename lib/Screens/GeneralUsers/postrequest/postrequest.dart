@@ -1,4 +1,3 @@
-import 'package:fixme/Services/network_service.dart';
 import 'package:fixme/Services/postrequest_service.dart';
 import 'package:flutter/material.dart';
 import 'package:google_fonts/google_fonts.dart';
@@ -39,7 +38,6 @@ class PostScreenState extends State<PostScreen> {
   Widget build(BuildContext context) {
     PostRequestProvider postRequestProvider =
         Provider.of<PostRequestProvider>(context);
-    WebServices webServices = Provider.of<WebServices>(context);
     return Scaffold(
       appBar: AppBar(
         backgroundColor: Colors.white,
@@ -150,7 +148,7 @@ class PostScreenState extends State<PostScreen> {
               highlightColor: Colors.transparent,
               onTap: () {
                 result = postRequestProvider.allservicesList;
-                DialogPage(context);
+                dialogPage(context);
               },
               child: TextFormField(
                 keyboardType: TextInputType.multiline,
@@ -227,69 +225,70 @@ class PostScreenState extends State<PostScreen> {
     );
   }
 
-  Widget DialogPage(ctx) {
+  dialogPage(ctx) {
     PostRequestProvider postRequestProvider =
         Provider.of<PostRequestProvider>(context, listen: false);
     showDialog(
-      context: context,
-      child: StatefulBuilder(
-        builder: (BuildContext context, StateSetter setStates) {
-          return AlertDialog(
-            title: TextFormField(
-              onChanged: (value) {
-                setStates(() {
-                  searchServices(value);
-                });
-              },
-              style: TextStyle(color: Colors.black),
-              decoration: InputDecoration(
-                labelText: 'Search Services',
-                disabledBorder: OutlineInputBorder(
-                    borderSide: const BorderSide(width: 0.0),
-                    borderRadius: BorderRadius.all(Radius.circular(12))),
-                focusedBorder: OutlineInputBorder(
-                    borderSide: const BorderSide(width: 0.0),
-                    borderRadius: BorderRadius.all(Radius.circular(12))),
-                border: OutlineInputBorder(
-                    borderSide: const BorderSide(width: 0.0),
-                    borderRadius: BorderRadius.all(Radius.circular(12))),
-              ),
-            ),
-            content: Container(
-              decoration: BoxDecoration(
-                borderRadius: BorderRadius.all(new Radius.circular(50.0)),
-              ),
-              height: 500,
-              child: SingleChildScrollView(
-                child: Column(
-                  children: <Widget>[
-                    Container(
-                      width: 300,
-                      height: 500,
-                      child: ListView.builder(
-                        itemCount: result == null ? 0 : result.length,
-                        itemBuilder: (context, index) {
-                          return InkWell(
-                            onTap: () {
-                              Navigator.pop(context);
-                              postRequestProvider
-                                  .changeSelectedService(result[index]);
-                            },
-                            child: ListTile(
-                              title: Text('${result[index].service}'),
-                            ),
-                          );
-                        },
-                      ),
-                    )
-                  ],
+        context: context,
+        builder: (ctx) {
+          return StatefulBuilder(
+            builder: (BuildContext context, StateSetter setStates) {
+              return AlertDialog(
+                title: TextFormField(
+                  onChanged: (value) {
+                    setStates(() {
+                      searchServices(value);
+                    });
+                  },
+                  style: TextStyle(color: Colors.black),
+                  decoration: InputDecoration(
+                    labelText: 'Search Services',
+                    disabledBorder: OutlineInputBorder(
+                        borderSide: const BorderSide(width: 0.0),
+                        borderRadius: BorderRadius.all(Radius.circular(12))),
+                    focusedBorder: OutlineInputBorder(
+                        borderSide: const BorderSide(width: 0.0),
+                        borderRadius: BorderRadius.all(Radius.circular(12))),
+                    border: OutlineInputBorder(
+                        borderSide: const BorderSide(width: 0.0),
+                        borderRadius: BorderRadius.all(Radius.circular(12))),
+                  ),
                 ),
-              ),
-            ),
+                content: Container(
+                  decoration: BoxDecoration(
+                    borderRadius: BorderRadius.all(new Radius.circular(50.0)),
+                  ),
+                  height: 500,
+                  child: SingleChildScrollView(
+                    child: Column(
+                      children: <Widget>[
+                        Container(
+                          width: 300,
+                          height: 500,
+                          child: ListView.builder(
+                            itemCount: result == null ? 0 : result.length,
+                            itemBuilder: (context, index) {
+                              return InkWell(
+                                onTap: () {
+                                  Navigator.pop(context);
+                                  postRequestProvider
+                                      .changeSelectedService(result[index]);
+                                },
+                                child: ListTile(
+                                  title: Text('${result[index].service}'),
+                                ),
+                              );
+                            },
+                          ),
+                        )
+                      ],
+                    ),
+                  ),
+                ),
+              );
+            },
           );
-        },
-      ),
-    ).then((v) {
+        }).then((v) {
       setState(() {});
     });
   }

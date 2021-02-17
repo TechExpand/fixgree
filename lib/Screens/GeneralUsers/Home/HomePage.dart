@@ -30,7 +30,7 @@ class HomePage extends StatefulWidget {
 class _HomePageState extends State<HomePage> {
   PageController _myPage;
   var search;
-  final scafold_key = GlobalKey<ScaffoldState>();
+  final scafoldKey = GlobalKey<ScaffoldState>();
   String _message = '';
 
   final FirebaseMessaging _firebaseMessaging = FirebaseMessaging();
@@ -53,7 +53,7 @@ class _HomePageState extends State<HomePage> {
     flutterLocalNotificationsPlugin.initialize(initSetttings,
         onSelectNotification: onSelectNotification);
 
-    network.updateFCMToken(network.user_id, data.fcm_token);
+    network.updateFCMToken(network.userId, data.fcmToken);
     Provider.of<LocationService>(context, listen: false).getCurrentLocation();
     _myPage =
         PageController(initialPage: 0, viewportFraction: 1, keepPage: true);
@@ -77,7 +77,7 @@ class _HomePageState extends State<HomePage> {
         onMessage: (Map<String, dynamic> message) async {
       // if(message["notification"]["title"].toString() == 'new_bid'){
       FirebaseApi.uploadNotification(
-        network.user_id.toString(),
+        network.userId.toString(),
         message["notification"]["title"],
         message["data"]["notification_type"],
         '${message["data"]["lastName"]} ${message["data"]["firstName"]}',
@@ -104,7 +104,7 @@ class _HomePageState extends State<HomePage> {
     var iOS = IOSNotificationDetails();
     var platform = new NotificationDetails(android: android, iOS: iOS);
     await flutterLocalNotificationsPlugin.show(
-        0, 'New bid on project', '${value}', platform,
+        0, 'New bid on project', '$value', platform,
         payload: 'New job is available around you');
   }
 
@@ -117,11 +117,10 @@ class _HomePageState extends State<HomePage> {
   @override
   Widget build(BuildContext context) {
     var data = Provider.of<DataProvider>(context);
-    var datas = Provider.of<Utils>(context, listen: false);
 
     // FirebaseApi.updateUsertoOnline(datas.mobile_device_token);
     var widget = Scaffold(
-      key: scafold_key,
+      key: scafoldKey,
       drawer: SizedBox(
         width: 240,
         child: Drawer(
@@ -198,142 +197,146 @@ class _HomePageState extends State<HomePage> {
       body: WillPopScope(
         onWillPop: () {
           return showDialog(
-              child: BackdropFilter(
-                filter: ImageFilter.blur(sigmaX: 8, sigmaY: 8),
-                child: AlertDialog(
-                  elevation: 6,
-                  shape: RoundedRectangleBorder(
-                      borderRadius: BorderRadius.all(Radius.circular(32.0))),
-                  content: Container(
-                    height: 150,
-                    child: Column(
-                      crossAxisAlignment: CrossAxisAlignment.center,
-                      mainAxisAlignment: MainAxisAlignment.center,
-                      children: <Widget>[
-                        Text(
-                          'Oops!!',
-                          style: TextStyle(
-                              fontSize: 20,
-                              color: Color(0xFF9B049B),
-                              fontWeight: FontWeight.bold),
-                        ),
-                        Row(
-                          children: [
-                            Container(
-                              padding: EdgeInsets.only(top: 15, bottom: 15),
-                              child: Center(
-                                child: Text(
-                                  'DO YOU WANT TO EXIT THIS APP?',
-                                  style: TextStyle(
-                                    fontSize: 14,
-                                    fontWeight: FontWeight.bold,
-                                    color: Colors.black54,
-                                  ),
-                                ),
-                              ),
-                            ),
-                          ],
-                        ),
-                        ButtonBar(
-                            alignment: MainAxisAlignment.center,
+              context: context,
+              builder: (ctx) {
+                return BackdropFilter(
+                  filter: ImageFilter.blur(sigmaX: 8, sigmaY: 8),
+                  child: AlertDialog(
+                    elevation: 6,
+                    shape: RoundedRectangleBorder(
+                        borderRadius: BorderRadius.all(Radius.circular(32.0))),
+                    content: Container(
+                      height: 150,
+                      child: Column(
+                        crossAxisAlignment: CrossAxisAlignment.center,
+                        mainAxisAlignment: MainAxisAlignment.center,
+                        children: <Widget>[
+                          Text(
+                            'Oops!!',
+                            style: TextStyle(
+                                fontSize: 20,
+                                color: Color(0xFF9B049B),
+                                fontWeight: FontWeight.bold),
+                          ),
+                          Row(
                             children: [
-                              Material(
-                                borderRadius: BorderRadius.circular(26),
-                                elevation: 2,
-                                child: Container(
-                                  height: 35,
-                                  width: 100,
-                                  decoration: BoxDecoration(
-                                      border:
-                                          Border.all(color: Color(0xFF9B049B)),
-                                      borderRadius: BorderRadius.circular(26)),
-                                  child: FlatButton(
-                                    onPressed: () {
-                                      return exit(0);
-                                    },
-                                    color: Color(0xFF9B049B),
-                                    shape: RoundedRectangleBorder(
+                              Container(
+                                padding: EdgeInsets.only(top: 15, bottom: 15),
+                                child: Center(
+                                  child: Text(
+                                    'DO YOU WANT TO EXIT THIS APP?',
+                                    style: TextStyle(
+                                      fontSize: 14,
+                                      fontWeight: FontWeight.bold,
+                                      color: Colors.black54,
+                                    ),
+                                  ),
+                                ),
+                              ),
+                            ],
+                          ),
+                          ButtonBar(
+                              alignment: MainAxisAlignment.center,
+                              children: [
+                                Material(
+                                  borderRadius: BorderRadius.circular(26),
+                                  elevation: 2,
+                                  child: Container(
+                                    height: 35,
+                                    width: 100,
+                                    decoration: BoxDecoration(
+                                        border: Border.all(
+                                            color: Color(0xFF9B049B)),
                                         borderRadius:
                                             BorderRadius.circular(26)),
-                                    padding: EdgeInsets.all(0.0),
-                                    child: Ink(
-                                      decoration: BoxDecoration(
+                                    child: FlatButton(
+                                      onPressed: () {
+                                        return exit(0);
+                                      },
+                                      color: Color(0xFF9B049B),
+                                      shape: RoundedRectangleBorder(
                                           borderRadius:
                                               BorderRadius.circular(26)),
-                                      child: Container(
-                                        constraints: BoxConstraints(
-                                            maxWidth: 190.0, minHeight: 53.0),
-                                        alignment: Alignment.center,
-                                        child: Text(
-                                          "Yes",
-                                          textAlign: TextAlign.center,
-                                          style: TextStyle(
-                                              fontSize: 16,
-                                              fontWeight: FontWeight.bold,
-                                              color: Colors.white),
+                                      padding: EdgeInsets.all(0.0),
+                                      child: Ink(
+                                        decoration: BoxDecoration(
+                                            borderRadius:
+                                                BorderRadius.circular(26)),
+                                        child: Container(
+                                          constraints: BoxConstraints(
+                                              maxWidth: 190.0, minHeight: 53.0),
+                                          alignment: Alignment.center,
+                                          child: Text(
+                                            "Yes",
+                                            textAlign: TextAlign.center,
+                                            style: TextStyle(
+                                                fontSize: 16,
+                                                fontWeight: FontWeight.bold,
+                                                color: Colors.white),
+                                          ),
                                         ),
                                       ),
                                     ),
                                   ),
                                 ),
-                              ),
-                              Material(
-                                borderRadius: BorderRadius.circular(26),
-                                elevation: 2,
-                                child: Container(
-                                  height: 35,
-                                  width: 100,
-                                  decoration: BoxDecoration(
-                                      border:
-                                          Border.all(color: Color(0xFF9B049B)),
-                                      borderRadius: BorderRadius.circular(26)),
-                                  child: FlatButton(
-                                    onPressed: () {
-                                      Navigator.pop(context);
-                                    },
-                                    color: Color(0xFF9B049B),
-                                    shape: RoundedRectangleBorder(
+                                Material(
+                                  borderRadius: BorderRadius.circular(26),
+                                  elevation: 2,
+                                  child: Container(
+                                    height: 35,
+                                    width: 100,
+                                    decoration: BoxDecoration(
+                                        border: Border.all(
+                                            color: Color(0xFF9B049B)),
                                         borderRadius:
                                             BorderRadius.circular(26)),
-                                    padding: EdgeInsets.all(0.0),
-                                    child: Ink(
-                                      decoration: BoxDecoration(
+                                    child: FlatButton(
+                                      onPressed: () {
+                                        Navigator.pop(context);
+                                      },
+                                      color: Color(0xFF9B049B),
+                                      shape: RoundedRectangleBorder(
                                           borderRadius:
                                               BorderRadius.circular(26)),
-                                      child: Container(
-                                        constraints: BoxConstraints(
-                                            maxWidth: 190.0, minHeight: 53.0),
-                                        alignment: Alignment.center,
-                                        child: Text(
-                                          "No",
-                                          textAlign: TextAlign.center,
-                                          style: TextStyle(
-                                              fontSize: 16,
-                                              fontWeight: FontWeight.bold,
-                                              color: Colors.white),
+                                      padding: EdgeInsets.all(0.0),
+                                      child: Ink(
+                                        decoration: BoxDecoration(
+                                            borderRadius:
+                                                BorderRadius.circular(26)),
+                                        child: Container(
+                                          constraints: BoxConstraints(
+                                              maxWidth: 190.0, minHeight: 53.0),
+                                          alignment: Alignment.center,
+                                          child: Text(
+                                            "No",
+                                            textAlign: TextAlign.center,
+                                            style: TextStyle(
+                                                fontSize: 16,
+                                                fontWeight: FontWeight.bold,
+                                                color: Colors.white),
+                                          ),
                                         ),
                                       ),
                                     ),
                                   ),
                                 ),
-                              ),
-                            ]),
-                      ],
+                              ]),
+                        ],
+                      ),
                     ),
                   ),
-                ),
-              ),
-              context: context);
+                );
+              });
         },
         child: PageView(
           controller: _myPage,
           physics: NeverScrollableScrollPhysics(),
           children: [
-            Home(scafold_key, data, _myPage),
+            Home(scafoldKey, data, _myPage),
             Wallet(),
             PostScreen(),
-            NotificationPage(scafold_key),
-            PendingScreen(scafold_key),
+            NotificationPage(scafoldKey),
+            PendingScreen(scafoldKey),
           ],
         ),
       ),

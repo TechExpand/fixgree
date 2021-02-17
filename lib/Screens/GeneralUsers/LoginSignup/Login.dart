@@ -25,27 +25,27 @@ class LoginState extends State<Login> {
   Widget build(BuildContext context) {
     var network = Provider.of<WebServices>(context);
     var data = Provider.of<DataProvider>(context);
-    dynamic Credential = '';
-    var OTP;
+    dynamic mainCredential = '';
+    // var otp;
     var auth = FirebaseAuth.instance;
     verifyNumber() async {
       try {
         await FirebaseAuth.instance.verifyPhoneNumber(
           phoneNumber: data.number.toString(),
           verificationCompleted: (credential) async {
-            network.Login_SetState();
+            network.loginSetState();
             await auth.signInWithCredential(credential);
-            Credential = credential;
-            await network.Login(context: context, scaffoldKey: scaffoldKey);
+            mainCredential = credential;
+            await network.login(context: context, scaffoldKey: scaffoldKey);
           },
           verificationFailed: (FirebaseAuthException e) {
-            network.Login_SetState();
+            network.loginSetState();
             scaffoldKey.currentState
                 .showSnackBar(SnackBar(content: Text(e.message)));
           },
           timeout: Duration(seconds: 120),
           codeSent: (String verificationId, int resendToken) {
-            network.Login_SetState();
+            network.loginSetState();
 
             Navigator.push(
               context,
@@ -54,7 +54,7 @@ class LoginState extends State<Login> {
                   return OTPPAGE(
                       verificationID: verificationId,
                       data: data.number.toString(),
-                      Credential: Credential,
+                      mainCredential: mainCredential,
                       page: 'Login');
                 },
                 transitionsBuilder:
@@ -70,7 +70,7 @@ class LoginState extends State<Login> {
           codeAutoRetrievalTimeout: (String verificationId) {},
         );
       } catch (e) {
-        network.Login_SetState();
+        network.loginSetState();
         scaffoldKey.currentState
             .showSnackBar(SnackBar(content: Text(e.message)));
       }
@@ -167,7 +167,7 @@ class LoginState extends State<Login> {
                       ]))))),
               Align(
                   alignment: Alignment.center,
-                  child: !network.login_state
+                  child: !network.loginState
                       ? Container(
                           padding: EdgeInsets.only(
                             bottom: 50,
@@ -178,7 +178,7 @@ class LoginState extends State<Login> {
                                 data.number.toString() == data.number.dialCode
                                     ? null
                                     : () {
-                                        network.Login_SetState();
+                                        network.loginSetState();
                                         verifyNumber();
                                       },
                             color: Color(0xFF9B049B),

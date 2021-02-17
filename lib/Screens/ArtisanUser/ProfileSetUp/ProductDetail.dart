@@ -1,12 +1,11 @@
 import 'package:fixme/Model/service.dart';
 import 'package:fixme/Utils/Provider.dart';
 import 'package:flutter/material.dart';
-import 'package:fixme/Widgets/Dialog.dart';
 import 'package:fixme/Services/postrequest_service.dart';
 import 'package:provider/provider.dart';
 
 class ProductDetailPage extends StatefulWidget {
-  var myPage;
+  final myPage;
   ProductDetailPage(this.myPage);
   @override
   ProductDetailPageState createState() => ProductDetailPageState();
@@ -40,7 +39,7 @@ class ProductDetailPageState extends State<ProductDetailPage> {
             highlightColor: Colors.transparent,
             onTap: () {
               result = postRequestProvider.allservicesList;
-              DialogPage(context);
+              dialogPage(context);
             },
             child: Container(
               margin: EdgeInsets.only(bottom: 15),
@@ -81,7 +80,7 @@ class ProductDetailPageState extends State<ProductDetailPage> {
                 ? null
                 : () {
                     result = postRequestProvider.allservicesList;
-                    DialogPageAdd(context);
+                    dialogPageAdd(context);
                   },
             child: Container(
               width: MediaQuery.of(context).size.width / 0.2,
@@ -174,144 +173,146 @@ class ProductDetailPageState extends State<ProductDetailPage> {
     );
   }
 
-  Widget DialogPage(ctx) {
+  dialogPage(ctx) {
     PostRequestProvider postRequestProvider =
         Provider.of<PostRequestProvider>(context, listen: false);
     showDialog(
-      context: context,
-      child: StatefulBuilder(
-        builder: (BuildContext context, StateSetter setStates) {
-          return AlertDialog(
-            title: TextFormField(
-              onChanged: (value) {
-                setStates(() {
-                  searchServices(value);
-                });
-              },
-              style: TextStyle(color: Colors.black),
-              decoration: InputDecoration(
-                labelText: 'Search Services',
-                disabledBorder: OutlineInputBorder(
-                    borderSide: const BorderSide(width: 0.0),
-                    borderRadius: BorderRadius.all(Radius.circular(12))),
-                focusedBorder: OutlineInputBorder(
-                    borderSide: const BorderSide(width: 0.0),
-                    borderRadius: BorderRadius.all(Radius.circular(12))),
-                border: OutlineInputBorder(
-                    borderSide: const BorderSide(width: 0.0),
-                    borderRadius: BorderRadius.all(Radius.circular(12))),
-              ),
-            ),
-            content: Container(
-              decoration: BoxDecoration(
-                borderRadius: BorderRadius.all(new Radius.circular(50.0)),
-              ),
-              height: 500,
-              child: SingleChildScrollView(
-                child: Column(
-                  children: <Widget>[
-                    Container(
-                      width: 300,
-                      height: 500,
-                      child: ListView.builder(
-                        itemCount: result == null ? 0 : result.length,
-                        itemBuilder: (context, index) {
-                          return InkWell(
-                            onTap: () {
-                              Navigator.pop(context);
-                              postRequestProvider
-                                  .changeSelectedService(result[index]);
-                            },
-                            child: ListTile(
-                              title: Text('${result[index].service}'),
-                            ),
-                          );
-                        },
-                      ),
-                    )
-                  ],
+        context: context,
+        builder: (ctx) {
+          return StatefulBuilder(
+            builder: (BuildContext context, StateSetter setStates) {
+              return AlertDialog(
+                title: TextFormField(
+                  onChanged: (value) {
+                    setStates(() {
+                      searchServices(value);
+                    });
+                  },
+                  style: TextStyle(color: Colors.black),
+                  decoration: InputDecoration(
+                    labelText: 'Search Services',
+                    disabledBorder: OutlineInputBorder(
+                        borderSide: const BorderSide(width: 0.0),
+                        borderRadius: BorderRadius.all(Radius.circular(12))),
+                    focusedBorder: OutlineInputBorder(
+                        borderSide: const BorderSide(width: 0.0),
+                        borderRadius: BorderRadius.all(Radius.circular(12))),
+                    border: OutlineInputBorder(
+                        borderSide: const BorderSide(width: 0.0),
+                        borderRadius: BorderRadius.all(Radius.circular(12))),
+                  ),
                 ),
-              ),
-            ),
+                content: Container(
+                  decoration: BoxDecoration(
+                    borderRadius: BorderRadius.all(new Radius.circular(50.0)),
+                  ),
+                  height: 500,
+                  child: SingleChildScrollView(
+                    child: Column(
+                      children: <Widget>[
+                        Container(
+                          width: 300,
+                          height: 500,
+                          child: ListView.builder(
+                            itemCount: result == null ? 0 : result.length,
+                            itemBuilder: (context, index) {
+                              return InkWell(
+                                onTap: () {
+                                  Navigator.pop(context);
+                                  postRequestProvider
+                                      .changeSelectedService(result[index]);
+                                },
+                                child: ListTile(
+                                  title: Text('${result[index].service}'),
+                                ),
+                              );
+                            },
+                          ),
+                        )
+                      ],
+                    ),
+                  ),
+                ),
+              );
+            },
           );
-        },
-      ),
-    ).then((v) {
+        }).then((v) {
       setState(() {});
     });
   }
 
-  Widget DialogPageAdd(ctx) {
-    PostRequestProvider postRequestProvider =
-        Provider.of<PostRequestProvider>(context, listen: false);
+  dialogPageAdd(ctx) {
     DataProvider data = Provider.of<DataProvider>(context, listen: false);
 
     showDialog(
-      context: context,
-      child: StatefulBuilder(
-        builder: (BuildContext context, StateSetter setStates) {
-          return AlertDialog(
-            title: TextFormField(
-              onChanged: (value) {
-                setStates(() {
-                  searchServices(value);
-                });
-              },
-              style: TextStyle(color: Colors.black),
-              decoration: InputDecoration(
-                labelText: 'Search Services',
-                disabledBorder: OutlineInputBorder(
-                    borderSide: const BorderSide(width: 0.0),
-                    borderRadius: BorderRadius.all(Radius.circular(12))),
-                focusedBorder: OutlineInputBorder(
-                    borderSide: const BorderSide(width: 0.0),
-                    borderRadius: BorderRadius.all(Radius.circular(12))),
-                border: OutlineInputBorder(
-                    borderSide: const BorderSide(width: 0.0),
-                    borderRadius: BorderRadius.all(Radius.circular(12))),
-              ),
-            ),
-            content: Container(
-              decoration: BoxDecoration(
-                borderRadius: BorderRadius.all(new Radius.circular(50.0)),
-              ),
-              height: 500,
-              child: SingleChildScrollView(
-                child: Column(
-                  children: <Widget>[
-                    Container(
-                      width: 300,
-                      height: 500,
-                      child: ListView.builder(
-                        itemCount: result == null ? 0 : result.length,
-                        itemBuilder: (context, index) {
-                          return InkWell(
-                            onTap: () {
-                              Navigator.pop(context);
-                              data.setSubCat(result[index].service);
-                              chips.add(
-                                Padding(
-                                  padding: const EdgeInsets.only(right: 8.0),
-                                  child: Chip(
-                                      label: Text('${result[index].service}')),
+        context: context,
+        builder: (ctx) {
+          return StatefulBuilder(
+            builder: (BuildContext context, StateSetter setStates) {
+              return AlertDialog(
+                title: TextFormField(
+                  onChanged: (value) {
+                    setStates(() {
+                      searchServices(value);
+                    });
+                  },
+                  style: TextStyle(color: Colors.black),
+                  decoration: InputDecoration(
+                    labelText: 'Search Services',
+                    disabledBorder: OutlineInputBorder(
+                        borderSide: const BorderSide(width: 0.0),
+                        borderRadius: BorderRadius.all(Radius.circular(12))),
+                    focusedBorder: OutlineInputBorder(
+                        borderSide: const BorderSide(width: 0.0),
+                        borderRadius: BorderRadius.all(Radius.circular(12))),
+                    border: OutlineInputBorder(
+                        borderSide: const BorderSide(width: 0.0),
+                        borderRadius: BorderRadius.all(Radius.circular(12))),
+                  ),
+                ),
+                content: Container(
+                  decoration: BoxDecoration(
+                    borderRadius: BorderRadius.all(new Radius.circular(50.0)),
+                  ),
+                  height: 500,
+                  child: SingleChildScrollView(
+                    child: Column(
+                      children: <Widget>[
+                        Container(
+                          width: 300,
+                          height: 500,
+                          child: ListView.builder(
+                            itemCount: result == null ? 0 : result.length,
+                            itemBuilder: (context, index) {
+                              return InkWell(
+                                onTap: () {
+                                  Navigator.pop(context);
+                                  data.setSubCat(result[index].service);
+                                  chips.add(
+                                    Padding(
+                                      padding:
+                                          const EdgeInsets.only(right: 8.0),
+                                      child: Chip(
+                                          label:
+                                              Text('${result[index].service}')),
+                                    ),
+                                  );
+                                },
+                                child: ListTile(
+                                  title: Text('${result[index].service}'),
                                 ),
                               );
                             },
-                            child: ListTile(
-                              title: Text('${result[index].service}'),
-                            ),
-                          );
-                        },
-                      ),
-                    )
-                  ],
+                          ),
+                        )
+                      ],
+                    ),
+                  ),
                 ),
-              ),
-            ),
+              );
+            },
           );
-        },
-      ),
-    ).then((v) {
+        }).then((v) {
       setState(() {});
     });
   }

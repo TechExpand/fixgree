@@ -10,9 +10,9 @@ import 'package:google_fonts/google_fonts.dart';
 import 'package:provider/provider.dart';
 
 class NotificationPage extends StatefulWidget {
-  var scafold_key;
+  final scafoldKey;
 
-  NotificationPage(this.scafold_key);
+  NotificationPage(this.scafoldKey);
 
   @override
   _NotificationState createState() => _NotificationState();
@@ -42,7 +42,7 @@ class _NotificationState extends State<NotificationPage> {
                   children: [
                     InkWell(
                       onTap: () {
-                        widget.scafold_key.currentState.openDrawer();
+                        widget.scafoldKey.currentState.openDrawer();
                       },
                       child: Padding(
                         padding: const EdgeInsets.all(4.0),
@@ -51,11 +51,11 @@ class _NotificationState extends State<NotificationPage> {
                             child: Text(''),
                             radius: 19,
                             backgroundImage: NetworkImage(
-                              network.profile_pic_file_name ==
+                              network.profilePicFileName ==
                                           'no_picture_upload' ||
-                                      network.profile_pic_file_name == null
+                                      network.profilePicFileName == null
                                   ? 'https://uploads.fixme.ng/originals/no_picture_upload'
-                                  : 'https://uploads.fixme.ng/originals/${network.profile_pic_file_name}',
+                                  : 'https://uploads.fixme.ng/originals/${network.profilePicFileName}',
                             ),
                             foregroundColor: Colors.white,
                             backgroundColor: Colors.white,
@@ -176,8 +176,8 @@ class _NotificationState extends State<NotificationPage> {
                 padding: EdgeInsets.only(top: 5),
                 height: MediaQuery.of(context).size.height,
                 child: StreamBuilder(
-                  stream: FirebaseApi.UserNotificatioStream(
-                      network.user_id.toString()),
+                  stream: FirebaseApi.userNotificatioStream(
+                      network.userId.toString()),
                   builder: (context, AsyncSnapshot<QuerySnapshot> snapshot) {
                     if (snapshot.hasData) {
                       notify = snapshot.data.docs
@@ -270,11 +270,11 @@ class _NotificationState extends State<NotificationPage> {
                                                                         (value) {
                                                                   network.bidProject(
                                                                       network
-                                                                          .user_id,
+                                                                          .userId,
                                                                       users[index]
                                                                           .jobid,
                                                                       widget
-                                                                          .scafold_key);
+                                                                          .scafoldKey);
                                                                 });
                                                               },
                                                               child: Container(
@@ -359,7 +359,7 @@ class _NotificationState extends State<NotificationPage> {
                                                                           onTap:
                                                                               () {
                                                                             FirebaseApi.updateNotification(users[index].id, 'confirm').then((value) {
-                                                                              network.confirmBudget(users[index].bidderId, users[index].bidId, widget.scafold_key);
+                                                                              network.confirmBudget(users[index].bidderId, users[index].bidId, widget.scafoldKey);
                                                                             });
                                                                           },
                                                                           child:
@@ -391,7 +391,7 @@ class _NotificationState extends State<NotificationPage> {
                                                     ),
                                                   ),
                                                   Text(
-                                                    '${date}',
+                                                    '$date',
                                                     style: TextStyle(
                                                         color: Colors.black38),
                                                   )

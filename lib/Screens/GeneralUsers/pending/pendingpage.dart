@@ -6,9 +6,9 @@ import 'package:flutter_slidable/flutter_slidable.dart';
 import 'package:provider/provider.dart';
 
 class PendingScreen extends StatefulWidget {
-  var scafold_key;
+  final scafoldKey;
 
-  PendingScreen(this.scafold_key);
+  PendingScreen(this.scafoldKey);
 
   @override
   _PendingScreenState createState() => _PendingScreenState();
@@ -35,7 +35,7 @@ class _PendingScreenState extends State<PendingScreen> {
                   children: [
                     InkWell(
                       onTap: () {
-                        widget.scafold_key.currentState.openDrawer();
+                        widget.scafoldKey.currentState.openDrawer();
                       },
                       child: Padding(
                         padding: const EdgeInsets.all(4.0),
@@ -44,11 +44,11 @@ class _PendingScreenState extends State<PendingScreen> {
                             child: Text(''),
                             radius: 19,
                             backgroundImage: NetworkImage(
-                              network.profile_pic_file_name ==
+                              network.profilePicFileName ==
                                           'no_picture_upload' ||
-                                      network.profile_pic_file_name == null
+                                      network.profilePicFileName == null
                                   ? 'https://uploads.fixme.ng/originals/no_picture_upload'
-                                  : 'https://uploads.fixme.ng/originals/${network.profile_pic_file_name}',
+                                  : 'https://uploads.fixme.ng/originals/${network.profilePicFileName}',
                             ),
                             foregroundColor: Colors.white,
                             backgroundColor: Colors.white,

@@ -1,35 +1,30 @@
-import 'dart:io';
 import 'package:fixme/Services/Firebase_service.dart';
 import 'package:fixme/Services/network_service.dart';
 import 'package:fixme/Utils/Provider.dart';
 import 'package:fixme/Utils/utils.dart';
 import 'package:fixme/Widgets/messages_widget.dart';
-import 'package:fixme/Model/user.dart';
 import 'package:fixme/Widgets/popup_menu.dart';
 import 'dart:async';
 import 'dart:io' as io;
-import 'package:file/file.dart';
 import 'package:file/local.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:flutter_audio_recorder/flutter_audio_recorder.dart';
-import 'package:flutter_ringtone_player/flutter_ringtone_player.dart';
 import 'package:gx_file_picker/gx_file_picker.dart';
 import 'package:path_provider/path_provider.dart';
-import 'package:flutter/material.dart';
 import 'package:image_picker/image_picker.dart';
 import 'package:provider/provider.dart';
 
 class ChatPage extends StatefulWidget {
-  var user;
-  var pop_data;
-   final LocalFileSystem localFileSystem;
+  final user;
+  final popData;
+  final LocalFileSystem localFileSystem;
 
   ChatPage({
-    this.pop_data,
+    this.popData,
     localFileSystem,
     @required this.user,
-  }): this.localFileSystem = localFileSystem ?? LocalFileSystem();
+  }) : this.localFileSystem = localFileSystem ?? LocalFileSystem();
 
   @override
   _ChatPageState createState() => _ChatPageState();
@@ -37,21 +32,15 @@ class ChatPage extends StatefulWidget {
 
 class _ChatPageState extends State<ChatPage> {
   //FocusNode textFieldFocus = FocusNode();
-   FlutterAudioRecorder _recorder;
+  FlutterAudioRecorder _recorder;
   Recording _current;
   RecordingStatus _currentStatus = RecordingStatus.Unset;
 
   final _controller = TextEditingController();
   final _controller2 = TextEditingController();
   String message = '';
-  
 
-
-
-
-
-
-init() async {
+  init() async {
     try {
       if (await FlutterAudioRecorder.hasPermissions) {
         String customPath = '/flutter_audio_recorder_';
@@ -77,26 +66,20 @@ init() async {
         await _recorder.initialized;
         // after initialization
         var current = await _recorder.current(channel: 0);
-    
+
         // should be "Initialized", if all working fine
         setState(() {
           _current = current;
           _currentStatus = current.status;
-         
         });
       } else {
         Scaffold.of(context).showSnackBar(
             new SnackBar(content: new Text("You must accept permissions")));
       }
-    } catch (e) {
-     
-    }
+    } catch (e) {}
   }
 
-
-
-
- Widget _buildText(RecordingStatus status) {
+  Widget _buildText(RecordingStatus status) {
     var text = "";
     switch (_currentStatus) {
       case RecordingStatus.Initialized:
@@ -125,9 +108,7 @@ init() async {
     return Text(text, style: TextStyle(color: Colors.white));
   }
 
- 
-
- @override
+  @override
   void initState() {
     // TODO: implement initState
     super.initState();
@@ -143,248 +124,242 @@ init() async {
     void pickImage({@required ImageSource source, context}) async {
       final selectedImage = await picker.getImage(source: source);
       FocusScope.of(context).unfocus();
-       _controller2.clear();
-        _controller.clear();
-         datas.setWritingTo(false);
+      _controller2.clear();
+      _controller.clear();
+      datas.setWritingTo(false);
       await FirebaseApi.uploadImage(
-              widget.user.idUser,
-              network.mobile_device_token,
-              selectedImage,
-              context,
+          widget.user.idUser,
+          network.mobileDeviceToken,
+          selectedImage,
+          context,
           '${network.firstName}-${widget.user.name}');
-          
     }
 
+    pickDoc() async {
+      final selectedImage =
+          await FilePicker.getFile(type: FileType.custom, allowedExtensions: [
+        '.pdf',
+        '.doc',
+        '.docx',
+        '.csv',
+        '.xls',
+        '.xlsx',
+        '.ods',
+        '.txt',
+        '.html',
+        '.png',
+        '.jpeg',
+        '.jpg',
+        '.gif'
+      ]);
 
-    pickDoc()async{
-final selectedImage = await FilePicker.getFile(type: FileType.custom,
- allowedExtensions: 
-   ['.pdf', '.doc', '.docx','.csv', '.xls', '.xlsx', '.ods','.txt','.html','.png','.jpeg','.jpg','.gif']
- );
-
-  FocusScope.of(context).unfocus();
-       _controller2.clear();
-        _controller.clear();
-         datas.setWritingTo(false);
-      await FirebaseApi.uploadImage(
-              widget.user.idUser,
-              network.mobile_device_token,
-              selectedImage,
-              context,
-          '${network.firstName}-${widget.user.name}');
-          
-}
-
-     void record({record, context}) async {
-        
       FocusScope.of(context).unfocus();
-       _controller2.clear();
-        _controller.clear();
-        datas.setWritingTo(false);
-      await FirebaseApi.uploadRecord(
-              widget.user.idUser,
-              network.mobile_device_token,
-              record,
-              context,
+      _controller2.clear();
+      _controller.clear();
+      datas.setWritingTo(false);
+      await FirebaseApi.uploadImage(
+          widget.user.idUser,
+          network.mobileDeviceToken,
+          selectedImage,
+          context,
           '${network.firstName}-${widget.user.name}');
-          
+    }
+
+    void record({record, context}) async {
+      FocusScope.of(context).unfocus();
+      _controller2.clear();
+      _controller.clear();
+      datas.setWritingTo(false);
+      await FirebaseApi.uploadRecord(
+          widget.user.idUser,
+          network.mobileDeviceToken,
+          record,
+          context,
+          '${network.firstName}-${widget.user.name}');
     }
 
     void sendMessage() async {
-     
       FocusScope.of(context).unfocus();
       _controller.clear();
-       datas.setWritingTo(false);
+      datas.setWritingTo(false);
       await FirebaseApi.uploadmessage(
-              widget.user.idUser,
-              network.mobile_device_token,
-              message,
-              context,
-              '${network.firstName}-${widget.user.name}');
-              
+          widget.user.idUser,
+          network.mobileDeviceToken,
+          message,
+          context,
+          '${network.firstName}-${widget.user.name}');
     }
-
-
 
     void _modalBottomSheetRecord(datas) {
       showModalBottomSheet(
           context: context,
-          builder: (builder){
-         return  StatefulBuilder(
-          builder: (BuildContext context, StateSetter setState) {
+          builder: (builder) {
+            return StatefulBuilder(
+                builder: (BuildContext context, StateSetter setState) {
+              _start() async {
+                try {
+                  await _recorder.start();
+                  var recording = await _recorder.current(channel: 0);
+                  setState(() {
+                    _current = recording;
+                  });
 
-             
-_start() async {
-  try{
-      await _recorder.start();
-      var recording = await _recorder.current(channel: 0);
-      setState(() {
-        _current = recording;
-      });
+                  const tick = const Duration(milliseconds: 50);
+                  new Timer.periodic(tick, (Timer t) async {
+                    if (_currentStatus == RecordingStatus.Stopped) {
+                      t.cancel();
+                    }
 
-      const tick = const Duration(milliseconds: 50);
-      new Timer.periodic(tick, (Timer t) async {
-        if (_currentStatus == RecordingStatus.Stopped) {
-          t.cancel();
-        }
+                    var current = await _recorder.current(channel: 0);
+                    // print(current.status);
+                    setState(() {
+                      _current = current;
+                      _currentStatus = _current.status;
+                    });
+                  });
+                } catch (e) {}
+              }
 
-        var current = await _recorder.current(channel: 0);
-        // print(current.status);
-        setState(() {
-          _current = current;
-          _currentStatus = _current.status;
-        });
-      });
-    } catch (e) {
-     
-    } 
-  }
+              _resume() async {
+                await _recorder.resume();
+                setState(() {});
+              }
 
-  _resume() async {
-    await _recorder.resume();
-    setState(() {});
-  }
+              _pause() async {
+                await _recorder.pause();
+                setState(() {});
+              }
 
-  _pause() async {
-    await _recorder.pause();
-    setState(() {});
-  }
+              _stop() async {
+                var result = await _recorder.stop();
+                // File file = widget.localFileSystem.file(result.path);
 
-  _stop() async {
-    var result = await _recorder.stop();
-    File file = widget.localFileSystem.file(result.path);
-   
-    setState(() {
-      _current = result;
-      _currentStatus = _current.status;
-    });
-  }
+                setState(() {
+                  _current = result;
+                  _currentStatus = _current.status;
+                });
+              }
 
-
-  initilize() async {
-    try {
-      if (await FlutterAudioRecorder.hasPermissions) {
-        String customPath = '/flutter_audio_recorder_';
-        io.Directory appDocDirectory;
+              initilize() async {
+                try {
+                  if (await FlutterAudioRecorder.hasPermissions) {
+                    String customPath = '/flutter_audio_recorder_';
+                    io.Directory appDocDirectory;
 //        io.Directory appDocDirectory = await getApplicationDocumentsDirectory();
-        if (io.Platform.isIOS) {
-          appDocDirectory = await getApplicationDocumentsDirectory();
-        } else {
-          appDocDirectory = await getExternalStorageDirectory();
-        }
+                    if (io.Platform.isIOS) {
+                      appDocDirectory =
+                          await getApplicationDocumentsDirectory();
+                    } else {
+                      appDocDirectory = await getExternalStorageDirectory();
+                    }
 
-        // can add extension like ".mp4" ".wav" ".m4a" ".aac"
-        customPath = appDocDirectory.path +
-            customPath +
-            DateTime.now().millisecondsSinceEpoch.toString();
+                    // can add extension like ".mp4" ".wav" ".m4a" ".aac"
+                    customPath = appDocDirectory.path +
+                        customPath +
+                        DateTime.now().millisecondsSinceEpoch.toString();
 
-        // .wav <---> AudioFormat.WAV
-        // .mp4 .m4a .aac <---> AudioFormat.AAC
-        // AudioFormat is optional, if given value, will overwrite path extension when there is conflicts.
-        _recorder =
-            FlutterAudioRecorder(customPath, audioFormat: AudioFormat.WAV);
+                    // .wav <---> AudioFormat.WAV
+                    // .mp4 .m4a .aac <---> AudioFormat.AAC
+                    // AudioFormat is optional, if given value, will overwrite path extension when there is conflicts.
+                    _recorder = FlutterAudioRecorder(customPath,
+                        audioFormat: AudioFormat.WAV);
 
-        await _recorder.initialized;
-        // after initialization
-        var current = await _recorder.current(channel: 0);
-       
-        // should be "Initialized", if all working fine
-        setState(() {
-          _current = current;
-          _currentStatus = current.status;
-          
-        });
-      } else {
-        Scaffold.of(context).showSnackBar(
-            new SnackBar(content: new Text("You must accept permissions")));
-      }
-    } catch (e) {
-   
-    }
-  }
+                    await _recorder.initialized;
+                    // after initialization
+                    var current = await _recorder.current(channel: 0);
 
+                    // should be "Initialized", if all working fine
+                    setState(() {
+                      _current = current;
+                      _currentStatus = current.status;
+                    });
+                  } else {
+                    Scaffold.of(context).showSnackBar(new SnackBar(
+                        content: new Text("You must accept permissions")));
+                  }
+                } catch (e) {}
+              }
 
-
-           return new Container(
-              height: 100.0,
-              color: Colors.transparent,
-              //could change this to Color(0xFF737373),
-              //so you don't have to change MaterialApp canvasColor
-              child: Padding(
-                padding: const EdgeInsets.only(top:4.0, bottom:4, left:8, right:8),
-                child: Column(
-            children: <Widget>[
-                new Row(
-                  mainAxisAlignment: MainAxisAlignment.spaceEvenly,
-                  children: <Widget>[
-                    Padding(
-                      padding: const EdgeInsets.all(8.0),
-                      child: new FlatButton(
-                        onPressed: () {
-                          switch (_currentStatus) {
-                            case RecordingStatus.Initialized:
-                              {
-                                _start();
-                                break;
+              return new Container(
+                height: 100.0,
+                color: Colors.transparent,
+                //could change this to Color(0xFF737373),
+                //so you don't have to change MaterialApp canvasColor
+                child: Padding(
+                  padding: const EdgeInsets.only(
+                      top: 4.0, bottom: 4, left: 8, right: 8),
+                  child: Column(children: <Widget>[
+                    new Row(
+                      mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+                      children: <Widget>[
+                        Padding(
+                          padding: const EdgeInsets.all(8.0),
+                          child: new FlatButton(
+                            onPressed: () {
+                              switch (_currentStatus) {
+                                case RecordingStatus.Initialized:
+                                  {
+                                    _start();
+                                    break;
+                                  }
+                                case RecordingStatus.Recording:
+                                  {
+                                    _pause();
+                                    break;
+                                  }
+                                case RecordingStatus.Paused:
+                                  {
+                                    _resume();
+                                    break;
+                                  }
+                                case RecordingStatus.Stopped:
+                                  {
+                                    initilize();
+                                    break;
+                                  }
+                                default:
+                                  break;
                               }
-                            case RecordingStatus.Recording:
-                              {
-                                _pause();
-                                break;
-                              }
-                            case RecordingStatus.Paused:
-                              {
-                                _resume();
-                                break;
-                              }
-                            case RecordingStatus.Stopped:
-                              {
-                                initilize();
-                                break;
-                              }
-                            default:
-                              break;
-                          }
-                        },
-                        child: _buildText(_currentStatus),
-                         color: Color(0xFFA40C85),
-                      ),
-                    ),
-                    new FlatButton(
-                      onPressed:
-                      _currentStatus != RecordingStatus.Unset ? _stop : null,
-                      child:
-                      new Text("Stop", style: TextStyle(color: Colors.white)),
-                     color: Color(0xFFA40C85).withOpacity(.5),
-                    ),
-                  
-                 _currentStatus == RecordingStatus.Stopped?new InkWell(
-                      onTap:(){
-                        Navigator.pop(context);
-                                record(
+                            },
+                            child: _buildText(_currentStatus),
+                            color: Color(0xFFA40C85),
+                          ),
+                        ),
+                        new FlatButton(
+                          onPressed: _currentStatus != RecordingStatus.Unset
+                              ? _stop
+                              : null,
+                          child: new Text("Stop",
+                              style: TextStyle(color: Colors.white)),
+                          color: Color(0xFFA40C85).withOpacity(.5),
+                        ),
+                        _currentStatus == RecordingStatus.Stopped
+                            ? new InkWell(
+                                onTap: () {
+                                  Navigator.pop(context);
+                                  record(
                                     context: context,
                                     record: _current,
                                   );
-                      },
-                      child: Icon(Icons.send, size:40, color:Colors.black),
-                    ):Icon(Icons.send, size:40, color:Colors.black54),
-                  ],
-                ),
-               /*  Padding(
+                                },
+                                child: Icon(Icons.send,
+                                    size: 40, color: Colors.black),
+                              )
+                            : Icon(Icons.send, size: 40, color: Colors.black54),
+                      ],
+                    ),
+                    /*  Padding(
                   padding: const EdgeInsets.all(8.0),
                   child: new Text("Status : $_currentStatus"),
                 ),*/
-               Text(
-                    "Recording Duration : ${_current?.duration.toString()}") ,
-              
-            ]),
-              ),
-            );
-          });
-        
+                    Text(
+                        "Recording Duration : ${_current?.duration.toString()}"),
+                  ]),
+                ),
+              );
+            });
           });
     }
-
 
     void _modalBottomSheetMenu(datas) {
       showModalBottomSheet(
@@ -400,9 +375,9 @@ _start() async {
                   Container(
                     height: 65,
                     color: Color(0xFFA40C85), //164, 12, 133, 0.75
-                  
+
                     child: Row(
-                       mainAxisAlignment:  MainAxisAlignment.center,
+                      mainAxisAlignment: MainAxisAlignment.center,
                       children: <Widget>[
                         InkWell(
                           onTap: () {
@@ -419,59 +394,59 @@ _start() async {
                           width: 14,
                         ),
                         ClipRRect(
-                         borderRadius: BorderRadius.circular(5),
-                         child: Container(
-                             color: Colors.white,
-                            height: 53,
-                            width: MediaQuery.of(context).size.width / 1.45,
-                            child: TextField(
-                              controller: _controller2,
-                              onChanged: (val) {
-                                (val.length > 0 && val.trim() != "")
-                                    ? datas.setWritingTo(true)
-                                    : datas.setWritingTo(false);
+                            borderRadius: BorderRadius.circular(5),
+                            child: Container(
+                              color: Colors.white,
+                              height: 53,
+                              width: MediaQuery.of(context).size.width / 1.45,
+                              child: TextField(
+                                controller: _controller2,
+                                onChanged: (val) {
+                                  (val.length > 0 && val.trim() != "")
+                                      ? datas.setWritingTo(true)
+                                      : datas.setWritingTo(false);
 
-                                message = val;
-                              },
-                               textCapitalization: TextCapitalization.sentences,
-                              autocorrect: true,
-                              // focusNode: textFieldFocus,
-                              enableSuggestions: true,
+                                  message = val;
+                                },
+                                textCapitalization:
+                                    TextCapitalization.sentences,
+                                autocorrect: true,
+                                // focusNode: textFieldFocus,
+                                enableSuggestions: true,
                                 maxLines: null,
-                                
-                              decoration: InputDecoration(
-                                 border: InputBorder.none,
-                                  hintStyle: TextStyle(color:Colors.black54),
-                                 hintText: 'Send Message...',
-        focusedBorder: InputBorder.none,
-        enabledBorder: InputBorder.none,
-        errorBorder: InputBorder.none,
-        disabledBorder: InputBorder.none,
-                                isDense: true,
-                                filled: true,
-                                 fillColor: Colors.white,
-                             
+
+                                decoration: InputDecoration(
+                                  border: InputBorder.none,
+                                  hintStyle: TextStyle(color: Colors.black54),
+                                  hintText: 'Send Message...',
+                                  focusedBorder: InputBorder.none,
+                                  enabledBorder: InputBorder.none,
+                                  errorBorder: InputBorder.none,
+                                  disabledBorder: InputBorder.none,
+                                  isDense: true,
+                                  filled: true,
+                                  fillColor: Colors.white,
+                                ),
                               ),
-                            ),
-                          )),
-                        
+                            )),
                         Selector<DataProvider, bool>(
                           selector: (_, model) => model.isWriting,
                           builder: (_, mo, __) {
                             return mo
-                                ?IconButton(
-                                  onPressed: sendMessage,
-                                icon:  Icon(Icons.send, color: Colors.white),
-                                  
-                                )
+                                ? IconButton(
+                                    onPressed: sendMessage,
+                                    icon: Icon(Icons.send, color: Colors.white),
+                                  )
                                 : IconButton(
-                                  onPressed:(){
-                                    _modalBottomSheetRecord(datas);
-                                  },
-                                icon:  Icon(Icons.mic,
+                                    onPressed: () {
+                                      _modalBottomSheetRecord(datas);
+                                    },
+                                    icon: Icon(
+                                      Icons.mic,
                                       color: Colors.white,
-                                      size: 30,),
-                                );
+                                      size: 30,
+                                    ),
+                                  );
                           },
                         ),
                       ],
@@ -517,7 +492,7 @@ _start() async {
                               text: 'Camera'),
                         ),
                         InkWell(
-                             child: Tab(
+                          child: Tab(
                               icon: Container(
                                   width: 40,
                                   height: 40,
@@ -567,9 +542,6 @@ _start() async {
           });
     }
 
-
-
-
     return Scaffold(
       appBar: AppBar(
         backgroundColor: Color(0xFFA40C85),
@@ -588,24 +560,23 @@ _start() async {
         actions: <Widget>[
           widget.user.idUser == null ||
                   widget.user.idUser.toString().isEmpty ||
-                  network.mobile_device_token == null
+                  network.mobileDeviceToken == null
               ? Text('')
               : IconButton(
                   icon: Icon(
                     Icons.videocam,
                     size: 30,
                   ),
-                  onPressed: 
-                  () {
+                  onPressed: () {
                     datas.onJoin(
-                       reciever: widget.user.urlAvatar,
+                      reciever: widget.user.urlAvatar,
                       channelID: data.getRandomString(10),
                       userID: widget.user.idUser,
                       myusername: network.firstName,
-                      callerId:network.mobile_device_token,
+                      callerId: network.mobileDeviceToken,
                       calltype: 'video',
                       myavater:
-                          'https://uploads.fixme.ng/originals/${network.profile_pic_file_name}',
+                          'https://uploads.fixme.ng/originals/${network.profilePicFileName}',
                       context: context,
                     );
                   },
@@ -616,8 +587,8 @@ _start() async {
               size: 25,
             ),
             onPressed: widget.user.idUser == null ||
-                widget.user.idUser.toString().isEmpty ||
-                network.mobile_device_token == null 
+                    widget.user.idUser.toString().isEmpty ||
+                    network.mobileDeviceToken == null
                 ? () {
                     data.makePhoneCall(widget.user.userMobile);
                   }
@@ -627,17 +598,20 @@ _start() async {
                       channelID: data.getRandomString(10),
                       userID: widget.user.idUser,
                       myusername: network.firstName,
-                      callerId:network.mobile_device_token,
+                      callerId: network.mobileDeviceToken,
                       calltype: 'audio',
                       myavater:
-                          'https://uploads.fixme.ng/originals/${network.profile_pic_file_name}',
+                          'https://uploads.fixme.ng/originals/${network.profilePicFileName}',
                       context: context,
                     );
                   },
           ),
           Padding(
             padding: const EdgeInsets.only(right: 10.0),
-            child: PopUpMenu(idUser: widget.user.idUser, user: widget.user, pop_data:widget.pop_data),
+            child: PopUpMenu(
+                idUser: widget.user.idUser,
+                user: widget.user,
+                popData: widget.popData),
           ),
         ],
       ),
@@ -660,19 +634,19 @@ _start() async {
             height: 65,
             color: Color(0xFFA40C85),
             child: widget.user.idUser == null ||
-                widget.user.idUser.toString().isEmpty ||
-                network.mobile_device_token == null 
+                    widget.user.idUser.toString().isEmpty ||
+                    network.mobileDeviceToken == null
                 ? Center(
                     child: Text(
                     'You Cannot Send Message',
-                    style: TextStyle(color: Colors.white, fontWeight:FontWeight.bold),
+                    style: TextStyle(
+                        color: Colors.white, fontWeight: FontWeight.bold),
                   ))
                 : Row(
-                  mainAxisAlignment:  MainAxisAlignment.center,
+                    mainAxisAlignment: MainAxisAlignment.center,
                     children: <Widget>[
                       InkWell(
                         onTap: () {
-                       
                           _modalBottomSheetMenu(datas);
                         },
                         child: Container(
@@ -688,65 +662,60 @@ _start() async {
                       SizedBox(
                         width: 14,
                       ),
-                       ClipRRect(
-                         borderRadius: BorderRadius.circular(5),
-                            child: Container(
-                              color: Colors.white,
-                            height: 53,
-                            width: MediaQuery.of(context).size.width / 1.45,
-                            child: TextField(
-                              
-                              onTap: () =>  FirebaseApi.updateUsertoRead(
-                                                idUser: widget.user.idUser,
-                                               idArtisan:network.mobile_device_token),
-                              controller: _controller,
-                              onChanged: (val) {
-                                (val.length > 0 && val.trim() != "")
-                                    ? datas.setWritingTo(true)
-                                    : datas.setWritingTo(false);
-                                message = val;
-                              },
-                              textCapitalization: TextCapitalization.sentences,
-                              autocorrect: true,
-                              // focusNode: textFieldFocus,
-                              enableSuggestions: true,
-                                maxLines: null,
-                              decoration: InputDecoration(
-                                hintText: 'Send Message...',
-                                hintStyle: TextStyle(color:Colors.black54),
-                                 border: InputBorder.none,
-        focusedBorder: InputBorder.none,
-        enabledBorder: InputBorder.none,
-        errorBorder: InputBorder.none,
-        disabledBorder: InputBorder.none,
-                                isDense: true,
-                                filled: true,
-                                 fillColor: Colors.white,
-                             
-                              ),
+                      ClipRRect(
+                        borderRadius: BorderRadius.circular(5),
+                        child: Container(
+                          color: Colors.white,
+                          height: 53,
+                          width: MediaQuery.of(context).size.width / 1.45,
+                          child: TextField(
+                            onTap: () => FirebaseApi.updateUsertoRead(
+                                idUser: widget.user.idUser,
+                                idArtisan: network.mobileDeviceToken),
+                            controller: _controller,
+                            onChanged: (val) {
+                              (val.length > 0 && val.trim() != "")
+                                  ? datas.setWritingTo(true)
+                                  : datas.setWritingTo(false);
+                              message = val;
+                            },
+                            textCapitalization: TextCapitalization.sentences,
+                            autocorrect: true,
+                            // focusNode: textFieldFocus,
+                            enableSuggestions: true,
+                            maxLines: null,
+                            decoration: InputDecoration(
+                              hintText: 'Send Message...',
+                              hintStyle: TextStyle(color: Colors.black54),
+                              border: InputBorder.none,
+                              focusedBorder: InputBorder.none,
+                              enabledBorder: InputBorder.none,
+                              errorBorder: InputBorder.none,
+                              disabledBorder: InputBorder.none,
+                              isDense: true,
+                              filled: true,
+                              fillColor: Colors.white,
                             ),
-                             
                           ),
-                       ),
-                      
+                        ),
+                      ),
                       Selector<DataProvider, bool>(
                         selector: (_, model) => model.isWriting,
                         builder: (_, mo, __) {
-                        
                           return mo
-                          
                               ? IconButton(
                                   onPressed: sendMessage,
-                                icon:  Icon(Icons.send, color: Colors.white),
-                                  
+                                  icon: Icon(Icons.send, color: Colors.white),
                                 )
                               : IconButton(
-                                  onPressed:(){
+                                  onPressed: () {
                                     _modalBottomSheetRecord(datas);
                                   },
-                                icon:  Icon(Icons.mic,
-                                      color: Colors.white,
-                                      size: 30,),
+                                  icon: Icon(
+                                    Icons.mic,
+                                    color: Colors.white,
+                                    size: 30,
+                                  ),
                                 );
                         },
                       ),

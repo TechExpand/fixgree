@@ -4,13 +4,12 @@ import 'package:fixme/Services/network_service.dart';
 import 'package:fixme/Utils/Provider.dart';
 import 'package:fixme/Utils/utils.dart';
 import 'package:flutter/material.dart';
-import 'package:fixme/Screens/ArtisanUser/Profile/ProfilePage.dart';
 import 'package:image_picker/image_picker.dart';
 import 'package:provider/provider.dart';
 
 class PhotoCatelogPage extends StatefulWidget {
-  var myPage;
- 
+  final myPage;
+
   PhotoCatelogPage(this.myPage);
   @override
   PhotoCatelogPageState createState() => PhotoCatelogPageState();
@@ -18,26 +17,27 @@ class PhotoCatelogPage extends StatefulWidget {
 
 class PhotoCatelogPageState extends State<PhotoCatelogPage> {
   final GlobalKey<ScaffoldState> scaffoldKey = GlobalKey<ScaffoldState>();
-   int _index = 0;
 
   @override
   Widget build(BuildContext context) {
-     WebServices network = Provider.of<WebServices>(context);
-     Utils data = Provider.of<Utils>(context);
-     var datas = Provider.of<DataProvider>(context);
+    WebServices network = Provider.of<WebServices>(context);
+    Utils data = Provider.of<Utils>(context);
+    var datas = Provider.of<DataProvider>(context);
     return Scaffold(
       key: scaffoldKey,
       body: WillPopScope(
-        onWillPop: (){},
+        onWillPop: () {},
         child: Container(
           padding: const EdgeInsets.only(right: 24, left: 24),
           child: Column(
             crossAxisAlignment: CrossAxisAlignment.start,
             children: [
-                  Padding(
-                    padding: const EdgeInsets.only(top:15.0),
-                    child: Text('${datas.artisanVendorChoice=='business'?"Upload your product catalog":"Upload your service catalog"}', style: TextStyle(fontWeight: FontWeight.w500)),
-                  ),
+              Padding(
+                padding: const EdgeInsets.only(top: 15.0),
+                child: Text(
+                    '${datas.artisanVendorChoice == 'business' ? "Upload your product catalog" : "Upload your service catalog"}',
+                    style: TextStyle(fontWeight: FontWeight.w500)),
+              ),
               /*    SizedBox(
                  child:  Center(
             child: SizedBox(
@@ -64,109 +64,112 @@ class PhotoCatelogPageState extends State<PhotoCatelogPage> {
             ),
           ),
                     height: MediaQuery.of(context).size.height/3),*/
-                  SizedBox(
-                      child:  Center(
-                        child: SizedBox(
-                          height: 200, // card height
-                          child: data.selected_image2 ==null?Text(''):Container(
-                            width: 200,
-                            child:Card(
-                                elevation: 2,
-                                shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(20)),
-                                child: Image.file(File(data.selected_image2.path,), fit: BoxFit.cover,)
-
+              SizedBox(
+                  child: Center(
+                    child: SizedBox(
+                      height: 200, // card height
+                      child: data.selectedImage2 == null
+                          ? Text('')
+                          : Container(
+                              width: 200,
+                              child: Card(
+                                  elevation: 2,
+                                  shape: RoundedRectangleBorder(
+                                      borderRadius: BorderRadius.circular(20)),
+                                  child: Image.file(
+                                    File(
+                                      data.selectedImage2.path,
+                                    ),
+                                    fit: BoxFit.cover,
+                                  )),
                             ),
+                    ),
+                  ),
+                  height: MediaQuery.of(context).size.height / 3),
+              Material(
+                elevation: 9,
+                child: ClipRRect(
+                  borderRadius: BorderRadius.circular(26),
+                  child: Container(
+                    decoration: BoxDecoration(
+                        border: Border.all(color: Colors.white),
+                        borderRadius: BorderRadius.circular(26)),
+                    child: FlatButton(
+                      disabledColor: Colors.white,
+                      onPressed: () {
+                        data.selectimage2(source: ImageSource.gallery);
+                      },
+                      color: Colors.white,
+                      shape: RoundedRectangleBorder(
+                          borderRadius: BorderRadius.circular(26)),
+                      padding: EdgeInsets.all(0.0),
+                      child: Ink(
+                        decoration: BoxDecoration(
+                            borderRadius: BorderRadius.circular(26)),
+                        child: Container(
+                          constraints: BoxConstraints(
+                              maxWidth: MediaQuery.of(context).size.width / 1.3,
+                              minHeight: 45.0),
+                          alignment: Alignment.center,
+                          child: Text(
+                            "Select Catalog Photo",
+                            textAlign: TextAlign.center,
+                            style: TextStyle(fontSize: 17, color: Colors.black),
                           ),
                         ),
                       ),
-                      height: MediaQuery.of(context).size.height/3),
-
-                 Material(
-                   elevation: 9,
-                        child: ClipRRect(
-                           borderRadius: BorderRadius.circular(26),
-                  child: Container(
-
+                    ),
+                  ),
+                ),
+              ),
+              Spacer(),
+              Align(
+                  alignment: Alignment.center,
+                  child: !network.loginState
+                      ? Container(
                           decoration: BoxDecoration(
                               border: Border.all(color: Colors.white),
                               borderRadius: BorderRadius.circular(26)),
                           child: FlatButton(
-                            disabledColor: Colors.white,
+                            disabledColor: Color(0x909B049B),
                             onPressed: () {
-                                  data.selectimage2(source: ImageSource.gallery);
-
-
-                                  },
-                            color:  Colors.white,
+                              network.loginSetState();
+                              network.uploadCatalog(
+                                scaffoldKey: scaffoldKey,
+                                path: data.selectedImage2.path,
+                                context: context,
+                                uploadType: 'servicePicture',
+                              );
+                            },
+                            color: Color(0xFF9B049B),
                             shape: RoundedRectangleBorder(
                                 borderRadius: BorderRadius.circular(26)),
                             padding: EdgeInsets.all(0.0),
                             child: Ink(
-                              decoration:
-                                  BoxDecoration(borderRadius: BorderRadius.circular(26)),
+                              decoration: BoxDecoration(
+                                  borderRadius: BorderRadius.circular(26)),
                               child: Container(
                                 constraints: BoxConstraints(
-                                    maxWidth: MediaQuery.of(context).size.width / 1.3,
+                                    maxWidth:
+                                        MediaQuery.of(context).size.width / 1.3,
                                     minHeight: 45.0),
                                 alignment: Alignment.center,
                                 child: Text(
-                                  "Select Catalog Photo",
+                                  "Upload",
                                   textAlign: TextAlign.center,
-                                  style: TextStyle(
-                                    fontSize: 17,
-                                    color: Colors.black),
+                                  style: TextStyle(color: Colors.white),
                                 ),
                               ),
                             ),
                           ),
-                      ),
-                        ),
-                 ),
-
-                  Spacer(),
-                  Align(
-                    alignment: Alignment.center,
-                    child:  !network.login_state?Container(
-                      decoration: BoxDecoration(
-                          border: Border.all(color: Colors.white),
-                          borderRadius: BorderRadius.circular(26)),
-                      child: FlatButton(
-                        disabledColor: Color(0x909B049B),
-                        onPressed: () {
-                                network.Login_SetState();
-                              network.uploadCatalog(
-                                  scaffoldKey: scaffoldKey,
-                                path: data.selected_image2.path,
-                                context: context,
-                                uploadType: 'servicePicture',
-                              );
-
-                              },
-                        color: Color(0xFF9B049B),
-                        shape: RoundedRectangleBorder(
-                            borderRadius: BorderRadius.circular(26)),
-                        padding: EdgeInsets.all(0.0),
-                        child: Ink(
-                          decoration:
-                              BoxDecoration(borderRadius: BorderRadius.circular(26)),
-                          child: Container(
-                            constraints: BoxConstraints(
-                                maxWidth: MediaQuery.of(context).size.width / 1.3,
-                                minHeight: 45.0),
-                            alignment: Alignment.center,
-                            child: Text(
-                              "Upload",
-                              textAlign: TextAlign.center,
-                              style: TextStyle(color: Colors.white),
-                            ),
-                          ),
-                        ),
-                      ),
-                    ):Padding(
-                          padding: const EdgeInsets.only(bottom:50.0, top:20),
-                          child: CircularProgressIndicator(valueColor:  AlwaysStoppedAnimation<Color>(Color(0xFF9B049B)),),
                         )
-                  ),
+                      : Padding(
+                          padding: const EdgeInsets.only(bottom: 50.0, top: 20),
+                          child: CircularProgressIndicator(
+                            valueColor: AlwaysStoppedAnimation<Color>(
+                                Color(0xFF9B049B)),
+                          ),
+                        )),
             ],
           ),
         ),

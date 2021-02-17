@@ -21,11 +21,11 @@ class PickupLayout extends StatelessWidget {
   Widget build(BuildContext context) {
     var network = Provider.of<WebServices>(context);
     return StreamBuilder(
-        stream: FirebaseApi.UserBidStream(network.user_id.toString()),
+        stream: FirebaseApi.userBidStream(network.userId.toString()),
         builder: (context, AsyncSnapshot<QuerySnapshot> snapshot2) {
           return snapshot2.hasData
               ? StreamBuilder<List<Message>>(
-                  stream: callApi.getCallLogs(network.mobile_device_token),
+                  stream: callApi.getCallLogs(network.mobileDeviceToken),
                   builder: (context, snapshot) {
                     bidify = snapshot2.data.docs
                         .map((doc) => Bidify.fromMap(doc.data(), doc.id))

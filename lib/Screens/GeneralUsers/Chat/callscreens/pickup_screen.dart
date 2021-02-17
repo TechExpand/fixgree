@@ -1,7 +1,6 @@
 import 'package:agora_rtc_engine/rtc_engine.dart';
 import 'package:fixme/Model/Message.dart';
 import 'package:fixme/Services/call_service.dart';
-import 'package:fixme/Services/network_service.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_ringtone_player/flutter_ringtone_player.dart';
 import 'package:provider/provider.dart';
@@ -20,20 +19,17 @@ class PickupScreen extends StatefulWidget {
 }
 
 class _PickupScreenState extends State<PickupScreen> {
-
- @override
+  @override
   void initState() {
     super.initState();
-     FlutterRingtonePlayer.play(
-  android: AndroidSounds.ringtone ,
-  ios: IosSounds.glass,
-  looping: true, // Android only - API >= 28
-  volume: 1.0, // Android only - API >= 28
-  asAlarm: false, // Android only - all APIs
-);
-
+    FlutterRingtonePlayer.play(
+      android: AndroidSounds.ringtone,
+      ios: IosSounds.glass,
+      looping: true, // Android only - API >= 28
+      volume: 1.0, // Android only - API >= 28
+      asAlarm: false, // Android only - all APIs
+    );
   }
-
 
   @override
   void dispose() {
@@ -42,8 +38,7 @@ class _PickupScreenState extends State<PickupScreen> {
 
   @override
   Widget build(BuildContext context) {
-    var network = Provider.of<WebServices>(context, listen:false);
-     var datas = Provider.of<CallApi>(context, listen: false);
+    var datas = Provider.of<CallApi>(context, listen: false);
     return Scaffold(
       body: Container(
         alignment: Alignment.center,
@@ -76,56 +71,54 @@ class _PickupScreenState extends State<PickupScreen> {
               children: <Widget>[
                 InkWell(
                   onTap: () async {
-                   
-                   
                     datas.deleteCallLogs(widget.message.idUser);
-                   
+
                     FlutterRingtonePlayer.stop();
                     //  await callMethods.endCall(call: widget.call);  please edit this code to delete the document of the user
                   },
                   child: CircleAvatar(
-                    backgroundColor:Colors.redAccent,
+                    backgroundColor: Colors.redAccent,
                     radius: 25,
-                    child: Icon(Icons.call_end,
+                    child: Icon(
+                      Icons.call_end,
                       color: Colors.white,
-
                     ),
                   ),
                 ),
                 SizedBox(width: 40),
                 InkWell(
-                    onTap: () async {
-                      FlutterRingtonePlayer.stop();
-                      
-                       datas.updateCallStatus(widget.message.idUser, 'Connected');
-                      widget.message.calltype == 'video'
-                          ? Navigator.push(
-                          context,
-                          MaterialPageRoute(
-                            builder: (context) => CallVideoPage(
-                              role: ClientRole.Broadcaster,
-                              channelName: widget.message.message,
-                              idUser: widget.message.idUser,
-                            ),
-                          ))
-                          : Navigator.push(
-                          context,
-                          MaterialPageRoute(
-                            builder: (context) => CallAudioPage( 
-                              urlAvatar: widget.message.urlAvatar,
-                              role: ClientRole.Broadcaster,
-                              channelName: widget.message.message,
-                              idUser: widget.message.idUser,
-                            ),
-                          ));
-                    },
+                  onTap: () async {
+                    FlutterRingtonePlayer.stop();
+
+                    datas.updateCallStatus(widget.message.idUser, 'Connected');
+                    widget.message.calltype == 'video'
+                        ? Navigator.push(
+                            context,
+                            MaterialPageRoute(
+                              builder: (context) => CallVideoPage(
+                                role: ClientRole.Broadcaster,
+                                channelName: widget.message.message,
+                                idUser: widget.message.idUser,
+                              ),
+                            ))
+                        : Navigator.push(
+                            context,
+                            MaterialPageRoute(
+                              builder: (context) => CallAudioPage(
+                                urlAvatar: widget.message.urlAvatar,
+                                role: ClientRole.Broadcaster,
+                                channelName: widget.message.message,
+                                idUser: widget.message.idUser,
+                              ),
+                            ));
+                  },
                   child: CircleAvatar(
-                    backgroundColor:Colors.green,
-                    radius: 25,
-                    child: Icon(
-                      Icons.call,
-                      color: Colors.white,
-                     )),
+                      backgroundColor: Colors.green,
+                      radius: 25,
+                      child: Icon(
+                        Icons.call,
+                        color: Colors.white,
+                      )),
                 ),
               ],
             ),

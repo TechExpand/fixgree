@@ -24,24 +24,22 @@ Future getCurrentLocation() async {
   try {
     SharedPreferences prefs = await SharedPreferences.getInstance();
     var token = prefs.getString('Bearer');
-    var user_id = prefs.getString('user_id');
-    print('initialtoken is $token');
+    var userId = prefs.getString('user_id');
+
     if (token == null || token == 'null' || token == '') {
     } else {
-      print('not null');
       Position position =
           await getCurrentPosition(desiredAccuracy: LocationAccuracy.best);
-      var location_latitude = position.latitude;
-      var location_longitude = position.longitude;
-      print(location_longitude);
-      print(location_longitude);
+      var locationLatitude = position.latitude;
+      var locationLongitude = position.longitude;
+
       try {
         print('sending request');
         var response =
             await http.post(Uri.parse('https://manager.fixme.ng/gpsl'), body: {
-          'user_id': user_id,
-          'longitude': location_longitude.toString(),
-          'latitude': location_latitude.toString(),
+          'user_id': userId,
+          'longitude': locationLongitude.toString(),
+          'latitude': locationLatitude.toString(),
         }, headers: {
           // "Content-type": "application/json",
           //"Content-type": "application/x-www-form-urlencoded",
@@ -66,11 +64,11 @@ Future getCurrentLocation() async {
 void main() async {
   Future onlocation() async {
     var _serviceEnabled;
-    locator.Location location_met = locator.Location();
+    locator.Location locationMet = locator.Location();
     try {
-      _serviceEnabled = await location_met.serviceEnabled();
+      _serviceEnabled = await locationMet.serviceEnabled();
       if (!_serviceEnabled) {
-        _serviceEnabled = await location_met.requestService();
+        _serviceEnabled = await locationMet.requestService();
       }
     } catch (e) {
       print(e);

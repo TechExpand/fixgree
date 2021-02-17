@@ -3,10 +3,10 @@ import 'package:flutter/material.dart';
 
 class ExpandableText extends StatefulWidget {
   const ExpandableText(
-      this.text, {
-        Key key,
-        this.trimLines = 4,
-      })  : assert(text != null),
+    this.text, {
+    Key key,
+    this.trimLines = 4,
+  })  : assert(text != null),
         super(key: key);
 
   final String text;
@@ -24,16 +24,14 @@ class ExpandableTextState extends State<ExpandableText> {
 
   @override
   Widget build(BuildContext context) {
-    final DefaultTextStyle defaultTextStyle = DefaultTextStyle.of(context);
     final colorClickableText = Color(0xFF9B049B);
 
     TextSpan link = TextSpan(
-      text: _readMore ? "... more" : "... less",
-      style: TextStyle(
-        color: colorClickableText,
-      ),
-      recognizer: TapGestureRecognizer()..onTap = _onTapLink
-    );
+        text: _readMore ? "... more" : "... less",
+        style: TextStyle(
+          color: colorClickableText,
+        ),
+        recognizer: TapGestureRecognizer()..onTap = _onTapLink);
     Widget result = LayoutBuilder(
       builder: (BuildContext context, BoxConstraints constraints) {
         assert(constraints.hasBoundedWidth);
@@ -45,7 +43,8 @@ class ExpandableTextState extends State<ExpandableText> {
         // Layout and measure link
         TextPainter textPainter = TextPainter(
           text: link,
-          textDirection: TextDirection.rtl,//better to pass this from master widget if ltr and rtl both supported
+          textDirection: TextDirection
+              .rtl, //better to pass this from master widget if ltr and rtl both supported
           maxLines: widget.trimLines,
           ellipsis: '...',
         );
@@ -58,18 +57,16 @@ class ExpandableTextState extends State<ExpandableText> {
         // Get the endIndex of data
         int endIndex;
         final pos = textPainter.getPositionForOffset(Offset(
-            textSize.width - linkSize.width,
-            textSize.height,
+          textSize.width - linkSize.width,
+          textSize.height,
         ));
         endIndex = textPainter.getOffsetBefore(pos.offset);
         var textSpan;
         if (textPainter.didExceedMaxLines) {
           textSpan = TextSpan(
-            text: _readMore
-                ? widget.text.substring(0, endIndex)
-                : widget.text,
+            text: _readMore ? widget.text.substring(0, endIndex) : widget.text,
             style: TextStyle(
-              color:  Colors.black,
+              color: Colors.black,
               height: 1.5,
             ),
             children: <TextSpan>[link],
@@ -77,7 +74,7 @@ class ExpandableTextState extends State<ExpandableText> {
         } else {
           textSpan = TextSpan(
             style: TextStyle(
-              color:  Colors.black,
+              color: Colors.black,
               height: 1.5,
             ),
             text: widget.text,
@@ -87,7 +84,6 @@ class ExpandableTextState extends State<ExpandableText> {
           softWrap: true,
           overflow: TextOverflow.clip,
           text: textSpan,
-
         );
       },
     );

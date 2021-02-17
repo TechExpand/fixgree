@@ -4,7 +4,6 @@ import 'package:flutter/material.dart';
 import 'package:intl_phone_number_input/intl_phone_number_input.dart';
 import 'package:provider/provider.dart';
 import 'package:firebase_auth/firebase_auth.dart';
-import 'package:flutter/services.dart';
 import 'SignupPassword.dart';
 import 'otp.dart';
 
@@ -19,14 +18,14 @@ class SignUpState extends State<SignUp> {
   final TextEditingController controller = TextEditingController();
   String initialCountry = 'NG';
   PhoneNumber number = PhoneNumber(isoCode: 'NG', dialCode: '+234');
-  var OTP;
+  // var OTP;
   var auth = FirebaseAuth.instance;
 
   @override
   Widget build(BuildContext context) {
     var network = Provider.of<WebServices>(context);
     var data = Provider.of<DataProvider>(context);
-    dynamic Credential = '';
+    dynamic mainCredential = '';
 
     //verify phone number if numbe is correct and if  code is retrieved
     verifyNumber() async {
@@ -35,7 +34,7 @@ class SignUpState extends State<SignUp> {
           phoneNumber: data.number.toString(),
           verificationCompleted: (credential) async {
             await auth.signInWithCredential(credential);
-            Credential = credential;
+            mainCredential = credential;
             await Navigator.push(
               context,
               PageRouteBuilder(
@@ -53,13 +52,13 @@ class SignUpState extends State<SignUp> {
             );
           },
           verificationFailed: (FirebaseAuthException e) {
-            network.Login_SetState();
+            network.loginSetState();
             scaffoldKey.currentState
                 .showSnackBar(SnackBar(content: Text(e.message)));
           },
           timeout: Duration(seconds: 120),
           codeSent: (String verificationId, int resendToken) {
-            network.Login_SetState();
+            network.loginSetState();
 
             Navigator.push(
               context,
@@ -68,7 +67,7 @@ class SignUpState extends State<SignUp> {
                   return OTPPAGE(
                       verificationID: verificationId,
                       data: data.number.toString(),
-                      Credential: Credential,
+                      mainCredential: mainCredential,
                       page: 'SignUp');
                 },
                 transitionsBuilder:
@@ -146,7 +145,7 @@ class SignUpState extends State<SignUp> {
               Spacer(),
               Align(
                   alignment: Alignment.center,
-                  child: !network.login_state
+                  child: !network.loginState
                       ? Container(
                           padding: EdgeInsets.only(
                             bottom: 50,
@@ -160,7 +159,7 @@ class SignUpState extends State<SignUp> {
                                     ? null
                                     : () {
 //                        network.Login();
-                                        network.Login_SetState();
+                                        network.loginSetState();
                                         verifyNumber();
                                       },
                             color: Color(0xFF9B049B),

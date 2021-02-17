@@ -13,48 +13,48 @@ import 'package:provider/provider.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 
 class WebServices extends ChangeNotifier {
-  var login_state = false;
-  var login_state_second = false;
-  var login_pop_state = false;
-  var Bearer = '';
-  var user_id = 0;
+  var loginState = false;
+  var loginStateSecond = false;
+  var loginPopState = false;
+  var bearer = '';
+  var userId = 0;
   var role = '';
   var phoneNum = '';
-  var mobile_device_token = '';
-  var profile_pic_file_name = '';
+  var mobileDeviceToken = '';
+  var profilePicFileName = '';
   var firstName = '';
   var lastName = '';
   var bio = '';
   var email = '';
 
-  void Login_SetState() {
-    if (login_state == false) {
-      login_state = true;
+  void loginSetState() {
+    if (loginState == false) {
+      loginState = true;
     } else {
-      login_state = false;
+      loginState = false;
     }
     notifyListeners();
   }
 
-  void Login_Pop_SetState() {
-    if (login_pop_state == false) {
-      login_pop_state = true;
+  void loginPopSetState() {
+    if (loginPopState == false) {
+      loginPopState = true;
     } else {
-      login_pop_state = false;
+      loginPopState = false;
     }
     notifyListeners();
   }
 
-  void Login_SetState_Second() {
-    if (login_state_second = false) {
-      login_state_second = true;
+  void loginSetStateSecond() {
+    if (loginStateSecond = false) {
+      loginStateSecond = true;
     } else {
-      login_state_second = false;
+      loginStateSecond = false;
     }
     notifyListeners();
   }
 
-  Future<dynamic> Register({context, scaffoldKey}) async {
+  Future<dynamic> register({context, scaffoldKey}) async {
     var data = Provider.of<DataProvider>(context, listen: false);
     var datas = Provider.of<Utils>(context, listen: false);
     try {
@@ -64,10 +64,10 @@ class WebServices extends ChangeNotifier {
             data.number.dialCode.length, data.number.toString().length),
         'firstName': data.firstName.toString(),
         'lastName': data.lastName.toString(),
-        'device_token': data.firebase_user_id.toString() ?? '',
+        'device_token': data.firebaseUserId.toString() ?? '',
         'device_os': 'Andriod',
         'device_type': 'phone',
-        'firebaseId': data.firebase_user_id.toString(),
+        'firebaseId': data.firebaseUserId.toString(),
         'email':
             data.emails.toString() == null || data.emails.toString().isEmpty
                 ? data.firstName + '@Fixme.com'
@@ -78,23 +78,23 @@ class WebServices extends ChangeNotifier {
             'Bearer FIXME_1U90P3444ANdroidAPP4HUisallOkayBY_FIXME_APP_UIONSISJGJANKKI3445fv',
       });
       var body = json.decode(response.body);
-      user_id = body['id'];
-      mobile_device_token = body['firebaseId'];
-      profile_pic_file_name = body['profile_pic_file_name'];
+      userId = body['id'];
+      mobileDeviceToken = body['firebaseId'];
+      profilePicFileName = body['profile_pic_file_name'];
       firstName = body['firstName'];
       phoneNum = body['fullNumber'];
       role = body['role'];
-      Bearer = response.headers['bearer'];
+      bearer = response.headers['bearer'];
       if (body['reqRes'] == 'true') {
-        datas.storeData('Bearer', Bearer);
-        datas.storeData('mobile_device_token', mobile_device_token);
-        datas.storeData('user_id', user_id.toString());
-        datas.storeData('profile_pic_file_name', profile_pic_file_name);
+        datas.storeData('Bearer', bearer);
+        datas.storeData('mobile_device_token', mobileDeviceToken);
+        datas.storeData('user_id', userId.toString());
+        datas.storeData('profile_pic_file_name', profilePicFileName);
         datas.storeData('firstName', firstName);
         datas.storeData('phoneNum', phoneNum);
         datas.storeData('role', role);
 
-        Login_SetState();
+        loginSetState();
         return Navigator.push(
           context,
           PageRouteBuilder(
@@ -111,18 +111,18 @@ class WebServices extends ChangeNotifier {
           ),
         );
       } else if (body['reqRes'] == 'false') {
-        Login_SetState();
+        loginSetState();
         scaffoldKey.currentState
             .showSnackBar(SnackBar(content: Text(body['message'])));
       }
       notifyListeners();
     } catch (e) {
-      Login_SetState();
+      loginSetState();
       scaffoldKey.currentState.showSnackBar(SnackBar(content: Text(e)));
     }
   }
 
-  Future<dynamic> Login({context, scaffoldKey}) async {
+  Future<dynamic> login({context, scaffoldKey}) async {
     var data = Provider.of<DataProvider>(context, listen: false);
     var datas = Provider.of<Utils>(context, listen: false);
     try {
@@ -136,37 +136,37 @@ class WebServices extends ChangeNotifier {
             'Bearer FIXME_1U90P3444ANdroidAPP4HUisallOkayBY_FIXME_APP_UIONSISJGJANKKI3445fv',
       });
       var body = json.decode(response.body);
-      Bearer = response.headers['bearer'];
+      bearer = response.headers['bearer'];
 
-      user_id = body['id'];
-      mobile_device_token = body['firebaseId'];
-      profile_pic_file_name = body['profile_pic_file_name'];
+      userId = body['id'];
+      mobileDeviceToken = body['firebaseId'];
+      profilePicFileName = body['profile_pic_file_name'];
       firstName = body['firstName'];
       lastName = body['lastName'];
       role = body['role'];
       phoneNum = body['fullNumber'];
       email = body['email'];
       var response2 = await http.post(
-          Uri.parse('https://manager.fixme.ng/user-info?user_id=$user_id'),
+          Uri.parse('https://manager.fixme.ng/user-info?user_id=$userId'),
           headers: {
             "Content-type": "application/json",
-            'Authorization': 'Bearer $Bearer',
+            'Authorization': 'Bearer $bearer',
           });
       var body2 = json.decode(response2.body);
       bio = body2['bio'];
 
       if (body['reqRes'] == 'true') {
-        datas.storeData('Bearer', Bearer);
-        datas.storeData('mobile_device_token', mobile_device_token);
-        datas.storeData('user_id', user_id.toString());
-        datas.storeData('profile_pic_file_name', profile_pic_file_name);
+        datas.storeData('Bearer', bearer);
+        datas.storeData('mobile_device_token', mobileDeviceToken);
+        datas.storeData('user_id', userId.toString());
+        datas.storeData('profile_pic_file_name', profilePicFileName);
         datas.storeData('firstName', firstName);
         datas.storeData('lastName', lastName);
         datas.storeData('phoneNum', phoneNum);
         datas.storeData('email', email);
         datas.storeData('role', role);
         datas.storeData('about', bio);
-        Login_SetState();
+        loginSetState();
         return Navigator.push(
           context,
           PageRouteBuilder(
@@ -185,21 +185,21 @@ class WebServices extends ChangeNotifier {
       } else if (body['reqRes'] == 'false') {
         scaffoldKey.currentState
             .showSnackBar(SnackBar(content: Text(body['message'])));
-        Login_SetState();
+        loginSetState();
       }
       notifyListeners();
     } catch (e) {
-      Login_SetState();
+      loginSetState();
       print(e);
     }
   }
 
   initializeValues() async {
     SharedPreferences prefs = await SharedPreferences.getInstance();
-    user_id = int.parse(prefs.getString('user_id'));
-    Bearer = prefs.getString('Bearer');
-    mobile_device_token = prefs.getString('mobile_device_token');
-    profile_pic_file_name = prefs.getString('profile_pic_file_name');
+    userId = int.parse(prefs.getString('user_id'));
+    bearer = prefs.getString('Bearer');
+    mobileDeviceToken = prefs.getString('mobile_device_token');
+    profilePicFileName = prefs.getString('profile_pic_file_name');
     firstName = prefs.getString('firstName');
     lastName = prefs.getString('lastName');
     phoneNum = prefs.getString('phoneNum');
@@ -208,26 +208,26 @@ class WebServices extends ChangeNotifier {
     notifyListeners();
   }
 
-  Future<dynamic> initiateProject(project_owner_user_id, bid_id, project_id,
-      service_id, budget, context, setStates) async {
+  Future<dynamic> initiateProject(projectOwnerUserId, bidId, projectId,
+      serviceId, budget, context, setStates) async {
     try {
       var response = await http
           .post(Uri.parse('https://manager.fixme.ng/save-send-budget'), body: {
-        'user_id': user_id.toString(),
-        'project_owner_user_id': '$project_owner_user_id',
-        'bid_id': '$bid_id',
-        'project_id': '$project_id',
-        'service_id': '$service_id',
+        'user_id': userId.toString(),
+        'project_owner_user_id': '$projectOwnerUserId',
+        'bid_id': '$bidId',
+        'project_id': '$projectId',
+        'service_id': '$serviceId',
         'budget': '$budget',
       }, headers: {
         "Content-type": "application/x-www-form-urlencoded",
-        'Authorization': 'Bearer $Bearer',
+        'Authorization': 'Bearer $bearer',
       });
       var body = json.decode(response.body);
       notifyListeners();
       if (body['reqRes'] == 'true') {
         setStates(() {});
-        Login_Pop_SetState();
+        loginPopSetState();
         Navigator.pop(context);
 //      scaffoldKey.showSnackBar(
 //          new SnackBar(content: new Text("JOB INITIATED")));
@@ -235,7 +235,7 @@ class WebServices extends ChangeNotifier {
         return body;
       } else if (body['reqRes'] == 'false') {
         setStates(() {});
-        Login_Pop_SetState();
+        loginPopSetState();
         Navigator.pop(context);
 //      scaffoldKey.showSnackBar(
 //          new SnackBar(content: new Text("JOB INITIATION FAILED")));
@@ -243,14 +243,14 @@ class WebServices extends ChangeNotifier {
       }
     } catch (e) {
       setStates(() {});
-      Login_Pop_SetState();
+      loginPopSetState();
       print(e);
 //      scaffoldKey.showSnackBar(
 //          new SnackBar(content: new Text("Failed")));
     }
   }
 
-  Future<dynamic> BecomeArtisanOrBusiness({context, scaffoldKey}) async {
+  Future<dynamic> becomeArtisanOrBusiness({context, scaffoldKey}) async {
     var data = Provider.of<DataProvider>(context, listen: false);
     var datas = Provider.of<Utils>(context, listen: false);
     PostRequestProvider postRequestProvider =
@@ -269,16 +269,16 @@ class WebServices extends ChangeNotifier {
         'bio': data.overview ?? '',
         'role': data.artisanVendorChoice,
         'service_id': '${postRequestProvider.selecteService.sn}',
-        'user_id': '$user_id',
+        'user_id': '$userId',
       }, headers: {
         "Content-type": "application/x-www-form-urlencoded",
-        'Authorization': 'Bearer $Bearer',
+        'Authorization': 'Bearer $bearer',
       });
       var body = json.decode(response.body);
       print(body);
       if (body['reqRes'] == 'true') {
         datas.storeData('role', data.artisanVendorChoice);
-        Login_SetState();
+        loginSetState();
         role = prefs.getString('role');
         data.subcat.clear();
         return Navigator.push(
@@ -300,16 +300,16 @@ class WebServices extends ChangeNotifier {
           body['reqRes'] == 'false') {
         scaffoldKey.currentState.showSnackBar(
             SnackBar(content: Text('Duplicate Sub-Service Entry')));
-        Login_SetState();
+        loginSetState();
       } else if (body['reqRes'] == 'false') {
         scaffoldKey.currentState.showSnackBar(
             SnackBar(content: Text('There was a Problem. Working on it.')));
-        Login_SetState();
+        loginSetState();
       }
       notifyListeners();
     } catch (e) {
       print(e);
-      Login_SetState();
+      loginSetState();
       scaffoldKey.currentState.showSnackBar(
           SnackBar(content: Text('There was a Problem. Working on it.')));
     }
@@ -319,10 +319,10 @@ class WebServices extends ChangeNotifier {
       {longitude, latitude, serviceID}) async {
     var response = await http.post(
         Uri.parse(
-            'https://manager.fixme.ng/service-area-business-artisans?user_id=$user_id&service_id=$serviceID&longitude=$longitude&latitude=$latitude'),
+            'https://manager.fixme.ng/service-area-business-artisans?user_id=$userId&service_id=$serviceID&longitude=$longitude&latitude=$latitude'),
         headers: {
           "Content-type": "application/json",
-          'Authorization': 'Bearer $Bearer',
+          'Authorization': 'Bearer $bearer',
         });
     var body = json.decode(response.body);
     print('The body: ' + body.toString());
@@ -336,11 +336,11 @@ class WebServices extends ChangeNotifier {
   Future<dynamic> getArtisanReviews([userId]) async {
     var response = await http
         .post(Uri.parse('https://manager.fixme.ng/get-reviews'), body: {
-      'user_id': user_id.toString(),
+      'user_id': this.userId.toString(),
       'artisan_id': userId.toString(),
     }, headers: {
       "Content-type": "application/x-www-form-urlencoded",
-      'Authorization': 'Bearer $Bearer',
+      'Authorization': 'Bearer $bearer',
     });
     var body = json.decode(response.body);
     print(body);
@@ -353,18 +353,18 @@ class WebServices extends ChangeNotifier {
     }
   }
 
-  Future<dynamic> confirmBudget([bidder_user_id, bid_id, scaffoldKey]) async {
+  Future<dynamic> confirmBudget([bidderUserId, bidId, scaffoldKey]) async {
     var response = await http.post(
         Uri.parse('https://manager.fixme.ng/approve-bid'
             ''),
         body: {
-          'user_id': user_id.toString(),
-          'bidder_user_id': bidder_user_id.toString(),
-          'bid_id': bid_id.toString(),
+          'user_id': userId.toString(),
+          'bidder_user_id': bidderUserId.toString(),
+          'bid_id': bidId.toString(),
         },
         headers: {
           "Content-type": "application/x-www-form-urlencoded",
-          'Authorization': 'Bearer $Bearer',
+          'Authorization': 'Bearer $bearer',
         });
     var body = json.decode(response.body);
     notifyListeners();
@@ -385,7 +385,7 @@ class WebServices extends ChangeNotifier {
       'job_id': jobId.toString(),
     }, headers: {
       "Content-type": "application/x-www-form-urlencoded",
-      'Authorization': 'Bearer $Bearer',
+      'Authorization': 'Bearer $bearer',
     });
     var body = json.decode(response.body);
     notifyListeners();
@@ -405,7 +405,7 @@ class WebServices extends ChangeNotifier {
       'user_id': userId.toString(),
     }, headers: {
       "Content-type": "application/x-www-form-urlencoded",
-      'Authorization': 'Bearer $Bearer',
+      'Authorization': 'Bearer $bearer',
     });
     var body = json.decode(response.body);
     notifyListeners();
@@ -418,16 +418,16 @@ class WebServices extends ChangeNotifier {
 
   // getUserJobInfo
 
-  Future<dynamic> getUserJobInfo([userId, artisan_id]) async {
+  Future<dynamic> getUserJobInfo([userId, artisanId]) async {
     var response = await http.post(
         Uri.parse('https://manager.fixme.ng/get-artisan-business-profile'),
         body: {
           'requesting_user_id': userId.toString(),
-          'artisan_user_id': artisan_id,
+          'artisan_user_id': artisanId,
         },
         headers: {
           "Content-type": "application/x-www-form-urlencoded",
-          'Authorization': 'Bearer $Bearer',
+          'Authorization': 'Bearer $bearer',
         });
     var body = json.decode(response.body);
     Map carMap = jsonDecode(response.body.toString());
@@ -448,7 +448,7 @@ class WebServices extends ChangeNotifier {
       'requested_user_id': requestedId.toString()
     }, headers: {
       "Content-type": "application/x-www-form-urlencoded",
-      'Authorization': 'Bearer $Bearer',
+      'Authorization': 'Bearer $bearer',
     });
     var body = json.decode(response.body);
     notifyListeners();
@@ -469,7 +469,7 @@ class WebServices extends ChangeNotifier {
         },
         headers: {
           "Content-type": "application/x-www-form-urlencoded",
-          'Authorization': 'Bearer $Bearer',
+          'Authorization': 'Bearer $bearer',
         });
     var body = json.decode(response.body);
     notifyListeners();
@@ -481,19 +481,19 @@ class WebServices extends ChangeNotifier {
   }
 
   Future uploadProductCatalog(
-      {bio, product_name, price, scaffoldKey, path, context}) async {
+      {bio, productName, price, scaffoldKey, path, context}) async {
     try {
       var res = await http.post(
           Uri.parse('https://manager.fixme.ng/save-catlog-product'),
           body: {
-            'product_name': product_name.toString() ?? '',
+            'product_name': productName.toString() ?? '',
             'price': price.toString() ?? '',
             'bio': bio.toString() ?? '',
-            'user_id': '$user_id',
+            'user_id': '$userId',
           },
           headers: {
             "Content-type": "application/x-www-form-urlencoded",
-            'Authorization': 'Bearer $Bearer',
+            'Authorization': 'Bearer $bearer',
           });
 
       var body = jsonDecode(res.body);
@@ -504,19 +504,326 @@ class WebServices extends ChangeNotifier {
         var file = await http.MultipartFile.fromPath('file', path);
         upload.files.add(file);
         upload.fields['product_id'] = body['productId'].toString();
-        upload.fields['product_name'] = product_name.toString();
-        upload.fields['user_id'] = user_id.toString();
-        upload.headers['authorization'] = 'Bearer $Bearer';
+        upload.fields['product_name'] = productName.toString();
+        upload.fields['user_id'] = userId.toString();
+        upload.headers['authorization'] = 'Bearer $bearer';
 
         final stream = await upload.send();
         var resp = await http.Response.fromStream(stream);
         var bodys = jsonDecode(resp.body);
 
         if (bodys['upldRes'] == 'true') {
-          Login_SetState();
+          loginSetState();
           showDialog(
               barrierDismissible: false,
-              child: WillPopScope(
+              builder: (ctx) {
+                return WillPopScope(
+                  onWillPop: () {},
+                  child: AlertDialog(
+                    elevation: 6,
+                    shape: RoundedRectangleBorder(
+                        borderRadius: BorderRadius.all(Radius.circular(32.0))),
+                    content: Container(
+                      height: 150,
+                      child: Column(
+                        crossAxisAlignment: CrossAxisAlignment.center,
+                        mainAxisAlignment: MainAxisAlignment.center,
+                        children: <Widget>[
+                          Container(
+                            padding: EdgeInsets.only(top: 15, bottom: 15),
+                            width: 250,
+                            child: Text(
+                              'Product Successfully Added to Catalog. Add Another Product?',
+                              textAlign: TextAlign.center,
+                              style: TextStyle(
+                                fontSize: 15,
+                                fontWeight: FontWeight.bold,
+                                color: Colors.black54,
+                              ),
+                            ),
+                          ),
+                          Row(
+                            mainAxisAlignment: MainAxisAlignment.center,
+                            children: <Widget>[
+                              !loginState
+                                  ? Material(
+                                      borderRadius: BorderRadius.circular(26),
+                                      elevation: 2,
+                                      child: Container(
+                                        height: 40,
+                                        width: 80,
+                                        decoration: BoxDecoration(
+                                            border: Border.all(
+                                                color: Color(0xFFE60016)),
+                                            borderRadius:
+                                                BorderRadius.circular(26)),
+                                        child: FlatButton(
+                                          onPressed: () {
+                                            loginSetState();
+                                            becomeArtisanOrBusiness(
+                                              context: context,
+                                              scaffoldKey: scaffoldKey,
+                                            );
+                                            Navigator.pop(context);
+                                          },
+                                          color: Color(0xFFE60016),
+                                          shape: RoundedRectangleBorder(
+                                              borderRadius:
+                                                  BorderRadius.circular(26)),
+                                          padding: EdgeInsets.all(0.0),
+                                          child: Ink(
+                                            decoration: BoxDecoration(
+                                                borderRadius:
+                                                    BorderRadius.circular(26)),
+                                            child: Container(
+                                              constraints: BoxConstraints(
+                                                  maxWidth: 190.0,
+                                                  minHeight: 53.0),
+                                              alignment: Alignment.center,
+                                              child: Text(
+                                                "No Please!",
+                                                textAlign: TextAlign.center,
+                                                style: TextStyle(
+                                                    fontSize: 14,
+                                                    fontWeight: FontWeight.bold,
+                                                    color: Colors.white),
+                                              ),
+                                            ),
+                                          ),
+                                        ),
+                                      ),
+                                    )
+                                  : CircularProgressIndicator(
+                                      valueColor: AlwaysStoppedAnimation<Color>(
+                                          Color(0xFF9B049B))),
+                              SizedBox(width: 5),
+                              Material(
+                                borderRadius: BorderRadius.circular(26),
+                                elevation: 2,
+                                child: Container(
+                                  height: 40,
+                                  width: 80,
+                                  decoration: BoxDecoration(
+                                      border: Border.all(color: Colors.green),
+                                      borderRadius: BorderRadius.circular(26)),
+                                  child: FlatButton(
+                                    onPressed: () {
+                                      Navigator.pop(context);
+                                    },
+                                    color: Colors.green,
+                                    shape: RoundedRectangleBorder(
+                                        borderRadius:
+                                            BorderRadius.circular(26)),
+                                    padding: EdgeInsets.all(0.0),
+                                    child: Ink(
+                                      decoration: BoxDecoration(
+                                          borderRadius:
+                                              BorderRadius.circular(26)),
+                                      child: Container(
+                                        constraints: BoxConstraints(
+                                            maxWidth: 190.0, minHeight: 53.0),
+                                        alignment: Alignment.center,
+                                        child: Text(
+                                          "Yes Please!",
+                                          textAlign: TextAlign.center,
+                                          style: TextStyle(
+                                              fontSize: 14,
+                                              fontWeight: FontWeight.bold,
+                                              color: Colors.white),
+                                        ),
+                                      ),
+                                    ),
+                                  ),
+                                ),
+                              ),
+                            ],
+                          ),
+                        ],
+                      ),
+                    ),
+                  ),
+                );
+              },
+              context: context);
+          return bodys;
+        } else if (bodys['upldRes'] == 'false') {
+          loginSetState();
+          showDialog(
+              builder: (ctx) {
+                return AlertDialog(
+                  title: Center(
+                    child: Text('There was a Problem Working on it!',
+                        style: TextStyle(color: Colors.blue)),
+                  ),
+                );
+              },
+              context: context);
+        }
+      } else if (body['reqRes'] == 'false') {
+        loginSetState();
+        showDialog(
+            builder: (ctx) {
+              return AlertDialog(
+                title: Center(
+                  child: Text('There was a Problem Working on it!',
+                      style: TextStyle(color: Colors.blue)),
+                ),
+              );
+            },
+            context: context);
+      }
+    } catch (e) {
+      showDialog(
+          builder: (ctx) {
+            return AlertDialog(
+              title: Center(
+                child: Text('$e', style: TextStyle(color: Colors.blue)),
+              ),
+            );
+          },
+          context: context);
+      loginSetState();
+    }
+  }
+
+  Future addProductCatalog(
+      {bio, productName, price, scaffoldKey, path, context}) async {
+    try {
+      var res = await http.post(
+          Uri.parse('https://manager.fixme.ng/save-catlog-product'),
+          body: {
+            'product_name': productName.toString() ?? '',
+            'price': price.toString() ?? '',
+            'bio': bio.toString() ?? '',
+            'user_id': '$userId',
+          },
+          headers: {
+            "Content-type": "application/x-www-form-urlencoded",
+            'Authorization': 'Bearer $bearer',
+          });
+
+      var body = jsonDecode(res.body);
+      notifyListeners();
+      if (body['reqRes'] == 'true') {
+        var upload = http.MultipartRequest(
+            'POST', Uri.parse('https://uploads.fixme.ng/product-image-upload'));
+        var file = await http.MultipartFile.fromPath('file', path);
+        upload.files.add(file);
+        upload.fields['product_id'] = body['productId'].toString();
+        upload.fields['product_name'] = productName.toString();
+        upload.fields['user_id'] = userId.toString();
+        upload.headers['authorization'] = 'Bearer $bearer';
+
+        final stream = await upload.send();
+        var resp = await http.Response.fromStream(stream);
+        var bodys = jsonDecode(resp.body);
+
+        if (bodys['upldRes'] == 'true') {
+          return bodys;
+        } else if (bodys['upldRes'] == 'false') {
+          showDialog(
+              builder: (ctx) {
+                return AlertDialog(
+                  title: Center(
+                    child: Text('There was a Problem Working on it!',
+                        style: TextStyle(color: Colors.blue)),
+                  ),
+                );
+              },
+              context: context);
+        }
+      } else if (body['reqRes'] == 'false') {
+        showDialog(
+            builder: (ctx) {
+              return AlertDialog(
+                title: Center(
+                  child: Text('There was a Problem Working on it!',
+                      style: TextStyle(color: Colors.blue)),
+                ),
+              );
+            },
+            context: context);
+      }
+    } catch (e) {
+      showDialog(
+          builder: (ctx) {
+            return AlertDialog(
+              title: Center(
+                child: Text('$e', style: TextStyle(color: Colors.blue)),
+              ),
+            );
+          },
+          context: context);
+    }
+  }
+
+  Future addSerPic({path, uploadType, scaffoldKey, context}) async {
+    try {
+      var upload = http.MultipartRequest(
+          'POST', Uri.parse('https://uploads.fixme.ng/uploads-processing'));
+      var file = await http.MultipartFile.fromPath('file', path);
+      upload.files.add(file);
+      upload.fields['uploadType'] = uploadType.toString();
+      upload.fields['firstName'] = firstName.toString();
+      upload.fields['user_id'] = userId.toString();
+      upload.headers['authorization'] = 'Bearer $bearer';
+
+      final stream = await upload.send();
+      var res = await http.Response.fromStream(stream);
+
+      var body = jsonDecode(res.body);
+      notifyListeners();
+      if (body['upldRes'] == 'true') {
+        return body;
+      } else if (body['upldRes'] == 'false') {
+        showDialog(
+            builder: (ctx) {
+              return AlertDialog(
+                title: Center(
+                  child: Text('There was a Problem Working on it!',
+                      style: TextStyle(color: Colors.blue)),
+                ),
+              );
+            },
+            context: context);
+      }
+    } catch (e) {
+      showDialog(
+          builder: (ctx) {
+            return AlertDialog(
+              title: Center(
+                child: Text('There was a Problem Working on it!',
+                    style: TextStyle(color: Colors.blue)),
+              ),
+            );
+          },
+          context: context);
+      print(e);
+    }
+  }
+
+  Future uploadCatalog({path, uploadType, scaffoldKey, context}) async {
+    try {
+      var upload = http.MultipartRequest(
+          'POST', Uri.parse('https://uploads.fixme.ng/uploads-processing'));
+      var file = await http.MultipartFile.fromPath('file', path);
+      upload.files.add(file);
+      upload.fields['uploadType'] = uploadType.toString();
+      upload.fields['firstName'] = firstName.toString();
+      upload.fields['user_id'] = userId.toString();
+      upload.headers['authorization'] = 'Bearer $bearer';
+
+      final stream = await upload.send();
+      var res = await http.Response.fromStream(stream);
+
+      var body = jsonDecode(res.body);
+      notifyListeners();
+      if (body['upldRes'] == 'true') {
+        loginSetState();
+        showDialog(
+            barrierDismissible: false,
+            builder: (ctx) {
+              return WillPopScope(
                 onWillPop: () {},
                 child: AlertDialog(
                   elevation: 6,
@@ -532,7 +839,7 @@ class WebServices extends ChangeNotifier {
                           padding: EdgeInsets.only(top: 15, bottom: 15),
                           width: 250,
                           child: Text(
-                            'Product Successfully Added to Catalog. Add Another Product?',
+                            'Photo Successfully Added to Catalog. Add Another Photo?',
                             textAlign: TextAlign.center,
                             style: TextStyle(
                               fontSize: 15,
@@ -544,7 +851,7 @@ class WebServices extends ChangeNotifier {
                         Row(
                           mainAxisAlignment: MainAxisAlignment.center,
                           children: <Widget>[
-                            !login_state
+                            !loginState
                                 ? Material(
                                     borderRadius: BorderRadius.circular(26),
                                     elevation: 2,
@@ -558,8 +865,8 @@ class WebServices extends ChangeNotifier {
                                               BorderRadius.circular(26)),
                                       child: FlatButton(
                                         onPressed: () {
-                                          Login_SetState();
-                                          BecomeArtisanOrBusiness(
+                                          loginSetState();
+                                          becomeArtisanOrBusiness(
                                             context: context,
                                             scaffoldKey: scaffoldKey,
                                           );
@@ -640,303 +947,21 @@ class WebServices extends ChangeNotifier {
                     ),
                   ),
                 ),
-              ),
-              context: context);
-          return bodys;
-        } else if (bodys['upldRes'] == 'false') {
-          Login_SetState();
-          showDialog(
-              child: AlertDialog(
+              );
+            },
+            context: context);
+        return body;
+      } else if (body['upldRes'] == 'false') {
+        loginSetState();
+        showDialog(
+            builder: (ctx) {
+              return AlertDialog(
                 title: Center(
                   child: Text('There was a Problem Working on it!',
                       style: TextStyle(color: Colors.blue)),
                 ),
-              ),
-              context: context);
-        }
-      } else if (body['reqRes'] == 'false') {
-        Login_SetState();
-        showDialog(
-            child: AlertDialog(
-              title: Center(
-                child: Text('There was a Problem Working on it!',
-                    style: TextStyle(color: Colors.blue)),
-              ),
-            ),
-            context: context);
-      }
-    } catch (e) {
-      showDialog(
-          child: AlertDialog(
-            title: Center(
-              child: Text('$e', style: TextStyle(color: Colors.blue)),
-            ),
-          ),
-          context: context);
-      Login_SetState();
-    }
-  }
-
-  Future addProductCatalog(
-      {bio, product_name, price, scaffoldKey, path, context}) async {
-    try {
-      var res = await http.post(
-          Uri.parse('https://manager.fixme.ng/save-catlog-product'),
-          body: {
-            'product_name': product_name.toString() ?? '',
-            'price': price.toString() ?? '',
-            'bio': bio.toString() ?? '',
-            'user_id': '$user_id',
-          },
-          headers: {
-            "Content-type": "application/x-www-form-urlencoded",
-            'Authorization': 'Bearer $Bearer',
-          });
-
-      var body = jsonDecode(res.body);
-      notifyListeners();
-      if (body['reqRes'] == 'true') {
-        var upload = http.MultipartRequest(
-            'POST', Uri.parse('https://uploads.fixme.ng/product-image-upload'));
-        var file = await http.MultipartFile.fromPath('file', path);
-        upload.files.add(file);
-        upload.fields['product_id'] = body['productId'].toString();
-        upload.fields['product_name'] = product_name.toString();
-        upload.fields['user_id'] = user_id.toString();
-        upload.headers['authorization'] = 'Bearer $Bearer';
-
-        final stream = await upload.send();
-        var resp = await http.Response.fromStream(stream);
-        var bodys = jsonDecode(resp.body);
-
-        if (bodys['upldRes'] == 'true') {
-          return bodys;
-        } else if (bodys['upldRes'] == 'false') {
-          showDialog(
-              child: AlertDialog(
-                title: Center(
-                  child: Text('There was a Problem Working on it!',
-                      style: TextStyle(color: Colors.blue)),
-                ),
-              ),
-              context: context);
-        }
-      } else if (body['reqRes'] == 'false') {
-        showDialog(
-            child: AlertDialog(
-              title: Center(
-                child: Text('There was a Problem Working on it!',
-                    style: TextStyle(color: Colors.blue)),
-              ),
-            ),
-            context: context);
-      }
-    } catch (e) {
-      showDialog(
-          child: AlertDialog(
-            title: Center(
-              child: Text('$e', style: TextStyle(color: Colors.blue)),
-            ),
-          ),
-          context: context);
-    }
-  }
-
-  Future addSerPic({path, uploadType, scaffoldKey, context}) async {
-    try {
-      var upload = http.MultipartRequest(
-          'POST', Uri.parse('https://uploads.fixme.ng/uploads-processing'));
-      var file = await http.MultipartFile.fromPath('file', path);
-      upload.files.add(file);
-      upload.fields['uploadType'] = uploadType.toString();
-      upload.fields['firstName'] = firstName.toString();
-      upload.fields['user_id'] = user_id.toString();
-      upload.headers['authorization'] = 'Bearer $Bearer';
-
-      final stream = await upload.send();
-      var res = await http.Response.fromStream(stream);
-
-      var body = jsonDecode(res.body);
-      notifyListeners();
-      if (body['upldRes'] == 'true') {
-        return body;
-      } else if (body['upldRes'] == 'false') {
-        showDialog(
-            child: AlertDialog(
-              title: Center(
-                child: Text('There was a Problem Working on it!',
-                    style: TextStyle(color: Colors.blue)),
-              ),
-            ),
-            context: context);
-      }
-    } catch (e) {
-      showDialog(
-          child: AlertDialog(
-            title: Center(
-              child: Text('There was a Problem Working on it!',
-                  style: TextStyle(color: Colors.blue)),
-            ),
-          ),
-          context: context);
-      print(e);
-    }
-  }
-
-  Future uploadCatalog({path, uploadType, scaffoldKey, context}) async {
-    try {
-      var upload = http.MultipartRequest(
-          'POST', Uri.parse('https://uploads.fixme.ng/uploads-processing'));
-      var file = await http.MultipartFile.fromPath('file', path);
-      upload.files.add(file);
-      upload.fields['uploadType'] = uploadType.toString();
-      upload.fields['firstName'] = firstName.toString();
-      upload.fields['user_id'] = user_id.toString();
-      upload.headers['authorization'] = 'Bearer $Bearer';
-
-      final stream = await upload.send();
-      var res = await http.Response.fromStream(stream);
-
-      var body = jsonDecode(res.body);
-      notifyListeners();
-      if (body['upldRes'] == 'true') {
-        Login_SetState();
-        showDialog(
-            barrierDismissible: false,
-            child: WillPopScope(
-              onWillPop: () {},
-              child: AlertDialog(
-                elevation: 6,
-                shape: RoundedRectangleBorder(
-                    borderRadius: BorderRadius.all(Radius.circular(32.0))),
-                content: Container(
-                  height: 150,
-                  child: Column(
-                    crossAxisAlignment: CrossAxisAlignment.center,
-                    mainAxisAlignment: MainAxisAlignment.center,
-                    children: <Widget>[
-                      Container(
-                        padding: EdgeInsets.only(top: 15, bottom: 15),
-                        width: 250,
-                        child: Text(
-                          'Photo Successfully Added to Catalog. Add Another Photo?',
-                          textAlign: TextAlign.center,
-                          style: TextStyle(
-                            fontSize: 15,
-                            fontWeight: FontWeight.bold,
-                            color: Colors.black54,
-                          ),
-                        ),
-                      ),
-                      Row(
-                        mainAxisAlignment: MainAxisAlignment.center,
-                        children: <Widget>[
-                          !login_state
-                              ? Material(
-                                  borderRadius: BorderRadius.circular(26),
-                                  elevation: 2,
-                                  child: Container(
-                                    height: 40,
-                                    width: 80,
-                                    decoration: BoxDecoration(
-                                        border: Border.all(
-                                            color: Color(0xFFE60016)),
-                                        borderRadius:
-                                            BorderRadius.circular(26)),
-                                    child: FlatButton(
-                                      onPressed: () {
-                                        Login_SetState();
-                                        BecomeArtisanOrBusiness(
-                                          context: context,
-                                          scaffoldKey: scaffoldKey,
-                                        );
-                                        Navigator.pop(context);
-                                      },
-                                      color: Color(0xFFE60016),
-                                      shape: RoundedRectangleBorder(
-                                          borderRadius:
-                                              BorderRadius.circular(26)),
-                                      padding: EdgeInsets.all(0.0),
-                                      child: Ink(
-                                        decoration: BoxDecoration(
-                                            borderRadius:
-                                                BorderRadius.circular(26)),
-                                        child: Container(
-                                          constraints: BoxConstraints(
-                                              maxWidth: 190.0, minHeight: 53.0),
-                                          alignment: Alignment.center,
-                                          child: Text(
-                                            "No Please!",
-                                            textAlign: TextAlign.center,
-                                            style: TextStyle(
-                                                fontSize: 14,
-                                                fontWeight: FontWeight.bold,
-                                                color: Colors.white),
-                                          ),
-                                        ),
-                                      ),
-                                    ),
-                                  ),
-                                )
-                              : CircularProgressIndicator(
-                                  valueColor: AlwaysStoppedAnimation<Color>(
-                                      Color(0xFF9B049B))),
-                          SizedBox(width: 5),
-                          Material(
-                            borderRadius: BorderRadius.circular(26),
-                            elevation: 2,
-                            child: Container(
-                              height: 40,
-                              width: 80,
-                              decoration: BoxDecoration(
-                                  border: Border.all(color: Colors.green),
-                                  borderRadius: BorderRadius.circular(26)),
-                              child: FlatButton(
-                                onPressed: () {
-                                  Navigator.pop(context);
-                                },
-                                color: Colors.green,
-                                shape: RoundedRectangleBorder(
-                                    borderRadius: BorderRadius.circular(26)),
-                                padding: EdgeInsets.all(0.0),
-                                child: Ink(
-                                  decoration: BoxDecoration(
-                                      borderRadius: BorderRadius.circular(26)),
-                                  child: Container(
-                                    constraints: BoxConstraints(
-                                        maxWidth: 190.0, minHeight: 53.0),
-                                    alignment: Alignment.center,
-                                    child: Text(
-                                      "Yes Please!",
-                                      textAlign: TextAlign.center,
-                                      style: TextStyle(
-                                          fontSize: 14,
-                                          fontWeight: FontWeight.bold,
-                                          color: Colors.white),
-                                    ),
-                                  ),
-                                ),
-                              ),
-                            ),
-                          ),
-                        ],
-                      ),
-                    ],
-                  ),
-                ),
-              ),
-            ),
-            context: context);
-        return body;
-      } else if (body['upldRes'] == 'false') {
-        Login_SetState();
-        showDialog(
-            child: AlertDialog(
-              title: Center(
-                child: Text('There was a Problem Working on it!',
-                    style: TextStyle(color: Colors.blue)),
-              ),
-            ),
+              );
+            },
             context: context);
       }
     } catch (e) {
@@ -949,11 +974,11 @@ class WebServices extends ChangeNotifier {
     try {
       var upload = http.MultipartRequest(
           'POST', Uri.parse('https://uploads.fixme.ng/uploads-processing'));
-      upload.headers['Authorization'] = 'Bearer $Bearer';
+      upload.headers['Authorization'] = 'Bearer $bearer';
       upload.headers['Content-type'] = 'application/json';
       var file = await http.MultipartFile.fromPath('file', path);
 
-      upload.fields['user_id'] = user_id.toString();
+      upload.fields['user_id'] = userId.toString();
       upload.fields['firstName'] = firstName.toString();
       upload.fields['uploadType'] = 'profilePicture';
       upload.files.add(file);
@@ -975,10 +1000,10 @@ class WebServices extends ChangeNotifier {
   Future<bool> editUserName({firstname, lastname}) async {
     var response = await http.post(
         Uri.parse(
-            'https://manager.fixme.ng/e-f-n?user_id=$user_id&firstName=$firstname&lastName=$lastname'),
+            'https://manager.fixme.ng/e-f-n?user_id=$userId&firstName=$firstname&lastName=$lastname'),
         headers: {
           "Content-type": "application/json",
-          'Authorization': 'Bearer $Bearer',
+          'Authorization': 'Bearer $bearer',
         });
     var body = json.decode(response.body);
     var res;
@@ -993,10 +1018,10 @@ class WebServices extends ChangeNotifier {
   Future<bool> editUserBio({status}) async {
     var response = await http.post(
         Uri.parse(
-            'https://manager.fixme.ng/update-bio?user_id=$user_id&bio=$status'),
+            'https://manager.fixme.ng/update-bio?user_id=$userId&bio=$status'),
         headers: {
           "Content-type": "application/json",
-          'Authorization': 'Bearer $Bearer',
+          'Authorization': 'Bearer $bearer',
         });
     var body = json.decode(response.body);
     var res;
@@ -1012,11 +1037,11 @@ class WebServices extends ChangeNotifier {
     try {
       var upload = http.MultipartRequest(
           'POST', Uri.parse('https://uploads.fixme.ng/uploads-processing'));
-      upload.headers['Authorization'] = 'Bearer $Bearer';
+      upload.headers['Authorization'] = 'Bearer $bearer';
       upload.headers['Content-type'] = 'application/json';
       var file = await http.MultipartFile.fromPath('file', path);
 
-      upload.fields['user_id'] = user_id.toString();
+      upload.fields['user_id'] = userId.toString();
       upload.fields['firstName'] = firstName.toString();
       upload.fields['uploadType'] = uploadType.toString();
       upload.files.add(file);
@@ -1026,45 +1051,49 @@ class WebServices extends ChangeNotifier {
       var body = jsonDecode(res.body);
       notifyListeners();
       if (body['upldRes'] == 'true') {
-        Login_SetState();
+        loginSetState();
         navigate.jumpToPage(3);
         print(body['upldRes']);
         return body;
       } else if (body['upldRes'] == 'false') {
-        Login_SetState();
+        loginSetState();
         showDialog(
-            child: AlertDialog(
-              title: Center(
-                child: Text('There was a Problem Working on it!',
-                    style: TextStyle(color: Colors.blue)),
-              ),
-            ),
+            builder: (ctx) {
+              return AlertDialog(
+                title: Center(
+                  child: Text('There was a Problem Working on it!',
+                      style: TextStyle(color: Colors.blue)),
+                ),
+              );
+            },
             context: context);
       }
     } catch (e) {
       showDialog(
-          child: AlertDialog(
-            title: Center(
-              child: Text('There was a Problem Working on it!',
-                  style: TextStyle(color: Colors.blue)),
-            ),
-          ),
+          builder: (ctx) {
+            return AlertDialog(
+              title: Center(
+                child: Text('There was a Problem Working on it!',
+                    style: TextStyle(color: Colors.blue)),
+              ),
+            );
+          },
           context: context);
-      Login_SetState();
+      loginSetState();
       print(e);
     }
   }
 
-  Future<dynamic> updateFCMToken(user_id, fcm_token) async {
+  Future<dynamic> updateFCMToken(userId, fcmToken) async {
     var response = await http
         .post(Uri.parse('https://manager.fixme.ng/mtk-details-update'), body: {
-      'user_id': user_id.toString(),
-      'device_token': fcm_token.toString(),
+      'user_id': userId.toString(),
+      'device_token': fcmToken.toString(),
       'device_os': 'andriod',
       'device_type': 'techno',
     }, headers: {
       "Content-type": "application/x-www-form-urlencoded",
-      'Authorization': 'Bearer $Bearer',
+      'Authorization': 'Bearer $bearer',
     });
     var body = json.decode(response.body);
     notifyListeners();
@@ -1078,11 +1107,11 @@ class WebServices extends ChangeNotifier {
   Future<dynamic> updateBio(bio) async {
     var response = await http
         .post(Uri.parse('https://manager.fixme.ng/update-bio'), body: {
-      'user_id': user_id.toString(),
+      'user_id': userId.toString(),
       'bio': '$bio',
     }, headers: {
       "Content-type": "application/x-www-form-urlencoded",
-      'Authorization': 'Bearer $Bearer',
+      'Authorization': 'Bearer $bearer',
     });
     var body = json.decode(response.body);
     notifyListeners();
@@ -1097,11 +1126,11 @@ class WebServices extends ChangeNotifier {
   Future<dynamic> updateService(sn) async {
     var response = await http
         .post(Uri.parse('https://manager.fixme.ng/change-service'), body: {
-      'user_id': user_id.toString(),
+      'user_id': userId.toString(),
       'service_id': '$sn',
     }, headers: {
       "Content-type": "application/x-www-form-urlencoded",
-      'Authorization': 'Bearer $Bearer',
+      'Authorization': 'Bearer $bearer',
     });
     var body = json.decode(response.body);
     notifyListeners();
@@ -1116,12 +1145,12 @@ class WebServices extends ChangeNotifier {
   Future<dynamic> updateFullName(firstName, lastName) async {
     var response =
         await http.post(Uri.parse('https://manager.fixme.ng/e-f-n'), body: {
-      'user_id': user_id.toString(),
+      'user_id': userId.toString(),
       'firstName': '$lastName',
       'lastName': '$firstName',
     }, headers: {
       "Content-type": "application/x-www-form-urlencoded",
-      'Authorization': 'Bearer $Bearer',
+      'Authorization': 'Bearer $bearer',
     });
     var body = json.decode(response.body);
     notifyListeners();
@@ -1136,10 +1165,10 @@ class WebServices extends ChangeNotifier {
   Future<dynamic> getUndoneProject() async {
     var response = await http
         .post(Uri.parse('https://manager.fixme.ng/all-new-projects'), body: {
-      'user_id': user_id.toString(),
+      'user_id': userId.toString(),
     }, headers: {
       "Content-type": "application/x-www-form-urlencoded",
-      'Authorization': 'Bearer $Bearer',
+      'Authorization': 'Bearer $bearer',
     });
     var body = json.decode(response.body);
     notifyListeners();
@@ -1150,15 +1179,15 @@ class WebServices extends ChangeNotifier {
     }
   }
 
-  Future<dynamic> NearbyArtisans({longitude, latitude}) async {
+  Future<dynamic> nearbyArtisans({longitude, latitude}) async {
     var response = await http
         .post(Uri.parse('https://manager.fixme.ng/near-artisans'), body: {
-      'user_id': user_id.toString(),
+      'user_id': userId.toString(),
       'longitude': longitude.toString(),
       'latitude': latitude.toString(),
     }, headers: {
       "Content-type": "application/x-www-form-urlencoded",
-      'Authorization': 'Bearer $Bearer',
+      'Authorization': 'Bearer $bearer',
     });
     var body = json.decode(response.body);
     List result = body['sortedUsers'];
@@ -1173,15 +1202,15 @@ class WebServices extends ChangeNotifier {
     }
   }
 
-  Future<dynamic> NearbyShop({longitude, latitude}) async {
+  Future<dynamic> nearbyShop({longitude, latitude}) async {
     var response = await http
         .post(Uri.parse('https://manager.fixme.ng/near-shops-business'), body: {
-      'user_id': user_id.toString(),
+      'user_id': userId.toString(),
       'longitude': longitude.toString(),
       'latitude': latitude.toString(),
     }, headers: {
       "Content-type": "application/x-www-form-urlencoded",
-      'Authorization': 'Bearer $Bearer',
+      'Authorization': 'Bearer $bearer',
     });
     print(response.body);
     var body = json.decode(response.body);
@@ -1197,17 +1226,17 @@ class WebServices extends ChangeNotifier {
     }
   }
 
-  Future Search({longitude, latitude, searchquery}) async {
+  Future search({longitude, latitude, searchquery}) async {
     try {
       var response = await http
           .post(Uri.parse('https://manager.fixme.ng/search-artisans'), body: {
-        'user_id': user_id.toString(),
+        'user_id': userId.toString(),
         'longitude': longitude.toString(),
         'latitude': latitude.toString(),
         'search-query': searchquery.toString(),
       }, headers: {
         // "Content-type": "application/x-www-form-urlencoded",
-        'Authorization': 'Bearer $Bearer',
+        'Authorization': 'Bearer $bearer',
       });
       var body = json.decode(response.body);
       List result = body['users'];
@@ -1225,10 +1254,10 @@ class WebServices extends ChangeNotifier {
 
   Future<List> getAvailableBanks() async {
     var response = await http.post(
-        Uri.parse('https://manager.fixme.ng/g-b-info?user_id=$user_id'),
+        Uri.parse('https://manager.fixme.ng/g-b-info?user_id=$userId'),
         headers: {
           "Content-type": "application/json",
-          'Authorization': 'Bearer $Bearer',
+          'Authorization': 'Bearer $bearer',
         });
     var body = json.decode(response.body);
     return body['bankInfo'];
@@ -1237,10 +1266,10 @@ class WebServices extends ChangeNotifier {
   Future<Map> getUserWalletInfo() async {
     var response = await http.post(
         Uri.parse(
-            'https://manager.fixme.ng/get-user-bank-info?user_id=$user_id'),
+            'https://manager.fixme.ng/get-user-bank-info?user_id=$userId'),
         headers: {
           "Content-type": "application/json",
-          'Authorization': 'Bearer $Bearer',
+          'Authorization': 'Bearer $bearer',
         });
     var body = json.decode(response.body);
     return body['accountInfo'];
@@ -1248,10 +1277,10 @@ class WebServices extends ChangeNotifier {
 
   Future<List> getUserTransactions() async {
     var response = await http.post(
-        Uri.parse('https://manager.fixme.ng/my-transactions?user_id=$user_id'),
+        Uri.parse('https://manager.fixme.ng/my-transactions?user_id=$userId'),
         headers: {
           "Content-type": "application/json",
-          'Authorization': 'Bearer $Bearer',
+          'Authorization': 'Bearer $bearer',
         });
     var body = json.decode(response.body);
     return body['transactionDetails'];
@@ -1260,10 +1289,10 @@ class WebServices extends ChangeNotifier {
   Future<dynamic> validateUserAccountName({bankCode, accountNumber}) async {
     var response = await http.post(
         Uri.parse(
-            'https://manager.fixme.ng/validate-acount-number?user_id=$user_id&bankCode=$bankCode&accountNumber=$accountNumber'),
+            'https://manager.fixme.ng/validate-acount-number?user_id=$userId&bankCode=$bankCode&accountNumber=$accountNumber'),
         headers: {
           "Content-type": "application/json",
-          'Authorization': 'Bearer $Bearer',
+          'Authorization': 'Bearer $bearer',
         });
     var body = json.decode(response.body);
     if (body['reqRes'] == 'true') {
@@ -1275,10 +1304,10 @@ class WebServices extends ChangeNotifier {
 
   Future<dynamic> checkSecurePin() async {
     var response = await http.post(
-        Uri.parse('https://manager.fixme.ng/has-security-pin?user_id=$user_id'),
+        Uri.parse('https://manager.fixme.ng/has-security-pin?user_id=$userId'),
         headers: {
           "Content-type": "application/json",
-          'Authorization': 'Bearer $Bearer',
+          'Authorization': 'Bearer $bearer',
         });
     var body = json.decode(response.body);
     return body['reqRes'];
@@ -1290,10 +1319,10 @@ class WebServices extends ChangeNotifier {
     var base64Str = base64.encode(bytes);
     var response = await http.post(
         Uri.parse(
-            'https://manager.fixme.ng/save-security-pin?user_id=$user_id&secPin=Basic $base64Str'),
+            'https://manager.fixme.ng/save-security-pin?user_id=$userId&secPin=Basic $base64Str'),
         headers: {
           "Content-type": "application/json",
-          'Authorization': 'Bearer $Bearer',
+          'Authorization': 'Bearer $bearer',
         });
     var body = json.decode(response.body);
     return body['reqRes'];
@@ -1301,11 +1330,10 @@ class WebServices extends ChangeNotifier {
 
   Future<List> getBeneficiaries() async {
     var response = await http.post(
-        Uri.parse(
-            'https://manager.fixme.ng/all-beneficiaries?user_id=$user_id'),
+        Uri.parse('https://manager.fixme.ng/all-beneficiaries?user_id=$userId'),
         headers: {
           "Content-type": "application/json",
-          'Authorization': 'Bearer $Bearer',
+          'Authorization': 'Bearer $bearer',
         });
     var body = json.decode(response.body);
     return body['userBeneficiaries'];
@@ -1332,10 +1360,10 @@ class WebServices extends ChangeNotifier {
 
     var response = await http.post(
         Uri.parse(
-            'https://manager.fixme.ng/initiate-transfer?user_id=$user_id&bankCode=$bankCode&accountNumber=$accountNumber&accountName=$accountName&amount=$amount&secPin=Basic $base64Str&naration=$naration&isBeneficiary=$isBeneficiary'),
+            'https://manager.fixme.ng/initiate-transfer?user_id=$userId&bankCode=$bankCode&accountNumber=$accountNumber&accountName=$accountName&amount=$amount&secPin=Basic $base64Str&naration=$naration&isBeneficiary=$isBeneficiary'),
         headers: {
           "Content-type": "application/json",
-          'Authorization': 'Bearer $Bearer',
+          'Authorization': 'Bearer $bearer',
         });
     var body = json.decode(response.body);
     Map<String, String> result = {
@@ -1351,7 +1379,7 @@ class WebServices extends ChangeNotifier {
             'https://manager.fixme.ng/support-request?user_id=264&topic=$topic&message=$message'),
         headers: {
           "Content-type": "application/json",
-          'Authorization': 'Bearer $Bearer',
+          'Authorization': 'Bearer $bearer',
         });
     var body = json.decode(response.body);
     bool res;

@@ -2,7 +2,6 @@ import 'dart:async';
 import 'package:agora_rtc_engine/rtc_engine.dart';
 import 'package:agora_rtc_engine/rtc_local_view.dart' as RtcLocalView;
 import 'package:agora_rtc_engine/rtc_remote_view.dart' as RtcRemoteView;
-import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:fixme/Model/Message.dart';
 import 'package:fixme/Services/call_service.dart';
 import 'package:fixme/Services/network_service.dart';
@@ -10,18 +9,19 @@ import 'package:fixme/strings.dart';
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 
-
-
 class CallAudioPage extends StatefulWidget {
   /// non-modifiable channel name of the page
   final String channelName;
   final idUser;
   final urlAvatar;
+
   /// non-modifiable client role of the page
   final ClientRole role;
 
   /// Creates a call page with given channel name.
-  const CallAudioPage({Key key, this.channelName, this.role, this.idUser, this.urlAvatar}) : super(key: key);
+  const CallAudioPage(
+      {Key key, this.channelName, this.role, this.idUser, this.urlAvatar})
+      : super(key: key);
 
   @override
   _CallVideoPageState createState() => _CallVideoPageState();
@@ -140,8 +140,6 @@ class _CallVideoPageState extends State<CallAudioPage> {
     );
   }
 
-
-
   /// Video layout wrapper
   Widget _viewRows() {
     final views = _getRenderViews();
@@ -149,32 +147,32 @@ class _CallVideoPageState extends State<CallAudioPage> {
       case 1:
         return Container(
             child: Column(
-              children: <Widget>[_videoView(views[0])],
-            ));
+          children: <Widget>[_videoView(views[0])],
+        ));
       case 2:
         return Container(
             child: Column(
-              children: <Widget>[
-                _expandedVideoRow([views[0]]),
-                _expandedVideoRow([views[1]])
-              ],
-            ));
+          children: <Widget>[
+            _expandedVideoRow([views[0]]),
+            _expandedVideoRow([views[1]])
+          ],
+        ));
       case 3:
         return Container(
             child: Column(
-              children: <Widget>[
-                _expandedVideoRow(views.sublist(0, 2)),
-                _expandedVideoRow(views.sublist(2, 3))
-              ],
-            ));
+          children: <Widget>[
+            _expandedVideoRow(views.sublist(0, 2)),
+            _expandedVideoRow(views.sublist(2, 3))
+          ],
+        ));
       case 4:
         return Container(
             child: Column(
-              children: <Widget>[
-                _expandedVideoRow(views.sublist(0, 2)),
-                _expandedVideoRow(views.sublist(2, 4))
-              ],
-            ));
+          children: <Widget>[
+            _expandedVideoRow(views.sublist(0, 2)),
+            _expandedVideoRow(views.sublist(2, 4))
+          ],
+        ));
       default:
     }
     return Container();
@@ -213,15 +211,14 @@ class _CallVideoPageState extends State<CallAudioPage> {
             fillColor: Colors.redAccent,
             padding: const EdgeInsets.all(15.0),
           ),
-        
         ],
       ),
     );
   }
 
   /// Info panel to show logs
- Widget _panel() {
-   return Container(
+  Widget _panel() {
+    return Container(
       padding: const EdgeInsets.symmetric(vertical: 48),
       alignment: Alignment.bottomCenter,
       child: FractionallySizedBox(
@@ -240,7 +237,7 @@ class _CallVideoPageState extends State<CallAudioPage> {
                   vertical: 3,
                   horizontal: 10,
                 ),
-               child: Row(
+                child: Row(
                   mainAxisSize: MainAxisSize.min,
                   children: [
                     Flexible(
@@ -273,7 +270,6 @@ class _CallVideoPageState extends State<CallAudioPage> {
     var datas = Provider.of<CallApi>(context, listen: false);
     datas.deleteCallLogs(widget.idUser);
     Navigator.pop(context);
-
   }
 
   void _onToggleMute() {
@@ -283,53 +279,50 @@ class _CallVideoPageState extends State<CallAudioPage> {
     _engine.muteLocalAudioStream(muted);
   }
 
-  
-
   @override
   Widget build(BuildContext context) {
-     var network = Provider.of<WebServices>(context, listen: false);
-var data = Provider.of<CallApi>(context, listen: false);
+    var network = Provider.of<WebServices>(context, listen: false);
+    var data = Provider.of<CallApi>(context, listen: false);
     return Scaffold(
       backgroundColor: Colors.black,
       body: Center(
         child: Stack(
           children: <Widget>[
-           // _viewRows(),
+            // _viewRows(),
             Container(
-            child: Column(
+                child: Column(
               children: <Widget>[
                 Container(
-                  height: MediaQuery.of(context).size.height*0.78,
-                  child: Image.network(
-                      '${widget.urlAvatar}',
-                   fit:BoxFit.cover
-                    ),
+                  height: MediaQuery.of(context).size.height * 0.78,
+                  child:
+                      Image.network('${widget.urlAvatar}', fit: BoxFit.cover),
                 ),
                 StreamBuilder<List<Message>>(
-                  stream: data.getCallStatus(widget.idUser, network.mobile_device_token),
-                  builder: (context,  snapshot) {
-                   switch (snapshot.connectionState){ 
-                      case ConnectionState.waiting:
-              return buildText("...");
+                    stream: data.getCallStatus(
+                        widget.idUser, network.mobileDeviceToken),
+                    builder: (context, snapshot) {
+                      switch (snapshot.connectionState) {
+                        case ConnectionState.waiting:
+                          return buildText("...");
 
-                   default:
-              if (snapshot.hasError) {
-                return buildText('Something Went Wrong Try later');
-              } else if(snapshot.data.isEmpty){
-                      return buildText('');
-                    }
-              else if(snapshot.hasData){
-                final messages = snapshot.data;
-                return  messages[0].callStatus=='Connected'?buildText('Connected...')
-                    :messages[0].callStatus=='Connecting'?buildText('Connecting...')
-                    :buildText('Some');
-                    }
-
-                  }}
-                )
+                        default:
+                          if (snapshot.hasError) {
+                            return buildText('Something Went Wrong Try later');
+                          } else if (snapshot.data.isEmpty) {
+                            return buildText('');
+                          } else if (snapshot.hasData) {
+                            final messages = snapshot.data;
+                            return messages[0].callStatus == 'Connected'
+                                ? buildText('Connected...')
+                                : messages[0].callStatus == 'Connecting'
+                                    ? buildText('Connecting...')
+                                    : buildText('Some');
+                          }
+                      }
+                    })
               ],
             )),
-         //  _panel(),
+            //  _panel(),
             _toolbar(),
           ],
         ),
@@ -338,13 +331,13 @@ var data = Provider.of<CallApi>(context, listen: false);
   }
 
   Widget buildText(String text) => Center(
-      child: Padding(
-       padding: const EdgeInsets.all(8.0),
-      child:Text(
-        text,
-        style: TextStyle(fontSize: 24, color:Colors.white),
-      )),
-    );
+        child: Padding(
+            padding: const EdgeInsets.all(8.0),
+            child: Text(
+              text,
+              style: TextStyle(fontSize: 24, color: Colors.white),
+            )),
+      );
 
 //Widget buildPop() => Navigator.pop(context);
 }

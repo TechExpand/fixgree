@@ -4,12 +4,11 @@ import 'package:fixme/Services/network_service.dart';
 import 'package:fixme/Utils/Provider.dart';
 import 'package:fixme/Utils/utils.dart';
 import 'package:flutter/material.dart';
-import 'package:fixme/Screens/ArtisanUser/Profile/ProfilePage.dart';
 import 'package:image_picker/image_picker.dart';
 import 'package:provider/provider.dart';
 
 class ProductCatelogPage extends StatefulWidget {
-  var myPage;
+  final myPage;
 
   ProductCatelogPage(this.myPage);
   @override
@@ -18,7 +17,6 @@ class ProductCatelogPage extends StatefulWidget {
 
 class ProductCatelogPageState extends State<ProductCatelogPage> {
   final GlobalKey<ScaffoldState> scaffoldKey = GlobalKey<ScaffoldState>();
-  int _index = 0;
 
   @override
   Widget build(BuildContext context) {
@@ -127,7 +125,7 @@ class ProductCatelogPageState extends State<ProductCatelogPage> {
               Center(
                 child: SizedBox(
                   height: 100, // card height
-                  child: data.selected_image2 == null
+                  child: data.selectedImage2 == null
                       ? Text('')
                       : Container(
                           width: 100,
@@ -137,7 +135,7 @@ class ProductCatelogPageState extends State<ProductCatelogPage> {
                                   borderRadius: BorderRadius.circular(20)),
                               child: Image.file(
                                 File(
-                                  data.selected_image2.path,
+                                  data.selectedImage2.path,
                                 ),
                                 fit: BoxFit.cover,
                               )),
@@ -183,27 +181,27 @@ class ProductCatelogPageState extends State<ProductCatelogPage> {
               Spacer(),
               Align(
                   alignment: Alignment.center,
-                  child: !network.login_state
+                  child: !network.loginState
                       ? Container(
                           decoration: BoxDecoration(
                               border: Border.all(color: Colors.white),
                               borderRadius: BorderRadius.circular(26)),
                           child: FlatButton(
                             disabledColor: Color(0x909B049B),
-                            onPressed: datas.product_bio.isEmpty ||
-                                    datas.product_price.isEmpty ||
-                                    datas.product_name.isEmpty ||
-                                    data.selected_image2 == null
+                            onPressed: datas.productBio.isEmpty ||
+                                    datas.productPrice.isEmpty ||
+                                    datas.productName.isEmpty ||
+                                    data.selectedImage2 == null
                                 ? () {}
                                 : () {
-                                    network.Login_SetState();
+                                    network.loginSetState();
                                     network.uploadProductCatalog(
                                       scaffoldKey: scaffoldKey,
                                       context: context,
-                                      bio: datas.product_bio,
-                                      product_name: datas.product_name,
-                                      price: datas.product_price,
-                                      path: data.selected_image2.path,
+                                      bio: datas.productBio,
+                                      productName: datas.productName,
+                                      price: datas.productPrice,
+                                      path: data.selectedImage2.path,
                                     );
                                   },
                             color: Color(0xFF9B049B),

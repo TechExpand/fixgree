@@ -3,7 +3,6 @@ import 'package:fixme/Screens/ArtisanUser/ProfileSetUp/Overview.dart';
 import 'package:fixme/Screens/ArtisanUser/ProfileSetUp/ProductCartalog.dart';
 import 'package:fixme/Screens/ArtisanUser/ProfileSetUp/ServicesCatelog.dart';
 import 'package:fixme/Screens/ArtisanUser/ProfileSetUp/ProductDetail.dart';
-import 'package:fixme/Screens/ArtisanUser/RegisterArtisan/bvn.dart';
 import 'package:fixme/Services/network_service.dart';
 import 'package:fixme/Utils/Provider.dart';
 import 'package:flutter/material.dart';
@@ -62,7 +61,7 @@ class SignUpProfileSetupPageState extends State<SignUpProfileSetupPage> {
                       crossAxisAlignment: CrossAxisAlignment.start,
                       children: [
                         Text(
-                          '${text}',
+                          '$text',
                           style: TextStyle(
                             fontSize: 15,
                             fontWeight: FontWeight.w600,
@@ -89,10 +88,10 @@ class SignUpProfileSetupPageState extends State<SignUpProfileSetupPage> {
                     child: Text(''),
                     radius: 19,
                     backgroundImage: NetworkImage(
-                      network.profile_pic_file_name == 'no_picture_upload' ||
-                              network.profile_pic_file_name == null
+                      network.profilePicFileName == 'no_picture_upload' ||
+                              network.profilePicFileName == null
                           ? 'https://uploads.fixme.ng/originals/no_picture_upload'
-                          : 'https://uploads.fixme.ng/originals/${network.profile_pic_file_name}',
+                          : 'https://uploads.fixme.ng/originals/${network.profilePicFileName}',
                     ),
                     foregroundColor: Colors.white,
                     backgroundColor: Colors.white,

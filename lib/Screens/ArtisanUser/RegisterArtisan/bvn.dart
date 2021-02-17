@@ -1,6 +1,5 @@
 import 'package:fixme/Screens/ArtisanUser/ProfileSetUp/profileArtisan.dart';
 import 'package:fixme/Screens/ArtisanUser/RegisterArtisan/thankyou.dart';
-import 'package:fixme/Services/postrequest_service.dart';
 import 'package:fixme/Utils/Provider.dart';
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';

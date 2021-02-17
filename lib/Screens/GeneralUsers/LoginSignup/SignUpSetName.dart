@@ -3,7 +3,6 @@ import 'package:fixme/Utils/Provider.dart';
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 
-
 class SignUpSetProfile extends StatefulWidget {
   @override
   SignUpSetProfileState createState() => SignUpSetProfileState();
@@ -55,17 +54,17 @@ class SignUpSetProfileState extends State<SignUpSetProfile> {
                               borderSide: const BorderSide(
                                   color: Color(0xFF9B049B), width: 0.0),
                               borderRadius:
-                              BorderRadius.all(Radius.circular(12))),
+                                  BorderRadius.all(Radius.circular(12))),
                           focusedBorder: OutlineInputBorder(
                               borderSide: const BorderSide(
                                   color: Color(0xFF9B049B), width: 0.0),
                               borderRadius:
-                              BorderRadius.all(Radius.circular(12))),
+                                  BorderRadius.all(Radius.circular(12))),
                           border: OutlineInputBorder(
                               borderSide: const BorderSide(
                                   color: Color(0xFF9B049B), width: 0.0),
                               borderRadius:
-                              BorderRadius.all(Radius.circular(12))),
+                                  BorderRadius.all(Radius.circular(12))),
                         )),
                   ),
                   Container(
@@ -84,17 +83,17 @@ class SignUpSetProfileState extends State<SignUpSetProfile> {
                               borderSide: const BorderSide(
                                   color: Color(0xFF9B049B), width: 0.0),
                               borderRadius:
-                              BorderRadius.all(Radius.circular(12))),
+                                  BorderRadius.all(Radius.circular(12))),
                           focusedBorder: OutlineInputBorder(
                               borderSide: const BorderSide(
                                   color: Color(0xFF9B049B), width: 0.0),
                               borderRadius:
-                              BorderRadius.all(Radius.circular(12))),
+                                  BorderRadius.all(Radius.circular(12))),
                           border: OutlineInputBorder(
                               borderSide: const BorderSide(
                                   color: Color(0xFF9B049B), width: 0.0),
                               borderRadius:
-                              BorderRadius.all(Radius.circular(12))),
+                                  BorderRadius.all(Radius.circular(12))),
                         )),
                   ),
                 ],
@@ -107,40 +106,42 @@ class SignUpSetProfileState extends State<SignUpSetProfile> {
                     decoration: BoxDecoration(
                         border: Border.all(color: Colors.white),
                         borderRadius: BorderRadius.circular(26)),
-                    child: network.login_state == false
+                    child: network.loginState == false
                         ? FlatButton(
-                      disabledColor: Color(0x909B049B),
-                      onPressed:
-                      data.firstName.isEmpty || data.lastName.isEmpty
-                          ? null
-                          : () {
-                        network.Login_SetState();
-                        network.Register(context: context, scaffoldKey: scaffoldKey);
-                      },
-                      color: Color(0xFF9B049B),
-                      shape: RoundedRectangleBorder(
-                          borderRadius: BorderRadius.circular(26)),
-                      padding: EdgeInsets.all(0.0),
-                      child: Ink(
-                        decoration: BoxDecoration(
-                            borderRadius: BorderRadius.circular(26)),
-                        child: Container(
-                          constraints: BoxConstraints(
-                              maxWidth:
-                              MediaQuery.of(context).size.width / 1.3,
-                              minHeight: 45.0),
-                          alignment: Alignment.center,
-                          child: Text(
-                            "DONE",
-                            textAlign: TextAlign.center,
-                            style: TextStyle(color: Colors.white),
-                          ),
-                        ),
-                      ),
-                    )
+                            disabledColor: Color(0x909B049B),
+                            onPressed:
+                                data.firstName.isEmpty || data.lastName.isEmpty
+                                    ? null
+                                    : () {
+                                        network.loginSetState();
+                                        network.register(
+                                            context: context,
+                                            scaffoldKey: scaffoldKey);
+                                      },
+                            color: Color(0xFF9B049B),
+                            shape: RoundedRectangleBorder(
+                                borderRadius: BorderRadius.circular(26)),
+                            padding: EdgeInsets.all(0.0),
+                            child: Ink(
+                              decoration: BoxDecoration(
+                                  borderRadius: BorderRadius.circular(26)),
+                              child: Container(
+                                constraints: BoxConstraints(
+                                    maxWidth:
+                                        MediaQuery.of(context).size.width / 1.3,
+                                    minHeight: 45.0),
+                                alignment: Alignment.center,
+                                child: Text(
+                                  "DONE",
+                                  textAlign: TextAlign.center,
+                                  style: TextStyle(color: Colors.white),
+                                ),
+                              ),
+                            ),
+                          )
                         : CircularProgressIndicator(
-                        valueColor: AlwaysStoppedAnimation<Color>(
-                            Color(0xFF9B049B)))),
+                            valueColor: AlwaysStoppedAnimation<Color>(
+                                Color(0xFF9B049B)))),
               )
             ],
           ),

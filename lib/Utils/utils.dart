@@ -1,5 +1,4 @@
 import 'dart:async';
-import 'dart:io';
 import 'dart:math';
 import 'package:image_picker/image_picker.dart';
 import 'package:intl/intl.dart';
@@ -9,9 +8,9 @@ import 'package:url_launcher/url_launcher.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 
 class Utils with ChangeNotifier {
-  String random_num = '';
+  String randomNum = '';
   bool isExpanded = false;
-  String fcm_token = '';
+  String fcmToken = '';
   bool isExpanded1 = true;
 
   static StreamTransformer transformer<T>(
@@ -40,13 +39,13 @@ class Utils with ChangeNotifier {
     const _chars =
         'AaBbCcDdEeFfGgHhIiJjKkLlMmNnOoPpQqRrSsTtUuVvWwXxYyZz1234567890';
     Random _rnd = Random();
-    random_num = String.fromCharCodes(Iterable.generate(
+    randomNum = String.fromCharCodes(Iterable.generate(
         length, (_) => _chars.codeUnitAt(_rnd.nextInt(_chars.length))));
-    return random_num;
+    return randomNum;
   }
 
   setFCMToken(value) {
-    fcm_token = value;
+    fcmToken = value;
     notifyListeners();
   }
 
@@ -99,20 +98,20 @@ class Utils with ChangeNotifier {
     }
   }
 
-  PickedFile selected_image;
+  PickedFile selectedImage;
   final picker = ImagePicker();
   Future selectimage({@required ImageSource source, context}) async {
     var image = await picker.getImage(source: source);
-    selected_image = image;
+    selectedImage = image;
 
     notifyListeners();
   }
 
-  PickedFile selected_image2;
+  PickedFile selectedImage2;
   final picker2 = ImagePicker();
   Future selectimage2({@required ImageSource source, context}) async {
     var images = await picker.getImage(source: source);
-    selected_image2 = images;
+    selectedImage2 = images;
 
     notifyListeners();
   }

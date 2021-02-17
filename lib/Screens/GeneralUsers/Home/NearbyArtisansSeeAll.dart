@@ -90,9 +90,9 @@ class _NearbyArtisansSeeAllState extends State<NearbyArtisansSeeAll> {
         Expanded(
           child: Container(
               child: FutureBuilder(
-                  future: network.NearbyArtisans(
-                      latitude: location.location_latitude,
-                      longitude: location.location_longitude),
+                  future: network.nearbyArtisans(
+                      latitude: location.locationLatitude,
+                      longitude: location.locationLongitude),
                   builder: (context, AsyncSnapshot snapshot) {
                     Widget mainWidget;
                     if (snapshot.connectionState == ConnectionState.done) {

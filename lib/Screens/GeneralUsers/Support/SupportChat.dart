@@ -1,7 +1,6 @@
 import 'package:fixme/Utils/utils.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_tawk/flutter_tawk.dart';
-import 'package:flutter_feather_icons/flutter_feather_icons.dart';
 import 'package:provider/provider.dart';
 
 class SupportChat extends StatefulWidget {

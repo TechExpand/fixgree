@@ -1,5 +1,4 @@
 import 'dart:async';
-import 'dart:io';
 import 'package:fixme/Model/service.dart';
 import 'package:fixme/Services/call_service.dart';
 import 'package:flutter/foundation.dart';
@@ -11,21 +10,21 @@ class DataProvider extends ChangeNotifier {
   PhoneNumber number = PhoneNumber(isoCode: 'NG');
   String password = '';
   int count = 10;
-  String firebase_user_id = '';
+  String firebaseUserId = '';
   String overview = '';
-  bool focus_value = false;
+  bool focusValue = false;
   String description = '';
-  bool focus_value1 = false;
+  bool focusValue1 = false;
   bool splash = false;
-  String product_name = '';
-  String product_bio = '';
-  String product_price = '';
+  String productName = '';
+  String productBio = '';
+  String productPrice = '';
   List<Services> servicesList = [];
   List subcat = [];
-  bool focus_value2 = false;
-  bool focus_value3 = false;
-  bool focus_value4 = false;
-  bool focus_value5 = false;
+  bool focusValue2 = false;
+  bool focusValue3 = false;
+  bool focusValue4 = false;
+  bool focusValue5 = false;
   bool isWriting = false;
   int selectedPage = 0;
   String emails = '';
@@ -36,7 +35,7 @@ class DataProvider extends ChangeNotifier {
   String firstName = '';
   String lastName = '';
   String artisanVendorChoice = '';
-  bool password_obscure = true;
+  bool passwordObscure = true;
   bool showCallToAction = true;
 
   set setCallToActionStatus(bool newVal) {
@@ -57,7 +56,7 @@ class DataProvider extends ChangeNotifier {
 
   //change password obcure text
   setPassWordObscure(value) {
-    password_obscure = value;
+    passwordObscure = value;
     notifyListeners();
   }
 
@@ -118,17 +117,17 @@ class DataProvider extends ChangeNotifier {
   }
 
   setProductName(value) {
-    product_name = value;
+    productName = value;
     notifyListeners();
   }
 
   setProductBio(value) {
-    product_bio = value;
+    productBio = value;
     notifyListeners();
   }
 
   setProductPrice(value) {
-    product_price = value;
+    productPrice = value;
     notifyListeners();
   }
 
@@ -157,13 +156,13 @@ class DataProvider extends ChangeNotifier {
   }
 
 //change textfield number on focus of otp textfield
-  setOTPfocus_value({focus1, focus2, focus3, focus4, focus5, focus6}) {
-    focus_value = focus1;
-    focus_value1 = focus2;
-    focus_value2 = focus3;
-    focus_value3 = focus4;
-    focus_value4 = focus5;
-    focus_value5 = focus6;
+  setOTPfocusValue({focus1, focus2, focus3, focus4, focus5, focus6}) {
+    focusValue = focus1;
+    focusValue1 = focus2;
+    focusValue2 = focus3;
+    focusValue3 = focus4;
+    focusValue4 = focus5;
+    focusValue5 = focus6;
     notifyListeners();
   }
 
@@ -172,7 +171,7 @@ class DataProvider extends ChangeNotifier {
 //otp count down
 
   void setUserID(id) {
-    firebase_user_id = id;
+    firebaseUserId = id;
     notifyListeners();
   }
 

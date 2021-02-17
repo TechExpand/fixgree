@@ -39,7 +39,7 @@ class SignUpPasswordState extends State<SignUpPassword> {
                 width: MediaQuery.of(context).size.width / 0.2,
                 height: 50,
                 child: TextFormField(
-                    obscureText: data.password_obscure,
+                    obscureText: data.passwordObscure,
                     onChanged: (value) {
                       data.setPassword(value);
                     },
@@ -48,12 +48,12 @@ class SignUpPasswordState extends State<SignUpPassword> {
                     decoration: InputDecoration(
                       suffixIcon: IconButton(
                           onPressed: () {
-                            data.password_obscure
+                            data.passwordObscure
                                 ? data.setPassWordObscure(false)
                                 : data.setPassWordObscure(true);
                           },
                           icon: Icon(
-                            data.password_obscure
+                            data.passwordObscure
                                 ? FontAwesomeIcons.eyeSlash
                                 : FontAwesomeIcons.eye,
                             color: Colors.black38,
