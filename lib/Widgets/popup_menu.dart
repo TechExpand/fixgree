@@ -8,11 +8,11 @@ class PopUpMenu extends StatelessWidget {
   final GlobalKey<ScaffoldState> scaffoldKey = GlobalKey<ScaffoldState>();
   final String idUser;
   final user;
-  final pop_data;
+  final popData;
 
   PopUpMenu({
     this.user,
-    this.pop_data,
+    this.popData,
     @required this.idUser,
     Key key,
   }) : super(key: key);
@@ -29,17 +29,21 @@ class PopUpMenu extends StatelessWidget {
           size: 28,
         ),
         itemBuilder: (context) => [
-          user.project_owner_user_id.toString() != network.user_id.toString()||user.project_owner_user_id==null?null:PopupMenuItem(
-                  value: 1,
-                  child: InkWell(
-                    onTap: () {
-                      DialogPage(context);
-                    },
-                    child: Padding(
-                      padding: const EdgeInsets.all(8),
-                      child: Text('Initiate Project'),
-                    ),
-                  )),
+              user.project_owner_user_id.toString() !=
+                          network.user_id.toString() ||
+                      user.project_owner_user_id == null
+                  ? null
+                  : PopupMenuItem(
+                      value: 1,
+                      child: InkWell(
+                        onTap: () {
+                          dialogPage(context);
+                        },
+                        child: Padding(
+                          padding: const EdgeInsets.all(8),
+                          child: Text('Initiate Project'),
+                        ),
+                      )),
               PopupMenuItem(
                   value: 2,
                   child: InkWell(
@@ -83,7 +87,7 @@ class PopUpMenu extends StatelessWidget {
             ]);
   }
 
-  Widget DialogPage(ctx) {
+  dialogPage(ctx) {
     var network = Provider.of<WebServices>(ctx, listen: false);
     final _controller = TextEditingController();
     showDialog(
@@ -92,7 +96,7 @@ class PopUpMenu extends StatelessWidget {
         builder: (BuildContext context, StateSetter setStates) {
           return AlertDialog(
             title: TextFormField(
-              keyboardType: TextInputType.number ,
+              keyboardType: TextInputType.number,
               controller: _controller,
               style: TextStyle(color: Colors.black),
               decoration: InputDecoration(
@@ -115,7 +119,7 @@ class PopUpMenu extends StatelessWidget {
                     child: Padding(
                       padding: const EdgeInsets.only(bottom: 10.0, top: 10),
                       child: LinearProgressIndicator(
-                          backgroundColor:Colors.white,
+                        backgroundColor: Colors.white,
                         valueColor:
                             AlwaysStoppedAnimation<Color>(Color(0xFF9B049B)),
                       ),
@@ -136,13 +140,17 @@ class PopUpMenu extends StatelessWidget {
 //                       pop_data.project_id, pop_data.service_id, _controller.text, context);
                         network
                             .initiateProject(
-                            user.project_owner_user_id, user.bid_id,
-                            user.job_id, user.service_id, _controller.text, context,
-                            setStates)
+                                user.project_owner_user_id,
+                                user.bid_id,
+                                user.job_id,
+                                user.service_id,
+                                _controller.text,
+                                context,
+                                setStates)
                             .then((v) {
                           FirebaseApi.clearJobBids(
                             user.project_owner_user_id,
-                             );
+                          );
                         });
                       },
                       color: Color(0xFF9B049B),

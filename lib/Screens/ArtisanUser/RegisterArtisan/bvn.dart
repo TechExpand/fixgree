@@ -5,14 +5,12 @@ import 'package:fixme/Utils/Provider.dart';
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 
-
 class SignUpBvn extends StatefulWidget {
   @override
   SignUpBvnState createState() => SignUpBvnState();
 }
 
 class SignUpBvnState extends State<SignUpBvn> {
-
   var password;
 
   @override
@@ -25,12 +23,12 @@ class SignUpBvnState extends State<SignUpBvn> {
           crossAxisAlignment: CrossAxisAlignment.start,
           children: <Widget>[
             Padding(
-              padding: const EdgeInsets.only(bottom: 12.0,  top: 15),
+              padding: const EdgeInsets.only(bottom: 12.0, top: 15),
               child: Text(
                 'Enter your BVN',
                 style: TextStyle(
                   fontSize: 15,
-                  fontWeight: FontWeight.w500,
+                  fontWeight: FontWeight.w600,
                   letterSpacing: 0.5,
                 ),
               ),
@@ -46,7 +44,6 @@ class SignUpBvnState extends State<SignUpBvn> {
                 cursorColor: Colors.black,
                 keyboardType: TextInputType.number,
                 decoration: InputDecoration(
-                  
                   labelStyle: TextStyle(color: Colors.black38),
                   labelText: 'BVN number',
                   enabledBorder: OutlineInputBorder(
@@ -68,32 +65,31 @@ class SignUpBvnState extends State<SignUpBvn> {
               padding: const EdgeInsets.only(left: 15.0, top: 12),
               child: Align(
                 alignment: Alignment.bottomRight,
-                    child: InkWell(
-                      onTap:(){
-                            Navigator.push(
-                            context,
-                            PageRouteBuilder(
-                              pageBuilder:
-                                  (context, animation, secondaryAnimation) {
-                                return SignThankyou();
-                              },
-                              transitionsBuilder: (context, animation,
-                                  secondaryAnimation, child) {
-                                return FadeTransition(
-                                  opacity: animation,
-                                  child: child,
-                                );
-                              },
-                            ),
+                child: InkWell(
+                  onTap: () {
+                    Navigator.push(
+                      context,
+                      PageRouteBuilder(
+                        pageBuilder: (context, animation, secondaryAnimation) {
+                          return SignThankyou();
+                        },
+                        transitionsBuilder:
+                            (context, animation, secondaryAnimation, child) {
+                          return FadeTransition(
+                            opacity: animation,
+                            child: child,
                           );
-                      },
-                      child: Text(
-                  'Skip this step',
-                  style: TextStyle(
+                        },
+                      ),
+                    );
+                  },
+                  child: Text(
+                    'Skip this step',
+                    style: TextStyle(
                       fontSize: 14,
+                    ),
                   ),
                 ),
-                    ),
               ),
             ),
             Spacer(),

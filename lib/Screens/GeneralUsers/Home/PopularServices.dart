@@ -2,6 +2,7 @@ import 'package:fixme/Screens/ArtisanUser/Profile/ArtisanPage.dart';
 import 'package:fixme/Services/network_service.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_feather_icons/flutter_feather_icons.dart';
+import 'package:google_fonts/google_fonts.dart';
 import 'package:provider/provider.dart';
 import 'package:fixme/Utils/utils.dart';
 
@@ -29,6 +30,14 @@ class _PopularServicesState extends State<PopularServices> {
     return Scaffold(
       appBar: AppBar(
         backgroundColor: Colors.white,
+        title: Text(
+          'Nearby ${widget.serviceName}s',
+          style: GoogleFonts.openSans(
+            fontWeight: FontWeight.w600,
+            fontSize: 19,
+            color: Color(0xFF9B049B),
+          ),
+        ),
         leading: IconButton(
           onPressed: () {
             Navigator.of(context).pop();
@@ -39,21 +48,6 @@ class _PopularServicesState extends State<PopularServices> {
       ),
       body: Column(
         children: [
-          Padding(
-            padding: const EdgeInsets.only(top: 10, left: 15, bottom: 15),
-            child: Row(
-              children: [
-                Text(
-                  'Nearby ${widget.serviceName}s',
-                  style: TextStyle(
-                    fontWeight: FontWeight.w600,
-                    fontSize: 19,
-                    color: Color(0xFF270F33),
-                  ),
-                ),
-              ],
-            ),
-          ),
           Expanded(
             child: Container(
               child: FutureBuilder(
@@ -110,7 +104,7 @@ class _PopularServicesState extends State<PopularServices> {
                               return Divider();
                             },
                             itemCount: snapshot.data.length,
-                            padding: const EdgeInsets.only(left: 15, right: 15),
+                            padding: const EdgeInsets.only(left: 5, right: 5),
                             itemBuilder: (context, index) {
                               return Container(
                                 alignment: Alignment.center,
@@ -141,18 +135,20 @@ class _PopularServicesState extends State<PopularServices> {
                                     child: Text(''),
                                     radius: 35,
                                     backgroundImage: NetworkImage(
-                                      snapshot.data[index].urlAvatar ==
+                                      snapshot.data[index][
+                                                      'profile_pic_file_name'] ==
                                                   'no_picture_upload' ||
-                                              snapshot.data[index].urlAvatar ==
+                                              snapshot.data[index][
+                                                      'profile_pic_file_name'] ==
                                                   null
                                           ? 'https://uploads.fixme.ng/originals/no_picture_upload'
-                                          : 'https://uploads.fixme.ng/originals/${snapshot.data[index].urlAvatar}',
+                                          : 'https://uploads.fixme.ng/originals/${snapshot.data[index]['profile_pic_file_name']}',
                                     ),
                                     foregroundColor: Colors.white,
                                     backgroundColor: Colors.white,
                                   ),
                                   title: Text(
-                                    '${snapshot.data[index].name} ${snapshot.data[index].userLastName}',
+                                    '${snapshot.data[index]['user_first_name']} ${snapshot.data[index]['user_last_name']}',
                                     // .capitalizeFirstOfEach,
                                     style: TextStyle(
                                         color: Color(0xFF333333),
@@ -160,7 +156,7 @@ class _PopularServicesState extends State<PopularServices> {
                                         fontWeight: FontWeight.w600),
                                   ),
                                   subtitle: Text(
-                                    '${snapshot.data[index].serviceArea}',
+                                    '${snapshot.data[index]['service_area']}',
                                     // .capitalizeFirstOfEach,
                                     style: TextStyle(
                                         color: Color(0xFF333333),
@@ -178,7 +174,7 @@ class _PopularServicesState extends State<PopularServices> {
                                         size: 23,
                                       ),
                                       Text(
-                                        '${snapshot.data[index].userRating}',
+                                        '${snapshot.data[index]['user_rating']}',
                                         style: TextStyle(
                                             color: Color(0xFF333333),
                                             fontSize: 15,

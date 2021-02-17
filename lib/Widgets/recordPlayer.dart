@@ -7,8 +7,8 @@ typedef void OnError(Exception exception);
 enum PlayerState { stopped, playing, paused }
 
 class AudioApp extends StatefulWidget {
-  var kUrl;
-  var tag;
+  final kUrl;
+  final tag;
   AudioApp({this.kUrl, this.tag});
 
   @override
@@ -109,7 +109,6 @@ class _AudioAppState extends State<AudioApp> {
 
   @override
   Widget build(BuildContext context) {
-    final textTheme = Theme.of(context).textTheme;
     return Scaffold(
       backgroundColor: Colors.black,
       body: Center(

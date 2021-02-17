@@ -6,6 +6,7 @@ import 'package:fixme/Services/Firebase_service.dart';
 import 'package:fixme/Services/network_service.dart';
 import 'package:fixme/Utils/utils.dart';
 import 'package:flutter/material.dart';
+import 'package:google_fonts/google_fonts.dart';
 import 'package:provider/provider.dart';
 
 class NotificationPage extends StatefulWidget {
@@ -241,14 +242,15 @@ class _NotificationState extends State<NotificationPage> {
                                                           TextSpan(
                                                             text: users[index]
                                                                 .message,
-                                                            style: TextStyle(
-                                                                color: Colors
-                                                                    .black),
+                                                            style: GoogleFonts
+                                                                .openSans(
+                                                                    color: Colors
+                                                                        .black),
                                                           ),
                                                           TextSpan(
                                                               text:
                                                                   ' ${users[index].name.toString() == 'null null' ? '' : 'by ${users[index].name}'} ',
-                                                              style: TextStyle(
+                                                              style: GoogleFonts.openSans(
                                                                   fontWeight:
                                                                       FontWeight
                                                                           .bold,
@@ -286,12 +288,12 @@ class _NotificationState extends State<NotificationPage> {
                                                                 child: Center(
                                                                     child: Text(
                                                                         'BID THIS JOB',
-                                                                        style: TextStyle(
+                                                                        style: GoogleFonts.openSans(
                                                                             fontSize:
                                                                                 13,
                                                                             color:
                                                                                 Color(0xFFA40C85),
-                                                                            fontWeight: FontWeight.w500))),
+                                                                            fontWeight: FontWeight.w600))),
                                                                 decoration: BoxDecoration(
                                                                     border: Border.all(
                                                                         color: Color(

@@ -641,7 +641,7 @@ class Home extends StatelessWidget {
                                   ))
                               : snapshot.hasData && !snapshot.data.isEmpty
                                   ? Container(
-                                      height: 150,
+                                      height: 170,
                                       margin: const EdgeInsets.only(bottom: 6),
                                       child: ListView.builder(
                                         scrollDirection: Axis.horizontal,
@@ -675,7 +675,6 @@ class Home extends StatelessWidget {
                                             child: Container(
                                               width: 110,
                                               margin: const EdgeInsets.only(
-                                                right: 7,
                                                 left: 10,
                                                 top: 12,
                                               ),
@@ -701,7 +700,7 @@ class Home extends StatelessWidget {
                                                           const EdgeInsets.only(
                                                               bottom: 4.0),
                                                       child: Container(
-                                                        height: 60,
+                                                        height: 80,
                                                         width: 115,
                                                         clipBehavior: Clip
                                                             .antiAliasWithSaveLayer,

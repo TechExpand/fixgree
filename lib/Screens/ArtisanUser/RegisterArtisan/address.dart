@@ -5,7 +5,6 @@ import 'package:provider/provider.dart';
 
 import 'bvn.dart';
 
-
 class SignUpAddress extends StatefulWidget {
   @override
   SignUpAddressState createState() => SignUpAddressState();
@@ -13,7 +12,6 @@ class SignUpAddress extends StatefulWidget {
 
 class SignUpAddressState extends State<SignUpAddress> {
   var password;
-   
 
   @override
   Widget build(BuildContext context) {
@@ -30,7 +28,7 @@ class SignUpAddressState extends State<SignUpAddress> {
                 'Enter your Address',
                 style: TextStyle(
                   fontSize: 15,
-                  fontWeight: FontWeight.w500,
+                  fontWeight: FontWeight.w600,
                   letterSpacing: 0.5,
                 ),
               ),
@@ -102,26 +100,27 @@ class SignUpAddressState extends State<SignUpAddress> {
                     borderRadius: BorderRadius.circular(26)),
                 child: FlatButton(
                   disabledColor: Color(0x909B049B),
-                  onPressed: data.officeAddress.isEmpty || data.homeAddress.isEmpty
-                      ? null
-                      : () {
-                          Navigator.push(
-                            context,
-                            PageRouteBuilder(
-                              pageBuilder:
-                                  (context, animation, secondaryAnimation) {
-                               return SignUpBvn();
-                              },
-                              transitionsBuilder: (context, animation,
-                                  secondaryAnimation, child) {
-                                return FadeTransition(
-                                  opacity: animation,
-                                  child: child,
-                                );
-                              },
-                            ),
-                          );
-                        },
+                  onPressed:
+                      data.officeAddress.isEmpty || data.homeAddress.isEmpty
+                          ? null
+                          : () {
+                              Navigator.push(
+                                context,
+                                PageRouteBuilder(
+                                  pageBuilder:
+                                      (context, animation, secondaryAnimation) {
+                                    return SignUpBvn();
+                                  },
+                                  transitionsBuilder: (context, animation,
+                                      secondaryAnimation, child) {
+                                    return FadeTransition(
+                                      opacity: animation,
+                                      child: child,
+                                    );
+                                  },
+                                ),
+                              );
+                            },
                   color: Color(0xFF9B049B),
                   shape: RoundedRectangleBorder(
                       borderRadius: BorderRadius.circular(26)),

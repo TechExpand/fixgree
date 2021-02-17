@@ -325,6 +325,7 @@ class WebServices extends ChangeNotifier {
           'Authorization': 'Bearer $Bearer',
         });
     var body = json.decode(response.body);
+    print('The body: ' + body.toString());
     if (body['reqRes'] == 'true') {
       return body['sortedUsers'];
     } else if (body['reqRes'] == 'false') {
