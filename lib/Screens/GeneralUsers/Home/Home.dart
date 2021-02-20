@@ -11,6 +11,7 @@ import 'package:fixme/Utils/Provider.dart';
 import 'package:fixme/Widgets/Rating.dart';
 import 'package:flutter/material.dart';
 import 'package:fixme/Utils/utils.dart';
+import 'package:geolocator/geolocator.dart';
 import 'package:provider/provider.dart';
 
 class Home extends StatelessWidget {
@@ -20,6 +21,20 @@ class Home extends StatelessWidget {
   final controller;
 
   Home(this.scafoldKey, this.data, this.controller);
+
+  String getDistance(
+      {latitude, longitude, double artisanLongitude, double artisanLatitude}) {
+    double distanceInMeters = Geolocator.distanceBetween(
+        latitude, longitude, artisanLatitude, artisanLongitude);
+    var kilometers = distanceInMeters / 1000;
+    String distance;
+    if (kilometers.truncate() != 0) {
+      distance = '${kilometers.truncate()} km';
+    } else {
+      distance = '${distanceInMeters.truncate()} m';
+    }
+    return distance;
+  }
 
   @override
   Widget build(BuildContext context) {
@@ -246,10 +261,8 @@ class Home extends StatelessWidget {
                                         serviceName: popularServices[index]
                                             ['text'],
                                         serviceId: popularServices[index]['id'],
-                                        latitude: location.locationLatitude
-                                            .toString(),
-                                        longitude: location.locationLongitude
-                                            .toString(),
+                                        latitude: location.locationLatitude,
+                                        longitude: location.locationLongitude,
                                       );
                                     },
                                     transitionsBuilder: (context, animation,
@@ -429,7 +442,9 @@ class Home extends StatelessWidget {
                                 PageRouteBuilder(
                                   pageBuilder:
                                       (context, animation, secondaryAnimation) {
-                                    return NearbyShopsSeeAll();
+                                    return NearbyShopsSeeAll(
+                                        longitude: location.locationLatitude,
+                                        latitude: location.locationLatitude);
                                   },
                                   transitionsBuilder: (context, animation,
                                       secondaryAnimation, child) {
@@ -587,7 +602,9 @@ class Home extends StatelessWidget {
                                 PageRouteBuilder(
                                   pageBuilder:
                                       (context, animation, secondaryAnimation) {
-                                    return NearbyArtisansSeeAll();
+                                    return NearbyArtisansSeeAll(
+                                        longitude: location.locationLatitude,
+                                        latitude: location.locationLatitude);
                                   },
                                   transitionsBuilder: (context, animation,
                                       secondaryAnimation, child) {
@@ -640,7 +657,7 @@ class Home extends StatelessWidget {
                                   ))
                               : snapshot.hasData && !snapshot.data.isEmpty
                                   ? Container(
-                                      height: 170,
+                                      height: 180,
                                       margin: const EdgeInsets.only(bottom: 6),
                                       child: ListView.builder(
                                         scrollDirection: Axis.horizontal,
@@ -648,6 +665,15 @@ class Home extends StatelessWidget {
                                             ? 3
                                             : snapshot.data.length,
                                         itemBuilder: (context, index) {
+                                          String distance = getDistance(
+                                              latitude:
+                                                  location.locationLatitude,
+                                              longitude:
+                                                  location.locationLatitude,
+                                              artisanLatitude:
+                                                  snapshot.data[index].latitude,
+                                              artisanLongitude: snapshot
+                                                  .data[index].longitude);
                                           return InkWell(
                                             onTap: () {
                                               Navigator.push(
@@ -672,7 +698,7 @@ class Home extends StatelessWidget {
                                               );
                                             },
                                             child: Container(
-                                              width: 110,
+                                              width: 115,
                                               margin: const EdgeInsets.only(
                                                 left: 10,
                                                 top: 12,
@@ -694,37 +720,75 @@ class Home extends StatelessWidget {
                                                           Radius.circular(7))),
                                               child: Column(
                                                 children: [
-                                                  Padding(
-                                                      padding:
-                                                          const EdgeInsets.only(
-                                                              bottom: 4.0),
-                                                      child: Container(
-                                                        height: 80,
-                                                        width: 115,
-                                                        clipBehavior: Clip
-                                                            .antiAliasWithSaveLayer,
-                                                        decoration: BoxDecoration(
-                                                            borderRadius: BorderRadius.only(
-                                                                topLeft: Radius
-                                                                    .circular(
-                                                                        7),
-                                                                topRight: Radius
-                                                                    .circular(
-                                                                        7))),
-                                                        child: Image.network(
-                                                          snapshot.data[index]
-                                                                          .urlAvatar ==
-                                                                      'no_picture_upload' ||
-                                                                  snapshot
-                                                                          .data[
-                                                                              index]
-                                                                          .urlAvatar ==
-                                                                      null
-                                                              ? 'https://uploads.fixme.ng/originals/no_picture_upload'
-                                                              : 'https://uploads.fixme.ng/originals/${snapshot.data[index].urlAvatar}',
-                                                          fit: BoxFit.cover,
+                                                  Stack(
+                                                    children: [
+                                                      Padding(
+                                                          padding:
+                                                              const EdgeInsets
+                                                                      .only(
+                                                                  bottom: 4.0),
+                                                          child: Container(
+                                                            height: 85,
+                                                            width: 115,
+                                                            clipBehavior: Clip
+                                                                .antiAliasWithSaveLayer,
+                                                            decoration: BoxDecoration(
+                                                                borderRadius: BorderRadius.only(
+                                                                    topLeft: Radius
+                                                                        .circular(
+                                                                            7),
+                                                                    topRight: Radius
+                                                                        .circular(
+                                                                            7))),
+                                                            child:
+                                                                Image.network(
+                                                              snapshot.data[index].urlAvatar ==
+                                                                          'no_picture_upload' ||
+                                                                      snapshot.data[index]
+                                                                              .urlAvatar ==
+                                                                          null
+                                                                  ? 'https://uploads.fixme.ng/originals/no_picture_upload'
+                                                                  : 'https://uploads.fixme.ng/originals/${snapshot.data[index].urlAvatar}',
+                                                              fit: BoxFit.cover,
+                                                            ),
+                                                          )),
+                                                      Positioned(
+                                                        bottom: 4,
+                                                        child: Container(
+                                                          height: 20,
+                                                          width: 115,
+                                                          padding:
+                                                              const EdgeInsets
+                                                                      .only(
+                                                                  left: 4),
+                                                          color: Colors.black
+                                                              .withOpacity(0.5),
+                                                          child: Row(
+                                                            children: [
+                                                              Icon(
+                                                                Icons
+                                                                    .location_on_outlined,
+                                                                color: Colors
+                                                                    .amber,
+                                                                size: 15,
+                                                              ),
+                                                              Text(
+                                                                '$distance away',
+                                                                style: TextStyle(
+                                                                    color: Colors
+                                                                        .white,
+                                                                    fontSize:
+                                                                        13,
+                                                                    fontWeight:
+                                                                        FontWeight
+                                                                            .w500),
+                                                              ),
+                                                            ],
+                                                          ),
                                                         ),
-                                                      )),
+                                                      ),
+                                                    ],
+                                                  ),
                                                   Align(
                                                       alignment:
                                                           Alignment.bottomLeft,

@@ -1190,6 +1190,7 @@ class WebServices extends ChangeNotifier {
       'Authorization': 'Bearer $bearer',
     });
     var body = json.decode(response.body);
+    print(body.toString());
     List result = body['sortedUsers'];
     List<UserSearch> nearebyList = result.map((data) {
       return UserSearch.fromJson(data);

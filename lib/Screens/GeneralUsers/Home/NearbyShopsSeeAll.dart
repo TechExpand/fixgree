@@ -1,18 +1,38 @@
 import 'package:fixme/Screens/ArtisanUser/Profile/ArtisanPage.dart';
 import 'package:fixme/Services/location_service.dart';
 import 'package:fixme/Services/network_service.dart';
+import 'package:fixme/Widgets/Rating.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_feather_icons/flutter_feather_icons.dart';
+import 'package:geolocator/geolocator.dart';
 import 'package:google_fonts/google_fonts.dart';
 import 'package:provider/provider.dart';
 import 'package:fixme/Utils/utils.dart';
 
 class NearbyShopsSeeAll extends StatefulWidget {
+  final double longitude;
+  final double latitude;
+
+  const NearbyShopsSeeAll({Key key, this.longitude, this.latitude})
+      : super(key: key);
   @override
   _NearbyShopsSeeAllState createState() => _NearbyShopsSeeAllState();
 }
 
 class _NearbyShopsSeeAllState extends State<NearbyShopsSeeAll> {
+  String getDistance({double artisanLongitude, double artisanLatitude}) {
+    double distanceInMeters = Geolocator.distanceBetween(
+        widget.latitude, widget.longitude, artisanLatitude, artisanLongitude);
+    var kilometers = distanceInMeters / 1000;
+    String distance;
+    if (kilometers.truncate() != 0) {
+      distance = '${kilometers.truncate()} km';
+    } else {
+      distance = '${distanceInMeters.truncate()} m';
+    }
+    return distance;
+  }
+
   @override
   Widget build(BuildContext context) {
     var network = Provider.of<WebServices>(context, listen: false);
@@ -90,6 +110,8 @@ class _NearbyShopsSeeAllState extends State<NearbyShopsSeeAll> {
         Expanded(
           child: Container(
               child: FutureBuilder(
+                  // latitude: '6.295660',
+                  //   longitude: '5.642040',
                   future: network.nearbyShop(
                       latitude: location.locationLatitude,
                       longitude: location.locationLongitude),
@@ -142,9 +164,14 @@ class _NearbyShopsSeeAllState extends State<NearbyShopsSeeAll> {
                               itemCount: snapshot.data.length,
                               padding: const EdgeInsets.only(left: 5, right: 5),
                               itemBuilder: (context, index) {
+                                String distance = getDistance(
+                                    artisanLatitude:
+                                        snapshot.data[index].latitude,
+                                    artisanLongitude:
+                                        snapshot.data[index].longitude);
                                 return Container(
                                   alignment: Alignment.center,
-                                  height: 75,
+                                  height: 90,
                                   margin:
                                       const EdgeInsets.only(bottom: 5, top: 5),
                                   child: ListTile(
@@ -184,21 +211,44 @@ class _NearbyShopsSeeAllState extends State<NearbyShopsSeeAll> {
                                       foregroundColor: Colors.white,
                                       backgroundColor: Colors.white,
                                     ),
-                                    title: Text(
-                                      '${snapshot.data[index].name} ${snapshot.data[index].userLastName}'
-                                          .capitalizeFirstOfEach,
-                                      style: TextStyle(
-                                          color: Color(0xFF333333),
-                                          fontSize: 16,
-                                          fontWeight: FontWeight.w600),
+                                    title: Padding(
+                                      padding: const EdgeInsets.only(top: 10),
+                                      child: Text(
+                                        '${snapshot.data[index].name} ${snapshot.data[index].userLastName}'
+                                            .capitalizeFirstOfEach,
+                                        style: TextStyle(
+                                            color: Color(0xFF333333),
+                                            fontSize: 16,
+                                            fontWeight: FontWeight.w600),
+                                      ),
                                     ),
-                                    subtitle: Text(
-                                      '${snapshot.data[index].serviceArea}'
-                                          .capitalizeFirstOfEach,
-                                      style: TextStyle(
-                                          color: Color(0xFF333333),
-                                          fontSize: 15,
-                                          fontWeight: FontWeight.w500),
+                                    subtitle: Column(
+                                      children: [
+                                        Wrap(
+                                          children: [
+                                            Align(
+                                              alignment: Alignment.centerLeft,
+                                              child: Text(
+                                                '${snapshot.data[index].serviceArea}'
+                                                    .capitalizeFirstOfEach,
+                                                style: TextStyle(
+                                                    color: Color(0xFF333333),
+                                                    fontSize: 15,
+                                                    fontWeight:
+                                                        FontWeight.w500),
+                                              ),
+                                            ),
+                                          ],
+                                        ),
+                                        Padding(
+                                          padding:
+                                              const EdgeInsets.only(top: 8),
+                                          child: StarRating(
+                                              rating: double.parse(snapshot
+                                                  .data[index].userRating
+                                                  .toString())),
+                                        )
+                                      ],
                                     ),
                                     trailing: Column(
                                       crossAxisAlignment:
@@ -207,12 +257,12 @@ class _NearbyShopsSeeAllState extends State<NearbyShopsSeeAll> {
                                           MainAxisAlignment.center,
                                       children: [
                                         Icon(
-                                          Icons.star,
+                                          Icons.location_on_outlined,
                                           color: Colors.amber,
                                           size: 23,
                                         ),
                                         Text(
-                                          '${snapshot.data[index].userRating}',
+                                          '$distance',
                                           style: TextStyle(
                                               color: Color(0xFF333333),
                                               fontSize: 15,
