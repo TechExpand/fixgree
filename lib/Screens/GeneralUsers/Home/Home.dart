@@ -161,44 +161,48 @@ class Home extends StatelessWidget {
                             ),
                           );
                         },
-                        child: Container(
-                          alignment: Alignment.center,
-                          decoration: BoxDecoration(
-                              color: Color(0xFFFFFFFF),
-                              border: Border.all(color: Colors.black12),
-                              boxShadow: [
-                                BoxShadow(
-                                    color: Color(0xFFF1F1FD).withOpacity(0.7),
-                                    blurRadius: 10.0,
-                                    offset: Offset(0.3, 4.0))
-                              ],
-                              borderRadius:
-                                  BorderRadius.all(Radius.circular(7))),
-                          child: Row(
-                            children: [
-                              Padding(
-                                padding:
-                                    const EdgeInsets.only(left: 10, right: 5),
-                                child: Icon(
-                                  Icons.search,
-                                  color: Colors.black38,
-                                  size: 20,
+                        child: Hero(
+                          tag: 'searchButton',
+                          child: AnimatedContainer(
+                            duration: Duration(milliseconds: 500),
+                            alignment: Alignment.center,
+                            decoration: BoxDecoration(
+                                color: Color(0xFFFFFFFF),
+                                border: Border.all(color: Colors.black12),
+                                boxShadow: [
+                                  BoxShadow(
+                                      color: Color(0xFFF1F1FD).withOpacity(0.7),
+                                      blurRadius: 10.0,
+                                      offset: Offset(0.3, 4.0))
+                                ],
+                                borderRadius:
+                                    BorderRadius.all(Radius.circular(7))),
+                            child: Row(
+                              children: [
+                                Padding(
+                                  padding:
+                                      const EdgeInsets.only(left: 10, right: 5),
+                                  child: Icon(
+                                    Icons.search,
+                                    color: Colors.black38,
+                                    size: 20,
+                                  ),
                                 ),
-                              ),
-                              Expanded(
-                                child: TextField(
-                                    enabled: false,
-                                    obscureText: true,
-                                    style: TextStyle(color: Colors.black),
-                                    cursorColor: Colors.black,
-                                    decoration: InputDecoration.collapsed(
+                                Expanded(
+                                  child: TextField(
                                       enabled: false,
-                                      hintStyle:
-                                          TextStyle(color: Colors.black38),
-                                      hintText: 'What are you looking for?',
-                                    )),
-                              ),
-                            ],
+                                      obscureText: true,
+                                      style: TextStyle(color: Colors.black),
+                                      cursorColor: Colors.black,
+                                      decoration: InputDecoration.collapsed(
+                                        enabled: false,
+                                        hintStyle:
+                                            TextStyle(color: Colors.black38),
+                                        hintText: 'What are you looking for?',
+                                      )),
+                                ),
+                              ],
+                            ),
                           ),
                         ),
                       ),
@@ -760,7 +764,7 @@ class Home extends StatelessWidget {
                                                           padding:
                                                               const EdgeInsets
                                                                       .only(
-                                                                  left: 4),
+                                                                  left: 5),
                                                           color: Colors.black
                                                               .withOpacity(0.5),
                                                           child: Row(
@@ -770,7 +774,7 @@ class Home extends StatelessWidget {
                                                                     .location_on_outlined,
                                                                 color: Colors
                                                                     .amber,
-                                                                size: 15,
+                                                                size: 14,
                                                               ),
                                                               Text(
                                                                 '$distance away',
@@ -778,7 +782,7 @@ class Home extends StatelessWidget {
                                                                     color: Colors
                                                                         .white,
                                                                     fontSize:
-                                                                        13,
+                                                                        12.5,
                                                                     fontWeight:
                                                                         FontWeight
                                                                             .w500),

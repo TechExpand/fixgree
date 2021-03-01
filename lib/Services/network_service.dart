@@ -1204,11 +1204,13 @@ class WebServices extends ChangeNotifier {
   }
 
   Future<dynamic> nearbyShop({longitude, latitude}) async {
+    //  latitude: '6.295660',
+    // longitude: '5.642040',
     var response = await http
         .post(Uri.parse('https://manager.fixme.ng/near-shops-business'), body: {
       'user_id': userId.toString(),
-      'longitude': longitude.toString(),
-      'latitude': latitude.toString(),
+      'longitude': '5.642040',
+      'latitude': '6.295660',
     }, headers: {
       "Content-type": "application/x-www-form-urlencoded",
       'Authorization': 'Bearer $bearer',

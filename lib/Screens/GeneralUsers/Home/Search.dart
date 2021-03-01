@@ -2,8 +2,13 @@ import 'package:fixme/Screens/ArtisanUser/Profile/ArtisanPage.dart';
 import 'package:fixme/Screens/GeneralUsers/Chat/callscreens/listen_incoming_call.dart';
 import 'package:fixme/Services/location_service.dart';
 import 'package:fixme/Services/network_service.dart';
+import 'package:fixme/Widgets/Rating.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter_feather_icons/flutter_feather_icons.dart';
+import 'package:geolocator/geolocator.dart';
+import 'package:google_fonts/google_fonts.dart';
 import 'package:provider/provider.dart';
+import 'package:fixme/Utils/utils.dart';
 
 class SearchPage extends StatefulWidget {
   @override
@@ -16,46 +21,78 @@ class _SearchState extends State<SearchPage> {
   @override
   Widget build(BuildContext context) {
     var widget = Scaffold(
+      appBar: AppBar(
+        backgroundColor: Colors.white,
+        title: Text('Search for a service',
+            style: GoogleFonts.openSans(
+                color: Color(0xFF9B049B),
+                fontSize: 18,
+                height: 1.4,
+                fontWeight: FontWeight.w600)),
+        leading: IconButton(
+          onPressed: () {
+            Navigator.of(context).pop();
+          },
+          icon: Icon(FeatherIcons.arrowLeft, color: Color(0xFF9B049B)),
+        ),
+        elevation: 0,
+      ),
       body: Column(
         children: [
-          Material(
-            elevation: 4,
-            child: Container(
-              margin: const EdgeInsets.only(top: 10.0),
-              child: Padding(
-                padding: EdgeInsets.only(top: 10),
-                child: Row(
-                  crossAxisAlignment: CrossAxisAlignment.center,
-                  mainAxisAlignment: MainAxisAlignment.center,
-                  children: [
-                    InkWell(
-                        onTap: () {
-                          Navigator.pop(context);
-                        },
-                        child: Icon(Icons.arrow_back, color: Colors.black87)),
-                    Container(
-                      padding: EdgeInsets.only(top: 7),
-                      width: MediaQuery.of(context).size.width / 1.15,
-                      child: TextFormField(
-                        autofocus: true,
-                        cursorColor: Colors.black87,
-                        decoration: InputDecoration(
-                          hintText: 'Search for Service',
-                          border: OutlineInputBorder(
-                            borderSide: BorderSide.none,
-                          ),
-//                            border: InputBorder.none, counterText: ''
-                        ),
-                        onChanged: (value) {
-                          setState(() {
-                            searchvalue = value;
-                            SearchResult(searchvalue);
-                          });
-                        },
+          Hero(
+            tag: 'searchButton',
+            child: AnimatedContainer(
+              duration: Duration(milliseconds: 500),
+              height: 50,
+              alignment: Alignment.center,
+              padding: const EdgeInsets.only(left: 12),
+              margin: const EdgeInsets.only(
+                  bottom: 15, left: 12, right: 12, top: 15),
+              decoration: BoxDecoration(
+                  color: Color(0xFFFFFFFF),
+                  border: Border.all(color: Color(0xFFF1F1FD)),
+                  boxShadow: [
+                    BoxShadow(
+                        color: Color(0xFFF1F1FD).withOpacity(0.5),
+                        blurRadius: 15.0,
+                        offset: Offset(0.3, 1.0))
+                  ],
+                  borderRadius: BorderRadius.all(Radius.circular(35))),
+              child: Row(
+                mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                children: [
+                  Padding(
+                    padding: const EdgeInsets.only(right: 10),
+                    child: Icon(
+                      FeatherIcons.search,
+                      color: Color(0xFF555555),
+                      size: 20,
+                    ),
+                  ),
+                  Expanded(
+                    child: TextFormField(
+                      style: TextStyle(
+                          fontSize: 16,
+                          color: Color(0xFF270F33),
+                          fontWeight: FontWeight.w600),
+                      autofocus: true,
+                      onChanged: (value) {
+                        setState(() {
+                          searchvalue = value;
+                          SearchResult(searchvalue);
+                        });
+                      },
+                      decoration: InputDecoration.collapsed(
+                        hintText: 'Type in a service name',
+                        hintStyle: TextStyle(
+                            fontSize: 16, fontWeight: FontWeight.w600),
+                        focusColor: Color(0xFF2B1137),
+                        fillColor: Color(0xFF2B1137),
+                        hoverColor: Color(0xFF2B1137),
                       ),
                     ),
-                  ],
-                ),
+                  ),
+                ],
               ),
             ),
           ),
@@ -81,6 +118,20 @@ class SearchResult extends StatefulWidget {
 }
 
 class SearchResultState extends State<SearchResult> {
+  String getDistance(
+      {latitude, longitude, double artisanLongitude, double artisanLatitude}) {
+    double distanceInMeters = Geolocator.distanceBetween(
+        latitude, longitude, artisanLatitude, artisanLongitude);
+    var kilometers = distanceInMeters / 1000;
+    String distance;
+    if (kilometers.truncate() != 0) {
+      distance = '${kilometers.truncate()} km';
+    } else {
+      distance = '${distanceInMeters.truncate()} m';
+    }
+    return distance;
+  }
+
   @override
   Widget build(BuildContext context) {
     var network = Provider.of<WebServices>(context, listen: false);
@@ -103,10 +154,27 @@ class SearchResultState extends State<SearchResult> {
                         child: Center(child: CircularProgressIndicator()))
                     : snapshot.hasData && snapshot.data.length != 0
                         ? Expanded(
-                            child: ListView.builder(
+                            child: ListView.separated(
+                                separatorBuilder: (context, index) {
+                                  return Divider();
+                                },
+                                padding:
+                                    const EdgeInsets.only(left: 5, right: 5),
                                 itemCount: snapshot.data.length,
                                 itemBuilder: (context, index) {
-                                  return InkWell(
+                                  String distance = getDistance(
+                                      latitude: location.locationLatitude,
+                                      longitude: location.locationLongitude,
+                                      artisanLatitude:
+                                          snapshot.data[index].latitude,
+                                      artisanLongitude:
+                                          snapshot.data[index].longitude);
+                                  return Container(
+                                    alignment: Alignment.center,
+                                    height: 90,
+                                    margin: const EdgeInsets.only(
+                                        bottom: 5, top: 5),
+                                    child: ListTile(
                                       onTap: () {
                                         Navigator.push(
                                           context,
@@ -128,108 +196,82 @@ class SearchResultState extends State<SearchResult> {
                                           ),
                                         );
                                       },
-                                      child: Container(
-                                        child: Row(
-                                            crossAxisAlignment:
-                                                CrossAxisAlignment.start,
-                                            mainAxisAlignment:
-                                                MainAxisAlignment.start,
+                                      leading: CircleAvatar(
+                                        child: Text(''),
+                                        radius: 35,
+                                        backgroundImage: NetworkImage(
+                                          snapshot.data[index].urlAvatar ==
+                                                      'no_picture_upload' ||
+                                                  snapshot.data[index]
+                                                          .urlAvatar ==
+                                                      null
+                                              ? 'https://uploads.fixme.ng/originals/no_picture_upload'
+                                              : 'https://uploads.fixme.ng/originals/${snapshot.data[index].urlAvatar}',
+                                        ),
+                                        foregroundColor: Colors.white,
+                                        backgroundColor: Colors.white,
+                                      ),
+                                      title: Padding(
+                                        padding: const EdgeInsets.only(top: 10),
+                                        child: Text(
+                                          '${snapshot.data[index].name} ${snapshot.data[index].userLastName}'
+                                              .capitalizeFirstOfEach,
+                                          style: TextStyle(
+                                              color: Color(0xFF333333),
+                                              fontSize: 16,
+                                              fontWeight: FontWeight.w600),
+                                        ),
+                                      ),
+                                      subtitle: Column(
+                                        children: [
+                                          Wrap(
                                             children: [
-                                              Padding(
-                                                padding: const EdgeInsets.only(
-                                                    top: 8.0,
-                                                    left: 8,
-                                                    right: 8),
-                                                child: CircleAvatar(
-                                                    backgroundColor:
-                                                        Colors.white70,
-                                                    radius: 18,
-                                                    backgroundImage: NetworkImage(snapshot
-                                                                    .data[index]
-                                                                    .urlAvatar ==
-                                                                'no_picture_upload' ||
-                                                            snapshot.data[index]
-                                                                    .urlAvatar ==
-                                                                null
-                                                        ? 'https://uploads.fixme.ng/originals/no_picture_upload'
-                                                        : 'https://uploads.fixme.ng/originals/${snapshot.data[index].urlAvatar}')),
+                                              Align(
+                                                alignment: Alignment.centerLeft,
+                                                child: Text(
+                                                  '${snapshot.data[index].serviceArea}'
+                                                      .capitalizeFirstOfEach,
+                                                  style: TextStyle(
+                                                      color: Color(0xFF333333),
+                                                      fontSize: 15,
+                                                      fontWeight:
+                                                          FontWeight.w500),
+                                                ),
                                               ),
-                                              Column(
-                                                  crossAxisAlignment:
-                                                      CrossAxisAlignment.start,
-                                                  mainAxisAlignment:
-                                                      MainAxisAlignment.start,
-                                                  children: [
-                                                    Container(
-                                                      width:
-                                                          MediaQuery.of(context)
-                                                                  .size
-                                                                  .width /
-                                                              1.2,
-                                                      child: Padding(
-                                                        padding:
-                                                            const EdgeInsets
-                                                                    .only(
-                                                                top: 8.0,
-                                                                left: 5,
-                                                                right: 5,
-                                                                bottom: 3),
-                                                        child: Text(
-                                                          snapshot.data[index]
-                                                                  .userLastName
-                                                                  .toString() +
-                                                              ' ' +
-                                                              snapshot
-                                                                  .data[index]
-                                                                  .name
-                                                                  .toString(),
-                                                          maxLines: 1,
-                                                          softWrap: true,
-                                                          overflow: TextOverflow
-                                                              .ellipsis,
-                                                          style: TextStyle(
-                                                              fontWeight:
-                                                                  FontWeight
-                                                                      .bold),
-                                                        ),
-                                                      ),
-                                                    ),
-                                                    Container(
-                                                      width:
-                                                          MediaQuery.of(context)
-                                                                  .size
-                                                                  .width /
-                                                              1.2,
-                                                      child: Padding(
-                                                        padding:
-                                                            const EdgeInsets
-                                                                    .only(
-                                                                bottom: 8.0,
-                                                                left: 5,
-                                                                right: 5),
-                                                        child: Text(
-                                                          snapshot.data[index]
-                                                              .serviceArea
-                                                              .toString(),
-                                                          maxLines: 1,
-                                                          softWrap: true,
-                                                          overflow: TextOverflow
-                                                              .ellipsis,
-                                                        ),
-                                                      ),
-                                                    ),
-                                                    Container(
-                                                      height: 1,
-                                                      color: Colors.black12,
-                                                      width:
-                                                          MediaQuery.of(context)
-                                                                  .size
-                                                                  .width /
-                                                              1.14,
-                                                    )
-                                                  ])
-                                            ]),
-                                      ));
+                                            ],
+                                          ),
+                                          Padding(
+                                            padding:
+                                                const EdgeInsets.only(top: 8),
+                                            child: StarRating(
+                                                rating: double.parse(snapshot
+                                                    .data[index].userRating
+                                                    .toString())),
+                                          )
+                                        ],
+                                      ),
+                                      trailing: Column(
+                                        crossAxisAlignment:
+                                            CrossAxisAlignment.center,
+                                        mainAxisAlignment:
+                                            MainAxisAlignment.center,
+                                        children: [
+                                          Icon(
+                                            Icons.location_on_outlined,
+                                            color: Colors.amber,
+                                            size: 23,
+                                          ),
+                                          Text(
+                                            '$distance',
+                                            style: TextStyle(
+                                                color: Color(0xFF333333),
+                                                fontSize: 15,
+                                                fontWeight: FontWeight.w600),
+                                          ),
+                                        ],
+                                      ),
+                                    ),
+                                  );
                                 }),
                           )
                         : snapshot.data.length == 0
