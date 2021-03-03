@@ -1,4 +1,6 @@
 import 'package:fixme/Screens/ArtisanUser/Profile/ProfilePage.dart';
+import 'package:fixme/Screens/ArtisanUser/Profile/ProfilePageNew.dart';
+import 'package:fixme/Screens/GeneralUsers/Profile/ProfileNew.dart';
 import 'package:share/share.dart';
 import 'package:fixme/Screens/ArtisanUser/RegisterArtisan/thankyou.dart';
 import 'package:fixme/Screens/GeneralUsers/Chat/Chats.dart';
@@ -81,7 +83,7 @@ class _DrawerState extends State<DrawerWidget> {
                         PageRouteBuilder(
                           pageBuilder:
                               (context, animation, secondaryAnimation) {
-                            return Profile();
+                            return ProfileNew();
                           },
                           transitionsBuilder:
                               (context, animation, secondaryAnimation, child) {
@@ -97,7 +99,7 @@ class _DrawerState extends State<DrawerWidget> {
                         PageRouteBuilder(
                           pageBuilder:
                               (context, animation, secondaryAnimation) {
-                            return ProfilePage();
+                            return ProfilePageNew();
                           },
                           transitionsBuilder:
                               (context, animation, secondaryAnimation, child) {
@@ -172,7 +174,7 @@ class _DrawerState extends State<DrawerWidget> {
                         PageRouteBuilder(
                           pageBuilder:
                               (context, animation, secondaryAnimation) {
-                            return ProfilePage();
+                            return ProfilePageNew();
                           },
                           transitionsBuilder:
                               (context, animation, secondaryAnimation, child) {

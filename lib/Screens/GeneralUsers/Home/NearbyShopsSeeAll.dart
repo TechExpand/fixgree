@@ -1,4 +1,5 @@
 import 'package:fixme/Screens/ArtisanUser/Profile/ArtisanPage.dart';
+import 'package:fixme/Screens/ArtisanUser/Profile/ArtisanPageNew.dart';
 import 'package:fixme/Services/location_service.dart';
 import 'package:fixme/Services/network_service.dart';
 import 'package:fixme/Widgets/Rating.dart';
@@ -181,7 +182,7 @@ class _NearbyShopsSeeAllState extends State<NearbyShopsSeeAll> {
                                         PageRouteBuilder(
                                           pageBuilder: (context, animation,
                                               secondaryAnimation) {
-                                            return ArtisanPage(
+                                            return ArtisanPageNew(
                                                 snapshot.data[index]);
                                           },
                                           transitionsBuilder: (context,

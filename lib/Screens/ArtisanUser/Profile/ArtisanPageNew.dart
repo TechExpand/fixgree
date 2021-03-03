@@ -2,6 +2,7 @@ import 'package:fixme/Screens/ArtisanUser/Profile/ArtisanProvider.dart';
 import 'package:fixme/Screens/GeneralUsers/Chat/Chat.dart';
 import 'package:fixme/Services/Firebase_service.dart';
 import 'package:fixme/Services/location_service.dart';
+import 'package:url_launcher/url_launcher.dart' as UrlLauncher;
 import 'package:fixme/Services/network_service.dart';
 import 'package:fixme/Utils/utils.dart';
 import 'package:fixme/Widgets/Rating.dart';
@@ -43,7 +44,7 @@ class _ArtisanPageNewState extends State<ArtisanPageNew> {
   @override
   Widget build(BuildContext context) {
     var data = Provider.of<Utils>(context, listen: false);
-    var location = Provider.of<LocationService>(context);
+    // var location = Provider.of<LocationService>(context);
     var network = Provider.of<WebServices>(context, listen: false);
     return MultiProvider(
         providers: [
@@ -115,13 +116,16 @@ class _ArtisanPageNewState extends State<ArtisanPageNew> {
                             children: [
                               Row(
                                 children: [
-                                  Text(
-                                    '${widget.userData.name} ${widget.userData.userLastName}'
-                                        .capitalizeFirstOfEach,
-                                    style: TextStyle(
-                                        color: Color(0xFF333333),
-                                        fontSize: 18,
-                                        fontWeight: FontWeight.w600),
+                                  Padding(
+                                    padding: const EdgeInsets.only(left: 4),
+                                    child: Text(
+                                      '${widget.userData.name} ${widget.userData.userLastName}'
+                                          .capitalizeFirstOfEach,
+                                      style: TextStyle(
+                                          color: Color(0xFF333333),
+                                          fontSize: 18,
+                                          fontWeight: FontWeight.w600),
+                                    ),
                                   ),
                                 ],
                               ),
@@ -230,7 +234,78 @@ class _ArtisanPageNewState extends State<ArtisanPageNew> {
                                     ],
                                   ),
                                 ],
-                              )
+                              ),
+                        widget.userData.subServices == null ||
+                                widget.userData.subServices.isEmpty
+                            ? SizedBox()
+                            : AnimatedContainer(
+                                duration: Duration(milliseconds: 400),
+                                height: !data.isExpanded1 ? 60 : 0,
+                                child: Column(
+                                  children: [
+                                    Divider(),
+                                    Row(
+                                      children: [
+                                        Text(
+                                          'SUBSERVICES',
+                                          style: TextStyle(
+                                              color: Color(0xFF333333),
+                                              fontSize: 16,
+                                              fontWeight: FontWeight.w600),
+                                        ),
+                                      ],
+                                    ),
+                                    Wrap(
+                                      children: [
+                                        Align(
+                                          alignment: Alignment.centerLeft,
+                                          child: Text(
+                                            '${widget.userData.subServices.isEmpty ? '' : widget.userData.subServices[0]['subservice']}',
+                                            style: TextStyle(
+                                                color: Color(0xFF333333),
+                                                fontSize: 16,
+                                                fontWeight: FontWeight.w400),
+                                          ),
+                                        ),
+                                      ],
+                                    ),
+                                  ],
+                                ),
+                              ),
+                        AnimatedContainer(
+                          duration: Duration(milliseconds: 400),
+                          height: !data.isExpanded1 ? 75 : 0,
+                          child: Column(
+                            children: [
+                              Divider(),
+                              Row(
+                                children: [
+                                  Text(
+                                    'Business Address',
+                                    style: TextStyle(
+                                        color: Color(0xFF333333),
+                                        fontSize: 16,
+                                        fontWeight: FontWeight.w600),
+                                  ),
+                                ],
+                              ),
+                              Wrap(
+                                children: [
+                                  Align(
+                                    alignment: Alignment.centerLeft,
+                                    child: Text(
+                                      '${widget.userData.businessAddress.toString().isEmpty || widget.userData.businessAddress == null ? widget.userData.userAddress : widget.userData.businessAddress}',
+                                      style: TextStyle(
+                                          color: Color(0xFF333333),
+                                          fontSize: 16,
+                                          fontWeight: FontWeight.w400),
+                                    ),
+                                  ),
+                                ],
+                              ),
+                            ],
+                          ),
+                        ),
                       ],
                     ),
                   ),
@@ -299,7 +374,45 @@ class _ArtisanPageNewState extends State<ArtisanPageNew> {
                           margin: EdgeInsets.only(left: 10),
                           height: 35,
                           decoration: BoxDecoration(
-                              border: Border.all(color: Colors.black, width: 1),
+                              border: Border.all(
+                                  color: Color(0xFFE9E9E9), width: 1),
+                              borderRadius: BorderRadius.circular(5)),
+                          child: FlatButton(
+                            disabledColor: Color(0x909B049B),
+                            onPressed: () {
+                              UrlLauncher.launch(
+                                  "tel://${widget.userData.fullNumber}");
+                            },
+                            // full_number
+                            color: Colors.transparent,
+                            shape: RoundedRectangleBorder(
+                                borderRadius: BorderRadius.circular(5)),
+                            padding: EdgeInsets.all(0.0),
+                            child: Ink(
+                              decoration: BoxDecoration(
+                                  borderRadius: BorderRadius.circular(5)),
+                              child: Container(
+                                constraints: BoxConstraints(
+                                    maxWidth: 100, minHeight: 35.0),
+                                alignment: Alignment.center,
+                                child: Text(
+                                  "Call",
+                                  textAlign: TextAlign.center,
+                                  style: TextStyle(
+                                      color: Colors.black,
+                                      fontWeight: FontWeight.w600),
+                                ),
+                              ),
+                            ),
+                          ),
+                        ),
+                        Container(
+                          margin: EdgeInsets.only(left: 10),
+                          height: 35,
+                          width: 33,
+                          decoration: BoxDecoration(
+                              border: Border.all(
+                                  color: Color(0xFFE9E9E9), width: 1),
                               borderRadius: BorderRadius.circular(5)),
                           child: FlatButton(
                             disabledColor: Color(0x909B049B),
@@ -322,17 +435,14 @@ class _ArtisanPageNewState extends State<ArtisanPageNew> {
                               decoration: BoxDecoration(
                                   borderRadius: BorderRadius.circular(5)),
                               child: Container(
-                                constraints: BoxConstraints(
-                                    maxWidth: 100, minHeight: 35.0),
-                                alignment: Alignment.center,
-                                child: Text(
-                                  "More",
-                                  textAlign: TextAlign.center,
-                                  style: TextStyle(
-                                      color: Colors.black,
-                                      fontWeight: FontWeight.w600),
-                                ),
-                              ),
+                                  constraints: BoxConstraints(minHeight: 35.0),
+                                  alignment: Alignment.center,
+                                  child: Icon(
+                                    !data.isExpanded1
+                                        ? FeatherIcons.chevronUp
+                                        : FeatherIcons.chevronDown,
+                                    size: 15,
+                                  )),
                             ),
                           ),
                         ),
@@ -533,6 +643,7 @@ class _ArtisanPageNewState extends State<ArtisanPageNew> {
                                       future: network.getProductImage(
                                           network.userId, widget.userData.id),
                                       builder: (context, snapshot) {
+                                        print('The data ${snapshot.data}');
                                         if (snapshot.connectionState ==
                                             ConnectionState.done) {
                                           if (snapshot.data == null) {
@@ -563,12 +674,13 @@ class _ArtisanPageNewState extends State<ArtisanPageNew> {
                                                   child: Container(
                                                     child: ListTile(
                                                       title: Text(
-                                                          "${snapshot.data[index]['product_name']}",
+                                                          "${snapshot.data[index]['product_name']}"
+                                                              .capitalizeFirstOfEach,
                                                           style: TextStyle(
                                                               color: Colors
                                                                   .black)),
                                                       subtitle: Text(
-                                                          "${snapshot.data[index]['price']}",
+                                                          "#${snapshot.data[index]['price']}",
                                                           style: TextStyle(
                                                               color:
                                                                   Colors.green,
@@ -603,7 +715,8 @@ class _ArtisanPageNewState extends State<ArtisanPageNew> {
                                       }
                                     }
 
-                                    return mainWidget;
+                                    // return mainWidget;
+                                    return Container();
                                   });
                             }),
                           ],

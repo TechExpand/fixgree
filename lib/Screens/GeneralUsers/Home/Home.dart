@@ -1,4 +1,5 @@
 import 'package:fixme/DummyData.dart';
+import 'package:fixme/Screens/ArtisanUser/Profile/ArtisanPageNew.dart';
 import 'package:fixme/Screens/GeneralUsers/Chat/Chats.dart';
 import 'package:fixme/Screens/GeneralUsers/Home/NearbyArtisansSeeAll.dart';
 import 'package:fixme/Screens/GeneralUsers/Home/NearbyShopsSeeAll.dart';
@@ -516,7 +517,7 @@ class Home extends StatelessWidget {
                                                   pageBuilder: (context,
                                                       animation,
                                                       secondaryAnimation) {
-                                                    return ArtisanPage(
+                                                    return ArtisanPageNew(
                                                         snapshot.data[index]);
                                                   },
                                                   transitionsBuilder: (context,
@@ -686,7 +687,7 @@ class Home extends StatelessWidget {
                                                   pageBuilder: (context,
                                                       animation,
                                                       secondaryAnimation) {
-                                                    return ArtisanPage(
+                                                    return ArtisanPageNew(
                                                         snapshot.data[index]);
                                                   },
                                                   transitionsBuilder: (context,
