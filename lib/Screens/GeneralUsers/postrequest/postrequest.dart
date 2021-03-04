@@ -37,7 +37,7 @@ class PostScreenState extends State<PostScreen> {
   @override
   Widget build(BuildContext context) {
     PostRequestProvider postRequestProvider =
-        Provider.of<PostRequestProvider>(context);
+    Provider.of<PostRequestProvider>(context);
     return Scaffold(
       appBar: AppBar(
         backgroundColor: Colors.white,
@@ -54,94 +54,94 @@ class PostScreenState extends State<PostScreen> {
           children: <Widget>[
             postRequestProvider.gotit
                 ? Card(
-                    color: Color(0xFF9B049B),
-                    child: Center(
-                      child: Padding(
-                        padding: const EdgeInsets.only(
-                            top: 20.0, bottom: 20.0, left: 5, right: 5),
-                        child: Column(
-                          children: [
-                            Text(
-                              'How Does Your Request Work?',
-                              style: TextStyle(
-                                  color: Colors.white,
-                                  fontWeight: FontWeight.bold),
-                            ),
-                            SizedBox(
-                              height: 15,
-                            ),
-                            Row(
-                                mainAxisAlignment: MainAxisAlignment.start,
-                                crossAxisAlignment: CrossAxisAlignment.start,
-                                children: [
-                                  Icon(Icons.star,
-                                      color: Colors.white, size: 13),
-                                  SizedBox(width: 5),
-                                  Expanded(
-                                    child: Text(
-                                        'We send your request to all artisan within your location.',
-                                        style: TextStyle(color: Colors.white)),
-                                  )
-                                ]),
-                            SizedBox(
-                              height: 15,
-                            ),
-                            Row(
-                                mainAxisAlignment: MainAxisAlignment.start,
-                                crossAxisAlignment: CrossAxisAlignment.start,
-                                children: [
-                                  Icon(Icons.star,
-                                      color: Colors.white, size: 13),
-                                  SizedBox(width: 5),
-                                  Expanded(
-                                    child: Text(
-                                        'Artisan will then send you their offers and you can choose who you would want to work with.',
-                                        style: TextStyle(color: Colors.white)),
-                                  )
-                                ]),
-                            SizedBox(
-                              height: 15,
-                            ),
-                            Row(
-                                mainAxisAlignment: MainAxisAlignment.start,
-                                crossAxisAlignment: CrossAxisAlignment.start,
-                                children: [
-                                  Icon(Icons.star,
-                                      color: Colors.white, size: 13),
-                                  SizedBox(width: 5),
-                                  Expanded(
-                                    child: Text(
-                                        'Once you have decided, you can contact them.',
-                                        style: TextStyle(color: Colors.white)),
-                                  )
-                                ]),
-                            SizedBox(
-                              height: 8,
-                            ),
-                            GestureDetector(
-                              onTap: () {
-                                postRequestProvider.changeGotit();
-                              },
-                              child: Padding(
-                                padding: const EdgeInsets.all(8.0),
-                                child: Align(
-                                    alignment: Alignment.bottomRight,
-                                    child: Text('Got it'.toUpperCase(),
-                                        style: TextStyle(color: Colors.white))),
-                              ),
-                            )
-                          ],
-                        ),
+              color: Color(0xFF9B049B),
+              child: Center(
+                child: Padding(
+                  padding: const EdgeInsets.only(
+                      top: 20.0, bottom: 20.0, left: 5, right: 5),
+                  child: Column(
+                    children: [
+                      Text(
+                        'How Does Your Request Work?',
+                        style: TextStyle(
+                            color: Colors.white,
+                            fontWeight: FontWeight.bold),
                       ),
-                    ),
-                  )
+                      SizedBox(
+                        height: 15,
+                      ),
+                      Row(
+                          mainAxisAlignment: MainAxisAlignment.start,
+                          crossAxisAlignment: CrossAxisAlignment.start,
+                          children: [
+                            Icon(Icons.star,
+                                color: Colors.white, size: 13),
+                            SizedBox(width: 5),
+                            Expanded(
+                              child: Text(
+                                  'We send your request to all artisan within your location.',
+                                  style: TextStyle(color: Colors.white)),
+                            )
+                          ]),
+                      SizedBox(
+                        height: 15,
+                      ),
+                      Row(
+                          mainAxisAlignment: MainAxisAlignment.start,
+                          crossAxisAlignment: CrossAxisAlignment.start,
+                          children: [
+                            Icon(Icons.star,
+                                color: Colors.white, size: 13),
+                            SizedBox(width: 5),
+                            Expanded(
+                              child: Text(
+                                  'Artisan will then send you their offers and you can choose who you would want to work with.',
+                                  style: TextStyle(color: Colors.white)),
+                            )
+                          ]),
+                      SizedBox(
+                        height: 15,
+                      ),
+                      Row(
+                          mainAxisAlignment: MainAxisAlignment.start,
+                          crossAxisAlignment: CrossAxisAlignment.start,
+                          children: [
+                            Icon(Icons.star,
+                                color: Colors.white, size: 13),
+                            SizedBox(width: 5),
+                            Expanded(
+                              child: Text(
+                                  'Once you have decided, you can contact them.',
+                                  style: TextStyle(color: Colors.white)),
+                            )
+                          ]),
+                      SizedBox(
+                        height: 8,
+                      ),
+                      GestureDetector(
+                        onTap: () {
+                          postRequestProvider.changeGotit();
+                        },
+                        child: Padding(
+                          padding: const EdgeInsets.all(8.0),
+                          child: Align(
+                              alignment: Alignment.bottomRight,
+                              child: Text('Got it'.toUpperCase(),
+                                  style: TextStyle(color: Colors.white))),
+                        ),
+                      )
+                    ],
+                  ),
+                ),
+              ),
+            )
                 : SizedBox(),
             SizedBox(
               height: 10,
             ),
             Padding(
               padding: const EdgeInsets.only(top: 13.0, bottom: 13),
-              child: Text('What are the main services you offer?'),
+              child: Text('What do you want to get done?'),
             ),
             InkWell(
               splashColor: Colors.transparent,
@@ -180,30 +180,30 @@ class PostScreenState extends State<PostScreen> {
                   onPressed: postRequestProvider.selecteService == null
                       ? null
                       : () {
-                          Navigator.push(
-                            context,
-                            PageRouteBuilder(
-                              pageBuilder:
-                                  (context, animation, secondaryAnimation) {
-                                return DescribePage(); //SignUpAddress();
-                              },
-                              transitionsBuilder: (context, animation,
-                                  secondaryAnimation, child) {
-                                return FadeTransition(
-                                  opacity: animation,
-                                  child: child,
-                                );
-                              },
-                            ),
+                    Navigator.push(
+                      context,
+                      PageRouteBuilder(
+                        pageBuilder:
+                            (context, animation, secondaryAnimation) {
+                          return DescribePage(); //SignUpAddress();
+                        },
+                        transitionsBuilder: (context, animation,
+                            secondaryAnimation, child) {
+                          return FadeTransition(
+                            opacity: animation,
+                            child: child,
                           );
                         },
+                      ),
+                    );
+                  },
                   color: Color(0xFF9B049B),
                   shape: RoundedRectangleBorder(
                       borderRadius: BorderRadius.circular(26)),
                   padding: EdgeInsets.all(0.0),
                   child: Ink(
                     decoration:
-                        BoxDecoration(borderRadius: BorderRadius.circular(26)),
+                    BoxDecoration(borderRadius: BorderRadius.circular(26)),
                     child: Container(
                       constraints: BoxConstraints(
                           maxWidth: MediaQuery.of(context).size.width / 1.1,
@@ -227,7 +227,7 @@ class PostScreenState extends State<PostScreen> {
 
   dialogPage(ctx) {
     PostRequestProvider postRequestProvider =
-        Provider.of<PostRequestProvider>(context, listen: false);
+    Provider.of<PostRequestProvider>(context, listen: false);
     showDialog(
         context: context,
         builder: (ctx) {
@@ -295,11 +295,11 @@ class PostScreenState extends State<PostScreen> {
 
   void searchServices(userInputValue) {
     PostRequestProvider postRequestProvider =
-        Provider.of<PostRequestProvider>(context, listen: false);
+    Provider.of<PostRequestProvider>(context, listen: false);
     result = postRequestProvider.allservicesList
         .where((service) => service.service
-            .toLowerCase()
-            .contains(userInputValue.toLowerCase()))
+        .toLowerCase()
+        .contains(userInputValue.toLowerCase()))
         .toList();
   }
 }

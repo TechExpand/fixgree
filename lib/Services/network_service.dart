@@ -69,13 +69,13 @@ class WebServices extends ChangeNotifier {
         'device_type': 'phone',
         'firebaseId': data.firebaseUserId.toString(),
         'email':
-            data.emails.toString() == null || data.emails.toString().isEmpty
-                ? data.firstName + '@Fixme.com'
-                : data.emails.toString(),
+        data.emails.toString() == null || data.emails.toString().isEmpty
+            ? data.firstName + '@Fixme.com'
+            : data.emails.toString(),
       }, headers: {
         "Content-type": "application/x-www-form-urlencoded",
         'Authorization':
-            'Bearer FIXME_1U90P3444ANdroidAPP4HUisallOkayBY_FIXME_APP_UIONSISJGJANKKI3445fv',
+        'Bearer FIXME_1U90P3444ANdroidAPP4HUisallOkayBY_FIXME_APP_UIONSISJGJANKKI3445fv',
       });
       var body = json.decode(response.body);
       userId = body['id'];
@@ -133,7 +133,7 @@ class WebServices extends ChangeNotifier {
       }, headers: {
         "Content-type": "application/x-www-form-urlencoded",
         'Authorization':
-            'Bearer FIXME_1U90P3444ANdroidAPP4HUisallOkayBY_FIXME_APP_UIONSISJGJANKKI3445fv',
+        'Bearer FIXME_1U90P3444ANdroidAPP4HUisallOkayBY_FIXME_APP_UIONSISJGJANKKI3445fv',
       });
       var body = json.decode(response.body);
       bearer = response.headers['bearer'];
@@ -254,7 +254,7 @@ class WebServices extends ChangeNotifier {
     var data = Provider.of<DataProvider>(context, listen: false);
     var datas = Provider.of<Utils>(context, listen: false);
     PostRequestProvider postRequestProvider =
-        Provider.of<PostRequestProvider>(context, listen: false);
+    Provider.of<PostRequestProvider>(context, listen: false);
     SharedPreferences prefs = await SharedPreferences.getInstance();
 
     try {
@@ -265,7 +265,7 @@ class WebServices extends ChangeNotifier {
         'house_address': data.homeAddress ?? '',
         'business_name': data.firstName ?? '',
         'sub_services':
-            '${data.subcat}'.replaceAll('[', '').replaceAll(']', ''),
+        '${data.subcat}'.replaceAll('[', '').replaceAll(']', ''),
         'bio': data.overview ?? '',
         'role': data.artisanVendorChoice,
         'service_id': '${postRequestProvider.selecteService.sn}',
@@ -401,7 +401,7 @@ class WebServices extends ChangeNotifier {
 
   Future<dynamic> getUserInfo([userId]) async {
     var response =
-        await http.post(Uri.parse('https://manager.fixme.ng/user-info'), body: {
+    await http.post(Uri.parse('https://manager.fixme.ng/user-info'), body: {
       'user_id': userId.toString(),
     }, headers: {
       "Content-type": "application/x-www-form-urlencoded",
@@ -547,55 +547,55 @@ class WebServices extends ChangeNotifier {
                             children: <Widget>[
                               !loginState
                                   ? Material(
-                                      borderRadius: BorderRadius.circular(26),
-                                      elevation: 2,
+                                borderRadius: BorderRadius.circular(26),
+                                elevation: 2,
+                                child: Container(
+                                  height: 40,
+                                  width: 80,
+                                  decoration: BoxDecoration(
+                                      border: Border.all(
+                                          color: Color(0xFFE60016)),
+                                      borderRadius:
+                                      BorderRadius.circular(26)),
+                                  child: FlatButton(
+                                    onPressed: () {
+                                      loginSetState();
+                                      becomeArtisanOrBusiness(
+                                        context: context,
+                                        scaffoldKey: scaffoldKey,
+                                      );
+                                      Navigator.pop(context);
+                                    },
+                                    color: Color(0xFFE60016),
+                                    shape: RoundedRectangleBorder(
+                                        borderRadius:
+                                        BorderRadius.circular(26)),
+                                    padding: EdgeInsets.all(0.0),
+                                    child: Ink(
+                                      decoration: BoxDecoration(
+                                          borderRadius:
+                                          BorderRadius.circular(26)),
                                       child: Container(
-                                        height: 40,
-                                        width: 80,
-                                        decoration: BoxDecoration(
-                                            border: Border.all(
-                                                color: Color(0xFFE60016)),
-                                            borderRadius:
-                                                BorderRadius.circular(26)),
-                                        child: FlatButton(
-                                          onPressed: () {
-                                            loginSetState();
-                                            becomeArtisanOrBusiness(
-                                              context: context,
-                                              scaffoldKey: scaffoldKey,
-                                            );
-                                            Navigator.pop(context);
-                                          },
-                                          color: Color(0xFFE60016),
-                                          shape: RoundedRectangleBorder(
-                                              borderRadius:
-                                                  BorderRadius.circular(26)),
-                                          padding: EdgeInsets.all(0.0),
-                                          child: Ink(
-                                            decoration: BoxDecoration(
-                                                borderRadius:
-                                                    BorderRadius.circular(26)),
-                                            child: Container(
-                                              constraints: BoxConstraints(
-                                                  maxWidth: 190.0,
-                                                  minHeight: 53.0),
-                                              alignment: Alignment.center,
-                                              child: Text(
-                                                "No Please!",
-                                                textAlign: TextAlign.center,
-                                                style: TextStyle(
-                                                    fontSize: 14,
-                                                    fontWeight: FontWeight.bold,
-                                                    color: Colors.white),
-                                              ),
-                                            ),
-                                          ),
+                                        constraints: BoxConstraints(
+                                            maxWidth: 190.0,
+                                            minHeight: 53.0),
+                                        alignment: Alignment.center,
+                                        child: Text(
+                                          "No Please!",
+                                          textAlign: TextAlign.center,
+                                          style: TextStyle(
+                                              fontSize: 14,
+                                              fontWeight: FontWeight.bold,
+                                              color: Colors.white),
                                         ),
                                       ),
-                                    )
+                                    ),
+                                  ),
+                                ),
+                              )
                                   : CircularProgressIndicator(
-                                      valueColor: AlwaysStoppedAnimation<Color>(
-                                          Color(0xFF9B049B))),
+                                  valueColor: AlwaysStoppedAnimation<Color>(
+                                      Color(0xFF9B049B))),
                               SizedBox(width: 5),
                               Material(
                                 borderRadius: BorderRadius.circular(26),
@@ -613,12 +613,12 @@ class WebServices extends ChangeNotifier {
                                     color: Colors.green,
                                     shape: RoundedRectangleBorder(
                                         borderRadius:
-                                            BorderRadius.circular(26)),
+                                        BorderRadius.circular(26)),
                                     padding: EdgeInsets.all(0.0),
                                     child: Ink(
                                       decoration: BoxDecoration(
                                           borderRadius:
-                                              BorderRadius.circular(26)),
+                                          BorderRadius.circular(26)),
                                       child: Container(
                                         constraints: BoxConstraints(
                                             maxWidth: 190.0, minHeight: 53.0),
@@ -853,55 +853,55 @@ class WebServices extends ChangeNotifier {
                           children: <Widget>[
                             !loginState
                                 ? Material(
-                                    borderRadius: BorderRadius.circular(26),
-                                    elevation: 2,
+                              borderRadius: BorderRadius.circular(26),
+                              elevation: 2,
+                              child: Container(
+                                height: 40,
+                                width: 80,
+                                decoration: BoxDecoration(
+                                    border: Border.all(
+                                        color: Color(0xFFE60016)),
+                                    borderRadius:
+                                    BorderRadius.circular(26)),
+                                child: FlatButton(
+                                  onPressed: () {
+                                    loginSetState();
+                                    becomeArtisanOrBusiness(
+                                      context: context,
+                                      scaffoldKey: scaffoldKey,
+                                    );
+                                    Navigator.pop(context);
+                                  },
+                                  color: Color(0xFFE60016),
+                                  shape: RoundedRectangleBorder(
+                                      borderRadius:
+                                      BorderRadius.circular(26)),
+                                  padding: EdgeInsets.all(0.0),
+                                  child: Ink(
+                                    decoration: BoxDecoration(
+                                        borderRadius:
+                                        BorderRadius.circular(26)),
                                     child: Container(
-                                      height: 40,
-                                      width: 80,
-                                      decoration: BoxDecoration(
-                                          border: Border.all(
-                                              color: Color(0xFFE60016)),
-                                          borderRadius:
-                                              BorderRadius.circular(26)),
-                                      child: FlatButton(
-                                        onPressed: () {
-                                          loginSetState();
-                                          becomeArtisanOrBusiness(
-                                            context: context,
-                                            scaffoldKey: scaffoldKey,
-                                          );
-                                          Navigator.pop(context);
-                                        },
-                                        color: Color(0xFFE60016),
-                                        shape: RoundedRectangleBorder(
-                                            borderRadius:
-                                                BorderRadius.circular(26)),
-                                        padding: EdgeInsets.all(0.0),
-                                        child: Ink(
-                                          decoration: BoxDecoration(
-                                              borderRadius:
-                                                  BorderRadius.circular(26)),
-                                          child: Container(
-                                            constraints: BoxConstraints(
-                                                maxWidth: 190.0,
-                                                minHeight: 53.0),
-                                            alignment: Alignment.center,
-                                            child: Text(
-                                              "No Please!",
-                                              textAlign: TextAlign.center,
-                                              style: TextStyle(
-                                                  fontSize: 14,
-                                                  fontWeight: FontWeight.bold,
-                                                  color: Colors.white),
-                                            ),
-                                          ),
-                                        ),
+                                      constraints: BoxConstraints(
+                                          maxWidth: 190.0,
+                                          minHeight: 53.0),
+                                      alignment: Alignment.center,
+                                      child: Text(
+                                        "No Please!",
+                                        textAlign: TextAlign.center,
+                                        style: TextStyle(
+                                            fontSize: 14,
+                                            fontWeight: FontWeight.bold,
+                                            color: Colors.white),
                                       ),
                                     ),
-                                  )
+                                  ),
+                                ),
+                              ),
+                            )
                                 : CircularProgressIndicator(
-                                    valueColor: AlwaysStoppedAnimation<Color>(
-                                        Color(0xFF9B049B))),
+                                valueColor: AlwaysStoppedAnimation<Color>(
+                                    Color(0xFF9B049B))),
                             SizedBox(width: 5),
                             Material(
                               borderRadius: BorderRadius.circular(26),
@@ -923,7 +923,7 @@ class WebServices extends ChangeNotifier {
                                   child: Ink(
                                     decoration: BoxDecoration(
                                         borderRadius:
-                                            BorderRadius.circular(26)),
+                                        BorderRadius.circular(26)),
                                     child: Container(
                                       constraints: BoxConstraints(
                                           maxWidth: 190.0, minHeight: 53.0),
@@ -1144,7 +1144,7 @@ class WebServices extends ChangeNotifier {
 
   Future<dynamic> updateFullName(firstName, lastName) async {
     var response =
-        await http.post(Uri.parse('https://manager.fixme.ng/e-f-n'), body: {
+    await http.post(Uri.parse('https://manager.fixme.ng/e-f-n'), body: {
       'user_id': userId.toString(),
       'firstName': '$lastName',
       'lastName': '$firstName',
@@ -1173,6 +1173,7 @@ class WebServices extends ChangeNotifier {
     var body = json.decode(response.body);
     notifyListeners();
     if (body['reqRes'] == 'true') {
+      print(body['projects']);
       return body['projects'];
     } else if (body['reqRes'] == 'false') {
       print(body['message']);
@@ -1204,13 +1205,11 @@ class WebServices extends ChangeNotifier {
   }
 
   Future<dynamic> nearbyShop({longitude, latitude}) async {
-    //  latitude: '6.295660',
-    // longitude: '5.642040',
     var response = await http
         .post(Uri.parse('https://manager.fixme.ng/near-shops-business'), body: {
       'user_id': userId.toString(),
-      'longitude': '5.642040',
-      'latitude': '6.295660',
+      'longitude': longitude.toString(),
+      'latitude': latitude.toString(),
     }, headers: {
       "Content-type": "application/x-www-form-urlencoded",
       'Authorization': 'Bearer $bearer',
@@ -1351,12 +1350,12 @@ class WebServices extends ChangeNotifier {
 
   Future<Map> initiateTransfer(
       {bankCode,
-      accountNumber,
-      accountName,
-      amount,
-      secPin,
-      naration,
-      isBeneficiary}) async {
+        accountNumber,
+        accountName,
+        amount,
+        secPin,
+        naration,
+        isBeneficiary}) async {
     String encoded = "ApiKey:$secPin";
     var bytes = utf8.encode(encoded);
     var base64Str = base64.encode(bytes);

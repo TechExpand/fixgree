@@ -70,11 +70,11 @@ class PostRequestProvider with ChangeNotifier {
           popDialog(context, 'Successfully Posted', 'assets/images/go.png');
         } else {
           isLoading(false);
-          popDialog(context, 'Unable To Post', 'assets/images/fail.jpg');
+          popDialogs(context, 'Unable To Post', 'assets/images/fail.jpg');
         }
       } else {
         isLoading(false);
-        popDialog(context, 'Unable To Post', 'assets/images/fail.jpg');
+        popDialogs(context, 'Unable To Post', 'assets/images/fail.jpg');
       }
       print(body1);
       isLoading(false);
@@ -108,8 +108,8 @@ class PostRequestProvider with ChangeNotifier {
       // user_id = body['id'];
       List<Services> serviceListz = body
           .map((data) {
-            return Services.fromJson(data);
-          })
+        return Services.fromJson(data);
+      })
           .toSet()
           .toList();
       servicesList = serviceListz;

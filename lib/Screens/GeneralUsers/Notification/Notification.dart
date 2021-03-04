@@ -52,8 +52,8 @@ class _NotificationState extends State<NotificationPage> {
                             radius: 19,
                             backgroundImage: NetworkImage(
                               network.profilePicFileName ==
-                                          'no_picture_upload' ||
-                                      network.profilePicFileName == null
+                                  'no_picture_upload' ||
+                                  network.profilePicFileName == null
                                   ? 'https://uploads.fixme.ng/originals/no_picture_upload'
                                   : 'https://uploads.fixme.ng/originals/${network.profilePicFileName}',
                             ),
@@ -117,17 +117,17 @@ class _NotificationState extends State<NotificationPage> {
                                   borderSide: const BorderSide(
                                       color: Colors.black38, width: 0.0),
                                   borderRadius:
-                                      BorderRadius.all(Radius.circular(4))),
+                                  BorderRadius.all(Radius.circular(4))),
                               focusedBorder: OutlineInputBorder(
                                   borderSide: const BorderSide(
                                       color: Colors.black38, width: 0.0),
                                   borderRadius:
-                                      BorderRadius.all(Radius.circular(4))),
+                                  BorderRadius.all(Radius.circular(4))),
                               border: OutlineInputBorder(
                                   borderSide: const BorderSide(
                                       color: Colors.black38, width: 0.0),
                                   borderRadius:
-                                      BorderRadius.all(Radius.circular(4))),
+                                  BorderRadius.all(Radius.circular(4))),
                             )),
                       ),
                     ),
@@ -170,7 +170,7 @@ class _NotificationState extends State<NotificationPage> {
               Padding(
                 padding: const EdgeInsets.all(8.0),
                 child:
-                    Align(alignment: Alignment.topLeft, child: Text('Recent')),
+                Align(alignment: Alignment.topLeft, child: Text('Recent')),
               ),
               Container(
                 padding: EdgeInsets.only(top: 5),
@@ -209,12 +209,12 @@ class _NotificationState extends State<NotificationPage> {
                                           color: Colors.white,
                                         ),
                                         padding:
-                                            EdgeInsets.only(top: 9, left: 9),
+                                        EdgeInsets.only(top: 9, left: 9),
                                         child: Row(
                                           mainAxisAlignment:
-                                              MainAxisAlignment.center,
+                                          MainAxisAlignment.center,
                                           crossAxisAlignment:
-                                              CrossAxisAlignment.start,
+                                          CrossAxisAlignment.start,
                                           children: [
                                             Padding(
                                               padding: const EdgeInsets.only(
@@ -226,169 +226,187 @@ class _NotificationState extends State<NotificationPage> {
                                             ),
                                             Container(
                                                 padding:
-                                                    EdgeInsets.only(top: 5),
+                                                EdgeInsets.only(top: 5),
                                                 width: MediaQuery.of(context)
-                                                        .size
-                                                        .width *
+                                                    .size
+                                                    .width *
                                                     0.7,
                                                 child: Column(
                                                     crossAxisAlignment:
-                                                        CrossAxisAlignment
-                                                            .start,
+                                                    CrossAxisAlignment
+                                                        .start,
                                                     children: [
                                                       RichText(
                                                         text:
-                                                            TextSpan(children: [
+                                                        TextSpan(children: [
                                                           TextSpan(
                                                             text: users[index]
                                                                 .message,
                                                             style: GoogleFonts
                                                                 .openSans(
-                                                                    color: Colors
-                                                                        .black),
+                                                                color: Colors
+                                                                    .black),
                                                           ),
                                                           TextSpan(
                                                               text:
-                                                                  ' ${users[index].name.toString() == 'null null' ? '' : 'by ${users[index].name}'} ',
+                                                              ' ${users[index].name.toString() == 'null null' ? '' : 'by ${users[index].name}'} ',
                                                               style: GoogleFonts.openSans(
                                                                   fontWeight:
-                                                                      FontWeight
-                                                                          .bold,
+                                                                  FontWeight
+                                                                      .bold,
                                                                   color: Colors
                                                                       .black87)),
                                                         ]),
                                                       ),
                                                       users[index].type ==
-                                                              'new_bid'
+                                                          'new_project'
                                                           ? InkWell(
-                                                              onTap: () {
-                                                                FirebaseApi.updateNotification(
-                                                                        users[index]
-                                                                            .id,
-                                                                        'bided')
-                                                                    .then(
-                                                                        (value) {
-                                                                  network.bidProject(
-                                                                      network
-                                                                          .userId,
-                                                                      users[index]
-                                                                          .jobid,
-                                                                      widget
-                                                                          .scafoldKey);
-                                                                });
-                                                              },
-                                                              child: Container(
-                                                                margin: EdgeInsets
-                                                                    .only(
-                                                                        top: 15,
-                                                                        bottom:
-                                                                            12),
-                                                                width: 105,
-                                                                height: 28,
-                                                                child: Center(
-                                                                    child: Text(
-                                                                        'BID THIS JOB',
-                                                                        style: GoogleFonts.openSans(
-                                                                            fontSize:
-                                                                                13,
-                                                                            color:
-                                                                                Color(0xFFA40C85),
-                                                                            fontWeight: FontWeight.w600))),
-                                                                decoration: BoxDecoration(
-                                                                    border: Border.all(
-                                                                        color: Color(
-                                                                            0xFFA40C85)),
-                                                                    borderRadius:
-                                                                        BorderRadius.circular(
-                                                                            4)),
-                                                              ),
-                                                            )
+                                                        onTap: () {
+                                                          FirebaseApi.updateNotification(
+                                                              users[index]
+                                                                  .id,
+                                                              'bided')
+                                                              .then(
+                                                                  (value) {
+                                                                network.bidProject(
+                                                                    network
+                                                                        .userId,
+                                                                    users[index]
+                                                                        .jobid,
+                                                                    widget
+                                                                        .scafoldKey);
+                                                              });
+                                                        },
+                                                        child: Container(
+                                                          margin: EdgeInsets
+                                                              .only(
+                                                              top: 15,
+                                                              bottom:
+                                                              12),
+                                                          width: 105,
+                                                          height: 28,
+                                                          child: Center(
+                                                              child: Text(
+                                                                  'BID THIS JOB',
+                                                                  style: GoogleFonts.openSans(
+                                                                      fontSize:
+                                                                      13,
+                                                                      color:
+                                                                      Color(0xFFA40C85),
+                                                                      fontWeight: FontWeight.w600))),
+                                                          decoration: BoxDecoration(
+                                                              border: Border.all(
+                                                                  color: Color(
+                                                                      0xFFA40C85)),
+                                                              borderRadius:
+                                                              BorderRadius.circular(
+                                                                  4)),
+                                                        ),
+                                                      )
                                                           : users[index].type ==
-                                                                  'bided'
-                                                              ? Container(
-                                                                  margin: EdgeInsets
-                                                                      .only(
-                                                                          top:
-                                                                              15,
-                                                                          bottom:
-                                                                              12),
-                                                                  width: 105,
-                                                                  height: 28,
-                                                                  child: Center(
-                                                                      child: Text(
-                                                                          'JOB BIDDED',
-                                                                          style: TextStyle(
-                                                                              fontSize: 13,
-                                                                              color: Color(0xFFA40C85),
-                                                                              fontWeight: FontWeight.w500))),
-                                                                  decoration: BoxDecoration(
-                                                                      border: Border.all(
-                                                                          color: Color(
-                                                                              0xFFA40C85)),
-                                                                      borderRadius:
-                                                                          BorderRadius.circular(
-                                                                              4)),
-                                                                )
-                                                              : users[index]
-                                                                          .type ==
-                                                                      'confirm'
-                                                                  ? Container(
-                                                                      margin: EdgeInsets.only(
-                                                                          top:
-                                                                              15,
-                                                                          bottom:
-                                                                              12),
-                                                                      width:
-                                                                          105,
-                                                                      height:
-                                                                          28,
-                                                                      child: Center(
-                                                                          child: Text(
-                                                                              'CONFIRMED',
-                                                                              style: TextStyle(fontSize: 13, color: Color(0xFFA40C85), fontWeight: FontWeight.w500))),
-                                                                      decoration: BoxDecoration(
-                                                                          border:
-                                                                              Border.all(color: Color(0xFFA40C85)),
-                                                                          borderRadius: BorderRadius.circular(4)),
-                                                                    )
-                                                                  : users[index]
-                                                                              .type ==
-                                                                          'bid_approval'
-                                                                      ? Text('')
-                                                                      : InkWell(
-                                                                          onTap:
-                                                                              () {
-                                                                            FirebaseApi.updateNotification(users[index].id, 'confirm').then((value) {
-                                                                              network.confirmBudget(users[index].bidderId, users[index].bidId, widget.scafoldKey);
-                                                                            });
-                                                                          },
-                                                                          child:
-                                                                              Container(
-                                                                            margin:
-                                                                                EdgeInsets.only(top: 15, bottom: 12),
-                                                                            width:
-                                                                                105,
-                                                                            height:
-                                                                                28,
-                                                                            child:
-                                                                                Center(child: Text('CONFIRM', style: TextStyle(fontSize: 13, color: Color(0xFFA40C85), fontWeight: FontWeight.w500))),
-                                                                            decoration:
-                                                                                BoxDecoration(border: Border.all(color: Color(0xFFA40C85)), borderRadius: BorderRadius.circular(4)),
-                                                                          ),
-                                                                        )
+                                                          'bided'
+                                                          ? Container(
+                                                        margin: EdgeInsets
+                                                            .only(
+                                                            top:
+                                                            15,
+                                                            bottom:
+                                                            12),
+                                                        width: 105,
+                                                        height: 28,
+                                                        child: Center(
+                                                            child: Text(
+                                                                'JOB BIDDED',
+                                                                style: TextStyle(
+                                                                    fontSize: 13,
+                                                                    color: Color(0xFFA40C85),
+                                                                    fontWeight: FontWeight.w500))),
+                                                        decoration: BoxDecoration(
+                                                            border: Border.all(
+                                                                color: Color(
+                                                                    0xFFA40C85)),
+                                                            borderRadius:
+                                                            BorderRadius.circular(
+                                                                4)),
+                                                      )
+                                                          : users[index]
+                                                          .type ==
+                                                          'confirm'
+                                                          ? Container(
+                                                        margin: EdgeInsets.only(
+                                                            top:
+                                                            15,
+                                                            bottom:
+                                                            12),
+                                                        width:
+                                                        105,
+                                                        height:
+                                                        28,
+                                                        child: Center(
+                                                            child: Text(
+                                                                'CONFIRMED',
+                                                                style: TextStyle(fontSize: 13, color: Color(0xFFA40C85), fontWeight: FontWeight.w500))),
+                                                        decoration: BoxDecoration(
+                                                            border:
+                                                            Border.all(color: Color(0xFFA40C85)),
+                                                            borderRadius: BorderRadius.circular(4)),
+                                                      )
+                                                          : users[index]
+                                                          .type ==
+                                                          'bid_approval'
+                                                          ? Text('')
+                                                          : InkWell(
+                                                        onTap:
+                                                            () {
+                                                          FirebaseApi.updateNotification(users[index].id, 'confirm').then((value) {
+                                                            network.confirmBudget(users[index].bidderId, users[index].bidId, widget.scafoldKey);
+                                                          });
+                                                        },
+                                                        child:
+                                                        Container(
+                                                          margin:
+                                                          EdgeInsets.only(top: 15, bottom: 12),
+                                                          width:
+                                                          105,
+                                                          height:
+                                                          28,
+                                                          child:
+                                                          Center(child: Text('CONFIRM', style: TextStyle(fontSize: 13, color: Color(0xFFA40C85), fontWeight: FontWeight.w500))),
+                                                          decoration:
+                                                          BoxDecoration(border: Border.all(color: Color(0xFFA40C85)), borderRadius: BorderRadius.circular(4)),
+                                                        ),
+                                                      )
                                                     ])),
                                             Container(
                                               width: 60,
                                               child: Column(
                                                 children: [
                                                   Padding(
-                                                    padding:
-                                                        const EdgeInsets.only(
-                                                            bottom: 6.0),
-                                                    child: Icon(
-                                                      Icons.more_vert,
-                                                      color: Colors.black38,
-                                                    ),
+                                                      padding:
+                                                      const EdgeInsets.only(
+                                                          bottom: 6.0),
+                                                      child: PopupMenuButton(
+                                                          offset: const Offset(0, 80),
+                                                          elevation: 5,
+                                                          icon: Icon(
+                                                            Icons.more_vert,
+                                                            size: 22,
+                                                          ),
+                                                          itemBuilder: (context) => [
+                                                            PopupMenuItem(
+                                                                value: 1,
+                                                                child: InkWell(
+                                                                  onTap: () {
+                                                                    FirebaseApi.deleteNotification(users[index].id);
+                                                                    Navigator.pop(context);
+                                                                  },
+                                                                  child: Padding(
+                                                                    padding: const EdgeInsets.all(8),
+                                                                    child: Text('Clear Message'),
+                                                                  ),
+                                                                )),
+
+                                                          ])
                                                   ),
                                                   Text(
                                                     '$date',
@@ -401,7 +419,7 @@ class _NotificationState extends State<NotificationPage> {
                                           ],
                                         ),
                                         width:
-                                            MediaQuery.of(context).size.width,
+                                        MediaQuery.of(context).size.width,
                                       ),
                                     );
 
@@ -450,12 +468,12 @@ class _NotificationState extends State<NotificationPage> {
     );
   }
 
-  Widget buildText(String text) => Center(
-        child: Text(text,
-            style: TextStyle(
-                // letterSpacing: 4,
-                color: Color(0xFF333333),
-                fontSize: 18,
-                fontWeight: FontWeight.w600)),
-      );
+  Widget buildText(String text) => Padding(
+    padding: const EdgeInsets.only(top: 200.0),
+    child: Text(
+      text,
+      style: TextStyle(fontSize: 18, color: Colors.black38),
+      textAlign: TextAlign.center,
+    ),
+  );
 }

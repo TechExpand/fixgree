@@ -21,16 +21,16 @@ class FirebaseApi {
       String idUser, String idArtisan, String message, context, chatId) async {
     var network = Provider.of<WebServices>(context, listen: false);
     final refMessages =
-        FirebaseFirestore.instance.collection('chats/$idUser/messages');
+    FirebaseFirestore.instance.collection('chats/$idUser/messages');
     final refMessages2 =
-        FirebaseFirestore.instance.collection('chats/$idArtisan/messages');
+    FirebaseFirestore.instance.collection('chats/$idArtisan/messages');
 
     final newMessage = Message(
       chatId: chatId ?? '',
       idUser: network.mobileDeviceToken ?? '',
       urlAvatar:
-          'https://uploads.fixme.ng/originals/${network.profilePicFileName}' ??
-              '',
+      'https://uploads.fixme.ng/originals/${network.profilePicFileName}' ??
+          '',
       username: network.firstName ?? '',
       message: message ?? '',
       createdAt: DateTime.now(),
@@ -39,9 +39,9 @@ class FirebaseApi {
     await refMessages2.add(newMessage.toJson());
 
     final refUsers =
-        FirebaseFirestore.instance.collection('UserChat/$idUser/individual');
+    FirebaseFirestore.instance.collection('UserChat/$idUser/individual');
     final refArtisan =
-        FirebaseFirestore.instance.collection('UserChat/$idArtisan/individual');
+    FirebaseFirestore.instance.collection('UserChat/$idArtisan/individual');
     await refArtisan.doc(idUser).update({
       UserField.lastMessageTime: DateTime.now(),
       'lastMessage': '$message',
@@ -59,9 +59,9 @@ class FirebaseApi {
       String idUser, idArtisan, message, context, chatId) async {
     var network = Provider.of<WebServices>(context, listen: false);
     final refMessages =
-        FirebaseFirestore.instance.collection('chats/$idUser/messages');
+    FirebaseFirestore.instance.collection('chats/$idUser/messages');
     final refMessages2 =
-        FirebaseFirestore.instance.collection('chats/$idArtisan/messages');
+    FirebaseFirestore.instance.collection('chats/$idArtisan/messages');
 
     Reference storageReferenceImage = FirebaseStorage.instance
         .ref()
@@ -87,9 +87,9 @@ class FirebaseApi {
     Navigator.pop(context);
 
     final refUsers =
-        FirebaseFirestore.instance.collection('UserChat/$idUser/individual');
+    FirebaseFirestore.instance.collection('UserChat/$idUser/individual');
     final refArtisan =
-        FirebaseFirestore.instance.collection('UserChat/$idArtisan/individual');
+    FirebaseFirestore.instance.collection('UserChat/$idArtisan/individual');
     await refArtisan.doc(idUser).update({
       UserField.lastMessageTime: DateTime.now(),
       'lastMessage': 'A File',
@@ -107,9 +107,9 @@ class FirebaseApi {
       String idUser, idArtisan, message, context, chatId) async {
     var network = Provider.of<WebServices>(context, listen: false);
     final refMessages =
-        FirebaseFirestore.instance.collection('chats/$idUser/messages');
+    FirebaseFirestore.instance.collection('chats/$idUser/messages');
     final refMessages2 =
-        FirebaseFirestore.instance.collection('chats/$idArtisan/messages');
+    FirebaseFirestore.instance.collection('chats/$idArtisan/messages');
 
     Reference storageReferenceImage = FirebaseStorage.instance
         .ref()
@@ -132,9 +132,9 @@ class FirebaseApi {
       });
     });
     final refUsers =
-        FirebaseFirestore.instance.collection('UserChat/$idUser/individual');
+    FirebaseFirestore.instance.collection('UserChat/$idUser/individual');
     final refArtisan =
-        FirebaseFirestore.instance.collection('UserChat/$idArtisan/individual');
+    FirebaseFirestore.instance.collection('UserChat/$idArtisan/individual');
     await refArtisan.doc(idUser).update({
       UserField.lastMessageTime: DateTime.now(),
       'lastMessage': 'A File',
@@ -193,9 +193,9 @@ class FirebaseApi {
     artisanMobile,
   }) async {
     final refUsers =
-        FirebaseFirestore.instance.collection('UserChat/$idArtisan/individual');
+    FirebaseFirestore.instance.collection('UserChat/$idArtisan/individual');
     final refAritisan =
-        FirebaseFirestore.instance.collection('UserChat/$idUser/individual');
+    FirebaseFirestore.instance.collection('UserChat/$idUser/individual');
     await refUsers.doc(idUser).set({
       'bid_id': bidData.bid_id ?? '',
       'project_id': bidData.job_id ?? '',
@@ -275,6 +275,11 @@ class FirebaseApi {
     });
   }
 
+  static Future deleteNotification(String id) async {
+    final refMessages = FirebaseFirestore.instance.collection('Notification');
+    await refMessages.doc(id).delete();
+  }
+
   static Future updateNotification(String id, message) async {
     final refMessages = FirebaseFirestore.instance.collection('Notification');
 
@@ -305,7 +310,7 @@ class FirebaseApi {
     String idArtisan,
   }) async {
     final refUsers =
-        FirebaseFirestore.instance.collection('UserChat/$idArtisan/individual');
+    FirebaseFirestore.instance.collection('UserChat/$idArtisan/individual');
     await refUsers.doc(idUser).update({
       'read': true,
     });

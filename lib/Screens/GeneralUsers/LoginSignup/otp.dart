@@ -35,7 +35,7 @@ class OTPState extends State<OTPPAGE> {
     const oneSec = const Duration(seconds: 1);
     _timer = new Timer.periodic(
       oneSec,
-      (Timer timer) {
+          (Timer timer) {
         if (_start == 0) {
           setState(() {
             timer.cancel();
@@ -83,7 +83,7 @@ class OTPState extends State<OTPPAGE> {
     signinWithPhoneAndSMScode(id, smsCode) async {
       try {
         AuthCredential authcred =
-            PhoneAuthProvider.credential(verificationId: id, smsCode: smsCode);
+        PhoneAuthProvider.credential(verificationId: id, smsCode: smsCode);
 
         final User user =
             (await FirebaseAuth.instance.signInWithCredential(authcred)).user;
@@ -91,21 +91,21 @@ class OTPState extends State<OTPPAGE> {
         //otpTimer.cancel();
         widget.page == "SignUp"
             ? Navigator.pushReplacement(
-                context,
-                PageRouteBuilder(
-                  pageBuilder: (context, animation, secondaryAnimation) {
-                    network.loginSetState();
-                    return SignUpPassword();
-                  },
-                  transitionsBuilder:
-                      (context, animation, secondaryAnimation, child) {
-                    return FadeTransition(
-                      opacity: animation,
-                      child: child,
-                    );
-                  },
-                ),
-              )
+          context,
+          PageRouteBuilder(
+            pageBuilder: (context, animation, secondaryAnimation) {
+              network.loginSetState();
+              return SignUpPassword();
+            },
+            transitionsBuilder:
+                (context, animation, secondaryAnimation, child) {
+              return FadeTransition(
+                opacity: animation,
+                child: child,
+              );
+            },
+          ),
+        )
             : network.login(context: context, scaffoldKey: scaffoldKey);
       } catch (e) {
         network.loginSetState();
@@ -220,7 +220,7 @@ class OTPState extends State<OTPPAGE> {
                               )),
                           counterText: ''
 //                            border: InputBorder.none, counterText: ''
-                          ),
+                      ),
                     ),
                   ),
                   Container(
@@ -280,7 +280,7 @@ class OTPState extends State<OTPPAGE> {
                               )),
                           counterText: ''
 //                            border: InputBorder.none, counterText: ''
-                          ),
+                      ),
                     ),
                   ),
                   Container(
@@ -340,7 +340,7 @@ class OTPState extends State<OTPPAGE> {
                               )),
                           counterText: ''
 //                            border: InputBorder.none, counterText: ''
-                          ),
+                      ),
                     ),
                   ),
                   Container(
@@ -400,7 +400,7 @@ class OTPState extends State<OTPPAGE> {
                               )),
                           counterText: ''
 //                            border: InputBorder.none, counterText: ''
-                          ),
+                      ),
                     ),
                   ),
                   Container(
@@ -460,7 +460,7 @@ class OTPState extends State<OTPPAGE> {
                               )),
                           counterText: ''
 //                            border: InputBorder.none, counterText: ''
-                          ),
+                      ),
                     ),
                   ),
                   Container(
@@ -520,133 +520,137 @@ class OTPState extends State<OTPPAGE> {
                               )),
                           counterText: ''
 //                            border: InputBorder.none, counterText: ''
-                          ),
+                      ),
                     ),
                   ),
                 ],
               ),
               _start != 0
                   ? Align(
-                      alignment: Alignment.bottomRight,
-                      child: Padding(
-                        padding: const EdgeInsets.only(right: 50.0, top: 15),
-                        child: Container(
-                            width: 25,
-                            height: 25,
-                            decoration: BoxDecoration(
-                              color: Color(0x909B049B),
-                              shape: BoxShape.circle,
-                            ),
-                            child: Center(child: Text('$_start'))),
+                alignment: Alignment.bottomRight,
+                child: Padding(
+                  padding: const EdgeInsets.only(right: 50.0, top: 15),
+                  child: Container(
+                      width: 25,
+                      height: 25,
+                      decoration: BoxDecoration(
+                        color: Color(0x909B049B),
+                        shape: BoxShape.circle,
                       ),
-                    )
+                      child: Center(child: Text('$_start'))),
+                ),
+              )
                   : Align(
-                      alignment: Alignment.bottomRight,
-                      child: FlatButton(
-                          splashColor: Colors.transparent,
-                          hoverColor: Colors.transparent,
-                          focusColor: Colors.transparent,
-                          highlightColor: Colors.transparent,
-                          onPressed: () {
-                            FirebaseAuth.instance
-                                .verifyPhoneNumber(
-                              phoneNumber: data.number.toString(),
-                              verificationCompleted: (credential) async {
-                                await auth.signInWithCredential(credential);
-                                await Navigator.pushReplacement(
-                                  context,
-                                  PageRouteBuilder(
-                                    pageBuilder: (context, animation,
-                                        secondaryAnimation) {
-                                      return SignUpPassword();
-                                    },
-                                    transitionsBuilder: (context, animation,
-                                        secondaryAnimation, child) {
-                                      return FadeTransition(
-                                        opacity: animation,
-                                        child: child,
-                                      );
-                                    },
-                                  ),
-                                );
-                              },
-                              verificationFailed: (FirebaseAuthException e) {
-                                scaffoldKey.currentState.showSnackBar(
-                                    SnackBar(content: Text(e.message)));
-                              },
-                              timeout: Duration(seconds: 120),
-                              codeSent:
-                                  (String verificationId, int resendToken) {
-                                widget.verificationID = verificationId;
-                                scaffoldKey.currentState.showSnackBar(
-                                    SnackBar(content: Text('Code Sent')));
-                              },
-                              codeAutoRetrievalTimeout:
-                                  (String verificationId) {},
+                alignment: Alignment.bottomRight,
+                child: FlatButton(
+                    splashColor: Colors.transparent,
+                    hoverColor: Colors.transparent,
+                    focusColor: Colors.transparent,
+                    highlightColor: Colors.transparent,
+                    onPressed: () {
+                      FirebaseAuth.instance
+                          .verifyPhoneNumber(
+                        phoneNumber: data.number.toString(),
+                        verificationCompleted: (credential) async {
+                          await auth.signInWithCredential(credential).then((value){
+                            widget.page == "SignUp"
+                                ? Navigator.pushReplacement(
+                              context,
+                              PageRouteBuilder(
+                                pageBuilder: (context, animation, secondaryAnimation) {
+                                  network.loginSetState();
+                                  return SignUpPassword();
+                                },
+                                transitionsBuilder:
+                                    (context, animation, secondaryAnimation, child) {
+                                  return FadeTransition(
+                                    opacity: animation,
+                                    child: child,
+                                  );
+                                },
+                              ),
                             )
-                                .then((value) {
-                              setState(() {
-                                _start = 100;
-                                startTimer();
-                              });
-                            });
-                          },
-                          child: Text('Resend Code')),
-                    ),
+                                : network.login(context: context, scaffoldKey: scaffoldKey);
+                          });
+
+                        },
+                        verificationFailed: (FirebaseAuthException e) {
+                          scaffoldKey.currentState.showSnackBar(
+                              SnackBar(content: Text(e.message)));
+                        },
+                        timeout: Duration(seconds: 120),
+                        codeSent:
+                            (String verificationId, int resendToken) {
+                          widget.verificationID = verificationId;
+                          scaffoldKey.currentState.showSnackBar(
+                              SnackBar(content: Text('Code Sent')));
+                        },
+                        codeAutoRetrievalTimeout:
+                            (String verificationId) {},
+                      )
+                          .then((value) {
+                        setState(() {
+                          _start = 100;
+                          startTimer();
+                        });
+                      });
+                    },
+                    child: Text('Resend Code')),
+              ),
               Spacer(),
               Align(
                   alignment: Alignment.center,
                   child: !network.loginState
                       ? Container(
-                          margin: EdgeInsets.only(
-                            bottom: 50,
+                    margin: EdgeInsets.only(
+                      bottom: 50,
+                    ),
+                    decoration: BoxDecoration(
+                        border: Border.all(color: Colors.white),
+                        borderRadius: BorderRadius.circular(26)),
+                    child: FlatButton(
+                      disabledColor: Color(0x909B049B),
+                      onPressed: controller1.text.isEmpty ||
+                          controller2.text.isEmpty ||
+                          controller3.text.isEmpty ||
+                          controller4.text.isEmpty ||
+                          controller5.text.isEmpty ||
+                          controller6.text.isEmpty
+                          ? null
+                          : () {
+                        network.loginSetState();
+                        signinWithPhoneAndSMScode(
+                            widget.verificationID, data.otp);
+                      },
+                      color: Color(0xFF9B049B),
+                      shape: RoundedRectangleBorder(
+                          borderRadius: BorderRadius.circular(26)),
+                      padding: EdgeInsets.all(0.0),
+                      child: Ink(
+                        decoration: BoxDecoration(
+                            borderRadius: BorderRadius.circular(26)),
+                        child: Container(
+                          constraints: BoxConstraints(
+                              maxWidth:
+                              MediaQuery.of(context).size.width / 1.3,
+                              minHeight: 45.0),
+                          alignment: Alignment.center,
+                          child: Text(
+                            "CONTINUE",
+                            textAlign: TextAlign.center,
+                            style: TextStyle(color: Colors.white),
                           ),
-                          decoration: BoxDecoration(
-                              border: Border.all(color: Colors.white),
-                              borderRadius: BorderRadius.circular(26)),
-                          child: FlatButton(
-                            disabledColor: Color(0x909B049B),
-                            onPressed: controller1.text.isEmpty ||
-                                    controller2.text.isEmpty ||
-                                    controller3.text.isEmpty ||
-                                    controller4.text.isEmpty ||
-                                    controller5.text.isEmpty ||
-                                    controller6.text.isEmpty
-                                ? null
-                                : () {
-                                    network.loginSetState();
-                                    signinWithPhoneAndSMScode(
-                                        widget.verificationID, data.otp);
-                                  },
-                            color: Color(0xFF9B049B),
-                            shape: RoundedRectangleBorder(
-                                borderRadius: BorderRadius.circular(26)),
-                            padding: EdgeInsets.all(0.0),
-                            child: Ink(
-                              decoration: BoxDecoration(
-                                  borderRadius: BorderRadius.circular(26)),
-                              child: Container(
-                                constraints: BoxConstraints(
-                                    maxWidth:
-                                        MediaQuery.of(context).size.width / 1.3,
-                                    minHeight: 45.0),
-                                alignment: Alignment.center,
-                                child: Text(
-                                  "CONTINUE",
-                                  textAlign: TextAlign.center,
-                                  style: TextStyle(color: Colors.white),
-                                ),
-                              ),
-                            ),
-                          ),
-                        )
+                        ),
+                      ),
+                    ),
+                  )
                       : Padding(
-                          padding: const EdgeInsets.only(bottom: 50.0),
-                          child: CircularProgressIndicator(
-                            valueColor: AlwaysStoppedAnimation<Color>(
-                                Color(0xFF9B049B)),
-                          ),
-                        )),
+                    padding: const EdgeInsets.only(bottom: 50.0),
+                    child: CircularProgressIndicator(
+                      valueColor: AlwaysStoppedAnimation<Color>(
+                          Color(0xFF9B049B)),
+                    ),
+                  )),
             ],
           ),
         ),

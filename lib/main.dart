@@ -20,7 +20,7 @@ import 'package:http/http.dart' as http;
 import 'dart:convert';
 
 Future getCurrentLocation() async {
-  print('gettingggg');
+
   try {
     SharedPreferences prefs = await SharedPreferences.getInstance();
     var token = prefs.getString('Bearer');

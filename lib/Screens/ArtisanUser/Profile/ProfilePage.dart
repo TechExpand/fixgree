@@ -32,9 +32,9 @@ class _ProfilePageState extends State<ProfilePage> {
   address() async {
     var location = Provider.of<LocationService>(context);
     final coordinates =
-        new Coordinates(location.locationLongitude, location.locationLatitude);
+    new Coordinates(location.locationLongitude, location.locationLatitude);
     var addresses =
-        await Geocoder.local.findAddressesFromCoordinates(coordinates);
+    await Geocoder.local.findAddressesFromCoordinates(coordinates);
     setState(() {
       first = addresses.first;
     });
@@ -71,410 +71,412 @@ class _ProfilePageState extends State<ProfilePage> {
             builder: (context, snapshot) {
               return snapshot.hasData
                   ? Container(
-                      margin: EdgeInsets.only(
-                          top: MediaQuery.of(context).size.height * .02),
-                      child: ListView(
+                margin: EdgeInsets.only(
+                    top: MediaQuery.of(context).size.height * .02),
+                child: ListView(
+                  children: [
+                    Padding(
+                      padding: const EdgeInsets.only(left: 18, right: 18),
+                      child: Row(
                         children: [
-                          Padding(
-                            padding: const EdgeInsets.only(left: 18, right: 18),
-                            child: Row(
-                              children: [
-                                Stack(children: <Widget>[
-                                  CircleAvatar(
-                                    child: Text(''),
-                                    radius: 40,
-                                    backgroundImage: NetworkImage(
-                                      network.profilePicFileName ==
-                                                  'no_picture_upload' ||
-                                              network.profilePicFileName == null
-                                          ? 'https://uploads.fixme.ng/originals/no_picture_upload'
-                                          : 'https://uploads.fixme.ng/originals/${network.profilePicFileName}',
-                                    ),
-                                    foregroundColor: Colors.white,
-                                    backgroundColor: Colors.white,
+                          Stack(children: <Widget>[
+                            CircleAvatar(
+                              child: Text(''),
+                              radius: 40,
+                              backgroundImage: NetworkImage(
+                                network.profilePicFileName ==
+                                    'no_picture_upload' ||
+                                    network.profilePicFileName == null
+                                    ? 'https://uploads.fixme.ng/originals/no_picture_upload'
+                                    : 'https://uploads.fixme.ng/originals/${network.profilePicFileName}',
+                              ),
+                              foregroundColor: Colors.white,
+                              backgroundColor: Colors.white,
+                            ),
+                            Positioned(
+                              left: 65,
+                              top: 55,
+                              child: Container(
+                                height: 12,
+                                width: 12,
+                                decoration: BoxDecoration(
+                                    color: Color(0xFFDB5B04),
+                                    shape: BoxShape.circle),
+                                child: Text(''),
+                              ),
+                            ),
+                          ]),
+                          Column(
+                            crossAxisAlignment: CrossAxisAlignment.start,
+                            children: [
+                              Text(''),
+                              Row(children: [
+                                Padding(
+                                  padding: const EdgeInsets.only(
+                                    left: 10.0,
+                                    bottom: 6,
                                   ),
-                                  Positioned(
-                                    left: 65,
-                                    top: 55,
-                                    child: Container(
-                                      height: 12,
-                                      width: 12,
-                                      decoration: BoxDecoration(
-                                          color: Color(0xFFDB5B04),
-                                          shape: BoxShape.circle),
-                                      child: Text(''),
-                                    ),
+                                  child: Text(
+                                    '${snapshot.data['firstName']} ${snapshot.data['lastName']}',
+                                    style: TextStyle(
+                                        fontWeight: FontWeight.w500,
+                                        fontSize: 17),
                                   ),
-                                ]),
-                                Column(
-                                  crossAxisAlignment: CrossAxisAlignment.start,
+                                ),
+                                SizedBox(width: 20),
+                                InkWell(
+                                    onTap: () {
+                                      _editName('Edit Full Name');
+                                    },
+                                    child: Icon(Icons.edit,
+                                        color: Color(0xFF747474)))
+                              ]),
+                              Padding(
+                                padding: const EdgeInsets.only(
+                                    left: 6.8, bottom: 6),
+                                child: Row(
                                   children: [
-                                    Text(''),
-                                    Row(children: [
-                                      Padding(
-                                        padding: const EdgeInsets.only(
-                                          left: 10.0,
-                                          bottom: 6,
-                                        ),
-                                        child: Text(
-                                          '${snapshot.data['firstName']} ${snapshot.data['lastName']}',
-                                          style: TextStyle(
-                                              fontWeight: FontWeight.w500,
-                                              fontSize: 17),
-                                        ),
-                                      ),
-                                      SizedBox(width: 80),
-                                      InkWell(
-                                          onTap: () {
-                                            _editName('Edit Full Name');
-                                          },
-                                          child: Icon(Icons.edit,
-                                              color: Color(0xFF747474)))
-                                    ]),
-                                    Padding(
-                                      padding: const EdgeInsets.only(
-                                          left: 6.8, bottom: 6),
-                                      child: Row(
-                                        children: [
-                                          Icon(Icons.pin_drop,
-                                              color: Color(0xFF9B049B)),
-                                          Container(
-                                              width: 150,
-                                              child: Text(
-                                                '${first == null ? 'Location' : first.addressLine}',
-                                                style: TextStyle(
-                                                    fontWeight:
-                                                        FontWeight.w500),
-                                              )),
-                                        ],
-                                      ),
+                                    Icon( Icons
+                                        .location_on_outlined,
+                                      color: Colors
+                                          .amber,
                                     ),
-                                    snapshot.data['identificationStatus'] ==
-                                            'un-verified'
-                                        ? Padding(
-                                            padding: const EdgeInsets.only(
-                                                left: 10.0, bottom: 6),
-                                            child: Text('Unverified',
-                                                style: TextStyle(
-                                                  color: Color(0xFFFF0000)
-                                                      .withOpacity(0.75),
-                                                )),
-                                          )
-                                        : Padding(
-                                            padding: const EdgeInsets.only(
-                                                left: 10.0, bottom: 6),
-                                            child: Text('Verified',
-                                                style: TextStyle(
-                                                  color: Color(0xFF27AE60)
-                                                      .withOpacity(0.9),
-                                                )),
-                                          ),
+                                    Container(
+                                        width: 150,
+                                        child: Text(
+                                          '${first == null ? 'Location' : first.addressLine}',
+                                          style: TextStyle(
+                                              fontWeight:
+                                              FontWeight.w500),
+                                        )),
                                   ],
                                 ),
-                              ],
-                            ),
-                          ),
-                          Wrap(children: [
-                            Padding(
-                              padding: EdgeInsets.only(left: 10),
-                              child: InkWell(
-                                  onTap: () {
-                                    _editService('Edit Service');
-                                  },
-                                  child: Icon(Icons.edit,
-                                      color: Color(0xFF747474))),
-                            ),
-                            Padding(
-                              padding: const EdgeInsets.only(
-                                  top: 18.0, left: 18, right: 18),
-                              child: Text(
-                                '${snapshot.data['serviceArea']}'.toUpperCase(),
-                                style: TextStyle(
-                                    fontWeight: FontWeight.bold,
-                                    fontSize: 19.5),
                               ),
-                            ),
-                          ]),
-                          Padding(
-                            padding: const EdgeInsets.only(
-                                top: 8.0, bottom: 13, left: 18, right: 18),
-                            child: Row(
-                              children: [
-                                Text('Wholesales Channel'),
-                                SizedBox(
-                                  width: 10,
-                                ),
-                                StarRating(
-                                  rating: double.parse(
-                                      snapshot.data['user_rating'].toString()),
-
-                                  /// onRatingChanged: (rating) => setState(() => this.rating = rating),
-                                ),
-                              ],
-                            ),
-                          ),
-                          Wrap(children: [
-                            Padding(
-                              padding: const EdgeInsets.only(
-                                  top: 0.0, bottom: 5, left: 18, right: 18),
-                              child: Text(
-                                'About',
-                                style: TextStyle(
-                                    fontWeight: FontWeight.w500, fontSize: 19),
+                              snapshot.data['identificationStatus'] ==
+                                  'un-verified'
+                                  ? Padding(
+                                padding: const EdgeInsets.only(
+                                    left: 10.0, bottom: 6),
+                                child: Text('Unverified',
+                                    style: TextStyle(
+                                      color: Color(0xFFFF0000)
+                                          .withOpacity(0.75),
+                                    )),
+                              )
+                                  : Padding(
+                                padding: const EdgeInsets.only(
+                                    left: 10.0, bottom: 6),
+                                child: Text('Verified',
+                                    style: TextStyle(
+                                      color: Color(0xFF27AE60)
+                                          .withOpacity(0.9),
+                                    )),
                               ),
-                            ),
-                            InkWell(
-                                onTap: () {
-                                  _editAbout('Edit About');
-                                },
-                                child:
-                                    Icon(Icons.edit, color: Color(0xFF747474))),
-                          ]),
-                          Padding(
-                            padding: const EdgeInsets.only(
-                                top: 0.0, left: 18, bottom: 15, right: 18),
-                            child: ExpandableText(
-                              '${snapshot.data['bio']}',
-                            ),
+                            ],
                           ),
-                          Material(
-                            elevation: 1.8,
-                            child: Container(
-                              width: double.infinity,
-                              color: Color(0xFF666666).withOpacity(0.5),
-                              height: 1,
-                            ),
-                          ),
-                          Padding(
-                            padding: const EdgeInsets.only(
-                                top: 13.0, bottom: 5, left: 18, right: 18),
-                            child: Text(
-                              'Business Address',
-                              style: TextStyle(
-                                  fontWeight: FontWeight.w500, fontSize: 19),
-                            ),
-                          ),
-                          Padding(
-                            padding: const EdgeInsets.only(
-                                top: 5.0, bottom: 15, left: 18, right: 18),
-                            child: Text(
-                              '${snapshot.data['businessAddress'].toString().isEmpty ? snapshot.data['address'] : snapshot.data['businessAddress']}',
-                              style: TextStyle(height: 1.5),
-                            ),
-                          ),
-                          Material(
-                            elevation: 1.8,
-                            child: Container(
-                              width: double.infinity,
-                              color: Color(0xFF666666).withOpacity(0.5),
-                              height: 1,
-                            ),
-                          ),
-                          Padding(
-                            padding: const EdgeInsets.only(
-                                top: 13.0, bottom: 5, left: 18, right: 18),
-                            child: Text(
-                              'SubServices',
-                              style: TextStyle(
-                                  fontWeight: FontWeight.w500, fontSize: 19),
-                            ),
-                          ),
-                          Padding(
-                            padding: const EdgeInsets.only(
-                                top: 5.0, bottom: 15, left: 18, right: 18),
-                            child: Text(
-                              '${snapshot.data['subServices'][0]['subservice']}',
-                              style: TextStyle(height: 1.5),
-                            ),
-                          ),
-                          Material(
-                            elevation: 1.8,
-                            child: Container(
-                              width: double.infinity,
-                              color: Color(0xFF666666).withOpacity(0.5),
-                              height: 1,
-                            ),
-                          ),
-                          snapshot.data['role'] == 'artisan'
-                              ? FutureBuilder(
-                                  future: network.getServiceImage(
-                                      network.userId, network.userId),
-                                  builder: (context, snapshot) {
-                                    return Column(
-                                      crossAxisAlignment:
-                                          CrossAxisAlignment.start,
-                                      children: [
-                                        Padding(
-                                          padding: const EdgeInsets.only(
-                                              top: 13.0,
-                                              bottom: 7,
-                                              left: 18,
-                                              right: 18),
-                                          child: Row(children: [
-                                            Text(
-                                              'Catalogues(${snapshot.data == null ? 0 : snapshot.data.length})',
-                                              style: TextStyle(
-                                                  fontWeight: FontWeight.w500,
-                                                  fontSize: 19),
-                                            ),
-                                            InkWell(
-                                                onTap: () {
-                                                  _addService(
-                                                      'Add Service Picture');
-                                                },
-                                                child: Icon(Icons.add,
-                                                    color: Color(0xFF747474))),
-                                          ]),
-                                        ),
-                                        Container(
-                                            margin: const EdgeInsets.only(
-                                                bottom: 30.0,
-                                                left: 8,
-                                                right: 8),
-                                            child: GridView.builder(
-                                              reverse: true,
-                                              shrinkWrap: true,
-                                              physics: ScrollPhysics(),
-                                              itemCount: snapshot.data == null
-                                                  ? 0
-                                                  : snapshot.data.length,
-                                              gridDelegate:
-                                                  SliverGridDelegateWithFixedCrossAxisCount(
-                                                crossAxisCount: 2,
-                                                crossAxisSpacing: 10,
-                                                mainAxisSpacing: 10,
-                                              ),
-                                              itemBuilder:
-                                                  (BuildContext context,
-                                                      int index) {
-                                                return InkWell(
-                                                  onTap: () {
-                                                    Navigator.push(
-                                                      context,
-                                                      PageRouteBuilder(
-                                                        pageBuilder: (context,
-                                                            animation,
-                                                            secondaryAnimation) {
-                                                          return PhotoView(
-                                                            'https://uploads.fixme.ng/originals/${snapshot.data[index]['imageFileName']}',
-                                                            snapshot.data[index]
-                                                                [
-                                                                'imageFileName'],
-                                                          );
-                                                        },
-                                                        transitionsBuilder:
-                                                            (context,
-                                                                animation,
-                                                                secondaryAnimation,
-                                                                child) {
-                                                          return FadeTransition(
-                                                            opacity: animation,
-                                                            child: child,
-                                                          );
-                                                        },
-                                                      ),
-                                                    );
-                                                  },
-                                                  child: Hero(
-                                                    tag: snapshot.data[index]
-                                                        ['imageFileName'],
-                                                    child: ClipRRect(
-                                                      borderRadius:
-                                                          BorderRadius.circular(
-                                                              10),
-                                                      child: Container(
-                                                          width: 200,
-                                                          child: Image.network(
-                                                            'https://uploads.fixme.ng/originals/${snapshot.data[index]['imageFileName']}',
-                                                            fit: BoxFit.cover,
-                                                          )),
-                                                    ),
-                                                  ),
-                                                );
-                                              },
-                                            )),
-                                      ],
-                                    );
-                                  })
-                              : FutureBuilder(
-                                  future: network.getProductImage(
-                                      network.userId, network.userId),
-                                  builder: (context, snapshots) {
-                                    return Column(
-                                      crossAxisAlignment:
-                                          CrossAxisAlignment.start,
-                                      children: [
-                                        Row(children: [
-                                          Padding(
-                                            padding: const EdgeInsets.only(
-                                                top: 13.0,
-                                                bottom: 7,
-                                                left: 18,
-                                                right: 18),
-                                            child: Text(
-                                              'Catalogues(${snapshots.data == null ? 0 : snapshots.data.length})',
-                                              style: TextStyle(
-                                                  fontWeight: FontWeight.w500,
-                                                  fontSize: 19),
-                                            ),
-                                          ),
-                                          InkWell(
-                                              onTap: () {
-                                                _addProduct('Add Product');
-                                              },
-                                              child: Icon(Icons.add,
-                                                  color: Color(0xFF747474))),
-                                        ]),
-                                        Container(
-                                            margin: const EdgeInsets.only(
-                                                bottom: 30.0,
-                                                left: 8,
-                                                right: 8),
-                                            child: ListView.builder(
-                                              shrinkWrap: true,
-                                              reverse: true,
-                                              physics: ScrollPhysics(),
-                                              itemCount: snapshots.data == null
-                                                  ? 0
-                                                  : snapshots.data.length,
-                                              itemBuilder:
-                                                  (BuildContext context,
-                                                      int index) {
-                                                return ClipRRect(
-                                                  borderRadius:
-                                                      BorderRadius.circular(10),
-                                                  child: Container(
-                                                    child: ListTile(
-                                                      title: Text(
-                                                          "${snapshots.data[index]['product_name']}",
-                                                          style: TextStyle(
-                                                              color: Colors
-                                                                  .black)),
-                                                      subtitle: Text(
-                                                          "${snapshots.data[index]['price']}",
-                                                          style: TextStyle(
-                                                              color:
-                                                                  Colors.green,
-                                                              fontWeight:
-                                                                  FontWeight
-                                                                      .bold)),
-                                                      trailing: Text(
-                                                          '${snapshots.data[index]['status']}'),
-                                                    ),
-                                                  ),
-                                                );
-                                              },
-                                            )),
-                                      ],
-                                    );
-                                  }),
                         ],
                       ),
-                    )
+                    ),
+                    Row(children: [
+
+                      Padding(
+                        padding: const EdgeInsets.only(
+                            top: 18.0, left: 18, right: 18),
+                        child: Text(
+                          '${snapshot.data['serviceArea']}'.toUpperCase(),
+                          style: TextStyle(
+                              fontWeight: FontWeight.bold,
+                              fontSize: 19.5),
+                        ),
+                      ),
+                      Padding(
+                        padding: EdgeInsets.only(left: 10,  top: 18.0),
+                        child: InkWell(
+                            onTap: () {
+                              _editService('Edit Service');
+                            },
+                            child: Icon(Icons.edit,
+                                color: Color(0xFF747474))),
+                      ),
+                    ]),
+
+                    Padding(
+                      padding: const EdgeInsets.only(
+                          top: 8.0, bottom: 13, left: 18, right: 18),
+                      child: Row(
+                        children: [
+                          StarRating(
+                            rating: double.parse(
+                                snapshot.data['user_rating'].toString()),
+
+                            /// onRatingChanged: (rating) => setState(() => this.rating = rating),
+                          ),
+                          Text('(${snapshot.data['user_rating']})'),
+                        ],
+                      ),
+                    ),
+                    Wrap(children: [
+                      Padding(
+                        padding: const EdgeInsets.only(
+                            top: 0.0, bottom: 5, left: 18, right: 18),
+                        child: Text(
+                          'About',
+                          style: TextStyle(
+                              fontWeight: FontWeight.w500, fontSize: 19),
+                        ),
+                      ),
+                      InkWell(
+                          onTap: () {
+                            _editAbout('Edit About');
+                          },
+                          child:
+                          Icon(Icons.edit, color: Color(0xFF747474))),
+                    ]),
+                    Padding(
+                      padding: const EdgeInsets.only(
+                          top: 0.0, left: 18, bottom: 15, right: 18),
+                      child: ExpandableText(
+                        '${snapshot.data['bio']}',
+                      ),
+                    ),
+                    Material(
+                      elevation: 1.8,
+                      child: Container(
+                        width: double.infinity,
+                        color: Color(0xFF666666).withOpacity(0.5),
+                        height: 1,
+                      ),
+                    ),
+                    Padding(
+                      padding: const EdgeInsets.only(
+                          top: 13.0, bottom: 5, left: 18, right: 18),
+                      child: Text(
+                        'Business Address',
+                        style: TextStyle(
+                            fontWeight: FontWeight.w500, fontSize: 19),
+                      ),
+                    ),
+                    Padding(
+                      padding: const EdgeInsets.only(
+                          top: 5.0, bottom: 15, left: 18, right: 18),
+                      child: Text(
+                        '${snapshot.data['businessAddress'].toString().isEmpty ? snapshot.data['address'] : snapshot.data['businessAddress']}',
+                        style: TextStyle(height: 1.5),
+                      ),
+                    ),
+                    Material(
+                      elevation: 1.8,
+                      child: Container(
+                        width: double.infinity,
+                        color: Color(0xFF666666).withOpacity(0.5),
+                        height: 1,
+                      ),
+                    ),
+                    Padding(
+                      padding: const EdgeInsets.only(
+                          top: 13.0, bottom: 5, left: 18, right: 18),
+                      child: Text(
+                        'SubServices',
+                        style: TextStyle(
+                            fontWeight: FontWeight.w500, fontSize: 19),
+                      ),
+                    ),
+                    Padding(
+                      padding: const EdgeInsets.only(
+                          top: 5.0, bottom: 15, left: 18, right: 18),
+                      child: Text(
+                        '${snapshot.data['subServices'][0]['subservice']}',
+                        style: TextStyle(height: 1.5),
+                      ),
+                    ),
+                    Material(
+                      elevation: 1.8,
+                      child: Container(
+                        width: double.infinity,
+                        color: Color(0xFF666666).withOpacity(0.5),
+                        height: 1,
+                      ),
+                    ),
+                    snapshot.data['role'] == 'artisan'
+                        ? FutureBuilder(
+                        future: network.getServiceImage(
+                            network.userId, network.userId),
+                        builder: (context, snapshot) {
+                          return Column(
+                            crossAxisAlignment:
+                            CrossAxisAlignment.start,
+                            children: [
+                              Padding(
+                                padding: const EdgeInsets.only(
+                                    top: 13.0,
+                                    bottom: 7,
+                                    left: 18,
+                                    right: 18),
+                                child: Row(children: [
+                                  Text(
+                                    'Catalogues(${snapshot.data == null ? 0 : snapshot.data.length})',
+                                    style: TextStyle(
+                                        fontWeight: FontWeight.w500,
+                                        fontSize: 19),
+                                  ),
+                                  InkWell(
+                                      onTap: () {
+                                        _addService(
+                                            'Add Service Picture');
+                                      },
+                                      child: Icon(Icons.add,
+                                          color: Color(0xFF747474))),
+                                ]),
+                              ),
+                              Container(
+                                  margin: const EdgeInsets.only(
+                                      bottom: 30.0,
+                                      left: 8,
+                                      right: 8),
+                                  child: GridView.builder(
+                                    reverse: true,
+                                    shrinkWrap: true,
+                                    physics: ScrollPhysics(),
+                                    itemCount: snapshot.data == null
+                                        ? 0
+                                        : snapshot.data.length,
+                                    gridDelegate:
+                                    SliverGridDelegateWithFixedCrossAxisCount(
+                                      crossAxisCount: 2,
+                                      crossAxisSpacing: 10,
+                                      mainAxisSpacing: 10,
+                                    ),
+                                    itemBuilder:
+                                        (BuildContext context,
+                                        int index) {
+                                      return InkWell(
+                                        onTap: () {
+                                          Navigator.push(
+                                            context,
+                                            PageRouteBuilder(
+                                              pageBuilder: (context,
+                                                  animation,
+                                                  secondaryAnimation) {
+                                                return PhotoView(
+                                                  'https://uploads.fixme.ng/originals/${snapshot.data[index]['imageFileName']}',
+                                                  snapshot.data[index]
+                                                  [
+                                                  'imageFileName'],
+                                                );
+                                              },
+                                              transitionsBuilder:
+                                                  (context,
+                                                  animation,
+                                                  secondaryAnimation,
+                                                  child) {
+                                                return FadeTransition(
+                                                  opacity: animation,
+                                                  child: child,
+                                                );
+                                              },
+                                            ),
+                                          );
+                                        },
+                                        child: Hero(
+                                          tag: snapshot.data[index]
+                                          ['imageFileName'],
+                                          child: ClipRRect(
+                                            borderRadius:
+                                            BorderRadius.circular(
+                                                10),
+                                            child: Container(
+                                                width: 200,
+                                                child: Image.network(
+                                                  'https://uploads.fixme.ng/originals/${snapshot.data[index]['imageFileName']}',
+                                                  fit: BoxFit.cover,
+                                                )),
+                                          ),
+                                        ),
+                                      );
+                                    },
+                                  )),
+                            ],
+                          );
+                        })
+                        : FutureBuilder(
+                        future: network.getProductImage(
+                            network.userId, network.userId),
+                        builder: (context, snapshots) {
+                          return Column(
+                            crossAxisAlignment:
+                            CrossAxisAlignment.start,
+                            children: [
+                              Row(children: [
+                                Padding(
+                                  padding: const EdgeInsets.only(
+                                      top: 13.0,
+                                      bottom: 7,
+                                      left: 18,
+                                      right: 18),
+                                  child: Text(
+                                    'Catalogues(${snapshots.data == null ? 0 : snapshots.data.length})',
+                                    style: TextStyle(
+                                        fontWeight: FontWeight.w500,
+                                        fontSize: 19),
+                                  ),
+                                ),
+                                InkWell(
+                                    onTap: () {
+                                      _addProduct('Add Product');
+                                    },
+                                    child: Icon(Icons.add,
+                                        color: Color(0xFF747474))),
+                              ]),
+                              Container(
+                                  margin: const EdgeInsets.only(
+                                      bottom: 30.0,
+                                      left: 8,
+                                      right: 8),
+                                  child: ListView.builder(
+                                    shrinkWrap: true,
+                                    reverse: true,
+                                    physics: ScrollPhysics(),
+                                    itemCount: snapshots.data == null
+                                        ? 0
+                                        : snapshots.data.length,
+                                    itemBuilder:
+                                        (BuildContext context,
+                                        int index) {
+                                      return ClipRRect(
+                                        borderRadius:
+                                        BorderRadius.circular(10),
+                                        child: Container(
+                                          child: ListTile(
+                                            title: Text(
+                                                "${snapshots.data[index]['product_name']}",
+                                                style: TextStyle(
+                                                    color: Colors
+                                                        .black)),
+                                            subtitle: Text(
+                                                "${snapshots.data[index]['price']}",
+                                                style: TextStyle(
+                                                    color:
+                                                    Colors.green,
+                                                    fontWeight:
+                                                    FontWeight
+                                                        .bold)),
+                                            trailing: Text(
+                                                '${snapshots.data[index]['status']}'),
+                                          ),
+                                        ),
+                                      );
+                                    },
+                                  )),
+                            ],
+                          );
+                        }),
+                  ],
+                ),
+              )
                   : Center(
-                      child: CircularProgressIndicator(
-                          valueColor: AlwaysStoppedAnimation<Color>(
-                              Color(0xFF9B049B))));
+                  child: CircularProgressIndicator(
+                      valueColor: AlwaysStoppedAnimation<Color>(
+                          Color(0xFF9B049B))));
             }),
       ),
     );
@@ -520,11 +522,11 @@ class _ProfilePageState extends State<ProfilePage> {
                                   border: InputBorder.none,
                                   enabledBorder: UnderlineInputBorder(
                                     borderSide:
-                                        BorderSide(color: Color(0xFFA40C85)),
+                                    BorderSide(color: Color(0xFFA40C85)),
                                   ),
                                   focusedBorder: UnderlineInputBorder(
                                     borderSide:
-                                        BorderSide(color: Color(0xFFA40C85)),
+                                    BorderSide(color: Color(0xFFA40C85)),
                                   ),
                                 ),
                               ),
@@ -617,11 +619,11 @@ class _ProfilePageState extends State<ProfilePage> {
                                 border: InputBorder.none,
                                 enabledBorder: UnderlineInputBorder(
                                   borderSide:
-                                      BorderSide(color: Color(0xFFA40C85)),
+                                  BorderSide(color: Color(0xFFA40C85)),
                                 ),
                                 focusedBorder: UnderlineInputBorder(
                                   borderSide:
-                                      BorderSide(color: Color(0xFFA40C85)),
+                                  BorderSide(color: Color(0xFFA40C85)),
                                 ),
                               ),
                             ),
@@ -652,11 +654,11 @@ class _ProfilePageState extends State<ProfilePage> {
                                   border: InputBorder.none,
                                   enabledBorder: UnderlineInputBorder(
                                     borderSide:
-                                        BorderSide(color: Color(0xFFA40C85)),
+                                    BorderSide(color: Color(0xFFA40C85)),
                                   ),
                                   focusedBorder: UnderlineInputBorder(
                                     borderSide:
-                                        BorderSide(color: Color(0xFFA40C85)),
+                                    BorderSide(color: Color(0xFFA40C85)),
                                   ),
                                 ),
                               ),
@@ -701,7 +703,7 @@ class _ProfilePageState extends State<ProfilePage> {
                             Navigator.pop(context);
                             network
                                 .updateFullName(
-                                    _controller.text, _controller2.text)
+                                _controller.text, _controller2.text)
                                 .then((value) {
                               setState(() {});
                             });
@@ -715,7 +717,7 @@ class _ProfilePageState extends State<ProfilePage> {
 
   void _editService(value) {
     PostRequestProvider postRequestProvider =
-        Provider.of<PostRequestProvider>(context, listen: false);
+    Provider.of<PostRequestProvider>(context, listen: false);
 
     var network = Provider.of<WebServices>(context, listen: false);
     showModalBottomSheet(
@@ -753,15 +755,15 @@ class _ProfilePageState extends State<ProfilePage> {
                           decoration: InputDecoration(
                             labelStyle: TextStyle(color: Colors.black38),
                             labelText: postRequestProvider.selecteService ==
-                                    null
+                                null
                                 ? 'Select Service'
                                 : postRequestProvider.selecteService.service,
                             border: OutlineInputBorder(),
                             focusedBorder: OutlineInputBorder(
                               borderRadius:
-                                  BorderRadius.all(Radius.circular(4)),
+                              BorderRadius.all(Radius.circular(4)),
                               borderSide:
-                                  BorderSide(width: 3, color: Colors.black38),
+                              BorderSide(width: 3, color: Colors.black38),
                             ),
                           ),
                         ),
@@ -795,7 +797,7 @@ class _ProfilePageState extends State<ProfilePage> {
                             Navigator.pop(context);
                             network
                                 .updateService(
-                                    postRequestProvider.selecteService.sn)
+                                postRequestProvider.selecteService.sn)
                                 .then((value) {
                               setState(() {});
                             });
@@ -846,17 +848,17 @@ class _ProfilePageState extends State<ProfilePage> {
                                   borderSide: const BorderSide(
                                       color: Color(0xFF9B049B), width: 0.0),
                                   borderRadius:
-                                      BorderRadius.all(Radius.circular(12))),
+                                  BorderRadius.all(Radius.circular(12))),
                               focusedBorder: OutlineInputBorder(
                                   borderSide: const BorderSide(
                                       color: Color(0xFF9B049B), width: 0.0),
                                   borderRadius:
-                                      BorderRadius.all(Radius.circular(12))),
+                                  BorderRadius.all(Radius.circular(12))),
                               border: OutlineInputBorder(
                                   borderSide: const BorderSide(
                                       color: Color(0xFF9B049B), width: 0.0),
                                   borderRadius:
-                                      BorderRadius.all(Radius.circular(12))),
+                                  BorderRadius.all(Radius.circular(12))),
                             ),
                           ),
                         ),
@@ -878,17 +880,17 @@ class _ProfilePageState extends State<ProfilePage> {
                                   borderSide: const BorderSide(
                                       color: Color(0xFF9B049B), width: 0.0),
                                   borderRadius:
-                                      BorderRadius.all(Radius.circular(12))),
+                                  BorderRadius.all(Radius.circular(12))),
                               focusedBorder: OutlineInputBorder(
                                   borderSide: const BorderSide(
                                       color: Color(0xFF9B049B), width: 0.0),
                                   borderRadius:
-                                      BorderRadius.all(Radius.circular(12))),
+                                  BorderRadius.all(Radius.circular(12))),
                               border: OutlineInputBorder(
                                   borderSide: const BorderSide(
                                       color: Color(0xFF9B049B), width: 0.0),
                                   borderRadius:
-                                      BorderRadius.all(Radius.circular(12))),
+                                  BorderRadius.all(Radius.circular(12))),
                             ),
                           ),
                         ),
@@ -909,17 +911,17 @@ class _ProfilePageState extends State<ProfilePage> {
                                   borderSide: const BorderSide(
                                       color: Color(0xFF9B049B), width: 0.0),
                                   borderRadius:
-                                      BorderRadius.all(Radius.circular(12))),
+                                  BorderRadius.all(Radius.circular(12))),
                               focusedBorder: OutlineInputBorder(
                                   borderSide: const BorderSide(
                                       color: Color(0xFF9B049B), width: 0.0),
                                   borderRadius:
-                                      BorderRadius.all(Radius.circular(12))),
+                                  BorderRadius.all(Radius.circular(12))),
                               border: OutlineInputBorder(
                                   borderSide: const BorderSide(
                                       color: Color(0xFF9B049B), width: 0.0),
                                   borderRadius:
-                                      BorderRadius.all(Radius.circular(12))),
+                                  BorderRadius.all(Radius.circular(12))),
                             ),
                           ),
                         ),
@@ -929,19 +931,19 @@ class _ProfilePageState extends State<ProfilePage> {
                             child: data.selectedImage2 == null
                                 ? Text('No Image Selected')
                                 : Container(
-                                    width: 100,
-                                    child: Card(
-                                        elevation: 2,
-                                        shape: RoundedRectangleBorder(
-                                            borderRadius:
-                                                BorderRadius.circular(20)),
-                                        child: Image.file(
-                                          File(
-                                            data.selectedImage2.path,
-                                          ),
-                                          fit: BoxFit.cover,
-                                        )),
-                                  ),
+                              width: 100,
+                              child: Card(
+                                  elevation: 2,
+                                  shape: RoundedRectangleBorder(
+                                      borderRadius:
+                                      BorderRadius.circular(20)),
+                                  child: Image.file(
+                                    File(
+                                      data.selectedImage2.path,
+                                    ),
+                                    fit: BoxFit.cover,
+                                  )),
+                            ),
                           ),
                         ),
                         Padding(
@@ -971,8 +973,8 @@ class _ProfilePageState extends State<ProfilePage> {
                                   child: Container(
                                     constraints: BoxConstraints(
                                         maxWidth:
-                                            MediaQuery.of(context).size.width /
-                                                1.3,
+                                        MediaQuery.of(context).size.width /
+                                            1.3,
                                         minHeight: 45.0),
                                     alignment: Alignment.center,
                                     child: Text(
@@ -1064,19 +1066,19 @@ class _ProfilePageState extends State<ProfilePage> {
                                 child: data.selectedImage2 == null
                                     ? Text('')
                                     : Container(
-                                        width: 200,
-                                        child: Card(
-                                            elevation: 2,
-                                            shape: RoundedRectangleBorder(
-                                                borderRadius:
-                                                    BorderRadius.circular(20)),
-                                            child: Image.file(
-                                              File(
-                                                data.selectedImage2.path,
-                                              ),
-                                              fit: BoxFit.cover,
-                                            )),
-                                      ),
+                                  width: 200,
+                                  child: Card(
+                                      elevation: 2,
+                                      shape: RoundedRectangleBorder(
+                                          borderRadius:
+                                          BorderRadius.circular(20)),
+                                      child: Image.file(
+                                        File(
+                                          data.selectedImage2.path,
+                                        ),
+                                        fit: BoxFit.cover,
+                                      )),
+                                ),
                               ),
                             ),
                             height: MediaQuery.of(context).size.height / 3),
@@ -1104,8 +1106,8 @@ class _ProfilePageState extends State<ProfilePage> {
                                   child: Container(
                                     constraints: BoxConstraints(
                                         maxWidth:
-                                            MediaQuery.of(context).size.width /
-                                                1.3,
+                                        MediaQuery.of(context).size.width /
+                                            1.3,
                                         minHeight: 45.0),
                                     alignment: Alignment.center,
                                     child: Text(
@@ -1207,11 +1209,11 @@ class _ProfilePageState extends State<ProfilePage> {
                                   border: InputBorder.none,
                                   enabledBorder: UnderlineInputBorder(
                                     borderSide:
-                                        BorderSide(color: Color(0xFFA40C85)),
+                                    BorderSide(color: Color(0xFFA40C85)),
                                   ),
                                   focusedBorder: UnderlineInputBorder(
                                     borderSide:
-                                        BorderSide(color: Color(0xFFA40C85)),
+                                    BorderSide(color: Color(0xFFA40C85)),
                                   ),
                                 ),
                               ),
@@ -1265,7 +1267,7 @@ class _ProfilePageState extends State<ProfilePage> {
 
   dialogPage(ctx) {
     PostRequestProvider postRequestProvider =
-        Provider.of<PostRequestProvider>(context, listen: false);
+    Provider.of<PostRequestProvider>(context, listen: false);
     showDialog(
         context: context,
         builder: (ctx) {
@@ -1333,11 +1335,11 @@ class _ProfilePageState extends State<ProfilePage> {
 
   void searchServices(userInputValue) {
     PostRequestProvider postRequestProvider =
-        Provider.of<PostRequestProvider>(context, listen: false);
+    Provider.of<PostRequestProvider>(context, listen: false);
     result = postRequestProvider.allservicesList
         .where((service) => service.service
-            .toLowerCase()
-            .contains(userInputValue.toLowerCase()))
+        .toLowerCase()
+        .contains(userInputValue.toLowerCase()))
         .toList();
   }
 }

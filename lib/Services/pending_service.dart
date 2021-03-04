@@ -8,7 +8,7 @@ import 'package:flutter/material.dart';
 
 
 class PendingProvider with ChangeNotifier {
-  
+
   bool _loading = false;
   final emailController = TextEditingController();
   final passwordController = TextEditingController();
@@ -25,27 +25,27 @@ class PendingProvider with ChangeNotifier {
 
 
 
-  // void showToast(themsg) {
-  // Fluttertoast.showToast(
-  //       msg: themsg,
-  //       toastLength: Toast.LENGTH_SHORT,
-  //       gravity: ToastGravity.CENTER,
-  //       timeInSecForIosWeb: 1,
-  //       backgroundColor: Colors.black,
-  //       textColor: Colors.white,
-  //       fontSize: 16.0
-  //   );
-  // }
+// void showToast(themsg) {
+// Fluttertoast.showToast(
+//       msg: themsg,
+//       toastLength: Toast.LENGTH_SHORT,
+//       gravity: ToastGravity.CENTER,
+//       timeInSecForIosWeb: 1,
+//       backgroundColor: Colors.black,
+//       textColor: Colors.white,
+//       fontSize: 16.0
+//   );
+// }
 
-  // Future storeData(String name, String data) async {
-  //   SharedPreferences prefs = await SharedPreferences.getInstance();
-  //   prefs.setString(name, data);
-  // }
-  // Future getData(String name) async {
-  //   SharedPreferences prefs = await SharedPreferences.getInstance();
-  //   String data = prefs.getString(name);
-  //   return data;
-  // }
+// Future storeData(String name, String data) async {
+//   SharedPreferences prefs = await SharedPreferences.getInstance();
+//   prefs.setString(name, data);
+// }
+// Future getData(String name) async {
+//   SharedPreferences prefs = await SharedPreferences.getInstance();
+//   String data = prefs.getString(name);
+//   return data;
+// }
 
 
 // Future<bool> loginFunction() async {
@@ -58,7 +58,7 @@ class PendingProvider with ChangeNotifier {
 //   };      
 //   var body = authModel.toJson();
 //   var data = jsonEncode(body);
-  
+
 //   // print(url);
 //   // print(data);
 //   // make POST request
@@ -70,9 +70,9 @@ class PendingProvider with ChangeNotifier {
 //   Map<String, dynamic> authResponse = jsonDecode(result);
 
 //   int status = authResponse['status'];
-  
+
 //   if(status >= 400){        
-  
+
 //     // String message = authResponse['error'];
 //     // showToast(message);        
 //     isLoading(false);
@@ -87,7 +87,7 @@ class PendingProvider with ChangeNotifier {
 //     isLoading(false);
 //     return true;
 //   }
-  
+
 // }
 
 

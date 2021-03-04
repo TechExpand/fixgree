@@ -14,7 +14,7 @@ class BidPage extends StatefulWidget {
 class _BidPageState extends State<BidPage> {
   List<Bidify> notify;
   PageController myPage =
-      PageController(initialPage: 0, viewportFraction: 1, keepPage: true);
+  PageController(initialPage: 0, viewportFraction: 1, keepPage: true);
   int selectedIndex = 0;
 
   @override
@@ -31,7 +31,7 @@ class _BidPageState extends State<BidPage> {
                   height: MediaQuery.of(context).size.height,
                   child: StreamBuilder(
                     stream:
-                        FirebaseApi.userBidStream(network.userId.toString()),
+                    FirebaseApi.userBidStream(network.userId.toString()),
                     builder: (context, AsyncSnapshot<QuerySnapshot> snapshot) {
                       if (snapshot.hasData) {
                         notify = snapshot.data.docs
@@ -67,40 +67,40 @@ class _BidPageState extends State<BidPage> {
                                                 padding: EdgeInsets.all(8),
                                                 child: Row(
                                                   mainAxisAlignment:
-                                                      MainAxisAlignment.center,
+                                                  MainAxisAlignment.center,
                                                   crossAxisAlignment:
-                                                      CrossAxisAlignment.center,
+                                                  CrossAxisAlignment.center,
                                                   children: [
                                                     Container(
                                                       padding: EdgeInsets.only(
                                                           top: 5),
                                                       width:
-                                                          MediaQuery.of(context)
-                                                                  .size
-                                                                  .width *
-                                                              0.7,
+                                                      MediaQuery.of(context)
+                                                          .size
+                                                          .width *
+                                                          0.7,
                                                       child: Column(
                                                         mainAxisAlignment:
-                                                            MainAxisAlignment
-                                                                .center,
+                                                        MainAxisAlignment
+                                                            .center,
                                                         crossAxisAlignment:
-                                                            CrossAxisAlignment
-                                                                .center,
+                                                        CrossAxisAlignment
+                                                            .center,
                                                         children: [
                                                           RichText(
                                                             text: TextSpan(
                                                                 children: [
                                                                   TextSpan(
                                                                       text:
-                                                                          '${users[index].bidder_name} ',
+                                                                      '${users[index].bidder_name} ',
                                                                       style: TextStyle(
                                                                           fontWeight: FontWeight
                                                                               .bold,
                                                                           color:
-                                                                              Colors.black)),
+                                                                          Colors.black)),
                                                                   TextSpan(
                                                                     text:
-                                                                        'Accepted Your Project',
+                                                                    'Accepted Your Project',
                                                                     style: TextStyle(
                                                                         color: Colors
                                                                             .black),
@@ -117,7 +117,7 @@ class _BidPageState extends State<BidPage> {
                                                                       secondaryAnimation) {
                                                                     return BidderPage(
                                                                         users[
-                                                                            index]); //SignUpAddress();
+                                                                        index]); //SignUpAddress();
                                                                   },
                                                                   transitionsBuilder: (context,
                                                                       animation,
@@ -125,9 +125,9 @@ class _BidPageState extends State<BidPage> {
                                                                       child) {
                                                                     return FadeTransition(
                                                                       opacity:
-                                                                          animation,
+                                                                      animation,
                                                                       child:
-                                                                          child,
+                                                                      child,
                                                                     );
                                                                   },
                                                                 ),
@@ -136,9 +136,9 @@ class _BidPageState extends State<BidPage> {
                                                             child: Container(
                                                               margin: EdgeInsets
                                                                   .only(
-                                                                      top: 15,
-                                                                      bottom:
-                                                                          12),
+                                                                  top: 15,
+                                                                  bottom:
+                                                                  12),
                                                               width: 105,
                                                               height: 28,
                                                               child: Center(
@@ -146,19 +146,19 @@ class _BidPageState extends State<BidPage> {
                                                                       'VIEW PROFILE',
                                                                       style: TextStyle(
                                                                           fontSize:
-                                                                              13,
+                                                                          13,
                                                                           color: Color(
                                                                               0xFFA40C85),
                                                                           fontWeight:
-                                                                              FontWeight.w500))),
+                                                                          FontWeight.w500))),
                                                               decoration: BoxDecoration(
                                                                   border: Border.all(
                                                                       color: Color(
                                                                           0xFFA40C85)),
                                                                   borderRadius:
-                                                                      BorderRadius
-                                                                          .circular(
-                                                                              4)),
+                                                                  BorderRadius
+                                                                      .circular(
+                                                                      4)),
                                                             ),
                                                           ),
                                                           InkWell(
@@ -171,13 +171,13 @@ class _BidPageState extends State<BidPage> {
                                                             },
                                                             child: Container(
                                                                 alignment:
-                                                                    Alignment
-                                                                        .center,
+                                                                Alignment
+                                                                    .center,
                                                                 child: Text(
                                                                     'CANCEL ALL',
                                                                     style: TextStyle(
                                                                         fontStyle:
-                                                                            FontStyle.italic))),
+                                                                        FontStyle.italic))),
                                                           ),
                                                         ],
                                                       ),
@@ -200,12 +200,22 @@ class _BidPageState extends State<BidPage> {
                                         alignment: Alignment.center,
                                         margin: EdgeInsets.only(
                                             top: MediaQuery.of(context)
-                                                    .size
-                                                    .height /
+                                                .size
+                                                .height /
                                                 1.4),
                                         child: Text('Slide Through To See All',
                                             style: TextStyle(
                                                 fontStyle: FontStyle.italic))),
+                                    Container(
+                                      margin: const EdgeInsets.only(top:40.0),
+                                      child: Align(
+                                        alignment:Alignment.topCenter,
+                                        child: Image.asset(
+                                          "assets/images/accept.gif",
+                                          height: 250,
+                                        ),
+                                      ),
+                                    ),
                                   ],
                                 );
                             }
@@ -223,9 +233,9 @@ class _BidPageState extends State<BidPage> {
   }
 
   Widget buildText(String text) => Center(
-        child: Text(
-          text,
-          style: TextStyle(fontSize: 15, color: Colors.black),
-        ),
-      );
+    child: Text(
+      text,
+      style: TextStyle(fontSize: 15, color: Colors.black),
+    ),
+  );
 }

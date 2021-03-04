@@ -30,12 +30,13 @@ class _ListenIncomingState extends State<ListenIncoming> {
     var data = Provider.of<Utils>(context, listen: false);
 
     var network = Provider.of<WebServices>(context, listen: false);
-    Widget buildText(String text) => Center(
-          child: Text(
-            text,
-            style: TextStyle(fontSize: 24, color: Colors.white),
-          ),
-        );
+    Widget buildText(String text) => Padding(
+      padding: const EdgeInsets.all(100.0),
+      child: Text(
+        text,
+        style: TextStyle(fontSize: 18, color: Colors.black38), textAlign: TextAlign.center,
+      ),
+    );
     List<UserChat> user;
     Widget widget = Scaffold(
       appBar: AppBar(
@@ -111,15 +112,15 @@ class _ListenIncomingState extends State<ListenIncoming> {
                   InkWell(
                       onTap: data.isExpanded
                           ? () {
-                              setState(() {
-                                data.onExpansionChanged(false);
-                              });
-                            }
+                        setState(() {
+                          data.onExpansionChanged(false);
+                        });
+                      }
                           : () {
-                              setState(() {
-                                data.onExpansionChanged(true);
-                              });
-                            },
+                        setState(() {
+                          data.onExpansionChanged(true);
+                        });
+                      },
                       child: Padding(
                         padding: const EdgeInsets.only(
                             left: 10.0, right: 10, top: 5, bottom: 5),
@@ -139,62 +140,62 @@ class _ListenIncomingState extends State<ListenIncoming> {
               child: Text('')),
           data.isExpanded
               ? Container(
-                  alignment: Alignment.centerLeft,
-                  child: SingleChildScrollView(
-                    physics: ScrollPhysics(),
-                    padding: EdgeInsets.only(top: 10, bottom: 10),
-                    scrollDirection: Axis.horizontal,
-                    child: Row(children: [
-                      InkWell(
-                        onTap: () {
-                          _myPage.jumpToPage(0);
-                        },
-                        child: Container(
-                            margin: EdgeInsets.only(left: 5, right: 5),
-                            height: 25,
-                            width: 50,
-                            decoration: BoxDecoration(
-                                color: Color(0xFFEE5E5E5),
-                                borderRadius: BorderRadius.circular(14)),
-                            child: Center(child: Text('All'))),
-                      ),
-                      InkWell(
-                        onTap: () {
-                          _myPage.jumpToPage(1);
-                        },
-                        child: Container(
-                            margin: EdgeInsets.only(left: 5, right: 5),
-                            height: 25,
-                            width: 80,
-                            decoration: BoxDecoration(
-                                color: Color(0xFFEE5E5E5),
-                                borderRadius: BorderRadius.circular(14)),
-                            child: Center(child: Text('Unread'))),
-                      ),
-                      InkWell(
-                        onTap: () {
-                          _myPage.jumpToPage(2);
-                        },
-                        child: Container(
-                            margin: EdgeInsets.only(left: 5, right: 5),
-                            height: 25,
-                            width: 80,
-                            decoration: BoxDecoration(
-                                color: Color(0xFFEE5E5E5),
-                                borderRadius: BorderRadius.circular(14)),
-                            child: Center(child: Text('Read'))),
-                      ),
-                      Container(
-                          margin: EdgeInsets.only(left: 5, right: 5),
-                          height: 25,
-                          width: 70,
-                          decoration: BoxDecoration(
-                              color: Color(0xFFEE5E5E5),
-                              borderRadius: BorderRadius.circular(14)),
-                          child: Center(child: Text('InMail'))),
-                    ]),
-                  ),
-                )
+            alignment: Alignment.centerLeft,
+            child: SingleChildScrollView(
+              physics: ScrollPhysics(),
+              padding: EdgeInsets.only(top: 10, bottom: 10),
+              scrollDirection: Axis.horizontal,
+              child: Row(children: [
+                InkWell(
+                  onTap: () {
+                    _myPage.jumpToPage(0);
+                  },
+                  child: Container(
+                      margin: EdgeInsets.only(left: 5, right: 5),
+                      height: 25,
+                      width: 50,
+                      decoration: BoxDecoration(
+                          color: Color(0xFFEE5E5E5),
+                          borderRadius: BorderRadius.circular(14)),
+                      child: Center(child: Text('All'))),
+                ),
+                InkWell(
+                  onTap: () {
+                    _myPage.jumpToPage(1);
+                  },
+                  child: Container(
+                      margin: EdgeInsets.only(left: 5, right: 5),
+                      height: 25,
+                      width: 80,
+                      decoration: BoxDecoration(
+                          color: Color(0xFFEE5E5E5),
+                          borderRadius: BorderRadius.circular(14)),
+                      child: Center(child: Text('Unread'))),
+                ),
+                InkWell(
+                  onTap: () {
+                    _myPage.jumpToPage(2);
+                  },
+                  child: Container(
+                      margin: EdgeInsets.only(left: 5, right: 5),
+                      height: 25,
+                      width: 80,
+                      decoration: BoxDecoration(
+                          color: Color(0xFFEE5E5E5),
+                          borderRadius: BorderRadius.circular(14)),
+                      child: Center(child: Text('Read'))),
+                ),
+                Container(
+                    margin: EdgeInsets.only(left: 5, right: 5),
+                    height: 25,
+                    width: 70,
+                    decoration: BoxDecoration(
+                        color: Color(0xFFEE5E5E5),
+                        borderRadius: BorderRadius.circular(14)),
+                    child: Center(child: Text('InMail'))),
+              ]),
+            ),
+          )
               : Container(),
           Container(
               height: 0.35,
@@ -212,7 +213,7 @@ class _ListenIncomingState extends State<ListenIncoming> {
                   height: MediaQuery.of(context).size.height,
                   child: StreamBuilder(
                     stream:
-                        FirebaseApi.userChatStream(network.mobileDeviceToken),
+                    FirebaseApi.userChatStream(network.mobileDeviceToken),
                     builder: (context, AsyncSnapshot<QuerySnapshot> snapshot) {
                       if (snapshot.hasData) {
                         user = snapshot.data.docs
@@ -252,7 +253,7 @@ class _ListenIncomingState extends State<ListenIncoming> {
                                             FirebaseApi.updateUsertoRead(
                                                 idUser: users[index].idUser,
                                                 idArtisan:
-                                                    network.mobileDeviceToken);
+                                                network.mobileDeviceToken);
                                             Navigator.of(context)
                                                 .push(MaterialPageRoute(
                                               builder: (context) {
@@ -269,12 +270,12 @@ class _ListenIncomingState extends State<ListenIncoming> {
                                           title: Text(users[index].name),
                                           subtitle: Text(
                                               users[index]
-                                                          .lastMessage
-                                                          .toString()
-                                                          .isEmpty ||
-                                                      users[index]
-                                                              .lastMessage ==
-                                                          null
+                                                  .lastMessage
+                                                  .toString()
+                                                  .isEmpty ||
+                                                  users[index]
+                                                      .lastMessage ==
+                                                      null
                                                   ? 'No Message Yet'
                                                   : users[index].lastMessage,
                                               style: TextStyle(
@@ -343,7 +344,7 @@ class _ListenIncomingState extends State<ListenIncoming> {
                                             FirebaseApi.updateUsertoRead(
                                                 idUser: users[index].idUser,
                                                 idArtisan:
-                                                    network.mobileDeviceToken);
+                                                network.mobileDeviceToken);
                                             Navigator.of(context)
                                                 .push(MaterialPageRoute(
                                               builder: (context) {
@@ -360,12 +361,12 @@ class _ListenIncomingState extends State<ListenIncoming> {
                                           title: Text(users[index].name),
                                           subtitle: Text(
                                               users[index]
-                                                          .lastMessage
-                                                          .toString()
-                                                          .isEmpty ||
-                                                      users[index]
-                                                              .lastMessage ==
-                                                          null
+                                                  .lastMessage
+                                                  .toString()
+                                                  .isEmpty ||
+                                                  users[index]
+                                                      .lastMessage ==
+                                                      null
                                                   ? 'No Message Yet'
                                                   : users[index].lastMessage,
                                               style: TextStyle(
@@ -434,7 +435,7 @@ class _ListenIncomingState extends State<ListenIncoming> {
                                             FirebaseApi.updateUsertoRead(
                                                 idUser: users[index].idUser,
                                                 idArtisan:
-                                                    network.mobileDeviceToken);
+                                                network.mobileDeviceToken);
                                             Navigator.of(context)
                                                 .push(MaterialPageRoute(
                                               builder: (context) {
@@ -451,12 +452,12 @@ class _ListenIncomingState extends State<ListenIncoming> {
                                           title: Text(users[index].name),
                                           subtitle: Text(
                                               users[index]
-                                                          .lastMessage
-                                                          .toString()
-                                                          .isEmpty ||
-                                                      users[index]
-                                                              .lastMessage ==
-                                                          null
+                                                  .lastMessage
+                                                  .toString()
+                                                  .isEmpty ||
+                                                  users[index]
+                                                      .lastMessage ==
+                                                      null
                                                   ? 'No Message Yet'
                                                   : users[index].lastMessage,
                                               style: TextStyle(

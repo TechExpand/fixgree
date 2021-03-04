@@ -86,15 +86,15 @@ class LoginState extends State<Login> {
             children: <Widget>[
               Center(
                   child: Padding(
-                padding: const EdgeInsets.only(top: 85.0),
-                child: Hero(
-                  tag: 'MainImage',
-                  child: Image.asset(
-                    'assets/images/fixme.png',
-                    scale: 1.5,
-                  ),
-                ),
-              )),
+                    padding: const EdgeInsets.only(top: 85.0),
+                    child: Hero(
+                      tag: 'MainImage',
+                      child: Image.asset(
+                        'assets/images/fixme.png',
+                        scale: 1.5,
+                      ),
+                    ),
+                  )),
               Spacer(),
               Container(
                 width: MediaQuery.of(context).size.width / 0.2,
@@ -154,70 +154,70 @@ class LoginState extends State<Login> {
                       child: Center(
                           child: RichText(
                               text: TextSpan(children: <TextSpan>[
-                        TextSpan(
-                          text: 'Don\'t have an account? ',
-                          style: GoogleFonts.openSans(
-                              color: Color(0xFF777777), fontSize: 16),
-                        ),
-                        TextSpan(
-                          text: 'Sign up',
-                          style: GoogleFonts.openSans(
-                              color: Color(0xFF9B049B), fontSize: 16),
-                        )
-                      ]))))),
+                                TextSpan(
+                                  text: 'Don\'t have an account? ',
+                                  style: GoogleFonts.openSans(
+                                      color: Color(0xFF777777), fontSize: 16),
+                                ),
+                                TextSpan(
+                                  text: 'Sign up',
+                                  style: GoogleFonts.openSans(
+                                      color: Color(0xFF9B049B), fontSize: 16),
+                                )
+                              ]))))),
               Align(
                   alignment: Alignment.center,
                   child: !network.loginState
                       ? Container(
-                          padding: EdgeInsets.only(
-                            bottom: 50,
-                            top: 50,
-                          ),
-                          child: FlatButton(
-                            onPressed:
-                                data.number.toString() == data.number.dialCode
-                                    ? null
-                                    : () {
-                                        network.loginSetState();
-                                        verifyNumber();
-                                      },
-                            color: Color(0xFF9B049B),
-                            disabledColor: Color(0x909B049B),
-                            shape: RoundedRectangleBorder(
-                                borderRadius: BorderRadius.circular(26)),
-                            padding: EdgeInsets.all(0.0),
-                            child: Ink(
-                              decoration: BoxDecoration(
-                                  borderRadius: BorderRadius.circular(26)),
-                              child: Container(
-                                constraints: BoxConstraints(
-                                    maxWidth:
-                                        MediaQuery.of(context).size.width / 1.3,
-                                    minHeight: 45.0),
-                                alignment: Alignment.center,
-                                child: Text(
-                                  "LOGIN",
-                                  textAlign: TextAlign.center,
-                                  style: TextStyle(
-                                    color: Colors.white,
-                                    fontWeight: FontWeight.w500,
-                                  ),
-                                ),
-                              ),
+                    padding: EdgeInsets.only(
+                      bottom: 50,
+                      top: 50,
+                    ),
+                    child: FlatButton(
+                      onPressed:
+                      data.number.toString() == data.number.dialCode
+                          ? null
+                          : () {
+                        network.loginSetState();
+                        verifyNumber();
+                      },
+                      color: Color(0xFF9B049B),
+                      disabledColor: Color(0x909B049B),
+                      shape: RoundedRectangleBorder(
+                          borderRadius: BorderRadius.circular(26)),
+                      padding: EdgeInsets.all(0.0),
+                      child: Ink(
+                        decoration: BoxDecoration(
+                            borderRadius: BorderRadius.circular(26)),
+                        child: Container(
+                          constraints: BoxConstraints(
+                              maxWidth:
+                              MediaQuery.of(context).size.width / 1.3,
+                              minHeight: 45.0),
+                          alignment: Alignment.center,
+                          child: Text(
+                            "LOGIN",
+                            textAlign: TextAlign.center,
+                            style: TextStyle(
+                              color: Colors.white,
+                              fontWeight: FontWeight.w500,
                             ),
                           ),
-                        )
+                        ),
+                      ),
+                    ),
+                  )
                       : Padding(
-                          padding: const EdgeInsets.only(bottom: 50.0, top: 25),
-                          child: Theme(
-                            data: Theme.of(context)
-                                .copyWith(accentColor: Color(0xFF9B049B)),
-                            child: CircularProgressIndicator(
-                              strokeWidth: 2,
-                              backgroundColor: Colors.white,
-                            ),
-                          ),
-                        )),
+                    padding: const EdgeInsets.only(bottom: 50.0, top: 25),
+                    child: Theme(
+                      data: Theme.of(context)
+                          .copyWith(accentColor: Color(0xFF9B049B)),
+                      child: CircularProgressIndicator(
+                        strokeWidth: 2,
+                        backgroundColor: Colors.white,
+                      ),
+                    ),
+                  )),
             ],
           ),
         ),

@@ -4,19 +4,19 @@ import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 
 class DescribePage extends StatefulWidget {
-  
+
   @override
   DescribePageState createState() => DescribePageState();
 }
 
 class DescribePageState extends State<DescribePage> {
-  
-  
-   final jobdescriptionController = TextEditingController();
+
+
+  final jobdescriptionController = TextEditingController();
   @override
   Widget build(BuildContext context) {
     PostRequestProvider postRequestProvider = Provider.of<PostRequestProvider>(context);
-     var data = Provider.of<DataProvider>(context);
+    var data = Provider.of<DataProvider>(context);
     return Scaffold(
       appBar: AppBar(
         automaticallyImplyLeading: false,
@@ -69,8 +69,7 @@ class DescribePageState extends State<DescribePage> {
                     border: Border.all(color: Colors.white),
                     borderRadius: BorderRadius.circular(26)),
                 child: FlatButton(
-                  disabledColor: Color(0x909B049B),
-                  onPressed: data.description.isEmpty?null:() {
+                  onPressed:() {
                     postRequestProvider.postJob(context);
                   },
                   color: Color(0xFF9B049B),
