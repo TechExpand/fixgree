@@ -390,7 +390,8 @@ class WebServices extends ChangeNotifier {
     var body = json.decode(response.body);
     notifyListeners();
     if (body['reqRes'] == 'true') {
-      print(body['reqRes']);
+      print(body);
+      print(body);
       scaffoldKey.currentState
           .showSnackBar(SnackBar(content: Text('Project Bid Successfully')));
       return body['reviews'];

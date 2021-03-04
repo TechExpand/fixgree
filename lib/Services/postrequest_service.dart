@@ -49,7 +49,8 @@ class PostRequestProvider with ChangeNotifier {
     var data = Provider.of<DataProvider>(context, listen: false);
     String userId = prefs.getString('user_id');
     String bearer = prefs.getString('Bearer');
-
+    print(bearer);
+    print(userId);
     try {
       var response = await http
           .post(Uri.parse('https://manager.fixme.ng/new-project'), body: {
