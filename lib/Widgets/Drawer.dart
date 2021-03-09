@@ -70,7 +70,7 @@ class _DrawerState extends State<DrawerWidget> {
                 padding: const EdgeInsets.only(top: 8, left: 8, right: 8),
                 child: Text('Account',
                     style:
-                        TextStyle(fontSize: 18, fontWeight: FontWeight.w600)),
+                        TextStyle(fontSize: 16, fontWeight: FontWeight.w600)),
               )),
           InkWell(
               onTap: () async {
@@ -121,7 +121,7 @@ class _DrawerState extends State<DrawerWidget> {
                   minLeadingWidth: 10,
                   title: Text(
                     'Profile',
-                    style: TextStyle(fontSize: 16, fontWeight: FontWeight.w400),
+                    style: TextStyle(fontSize: 15, fontWeight: FontWeight.w400),
                   ),
                 ),
               )),
@@ -153,7 +153,7 @@ class _DrawerState extends State<DrawerWidget> {
                   minLeadingWidth: 10,
                   title: Text(
                     'My Chats',
-                    style: TextStyle(fontSize: 16, fontWeight: FontWeight.w400),
+                    style: TextStyle(fontSize: 15, fontWeight: FontWeight.w400),
                   ),
                 ),
               )),
@@ -164,7 +164,7 @@ class _DrawerState extends State<DrawerWidget> {
                 padding: const EdgeInsets.only(top: 8, left: 8, right: 8),
                 child: Text('Services',
                     style:
-                        TextStyle(fontSize: 18, fontWeight: FontWeight.w600)),
+                        TextStyle(fontSize: 16, fontWeight: FontWeight.w600)),
               )),
           InkWell(
               onTap: () {
@@ -213,7 +213,7 @@ class _DrawerState extends State<DrawerWidget> {
                   minLeadingWidth: 10,
                   title: Text(
                     'Become an Artisan',
-                    style: TextStyle(fontSize: 16, fontWeight: FontWeight.w400),
+                    style: TextStyle(fontSize: 15, fontWeight: FontWeight.w400),
                   ),
                 ),
               )),
@@ -227,7 +227,7 @@ class _DrawerState extends State<DrawerWidget> {
               minLeadingWidth: 10,
               title: Text(
                 'Manage orders',
-                style: TextStyle(fontSize: 16, fontWeight: FontWeight.w400),
+                style: TextStyle(fontSize: 15, fontWeight: FontWeight.w400),
               ),
             ),
           ),
@@ -248,7 +248,7 @@ class _DrawerState extends State<DrawerWidget> {
                 minLeadingWidth: 10,
                 title: Text(
                   'Post a request',
-                  style: TextStyle(fontSize: 16, fontWeight: FontWeight.w400),
+                  style: TextStyle(fontSize: 15, fontWeight: FontWeight.w400),
                 ),
               ),
             ),
@@ -260,7 +260,7 @@ class _DrawerState extends State<DrawerWidget> {
                 padding: const EdgeInsets.only(top: 8, left: 8, right: 8),
                 child: Text('General',
                     style:
-                        TextStyle(fontSize: 18, fontWeight: FontWeight.w600)),
+                        TextStyle(fontSize: 16, fontWeight: FontWeight.w600)),
               )),
           SizedBox(
             height: 40,
@@ -272,7 +272,7 @@ class _DrawerState extends State<DrawerWidget> {
               minLeadingWidth: 10,
               title: Text(
                 'Online status',
-                style: TextStyle(fontSize: 16, fontWeight: FontWeight.w400),
+                style: TextStyle(fontSize: 15, fontWeight: FontWeight.w400),
               ),
               trailing: Switch(value: true, onChanged: null),
             ),
@@ -294,7 +294,7 @@ class _DrawerState extends State<DrawerWidget> {
                 minLeadingWidth: 10,
                 title: Text(
                   'Payments',
-                  style: TextStyle(fontSize: 16, fontWeight: FontWeight.w400),
+                  style: TextStyle(fontSize: 15, fontWeight: FontWeight.w400),
                 ),
               ),
             ),
@@ -314,7 +314,7 @@ class _DrawerState extends State<DrawerWidget> {
                 minLeadingWidth: 10,
                 title: Text(
                   'Invite friends',
-                  style: TextStyle(fontSize: 16, fontWeight: FontWeight.w400),
+                  style: TextStyle(fontSize: 15, fontWeight: FontWeight.w400),
                 ),
               ),
             ),
@@ -347,7 +347,7 @@ class _DrawerState extends State<DrawerWidget> {
                 minLeadingWidth: 10,
                 title: Text(
                   'Support',
-                  style: TextStyle(fontSize: 16, fontWeight: FontWeight.w400),
+                  style: TextStyle(fontSize: 15, fontWeight: FontWeight.w400),
                 ),
               ),
             ),
@@ -382,7 +382,7 @@ class _DrawerState extends State<DrawerWidget> {
                 minLeadingWidth: 10,
                 title: Text(
                   'Logout',
-                  style: TextStyle(fontSize: 16, fontWeight: FontWeight.w400),
+                  style: TextStyle(fontSize: 15, fontWeight: FontWeight.w400),
                 ),
               ),
             ),

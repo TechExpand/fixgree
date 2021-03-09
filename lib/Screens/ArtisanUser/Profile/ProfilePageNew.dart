@@ -133,7 +133,7 @@ class _ProfilePageNewState extends State<ProfilePageNew> {
                                             "Edit profile",
                                             textAlign: TextAlign.center,
                                             style: TextStyle(
-                                                color: Colors.black,
+                                                color: Colors.black87,
                                                 fontWeight: FontWeight.w600),
                                           ),
                                         ),

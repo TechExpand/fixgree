@@ -142,8 +142,8 @@ class _HomePageState extends State<HomePage> {
             currentIndex: data.selectedPage,
             unselectedItemColor: Color(0xFF555555),
             selectedItemColor: Color(0xFFA40C85),
-            selectedLabelStyle: TextStyle(fontSize: 13),
-            unselectedLabelStyle: TextStyle(fontSize: 13),
+            selectedLabelStyle: TextStyle(fontSize: 12),
+            unselectedLabelStyle: TextStyle(fontSize: 12),
             items: [
               BottomNavigationBarItem(
                 icon: Padding(

@@ -44,7 +44,7 @@ class _ArtisanPageNewState extends State<ArtisanPageNew> {
   @override
   Widget build(BuildContext context) {
     var data = Provider.of<Utils>(context, listen: false);
-    // var location = Provider.of<LocationService>(context);
+    var location = Provider.of<LocationService>(context);
     var network = Provider.of<WebServices>(context, listen: false);
     return MultiProvider(
         providers: [
@@ -63,11 +63,40 @@ class _ArtisanPageNewState extends State<ArtisanPageNew> {
                   icon: Icon(FeatherIcons.arrowLeft, color: Color(0xFF9B049B)),
                 ),
                 actions: [
-                  IconButton(
-                    onPressed: () {},
+                  PopupMenuButton(
                     icon: Icon(FeatherIcons.moreHorizontal,
                         color: Color(0xFF9B049B)),
-                  ),
+                    onSelected: (value) {
+                      data.makeOpenUrl(
+                          'https://www.google.com/maps?saddr=${location.locationLatitude},${location.locationLongitude}&daddr= ${widget.userData.latitude}, ${widget.userData.longitude}');
+                    },
+                    elevation: 0.1,
+                    color: Color(0xFFF6F6F6),
+                    shape: RoundedRectangleBorder(
+                        borderRadius: BorderRadius.circular(5)),
+                    itemBuilder: (BuildContext context) => <PopupMenuEntry>[
+                      PopupMenuItem(
+                        height: 30,
+                        value: "get direction",
+                        child: Row(
+                          mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                          children: [
+                            Text("Get direction",
+                                style: GoogleFonts.openSans(
+                                    color: Colors.black87,
+                                    fontSize: 16,
+                                    height: 1.4,
+                                    fontWeight: FontWeight.w600)),
+                            Icon(
+                              FeatherIcons.map,
+                              color: Color(0xFF9B049B),
+                              size: 15,
+                            ),
+                          ],
+                        ),
+                      ),
+                    ],
+                  )
                 ],
                 elevation: 0,
               ),

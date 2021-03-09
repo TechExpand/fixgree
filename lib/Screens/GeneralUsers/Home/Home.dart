@@ -23,16 +23,12 @@ class Home extends StatelessWidget {
 
   Home(this.scafoldKey, this.data, this.controller);
 
-  String getDistance(
-      {latitude, longitude, double artisanLongitude, double artisanLatitude}) {
-    double distanceInMeters = Geolocator.distanceBetween(
-        latitude, longitude, artisanLatitude, artisanLongitude);
-    var kilometers = distanceInMeters / 1000;
+  String getDistance({String rawDistance}) {
     String distance;
-    if (kilometers.truncate() != 0) {
-      distance = '${kilometers.truncate()} km';
+    if (rawDistance.length > 3) {
+      distance = '$rawDistance' + 'km';
     } else {
-      distance = '${distanceInMeters.truncate()} m';
+      distance = '$rawDistance' + 'm';
     }
     return distance;
   }
@@ -197,8 +193,9 @@ class Home extends StatelessWidget {
                                       cursorColor: Colors.black,
                                       decoration: InputDecoration.collapsed(
                                         enabled: false,
-                                        hintStyle:
-                                            TextStyle(color: Colors.black38),
+                                        hintStyle: TextStyle(
+                                            color: Colors.black38,
+                                            fontSize: 15),
                                         hintText: 'What are you looking for?',
                                       )),
                                 ),
@@ -217,7 +214,7 @@ class Home extends StatelessWidget {
                           Text(
                             'Popular Services',
                             style: TextStyle(
-                                fontWeight: FontWeight.w600, fontSize: 16),
+                                fontWeight: FontWeight.w600, fontSize: 15),
                           ),
                           InkWell(
                             onTap: () {
@@ -225,7 +222,7 @@ class Home extends StatelessWidget {
                             },
                             child: Text('See all',
                                 style: TextStyle(
-                                    color: Color(0xFF9B049B), fontSize: 15)),
+                                    color: Color(0xFF9B049B), fontSize: 14)),
                           )
                         ],
                       ),
@@ -299,7 +296,10 @@ class Home extends StatelessWidget {
                                           fit: BoxFit.cover,
                                         ),
                                       )),
-                                  Text('${popularServices[index]['text']}'),
+                                  Text(
+                                    '${popularServices[index]['text']}',
+                                    style: TextStyle(fontSize: 13),
+                                  ),
                                 ],
                               ),
                             ),
@@ -438,7 +438,7 @@ class Home extends StatelessWidget {
                           Text(
                             'Nearby Shops',
                             style: TextStyle(
-                                fontWeight: FontWeight.w600, fontSize: 16),
+                                fontWeight: FontWeight.w600, fontSize: 15),
                           ),
                           InkWell(
                             onTap: () {
@@ -463,7 +463,7 @@ class Home extends StatelessWidget {
                             },
                             child: Text('See all',
                                 style: TextStyle(
-                                    color: Color(0xFF9B049B), fontSize: 15)),
+                                    color: Color(0xFF9B049B), fontSize: 14)),
                           )
                         ],
                       ),
@@ -502,167 +502,7 @@ class Home extends StatelessWidget {
                                   ))
                               : snapshot.hasData && !snapshot.data.isEmpty
                                   ? Container(
-                                      height: 140,
-                                      child: ListView.builder(
-                                        scrollDirection: Axis.horizontal,
-                                        itemCount: snapshot.data.length > 3
-                                            ? 3
-                                            : snapshot.data.length,
-                                        itemBuilder: (context, index) {
-                                          return InkWell(
-                                            onTap: () {
-                                              Navigator.push(
-                                                context,
-                                                PageRouteBuilder(
-                                                  pageBuilder: (context,
-                                                      animation,
-                                                      secondaryAnimation) {
-                                                    return ArtisanPageNew(
-                                                        snapshot.data[index]);
-                                                  },
-                                                  transitionsBuilder: (context,
-                                                      animation,
-                                                      secondaryAnimation,
-                                                      child) {
-                                                    return FadeTransition(
-                                                      opacity: animation,
-                                                      child: child,
-                                                    );
-                                                  },
-                                                ),
-                                              );
-                                            },
-                                            child: Container(
-                                              padding: const EdgeInsets.only(
-                                                  top: 12.0, left: 6),
-                                              height: 140,
-                                              child: Column(
-                                                children: [
-                                                  CircleAvatar(
-                                                    child: Text(''),
-                                                    radius: 35,
-                                                    backgroundImage:
-                                                        NetworkImage(
-                                                      snapshot.data[index]
-                                                                      .urlAvatar ==
-                                                                  'no_picture_upload' ||
-                                                              snapshot
-                                                                      .data[
-                                                                          index]
-                                                                      .urlAvatar ==
-                                                                  null
-                                                          ? 'https://uploads.fixme.ng/originals/no_picture_upload'
-                                                          : 'https://uploads.fixme.ng/originals/${snapshot.data[index].urlAvatar}',
-                                                    ),
-                                                    foregroundColor:
-                                                        Colors.white,
-                                                    backgroundColor:
-                                                        Colors.white,
-                                                  ),
-                                                  Padding(
-                                                    padding:
-                                                        const EdgeInsets.only(
-                                                            top: 4.0),
-                                                    child: Text(
-                                                        '${snapshot.data[index].name} ${snapshot.data[index].userLastName}'
-                                                            .capitalizeFirstOfEach),
-                                                  ),
-                                                ],
-                                              ),
-                                            ),
-                                          );
-                                        },
-                                      ),
-                                    )
-                                  : snapshot.data.isEmpty
-                                      ? Padding(
-                                          padding: const EdgeInsets.all(18.0),
-                                          child: Container(
-                                            color: Color(0xFFBBBBBB),
-                                            padding: const EdgeInsets.all(4),
-                                            child: Text(
-                                              'No Nearby Shops',
-                                              style: TextStyle(
-                                                  color: Colors.white,
-                                                  fontWeight: FontWeight.w500),
-                                            ),
-                                          ),
-                                        )
-                                      : Container();
-                        }),
-                    Padding(
-                      padding: const EdgeInsets.only(left: 10, right: 10),
-                      child: Row(
-                        mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                        children: [
-                          Text(
-                            'Nearby Artisans',
-                            style: TextStyle(
-                                fontWeight: FontWeight.w600, fontSize: 16),
-                          ),
-                          InkWell(
-                            onTap: () {
-                              Navigator.push(
-                                context,
-                                PageRouteBuilder(
-                                  pageBuilder:
-                                      (context, animation, secondaryAnimation) {
-                                    return NearbyArtisansSeeAll(
-                                        longitude: location.locationLatitude,
-                                        latitude: location.locationLatitude);
-                                  },
-                                  transitionsBuilder: (context, animation,
-                                      secondaryAnimation, child) {
-                                    return FadeTransition(
-                                      opacity: animation,
-                                      child: child,
-                                    );
-                                  },
-                                ),
-                              );
-                            },
-                            child: Text('See all',
-                                style: TextStyle(
-                                    color: Color(0xFF9B049B), fontSize: 15)),
-                          )
-                        ],
-                      ),
-                    ),
-                    FutureBuilder(
-                        future: network.nearbyArtisans(
-                            latitude: location.locationLatitude,
-                            longitude: location.locationLongitude),
-                        builder: (context, snapshot) {
-                          return !snapshot.hasData
-                              ? Padding(
-                                  padding: const EdgeInsets.all(10.0),
-                                  child: Center(
-                                    child: Column(
-                                      mainAxisAlignment:
-                                          MainAxisAlignment.center,
-                                      crossAxisAlignment:
-                                          CrossAxisAlignment.center,
-                                      children: [
-                                        Theme(
-                                            data: Theme.of(context).copyWith(
-                                                accentColor: Color(0xFF9B049B)),
-                                            child: CircularProgressIndicator(
-                                              strokeWidth: 2,
-                                              backgroundColor: Colors.white,
-                                            )),
-                                        SizedBox(
-                                          height: 10,
-                                        ),
-                                        Text('Loading artisans',
-                                            style: TextStyle(
-                                                color: Color(0xFF333333),
-                                                fontWeight: FontWeight.w500)),
-                                      ],
-                                    ),
-                                  ))
-                              : snapshot.hasData && !snapshot.data.isEmpty
-                                  ? Container(
-                                      height: 180,
+                                      height: 200,
                                       margin: const EdgeInsets.only(bottom: 6),
                                       child: ListView.builder(
                                         scrollDirection: Axis.horizontal,
@@ -670,15 +510,11 @@ class Home extends StatelessWidget {
                                             ? 3
                                             : snapshot.data.length,
                                         itemBuilder: (context, index) {
+                                          print(
+                                              'The Distance: ${snapshot.data[index].distance}');
                                           String distance = getDistance(
-                                              latitude:
-                                                  location.locationLatitude,
-                                              longitude:
-                                                  location.locationLatitude,
-                                              artisanLatitude:
-                                                  snapshot.data[index].latitude,
-                                              artisanLongitude: snapshot
-                                                  .data[index].longitude);
+                                              rawDistance:
+                                                  '${snapshot.data[index].distance}');
                                           return InkWell(
                                             onTap: () {
                                               Navigator.push(
@@ -703,7 +539,7 @@ class Home extends StatelessWidget {
                                               );
                                             },
                                             child: Container(
-                                              width: 115,
+                                              width: 130,
                                               margin: const EdgeInsets.only(
                                                 left: 10,
                                                 top: 12,
@@ -734,7 +570,7 @@ class Home extends StatelessWidget {
                                                                   bottom: 4.0),
                                                           child: Container(
                                                             height: 85,
-                                                            width: 115,
+                                                            width: 130,
                                                             clipBehavior: Clip
                                                                 .antiAliasWithSaveLayer,
                                                             decoration: BoxDecoration(
@@ -783,7 +619,292 @@ class Home extends StatelessWidget {
                                                                     color: Colors
                                                                         .white,
                                                                     fontSize:
-                                                                        12.5,
+                                                                        12,
+                                                                    fontWeight:
+                                                                        FontWeight
+                                                                            .w500),
+                                                              ),
+                                                            ],
+                                                          ),
+                                                        ),
+                                                      ),
+                                                    ],
+                                                  ),
+                                                  Align(
+                                                      alignment:
+                                                          Alignment.bottomLeft,
+                                                      child: Padding(
+                                                        padding:
+                                                            const EdgeInsets
+                                                                    .only(
+                                                                left: 8.0,
+                                                                right: 8.0),
+                                                        child: Wrap(
+                                                          children: [
+                                                            Text(
+                                                              snapshot
+                                                                          .data[
+                                                                              index]
+                                                                          .businessName
+                                                                          .isEmpty ||
+                                                                      snapshot.data[index].businessName ==
+                                                                          ''
+                                                                  ? '${snapshot.data[index].name}\'s shop '
+                                                                      .capitalizeFirstOfEach
+                                                                  : '${snapshot.data[index].businessName}'
+                                                                      .capitalizeFirstOfEach,
+                                                              style: TextStyle(
+                                                                fontSize: 13,
+                                                              ),
+                                                            ),
+                                                          ],
+                                                        ),
+                                                      )),
+                                                  Align(
+                                                    alignment:
+                                                        Alignment.bottomLeft,
+                                                    child: Padding(
+                                                      padding:
+                                                          const EdgeInsets.only(
+                                                              left: 8.0,
+                                                              right: 8.0),
+                                                      child: Wrap(
+                                                        children: [
+                                                          Text(
+                                                            '${snapshot.data[index].serviceArea}',
+                                                            style: TextStyle(
+                                                                fontSize: 13,
+                                                                fontWeight:
+                                                                    FontWeight
+                                                                        .w600),
+                                                          ),
+                                                        ],
+                                                      ),
+                                                    ),
+                                                  ),
+                                                  Spacer(),
+                                                  Padding(
+                                                    padding:
+                                                        const EdgeInsets.only(
+                                                            left: 8, bottom: 6),
+                                                    child: StarRating(
+                                                        rating: double.parse(
+                                                            snapshot.data[index]
+                                                                .userRating
+                                                                .toString())),
+                                                  ),
+                                                ],
+                                              ),
+                                            ),
+                                          );
+                                        },
+                                      ),
+                                    )
+                                  : snapshot.data.isEmpty
+                                      ? Padding(
+                                          padding: const EdgeInsets.all(18.0),
+                                          child: Container(
+                                            color: Color(0xFFBBBBBB),
+                                            padding: const EdgeInsets.all(4),
+                                            child: Text(
+                                              'No Nearby Shops',
+                                              style: TextStyle(
+                                                  color: Colors.white,
+                                                  fontWeight: FontWeight.w500),
+                                            ),
+                                          ),
+                                        )
+                                      : Container();
+                        }),
+                    Padding(
+                      padding:
+                          const EdgeInsets.only(left: 10, right: 10, top: 10),
+                      child: Row(
+                        mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                        children: [
+                          Text(
+                            'Nearby Artisans',
+                            style: TextStyle(
+                                fontWeight: FontWeight.w600, fontSize: 15),
+                          ),
+                          InkWell(
+                            onTap: () {
+                              Navigator.push(
+                                context,
+                                PageRouteBuilder(
+                                  pageBuilder:
+                                      (context, animation, secondaryAnimation) {
+                                    return NearbyArtisansSeeAll(
+                                        longitude: location.locationLatitude,
+                                        latitude: location.locationLatitude);
+                                  },
+                                  transitionsBuilder: (context, animation,
+                                      secondaryAnimation, child) {
+                                    return FadeTransition(
+                                      opacity: animation,
+                                      child: child,
+                                    );
+                                  },
+                                ),
+                              );
+                            },
+                            child: Text('See all',
+                                style: TextStyle(
+                                    color: Color(0xFF9B049B), fontSize: 14)),
+                          )
+                        ],
+                      ),
+                    ),
+                    FutureBuilder(
+                        future: network.nearbyArtisans(
+                            latitude: location.locationLatitude,
+                            longitude: location.locationLongitude),
+                        builder: (context, snapshot) {
+                          return !snapshot.hasData
+                              ? Padding(
+                                  padding: const EdgeInsets.all(10.0),
+                                  child: Center(
+                                    child: Column(
+                                      mainAxisAlignment:
+                                          MainAxisAlignment.center,
+                                      crossAxisAlignment:
+                                          CrossAxisAlignment.center,
+                                      children: [
+                                        Theme(
+                                            data: Theme.of(context).copyWith(
+                                                accentColor: Color(0xFF9B049B)),
+                                            child: CircularProgressIndicator(
+                                              strokeWidth: 2,
+                                              backgroundColor: Colors.white,
+                                            )),
+                                        SizedBox(
+                                          height: 10,
+                                        ),
+                                        Text('Loading artisans',
+                                            style: TextStyle(
+                                                color: Color(0xFF333333),
+                                                fontWeight: FontWeight.w500)),
+                                      ],
+                                    ),
+                                  ))
+                              : snapshot.hasData && !snapshot.data.isEmpty
+                                  ? Container(
+                                      height: 200,
+                                      margin: const EdgeInsets.only(bottom: 6),
+                                      child: ListView.builder(
+                                        scrollDirection: Axis.horizontal,
+                                        itemCount: snapshot.data.length > 3
+                                            ? 3
+                                            : snapshot.data.length,
+                                        itemBuilder: (context, index) {
+                                          String distance = getDistance(
+                                              rawDistance:
+                                                  '${snapshot.data[index].distance}');
+                                          return InkWell(
+                                            onTap: () {
+                                              Navigator.push(
+                                                context,
+                                                PageRouteBuilder(
+                                                  pageBuilder: (context,
+                                                      animation,
+                                                      secondaryAnimation) {
+                                                    return ArtisanPageNew(
+                                                        snapshot.data[index]);
+                                                  },
+                                                  transitionsBuilder: (context,
+                                                      animation,
+                                                      secondaryAnimation,
+                                                      child) {
+                                                    return FadeTransition(
+                                                      opacity: animation,
+                                                      child: child,
+                                                    );
+                                                  },
+                                                ),
+                                              );
+                                            },
+                                            child: Container(
+                                              width: 130,
+                                              margin: const EdgeInsets.only(
+                                                left: 10,
+                                                top: 12,
+                                              ),
+                                              decoration: BoxDecoration(
+                                                  color: Color(0xFFFFFFFF),
+                                                  border: Border.all(
+                                                      color: Color(0xFFF1F1FD)),
+                                                  boxShadow: [
+                                                    BoxShadow(
+                                                        color:
+                                                            Color(0xFFF1F1F6),
+                                                        blurRadius: 10.0,
+                                                        offset:
+                                                            Offset(0.3, 4.0))
+                                                  ],
+                                                  borderRadius:
+                                                      BorderRadius.all(
+                                                          Radius.circular(7))),
+                                              child: Column(
+                                                children: [
+                                                  Stack(
+                                                    children: [
+                                                      Padding(
+                                                          padding:
+                                                              const EdgeInsets
+                                                                      .only(
+                                                                  bottom: 4.0),
+                                                          child: Container(
+                                                            height: 85,
+                                                            width: 130,
+                                                            clipBehavior: Clip
+                                                                .antiAliasWithSaveLayer,
+                                                            decoration: BoxDecoration(
+                                                                borderRadius: BorderRadius.only(
+                                                                    topLeft: Radius
+                                                                        .circular(
+                                                                            7),
+                                                                    topRight: Radius
+                                                                        .circular(
+                                                                            7))),
+                                                            child:
+                                                                Image.network(
+                                                              snapshot.data[index].urlAvatar ==
+                                                                          'no_picture_upload' ||
+                                                                      snapshot.data[index]
+                                                                              .urlAvatar ==
+                                                                          null
+                                                                  ? 'https://uploads.fixme.ng/originals/no_picture_upload'
+                                                                  : 'https://uploads.fixme.ng/originals/${snapshot.data[index].urlAvatar}',
+                                                              fit: BoxFit.cover,
+                                                            ),
+                                                          )),
+                                                      Positioned(
+                                                        bottom: 4,
+                                                        child: Container(
+                                                          height: 20,
+                                                          width: 115,
+                                                          padding:
+                                                              const EdgeInsets
+                                                                      .only(
+                                                                  left: 5),
+                                                          color: Colors.black
+                                                              .withOpacity(0.5),
+                                                          child: Row(
+                                                            children: [
+                                                              Icon(
+                                                                Icons
+                                                                    .location_on_outlined,
+                                                                color: Colors
+                                                                    .amber,
+                                                                size: 14,
+                                                              ),
+                                                              Text(
+                                                                '$distance away',
+                                                                style: TextStyle(
+                                                                    color: Colors
+                                                                        .white,
+                                                                    fontSize:
+                                                                        12,
                                                                     fontWeight:
                                                                         FontWeight
                                                                             .w500),
@@ -907,7 +1028,7 @@ class Home extends StatelessWidget {
                                 style: TextStyle(
                                     color: Colors.white,
                                     fontWeight: FontWeight.w500,
-                                    fontSize: 18),
+                                    fontSize: 16),
                               ),
                             ),
                           ),
