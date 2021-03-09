@@ -78,6 +78,9 @@ class WebServices extends ChangeNotifier {
         'Bearer FIXME_1U90P3444ANdroidAPP4HUisallOkayBY_FIXME_APP_UIONSISJGJANKKI3445fv',
       });
       var body = json.decode(response.body);
+      print(body);
+      print(body);
+      print(body);
       userId = body['id'];
       mobileDeviceToken = body['firebaseId'];
       profilePicFileName = body['profile_pic_file_name'];
@@ -139,13 +142,13 @@ class WebServices extends ChangeNotifier {
       bearer = response.headers['bearer'];
 
       userId = body['id'];
-      mobileDeviceToken = body['firebaseId'];
       profilePicFileName = body['profile_pic_file_name'];
       firstName = body['firstName'];
       lastName = body['lastName'];
       role = body['role'];
       phoneNum = body['fullNumber'];
       email = body['email'];
+
       var response2 = await http.post(
           Uri.parse('https://manager.fixme.ng/user-info?user_id=$userId'),
           headers: {
@@ -154,7 +157,7 @@ class WebServices extends ChangeNotifier {
           });
       var body2 = json.decode(response2.body);
       bio = body2['bio'];
-
+      mobileDeviceToken = body['firebase_id'];
       if (body['reqRes'] == 'true') {
         datas.storeData('Bearer', bearer);
         datas.storeData('mobile_device_token', mobileDeviceToken);
@@ -201,11 +204,11 @@ class WebServices extends ChangeNotifier {
     mobileDeviceToken = prefs.getString('mobile_device_token');
     profilePicFileName = prefs.getString('profile_pic_file_name');
     firstName = prefs.getString('firstName');
-    lastName = prefs.getString('lastName');
     phoneNum = prefs.getString('phoneNum');
     bio = prefs.getString('about');
     role = prefs.getString('role');
     notifyListeners();
+    lastName = prefs.getString('lastName');
   }
 
   Future<dynamic> initiateProject(projectOwnerUserId, bidId, projectId,
@@ -1165,7 +1168,7 @@ class WebServices extends ChangeNotifier {
 
   Future<dynamic> getUndoneProject() async {
     var response = await http
-        .post(Uri.parse('https://manager.fixme.ng/all-new-projects'), body: {
+        .post(Uri.parse('https://manager.fixme.ng/user-projects'), body: {
       'user_id': userId.toString(),
     }, headers: {
       "Content-type": "application/x-www-form-urlencoded",

@@ -290,9 +290,7 @@ class _PendingScreenState extends State<PendingScreen> {
                                       ),
                                     ),
                                 itemBuilder: (context, element) {
-                                  return element['status'] ==
-                                      'pending'
-                                      ? Slidable(
+                                  return  Slidable(
                                       actions: <Widget>[
                                         IconSlideAction(
                                           color: Colors.red,
@@ -453,7 +451,7 @@ class _PendingScreenState extends State<PendingScreen> {
                                           ],
                                         ),
                                       ))
-                                      : Container();
+                                     ;
                                 }),
                             Padding(
                               padding: const EdgeInsets.only(

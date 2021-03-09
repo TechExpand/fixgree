@@ -302,7 +302,7 @@ class _NotificationState extends State<NotificationPage> {
                                                               BorderRadius.circular(
                                                                   4)),
                                                         ),
-                                                      )
+                                                      ):users[index].type =='new_bid'?Container()
                                                           : users[index].type ==
                                                           'bided'
                                                           ? Container(
@@ -386,7 +386,7 @@ class _NotificationState extends State<NotificationPage> {
                                                       const EdgeInsets.only(
                                                           bottom: 6.0),
                                                       child: PopupMenuButton(
-                                                          offset: const Offset(0, 80),
+                                                          offset: const Offset(0, 10),
                                                           elevation: 5,
                                                           icon: Icon(
                                                             Icons.more_vert,
@@ -423,32 +423,7 @@ class _NotificationState extends State<NotificationPage> {
                                       ),
                                     );
 
-//                                      Container(
-//                                      height: 75,
-//                                      child: ListTile(
-//                                        onTap: () {
-//                                          // users[index].idUser
-////                                          FirebaseApi.updateUsertoRead(
-////                                              idUser:users[index].idUser,
-////                                              idArtisan:network.mobile_device_token);
-//                                          Navigator.of(context)
-//                                              .push(MaterialPageRoute(
-//                                            builder: (context) {
-//                                            //  return ChatPage(user: users[index]);
-//                                            },
-//                                          ));
-//                                        },
-//                                        leading: CircleAvatar(
-//                                          radius: 25,
-//                                          backgroundImage:
-//                                          NetworkImage('users[index].urlAvatar'),
-//                                        ),
-//                                        title: Text(users[index].message),
 //
-//                                        trailing: Text('${users[index].createdAt.hour}:${users[index].createdAt.minute}'),
-//                                        //  subtitle:  Text(users[index].lastMessageTime),
-//                                      ),
-//                                    );
                                   },
                                   itemCount: users.length,
                                 ),
