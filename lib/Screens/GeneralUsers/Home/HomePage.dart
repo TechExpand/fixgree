@@ -41,9 +41,11 @@ class _HomePageState extends State<HomePage> {
   void initState() {
     super.initState();
     getMessage();
+
     var data = Provider.of<Utils>(context, listen: false);
     var network = Provider.of<WebServices>(context, listen: false);
-
+    var datas = Provider.of<DataProvider>(context, listen: false);
+    datas.setSelectedBottomNavBar(0);
     var initializationSettingsAndroid =
         new AndroidInitializationSettings('@mipmap/ic_launcher');
     var initializationSettingsIOs = IOSInitializationSettings();
@@ -190,7 +192,7 @@ class _HomePageState extends State<HomePage> {
                   padding: const EdgeInsets.only(bottom: 3),
                   child: Icon(FeatherIcons.clock),
                 ),
-                label: 'Pending',
+                label: 'Manage',
               )
             ]),
       ),

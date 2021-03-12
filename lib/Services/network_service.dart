@@ -1166,6 +1166,27 @@ class WebServices extends ChangeNotifier {
     }
   }
 
+  Future<dynamic> requestPayment(project_owner_user_id, bid_id) async {
+    var response = await http
+        .post(Uri.parse('https://api.fixme.ng/completed-project-and-payment '), body: {
+      'bidder_user_id': userId.toString(),
+      'project_owner_user_id': project_owner_user_id.toString(),
+      'bid_id':  bid_id.toString(),
+    }, headers: {
+      "Content-type": "application/x-www-form-urlencoded",
+      'Authorization': 'Bearer $bearer',
+    });
+    var body = json.decode(response.body);
+    notifyListeners();
+    if (body['reqRes'] == 'true') {
+      print(body['projects']);
+      return body['projects'];
+    } else if (body['reqRes'] == 'false') {
+      print(body['message']);
+    }
+  }
+
+
   Future<dynamic> getUndoneProject() async {
     var response = await http
         .post(Uri.parse('https://manager.fixme.ng/user-projects'), body: {
@@ -1183,6 +1204,8 @@ class WebServices extends ChangeNotifier {
       print(body['message']);
     }
   }
+
+
 
   Future<dynamic> nearbyArtisans({longitude, latitude}) async {
     var response = await http

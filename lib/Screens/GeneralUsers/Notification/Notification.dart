@@ -165,15 +165,15 @@ class _NotificationState extends State<NotificationPage> {
           forceElevated: true,
         ),
         SliverFillRemaining(
-          child: SingleChildScrollView(
-            child: Column(children: [
+          child: ListView(
+        children: [
               Padding(
                 padding: const EdgeInsets.all(8.0),
                 child:
                 Align(alignment: Alignment.topLeft, child: Text('Recent')),
               ),
               Container(
-                padding: EdgeInsets.only(top: 5),
+                margin: EdgeInsets.only(top: 5, bottom: 15),
                 height: MediaQuery.of(context).size.height,
                 child: StreamBuilder(
                   stream: FirebaseApi.userNotificatioStream(
@@ -216,14 +216,7 @@ class _NotificationState extends State<NotificationPage> {
                                           crossAxisAlignment:
                                           CrossAxisAlignment.start,
                                           children: [
-                                            Padding(
-                                              padding: const EdgeInsets.only(
-                                                  right: 3.0),
-                                              child: Icon(
-                                                Icons.person_pin,
-                                                size: 36,
-                                              ),
-                                            ),
+
                                             Container(
                                                 padding:
                                                 EdgeInsets.only(top: 5),
@@ -378,7 +371,7 @@ class _NotificationState extends State<NotificationPage> {
                                                       )
                                                     ])),
                                             Container(
-                                              width: 60,
+                                              width: 90,
                                               child: Column(
                                                 children: [
                                                   Padding(
@@ -438,7 +431,6 @@ class _NotificationState extends State<NotificationPage> {
               ),
             ]),
           ),
-        )
       ],
     );
   }
