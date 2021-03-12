@@ -1150,8 +1150,8 @@ class WebServices extends ChangeNotifier {
     var response =
     await http.post(Uri.parse('https://manager.fixme.ng/e-f-n'), body: {
       'user_id': userId.toString(),
-      'firstName': '$lastName',
-      'lastName': '$firstName',
+      'firstName': '$firstName',
+      'lastName': '$lastName',
     }, headers: {
       "Content-type": "application/x-www-form-urlencoded",
       'Authorization': 'Bearer $bearer',

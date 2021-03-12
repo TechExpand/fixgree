@@ -16,9 +16,9 @@ class _EditProfilePageState extends State<EditProfilePage> {
   List<Services> result = [];
   Future<dynamic> userInfo;
 
-  update(BuildContext context) {
+  update(BuildContext context) async {
+    var network = Provider.of<WebServices>(context, listen: false);
     setState(() {
-      var network = Provider.of<WebServices>(context, listen: false);
       userInfo = network.getUserInfo(network.userId);
     });
   }
@@ -34,7 +34,9 @@ class _EditProfilePageState extends State<EditProfilePage> {
         backgroundColor: Colors.white,
         leading: IconButton(
           onPressed: () {
-            Navigator.of(context).pop();
+            Navigator.of(context).pop(() {
+              setState(() {});
+            });
           },
           icon: Icon(FeatherIcons.arrowLeft, color: Color(0xFF9B049B)),
         ),
@@ -236,9 +238,8 @@ class _EditProfilePageState extends State<EditProfilePage> {
                                     ),
                                   ],
                                 ),
-                                Row(
-                                  mainAxisAlignment:
-                                      MainAxisAlignment.spaceBetween,
+                                Wrap(
+                                  runAlignment: WrapAlignment.spaceBetween,
                                   children: [
                                     Wrap(
                                       children: [
@@ -486,11 +487,12 @@ class _EditProfilePageState extends State<EditProfilePage> {
                               borderRadius: BorderRadius.circular(5)),
                           child: FlatButton(
                             disabledColor: Color(0x909B049B),
-                            onPressed: () {
-                              Navigator.pop(context);
-                              network.updateFullName(
+                            onPressed: () async {
+                              await network.updateFullName(
                                   _controller.text, _controller2.text);
                               update(context);
+                              // setState(() {});
+                              Navigator.pop(context);
                             },
                             color: Colors.transparent,
                             shape: RoundedRectangleBorder(
@@ -624,11 +626,11 @@ class _EditProfilePageState extends State<EditProfilePage> {
                               borderRadius: BorderRadius.circular(5)),
                           child: FlatButton(
                             disabledColor: Color(0x909B049B),
-                            onPressed: () {
-                              Navigator.pop(context);
+                            onPressed: () async {
                               network.updateService(
                                   postRequestProvider.selecteService.sn);
                               update(context);
+                              Navigator.pop(context);
                             },
                             color: Colors.transparent,
                             shape: RoundedRectangleBorder(
@@ -744,10 +746,10 @@ class _EditProfilePageState extends State<EditProfilePage> {
                               borderRadius: BorderRadius.circular(5)),
                           child: FlatButton(
                             disabledColor: Color(0x909B049B),
-                            onPressed: () {
-                              Navigator.pop(context);
+                            onPressed: () async {
                               network.updateBio(_controller.text);
                               update(context);
+                              Navigator.pop(context);
                             },
                             color: Colors.transparent,
                             shape: RoundedRectangleBorder(
