@@ -1,11 +1,10 @@
-import 'package:fixme/Screens/ArtisanUser/Profile/ArtisanPage.dart';
+import 'package:fixme/Screens/ArtisanUser/Profile/ArtisanPageNew.dart';
 import 'package:fixme/Screens/GeneralUsers/Chat/callscreens/listen_incoming_call.dart';
 import 'package:fixme/Services/location_service.dart';
 import 'package:fixme/Services/network_service.dart';
 import 'package:fixme/Widgets/Rating.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_feather_icons/flutter_feather_icons.dart';
-import 'package:geolocator/geolocator.dart';
 import 'package:google_fonts/google_fonts.dart';
 import 'package:provider/provider.dart';
 import 'package:fixme/Utils/utils.dart';
@@ -173,7 +172,7 @@ class SearchResultState extends State<SearchResult> {
                                           PageRouteBuilder(
                                             pageBuilder: (context, animation,
                                                 secondaryAnimation) {
-                                              return ArtisanPage(
+                                              return ArtisanPageNew(
                                                   snapshot.data[index]);
                                             },
                                             transitionsBuilder: (context,

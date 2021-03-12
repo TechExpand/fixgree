@@ -5,6 +5,7 @@ import 'package:fixme/Services/location_service.dart';
 import 'package:url_launcher/url_launcher.dart' as UrlLauncher;
 import 'package:fixme/Services/network_service.dart';
 import 'package:fixme/Utils/utils.dart';
+import 'package:intl/intl.dart';
 import 'package:fixme/Widgets/Rating.dart';
 import 'package:fixme/Widgets/photoView.dart';
 import 'package:flutter/material.dart';
@@ -39,6 +40,11 @@ class _ArtisanPageNewState extends State<ArtisanPageNew> {
     setState(() {
       first = addresses.first;
     });
+  }
+
+  Future<void> executeAfterBuild(ArtisanProvider model, int count) async {
+    setState(() {});
+    // model.setCatalogueCount = count == null ? 0 : count;
   }
 
   @override
@@ -561,12 +567,17 @@ class _ArtisanPageNewState extends State<ArtisanPageNew> {
                                               ),
                                             );
                                           } else {
+                                            if (mounted) {
+                                              executeAfterBuild(
+                                                  model, snapshot.data.length);
+                                            }
+                                            // WidgetsBinding.instance
+                                            //     .addPostFrameCallback((_) {
+
+                                            // });
                                             // Future.delayed(Duration.zero,
                                             //     () async {
-                                            //   model.setCatalogueCount =
-                                            //       snapshot.data == null
-                                            //           ? 0
-                                            //           : snapshot.data.length;
+
                                             // });
 
                                             mainWidget = Container(
@@ -736,16 +747,171 @@ class _ArtisanPageNewState extends State<ArtisanPageNew> {
                                     if (snapshot.connectionState ==
                                         ConnectionState.done) {
                                       if (snapshot.data == null) {
+                                        mainWidget = Center(
+                                          child: Column(
+                                            mainAxisAlignment:
+                                                MainAxisAlignment.center,
+                                            crossAxisAlignment:
+                                                CrossAxisAlignment.center,
+                                            children: [
+                                              Theme(
+                                                  data: Theme.of(context)
+                                                      .copyWith(
+                                                          accentColor: Color(
+                                                              0xFF9B049B)),
+                                                  child:
+                                                      CircularProgressIndicator()),
+                                              SizedBox(
+                                                height: 10,
+                                              ),
+                                              Text('No Network',
+                                                  style: TextStyle(
+                                                      // letterSpacing: 4,
+                                                      color: Color(0xFF333333),
+                                                      fontSize: 18,
+                                                      fontWeight:
+                                                          FontWeight.w600)),
+                                            ],
+                                          ),
+                                        );
                                       } else {
-                                        model.setCommentsCount =
-                                            snapshot.data == null
-                                                ? 0
-                                                : snapshot.data.length;
+                                        WidgetsBinding.instance
+                                            .addPostFrameCallback((_) {
+                                          model.setCommentsCount =
+                                              snapshot.data == null
+                                                  ? 0
+                                                  : snapshot.data.length;
+                                        });
+
+                                        mainWidget = Container(
+                                          width:
+                                              MediaQuery.of(context).size.width,
+                                          child: ListView.separated(
+                                              separatorBuilder:
+                                                  (BuildContext context,
+                                                          int index) =>
+                                                      Divider(),
+                                              shrinkWrap: true,
+                                              itemCount: snapshot.data.length,
+                                              physics: ScrollPhysics(),
+                                              itemBuilder: (context, index) {
+                                                DateTime dateOfReview =
+                                                    DateTime.parse(snapshot
+                                                        .data[index]
+                                                            ['dateAdded']
+                                                        .toString());
+                                                return Column(
+                                                  children: [
+                                                    Padding(
+                                                      padding:
+                                                          const EdgeInsets.only(
+                                                              top: 12,
+                                                              left: 15,
+                                                              right: 15,
+                                                              bottom: 2),
+                                                      child: Wrap(
+                                                        children: [
+                                                          Align(
+                                                            alignment: Alignment
+                                                                .centerLeft,
+                                                            child: Text(
+                                                                '${snapshot.data[index]['reviewer']['user_first_name'].toString()} ${snapshot.data[index]['reviewer']['user_last_name'].toString()}',
+                                                                style: GoogleFonts.openSans(
+                                                                    fontSize:
+                                                                        17,
+                                                                    fontWeight:
+                                                                        FontWeight
+                                                                            .w600)),
+                                                          ),
+                                                          Align(
+                                                            alignment: Alignment
+                                                                .centerLeft,
+                                                            child: Text(
+                                                                '${snapshot.data[index]['review'].toString()}',
+                                                                style: GoogleFonts.openSans(
+                                                                    fontSize:
+                                                                        16,
+                                                                    fontWeight:
+                                                                        FontWeight
+                                                                            .w500)),
+                                                          )
+                                                        ],
+                                                      ),
+                                                    ),
+                                                    ListTile(
+                                                      leading: CircleAvatar(
+                                                        child: Text(''),
+                                                        radius: 22,
+                                                        backgroundImage:
+                                                            NetworkImage(
+                                                          network.profilePicFileName ==
+                                                                      'no_picture_upload' ||
+                                                                  network.profilePicFileName ==
+                                                                      null
+                                                              ? 'https://uploads.fixme.ng/originals/no_picture_upload'
+                                                              : 'https://uploads.fixme.ng/originals/${network.profilePicFileName}',
+                                                        ),
+                                                        foregroundColor:
+                                                            Colors.white,
+                                                        backgroundColor:
+                                                            Colors.white,
+                                                      ),
+                                                      title: Text(
+                                                          '${DateFormat('MMM dd, y').format(dateOfReview)}',
+                                                          style: GoogleFonts
+                                                              .openSans(
+                                                                  fontSize: 17,
+                                                                  fontWeight:
+                                                                      FontWeight
+                                                                          .w600)),
+                                                      subtitle: Padding(
+                                                        padding:
+                                                            const EdgeInsets
+                                                                .only(top: 5),
+                                                        child: StarRating(
+                                                          rating: double.parse(
+                                                              '${snapshot.data[index]['rating']}'),
+
+                                                          /// onRatingChanged: (rating) => setState(() => this.rating = rating),
+                                                        ),
+                                                      ),
+                                                    )
+                                                  ],
+                                                );
+                                              }),
+                                        );
                                       }
+                                    } else {
+                                      mainWidget = Center(
+                                        child: Column(
+                                          mainAxisAlignment:
+                                              MainAxisAlignment.center,
+                                          crossAxisAlignment:
+                                              CrossAxisAlignment.center,
+                                          children: [
+                                            Theme(
+                                                data: Theme.of(context)
+                                                    .copyWith(
+                                                        accentColor:
+                                                            Color(0xFF9B049B)),
+                                                child:
+                                                    CircularProgressIndicator()),
+                                            SizedBox(
+                                              height: 10,
+                                            ),
+                                            Text('Loading',
+                                                style: TextStyle(
+                                                    // letterSpacing: 4,
+                                                    color: Color(0xFF333333),
+                                                    fontSize: 18,
+                                                    fontWeight:
+                                                        FontWeight.w600)),
+                                          ],
+                                        ),
+                                      );
                                     }
 
-                                    // return mainWidget;
-                                    return Container();
+                                    return mainWidget;
                                   });
                             }),
                           ],
