@@ -3,6 +3,7 @@ import 'package:flutter/material.dart';
 class ArtisanProvider extends ChangeNotifier {
   int _catalogueCount = 0;
   int _commentsCount = 0;
+  bool _isExpanded = false;
 
   int get getCatalogueCount => _catalogueCount;
   set setCatalogueCount(int value) {
@@ -13,6 +14,12 @@ class ArtisanProvider extends ChangeNotifier {
   int get getCommentsCount => _commentsCount;
   set setCommentsCount(int value) {
     _commentsCount = value;
+    notifyListeners();
+  }
+
+  bool get getExpandedStatus => _isExpanded;
+  set setExpandedStatus(bool newValue) {
+    _isExpanded = newValue;
     notifyListeners();
   }
 }

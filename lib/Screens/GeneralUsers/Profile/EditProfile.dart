@@ -272,7 +272,7 @@ class _EditProfileState extends State<EditProfile> {
                                   InkWell(
                                     onTap: () {
                                       _showAboutModal(
-                                          '${snapshot.data['bio']}');
+                                          '${snapshot.data['about']}');
                                     },
                                     child: Container(
                                       height: 25,

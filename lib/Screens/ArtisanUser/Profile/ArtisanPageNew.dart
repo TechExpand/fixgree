@@ -42,11 +42,6 @@ class _ArtisanPageNewState extends State<ArtisanPageNew> {
     });
   }
 
-  Future<void> executeAfterBuild(ArtisanProvider model, int count) async {
-    setState(() {});
-    // model.setCatalogueCount = count == null ? 0 : count;
-  }
-
   @override
   Widget build(BuildContext context) {
     var data = Provider.of<Utils>(context, listen: false);
@@ -106,183 +101,146 @@ class _ArtisanPageNewState extends State<ArtisanPageNew> {
                 ],
                 elevation: 0,
               ),
-              body: Column(
-                children: [
-                  Padding(
-                    padding:
-                        const EdgeInsets.only(left: 18, right: 18, top: 18),
-                    child: Row(
-                      children: [
-                        Stack(children: <Widget>[
-                          CircleAvatar(
-                            child: Text(''),
-                            radius: 40,
-                            backgroundImage: NetworkImage(
-                              widget.userData == 'no_picture_upload' ||
-                                      widget.userData == null
-                                  ? 'https://uploads.fixme.ng/originals/no_picture_upload'
-                                  : 'https://uploads.fixme.ng/originals/${widget.userData.urlAvatar}',
+              body: Consumer<ArtisanProvider>(builder: (context, model, _) {
+                return Column(
+                  children: [
+                    Padding(
+                      padding:
+                          const EdgeInsets.only(left: 18, right: 18, top: 18),
+                      child: Row(
+                        children: [
+                          Stack(children: <Widget>[
+                            CircleAvatar(
+                              child: Text(''),
+                              radius: 40,
+                              backgroundImage: NetworkImage(
+                                widget.userData == 'no_picture_upload' ||
+                                        widget.userData == null
+                                    ? 'https://uploads.fixme.ng/originals/no_picture_upload'
+                                    : 'https://uploads.fixme.ng/originals/${widget.userData.urlAvatar}',
+                              ),
+                              foregroundColor: Colors.white,
+                              backgroundColor: Colors.white,
                             ),
-                            foregroundColor: Colors.white,
-                            backgroundColor: Colors.white,
-                          ),
-                          Positioned(
-                            left: 63,
-                            top: 55,
-                            child: Container(
-                              height: 17,
-                              width: 17,
-                              decoration: BoxDecoration(
-                                  color: Color(0xFFFB8333),
-                                  shape: BoxShape.circle),
-                              child: Icon(
-                                Icons.check,
-                                size: 11,
-                                color: Colors.white,
+                            Positioned(
+                              left: 63,
+                              top: 55,
+                              child: Container(
+                                height: 17,
+                                width: 17,
+                                decoration: BoxDecoration(
+                                    color: Color(0xFFFB8333),
+                                    shape: BoxShape.circle),
+                                child: Icon(
+                                  Icons.check,
+                                  size: 11,
+                                  color: Colors.white,
+                                ),
                               ),
                             ),
-                          ),
-                        ]),
-                        Padding(
-                          padding: const EdgeInsets.only(left: 12),
-                          child: Column(
-                            mainAxisAlignment: MainAxisAlignment.start,
-                            crossAxisAlignment: CrossAxisAlignment.start,
+                          ]),
+                          Padding(
+                            padding: const EdgeInsets.only(left: 12),
+                            child: Column(
+                              mainAxisAlignment: MainAxisAlignment.start,
+                              crossAxisAlignment: CrossAxisAlignment.start,
+                              children: [
+                                Row(
+                                  children: [
+                                    Padding(
+                                      padding: const EdgeInsets.only(left: 4),
+                                      child: Text(
+                                        '${widget.userData.name} ${widget.userData.userLastName}'
+                                            .capitalizeFirstOfEach,
+                                        style: TextStyle(
+                                            color: Color(0xFF333333),
+                                            fontSize: 18,
+                                            fontWeight: FontWeight.w600),
+                                      ),
+                                    ),
+                                  ],
+                                ),
+                                SizedBox(height: 2),
+                                Row(
+                                  children: [
+                                    Padding(
+                                      padding: const EdgeInsets.only(top: 4),
+                                      child: Icon(
+                                        Icons.location_on_outlined,
+                                        color: Colors.amber,
+                                        size: 20,
+                                      ),
+                                    ),
+                                    SizedBox(
+                                      width: 4,
+                                    ),
+                                    SizedBox(
+                                      width: 200,
+                                      child: Text(
+                                        '${first == null ? '${widget.userData.userAddress}' : first.addressLine}',
+                                        softWrap: true,
+                                        maxLines: 2,
+                                        style: TextStyle(
+                                            fontWeight: FontWeight.w500,
+                                            fontSize: 15),
+                                      ),
+                                    )
+                                  ],
+                                ),
+                              ],
+                            ),
+                          )
+                        ],
+                      ),
+                    ),
+                    Padding(
+                      padding:
+                          const EdgeInsets.only(left: 18, right: 18, top: 18),
+                      child: Column(
+                        children: [
+                          Wrap(
                             children: [
-                              Row(
-                                children: [
-                                  Padding(
-                                    padding: const EdgeInsets.only(left: 4),
-                                    child: Text(
-                                      '${widget.userData.name} ${widget.userData.userLastName}'
-                                          .capitalizeFirstOfEach,
-                                      style: TextStyle(
-                                          color: Color(0xFF333333),
-                                          fontSize: 18,
-                                          fontWeight: FontWeight.w600),
-                                    ),
-                                  ),
-                                ],
-                              ),
-                              SizedBox(height: 2),
-                              Row(
-                                children: [
-                                  Padding(
-                                    padding: const EdgeInsets.only(top: 4),
-                                    child: Icon(
-                                      Icons.location_on_outlined,
-                                      color: Colors.amber,
-                                      size: 20,
-                                    ),
-                                  ),
-                                  SizedBox(
-                                    width: 4,
-                                  ),
-                                  SizedBox(
-                                    width: 200,
-                                    child: Text(
-                                      '${first == null ? '${widget.userData.userAddress}' : first.addressLine}',
-                                      softWrap: true,
-                                      maxLines: 2,
-                                      style: TextStyle(
-                                          fontWeight: FontWeight.w500,
-                                          fontSize: 15),
-                                    ),
-                                  )
-                                ],
+                              Align(
+                                alignment: Alignment.centerLeft,
+                                child: Text(
+                                  '${widget.userData.serviceArea}'
+                                      .toUpperCase(),
+                                  style: TextStyle(
+                                      fontWeight: FontWeight.bold,
+                                      fontSize: 19.5,
+                                      color: Color(0xFFBCBCBC)),
+                                ),
                               ),
                             ],
                           ),
-                        )
-                      ],
-                    ),
-                  ),
-                  Padding(
-                    padding:
-                        const EdgeInsets.only(left: 18, right: 18, top: 18),
-                    child: Column(
-                      children: [
-                        Wrap(
-                          children: [
-                            Align(
-                              alignment: Alignment.centerLeft,
-                              child: Text(
-                                '${widget.userData.serviceArea}'.toUpperCase(),
+                          SizedBox(
+                            height: 5,
+                          ),
+                          Row(
+                            children: [
+                              Text(
+                                'Expertise level: '.capitalizeFirstOfEach,
                                 style: TextStyle(
-                                    fontWeight: FontWeight.bold,
-                                    fontSize: 19.5,
-                                    color: Color(0xFFBCBCBC)),
+                                    color: Color(0xFF333333),
+                                    fontSize: 16,
+                                    fontWeight: FontWeight.w600),
                               ),
-                            ),
-                          ],
-                        ),
-                        SizedBox(
-                          height: 5,
-                        ),
-                        Row(
-                          children: [
-                            Text(
-                              'Expertise level: '.capitalizeFirstOfEach,
-                              style: TextStyle(
-                                  color: Color(0xFF333333),
-                                  fontSize: 16,
-                                  fontWeight: FontWeight.w600),
-                            ),
-                            StarRating(
-                              rating: double.parse(
-                                  widget.userData.userRating.toString()),
-                            ),
-                          ],
-                        ),
-                        // SizedBox(
-                        //   height: 10,
-                        // ),
-
-                        widget.userData.bio == null || widget.userData.bio == ''
-                            ? SizedBox()
-                            : Column(
-                                children: [
-                                  Divider(),
-                                  Row(
-                                    children: [
-                                      Text(
-                                        'ABOUT',
-                                        style: TextStyle(
-                                            color: Color(0xFF333333),
-                                            fontSize: 16,
-                                            fontWeight: FontWeight.w600),
-                                      ),
-                                    ],
-                                  ),
-                                  Wrap(
-                                    children: [
-                                      Align(
-                                        alignment: Alignment.centerLeft,
-                                        child: Text(
-                                          '${widget.userData.bio == null ? '' : widget.userData.bio}',
-                                          style: TextStyle(
-                                              color: Color(0xFF333333),
-                                              fontSize: 16,
-                                              fontWeight: FontWeight.w400),
-                                        ),
-                                      ),
-                                    ],
-                                  ),
-                                ],
+                              StarRating(
+                                rating: double.parse(
+                                    widget.userData.userRating.toString()),
                               ),
-                        widget.userData.subServices == null ||
-                                widget.userData.subServices.isEmpty
-                            ? SizedBox()
-                            : AnimatedContainer(
-                                duration: Duration(milliseconds: 400),
-                                height: !data.isExpanded1 ? 60 : 0,
-                                child: Column(
+                            ],
+                          ),
+                          widget.userData.bio == null ||
+                                  widget.userData.bio == ''
+                              ? SizedBox()
+                              : Column(
                                   children: [
                                     Divider(),
                                     Row(
                                       children: [
                                         Text(
-                                          'SUBSERVICES',
+                                          'ABOUT',
                                           style: TextStyle(
                                               color: Color(0xFF333333),
                                               fontSize: 16,
@@ -295,7 +253,7 @@ class _ArtisanPageNewState extends State<ArtisanPageNew> {
                                         Align(
                                           alignment: Alignment.centerLeft,
                                           child: Text(
-                                            '${widget.userData.subServices.isEmpty ? '' : widget.userData.subServices[0]['subservice']}',
+                                            '${widget.userData.bio == null ? '' : widget.userData.bio}',
                                             style: TextStyle(
                                                 color: Color(0xFF333333),
                                                 fontSize: 16,
@@ -306,197 +264,250 @@ class _ArtisanPageNewState extends State<ArtisanPageNew> {
                                     ),
                                   ],
                                 ),
-                              ),
-                        AnimatedContainer(
-                          duration: Duration(milliseconds: 400),
-                          height: !data.isExpanded1 ? 75 : 0,
-                          child: Column(
-                            children: [
-                              Divider(),
-                              Row(
-                                children: [
-                                  Text(
-                                    'Business Address',
+                          AnimatedSwitcher(
+                            duration: Duration(milliseconds: 500),
+                            child: model.getExpandedStatus
+                                ? Column(children: [
+                                    widget.userData.subServices == null ||
+                                            widget.userData.subServices.isEmpty
+                                        ? SizedBox()
+                                        : AnimatedContainer(
+                                            duration:
+                                                Duration(milliseconds: 400),
+                                            child: Column(
+                                              children: [
+                                                Divider(),
+                                                Row(
+                                                  children: [
+                                                    Text(
+                                                      'SUBSERVICES',
+                                                      style: TextStyle(
+                                                          color:
+                                                              Color(0xFF333333),
+                                                          fontSize: 16,
+                                                          fontWeight:
+                                                              FontWeight.w600),
+                                                    ),
+                                                  ],
+                                                ),
+                                                Align(
+                                                  alignment:
+                                                      Alignment.centerLeft,
+                                                  child: Wrap(
+                                                    spacing: 5,
+                                                    alignment:
+                                                        WrapAlignment.start,
+                                                    children: [
+                                                      for (dynamic subService
+                                                          in widget.userData
+                                                              .subServices)
+                                                        Chip(
+                                                          backgroundColor:
+                                                              Color(0xFF9B049B)
+                                                                  .withOpacity(
+                                                                      0.5),
+                                                          label: Text(
+                                                            subService[
+                                                                    'subservice']
+                                                                .toString(),
+                                                            style: TextStyle(
+                                                                color: Colors
+                                                                    .white),
+                                                          ),
+                                                        ),
+                                                    ],
+                                                  ),
+                                                ),
+                                              ],
+                                            ),
+                                          ),
+                                    AnimatedContainer(
+                                      duration: Duration(milliseconds: 400),
+                                      child: Column(
+                                        children: [
+                                          Divider(),
+                                          Row(
+                                            children: [
+                                              Text(
+                                                'Business Address',
+                                                style: TextStyle(
+                                                    color: Color(0xFF333333),
+                                                    fontSize: 16,
+                                                    fontWeight:
+                                                        FontWeight.w600),
+                                              ),
+                                            ],
+                                          ),
+                                          Wrap(
+                                            children: [
+                                              Align(
+                                                alignment: Alignment.centerLeft,
+                                                child: Text(
+                                                  '${widget.userData.businessAddress.toString().isEmpty || widget.userData.businessAddress == null ? widget.userData.userAddress : widget.userData.businessAddress}',
+                                                  style: TextStyle(
+                                                      color: Color(0xFF333333),
+                                                      fontSize: 16,
+                                                      fontWeight:
+                                                          FontWeight.w400),
+                                                ),
+                                              ),
+                                            ],
+                                          ),
+                                        ],
+                                      ),
+                                    ),
+                                  ])
+                                : SizedBox(),
+                          ),
+                        ],
+                      ),
+                    ),
+                    Padding(
+                      padding:
+                          const EdgeInsets.only(left: 18, right: 18, top: 5),
+                      child: Row(
+                        children: [
+                          Container(
+                            decoration: BoxDecoration(
+                                borderRadius: BorderRadius.circular(5)),
+                            child: FlatButton(
+                              onPressed: () {
+                                FirebaseApi.addUserChat(
+                                  urlAvatar2:
+                                      'https://uploads.fixme.ng/originals/${network.profilePicFileName}',
+                                  name2: network.firstName,
+                                  idArtisan: network.mobileDeviceToken,
+                                  artisanMobile: network.phoneNum,
+                                  userMobile: widget.userData.userMobile,
+                                  idUser: widget.userData.idUser,
+                                  urlAvatar:
+                                      'https://uploads.fixme.ng/originals/${widget.userData.urlAvatar}',
+                                  name: widget.userData.name,
+                                );
+
+                                Navigator.push(
+                                  context,
+                                  PageRouteBuilder(
+                                    pageBuilder: (context, animation,
+                                        secondaryAnimation) {
+                                      return ChatPage(user: widget.userData);
+                                    },
+                                    transitionsBuilder: (context, animation,
+                                        secondaryAnimation, child) {
+                                      return FadeTransition(
+                                        opacity: animation,
+                                        child: child,
+                                      );
+                                    },
+                                  ),
+                                );
+                              },
+                              color: Color(0xFF9B049B),
+                              shape: RoundedRectangleBorder(
+                                  borderRadius: BorderRadius.circular(5)),
+                              padding: EdgeInsets.all(0.0),
+                              child: Ink(
+                                decoration: BoxDecoration(
+                                    borderRadius: BorderRadius.circular(5)),
+                                child: Container(
+                                  constraints: BoxConstraints(
+                                      maxWidth: 120, minHeight: 35.0),
+                                  alignment: Alignment.center,
+                                  child: Text(
+                                    "Message",
+                                    textAlign: TextAlign.center,
                                     style: TextStyle(
-                                        color: Color(0xFF333333),
-                                        fontSize: 16,
+                                        color: Colors.white,
                                         fontWeight: FontWeight.w600),
                                   ),
-                                ],
-                              ),
-                              Wrap(
-                                children: [
-                                  Align(
-                                    alignment: Alignment.centerLeft,
-                                    child: Text(
-                                      '${widget.userData.businessAddress.toString().isEmpty || widget.userData.businessAddress == null ? widget.userData.userAddress : widget.userData.businessAddress}',
-                                      style: TextStyle(
-                                          color: Color(0xFF333333),
-                                          fontSize: 16,
-                                          fontWeight: FontWeight.w400),
-                                    ),
-                                  ),
-                                ],
-                              ),
-                            ],
-                          ),
-                        ),
-                      ],
-                    ),
-                  ),
-                  Padding(
-                    padding: const EdgeInsets.only(left: 18, right: 18, top: 5),
-                    child: Row(
-                      children: [
-                        Container(
-                          decoration: BoxDecoration(
-                              borderRadius: BorderRadius.circular(5)),
-                          child: FlatButton(
-                            onPressed: () {
-                              FirebaseApi.addUserChat(
-                                urlAvatar2:
-                                    'https://uploads.fixme.ng/originals/${network.profilePicFileName}',
-                                name2: network.firstName,
-                                idArtisan: network.mobileDeviceToken,
-                                artisanMobile: network.phoneNum,
-                                userMobile: widget.userData.userMobile,
-                                idUser: widget.userData.idUser,
-                                urlAvatar:
-                                    'https://uploads.fixme.ng/originals/${widget.userData.urlAvatar}',
-                                name: widget.userData.name,
-                              );
-
-                              Navigator.push(
-                                context,
-                                PageRouteBuilder(
-                                  pageBuilder:
-                                      (context, animation, secondaryAnimation) {
-                                    return ChatPage(user: widget.userData);
-                                  },
-                                  transitionsBuilder: (context, animation,
-                                      secondaryAnimation, child) {
-                                    return FadeTransition(
-                                      opacity: animation,
-                                      child: child,
-                                    );
-                                  },
-                                ),
-                              );
-                            },
-                            color: Color(0xFF9B049B),
-                            shape: RoundedRectangleBorder(
-                                borderRadius: BorderRadius.circular(5)),
-                            padding: EdgeInsets.all(0.0),
-                            child: Ink(
-                              decoration: BoxDecoration(
-                                  borderRadius: BorderRadius.circular(5)),
-                              child: Container(
-                                constraints: BoxConstraints(
-                                    maxWidth: 120, minHeight: 35.0),
-                                alignment: Alignment.center,
-                                child: Text(
-                                  "Message",
-                                  textAlign: TextAlign.center,
-                                  style: TextStyle(
-                                      color: Colors.white,
-                                      fontWeight: FontWeight.w600),
                                 ),
                               ),
                             ),
                           ),
-                        ),
-                        Container(
-                          margin: EdgeInsets.only(left: 10),
-                          height: 35,
-                          decoration: BoxDecoration(
-                              border: Border.all(
-                                  color: Color(0xFFE9E9E9), width: 1),
-                              borderRadius: BorderRadius.circular(5)),
-                          child: FlatButton(
-                            disabledColor: Color(0x909B049B),
-                            onPressed: () {
-                              UrlLauncher.launch(
-                                  "tel://${widget.userData.fullNumber}");
-                            },
-                            // full_number
-                            color: Colors.transparent,
-                            shape: RoundedRectangleBorder(
+                          Container(
+                            margin: EdgeInsets.only(left: 10),
+                            height: 35,
+                            decoration: BoxDecoration(
+                                border: Border.all(
+                                    color: Color(0xFFE9E9E9), width: 1),
                                 borderRadius: BorderRadius.circular(5)),
-                            padding: EdgeInsets.all(0.0),
-                            child: Ink(
-                              decoration: BoxDecoration(
+                            child: FlatButton(
+                              disabledColor: Color(0x909B049B),
+                              onPressed: () {
+                                UrlLauncher.launch(
+                                    "tel://${widget.userData.fullNumber}");
+                              },
+                              // full_number
+                              color: Colors.transparent,
+                              shape: RoundedRectangleBorder(
                                   borderRadius: BorderRadius.circular(5)),
-                              child: Container(
-                                constraints: BoxConstraints(
-                                    maxWidth: 100, minHeight: 35.0),
-                                alignment: Alignment.center,
-                                child: Text(
-                                  "Call",
-                                  textAlign: TextAlign.center,
-                                  style: TextStyle(
-                                      color: Colors.black,
-                                      fontWeight: FontWeight.w600),
-                                ),
-                              ),
-                            ),
-                          ),
-                        ),
-                        Container(
-                          margin: EdgeInsets.only(left: 10),
-                          height: 35,
-                          width: 33,
-                          decoration: BoxDecoration(
-                              border: Border.all(
-                                  color: Color(0xFFE9E9E9), width: 1),
-                              borderRadius: BorderRadius.circular(5)),
-                          child: FlatButton(
-                            disabledColor: Color(0x909B049B),
-                            onPressed: data.isExpanded1
-                                ? () {
-                                    setState(() {
-                                      data.onExpansionChanged1(false);
-                                    });
-                                  }
-                                : () {
-                                    setState(() {
-                                      data.onExpansionChanged1(true);
-                                    });
-                                  },
-                            color: Colors.transparent,
-                            shape: RoundedRectangleBorder(
-                                borderRadius: BorderRadius.circular(5)),
-                            padding: EdgeInsets.all(0.0),
-                            child: Ink(
-                              decoration: BoxDecoration(
-                                  borderRadius: BorderRadius.circular(5)),
-                              child: Container(
-                                  constraints: BoxConstraints(minHeight: 35.0),
+                              padding: EdgeInsets.all(0.0),
+                              child: Ink(
+                                decoration: BoxDecoration(
+                                    borderRadius: BorderRadius.circular(5)),
+                                child: Container(
+                                  constraints: BoxConstraints(
+                                      maxWidth: 100, minHeight: 35.0),
                                   alignment: Alignment.center,
-                                  child: Icon(
-                                    !data.isExpanded1
-                                        ? FeatherIcons.chevronUp
-                                        : FeatherIcons.chevronDown,
-                                    size: 15,
-                                  )),
+                                  child: Text(
+                                    "Call",
+                                    textAlign: TextAlign.center,
+                                    style: TextStyle(
+                                        color: Colors.black,
+                                        fontWeight: FontWeight.w600),
+                                  ),
+                                ),
+                              ),
                             ),
                           ),
-                        ),
-                      ],
+                          Container(
+                            margin: EdgeInsets.only(left: 10),
+                            height: 35,
+                            width: 33,
+                            decoration: BoxDecoration(
+                                border: Border.all(
+                                    color: Color(0xFFE9E9E9), width: 1),
+                                borderRadius: BorderRadius.circular(5)),
+                            child: FlatButton(
+                              disabledColor: Color(0x909B049B),
+                              onPressed: () {
+                                model.setExpandedStatus =
+                                    !model.getExpandedStatus;
+                              },
+                              color: Colors.transparent,
+                              shape: RoundedRectangleBorder(
+                                  borderRadius: BorderRadius.circular(5)),
+                              padding: EdgeInsets.all(0.0),
+                              child: Ink(
+                                decoration: BoxDecoration(
+                                    borderRadius: BorderRadius.circular(5)),
+                                child: Container(
+                                    constraints:
+                                        BoxConstraints(minHeight: 35.0),
+                                    alignment: Alignment.center,
+                                    child: Icon(
+                                      model.getExpandedStatus
+                                          ? FeatherIcons.chevronUp
+                                          : FeatherIcons.chevronDown,
+                                      size: 15,
+                                    )),
+                              ),
+                            ),
+                          ),
+                        ],
+                      ),
                     ),
-                  ),
-                  SizedBox(
-                    height: 5,
-                  ),
-                  Container(
-                    decoration: BoxDecoration(
-                      border: Border(
-                          top: BorderSide(width: 1, color: Color(0xFFEFEFEF)),
-                          bottom:
-                              BorderSide(width: 1, color: Color(0xFFEFEFEF))),
+                    SizedBox(
+                      height: 5,
                     ),
-                    child: Consumer<ArtisanProvider>(
-                        builder: (context, model, widget) {
-                      return TabBar(
+                    Container(
+                      decoration: BoxDecoration(
+                        border: Border(
+                            top: BorderSide(width: 1, color: Color(0xFFEFEFEF)),
+                            bottom:
+                                BorderSide(width: 1, color: Color(0xFFEFEFEF))),
+                      ),
+                      child: TabBar(
                         controller: _tabController,
                         unselectedLabelColor: Colors.black26,
                         labelColor: Colors.black54,
@@ -511,18 +522,15 @@ class _ArtisanPageNewState extends State<ArtisanPageNew> {
                                       fontWeight: FontWeight.w600))),
                           Tab(
                               child: Text(
-                                  'Reviews(${model.getCommentsCount == 0 ? 0 : model.getCommentsCount})',
+                                  'Reviews(${this.widget.userData.reviews})',
                                   style: GoogleFonts.openSans(
                                       fontSize: 16,
                                       fontWeight: FontWeight.w600))),
                         ],
-                      );
-                    }),
-                  ),
-                  Expanded(
-                    child:
-                        Consumer<ArtisanProvider>(builder: (context, model, _) {
-                      return Container(
+                      ),
+                    ),
+                    Expanded(
+                      child: Container(
                         width: double.infinity,
                         child: TabBarView(
                           controller: _tabController,
@@ -567,19 +575,6 @@ class _ArtisanPageNewState extends State<ArtisanPageNew> {
                                               ),
                                             );
                                           } else {
-                                            if (mounted) {
-                                              executeAfterBuild(
-                                                  model, snapshot.data.length);
-                                            }
-                                            // WidgetsBinding.instance
-                                            //     .addPostFrameCallback((_) {
-
-                                            // });
-                                            // Future.delayed(Duration.zero,
-                                            //     () async {
-
-                                            // });
-
                                             mainWidget = Container(
                                                 margin: const EdgeInsets.only(
                                                     bottom: 5,
@@ -687,12 +682,7 @@ class _ArtisanPageNewState extends State<ArtisanPageNew> {
                                         if (snapshot.connectionState ==
                                             ConnectionState.done) {
                                           if (snapshot.data == null) {
-                                          } else {
-                                            model.setCatalogueCount =
-                                                snapshot.data == null
-                                                    ? 0
-                                                    : snapshot.data.length;
-                                          }
+                                          } else {}
                                         }
                                         return Container(
                                             margin: const EdgeInsets.only(
@@ -775,14 +765,6 @@ class _ArtisanPageNewState extends State<ArtisanPageNew> {
                                           ),
                                         );
                                       } else {
-                                        WidgetsBinding.instance
-                                            .addPostFrameCallback((_) {
-                                          model.setCommentsCount =
-                                              snapshot.data == null
-                                                  ? 0
-                                                  : snapshot.data.length;
-                                        });
-
                                         mainWidget = Container(
                                           width:
                                               MediaQuery.of(context).size.width,
@@ -871,8 +853,6 @@ class _ArtisanPageNewState extends State<ArtisanPageNew> {
                                                         child: StarRating(
                                                           rating: double.parse(
                                                               '${snapshot.data[index]['rating']}'),
-
-                                                          /// onRatingChanged: (rating) => setState(() => this.rating = rating),
                                                         ),
                                                       ),
                                                     )
@@ -916,11 +896,11 @@ class _ArtisanPageNewState extends State<ArtisanPageNew> {
                             }),
                           ],
                         ),
-                      );
-                    }),
-                  )
-                ],
-              ));
+                      ),
+                    )
+                  ],
+                );
+              }));
         });
   }
 }

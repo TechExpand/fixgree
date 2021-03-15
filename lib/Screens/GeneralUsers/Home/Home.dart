@@ -510,8 +510,6 @@ class Home extends StatelessWidget {
                                             ? 3
                                             : snapshot.data.length,
                                         itemBuilder: (context, index) {
-                                          print(
-                                              'The Distance: ${snapshot.data[index].distance}');
                                           String distance = getDistance(
                                               rawDistance:
                                                   '${snapshot.data[index].distance}');
