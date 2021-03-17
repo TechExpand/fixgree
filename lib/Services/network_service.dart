@@ -1419,9 +1419,6 @@ class WebServices extends ChangeNotifier {
     }
     return res;
   }
-}
-
-
 
   Future<bool> deleteServiceCatalogueImage({imageFileName}) async {
     var response = await http.post(
