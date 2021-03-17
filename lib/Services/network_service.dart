@@ -1420,3 +1420,61 @@ class WebServices extends ChangeNotifier {
     return res;
   }
 }
+
+
+
+  Future<bool> deleteServiceCatalogueImage({imageFileName}) async {
+    var response = await http.post(
+        Uri.parse(
+            'https://manager.fixme.ng/del-svc-img?user_id=$userId&imageFileName=$imageFileName'),
+        headers: {
+          "Content-type": "application/json",
+          'Authorization': 'Bearer $bearer',
+        });
+    var body = json.decode(response.body);
+    print('The response: ' + body.toString());
+    bool res;
+    if (body['reqRes'] == 'true') {
+      res = true;
+    } else if (body['reqRes'] == 'false') {
+      res = false;
+    }
+    return res;
+  }
+
+  Future<bool> deleteCatalogueProducts({productId}) async {
+    var response = await http.post(
+        Uri.parse(
+            'https://manager.fixme.ng/delete-product-catalog?user_id=$userId&product_id=$productId'),
+        headers: {
+          "Content-type": "application/json",
+          'Authorization': 'Bearer $bearer',
+        });
+    var body = json.decode(response.body);
+    bool res;
+    if (body['reqRes'] == 'true') {
+      res = true;
+    } else if (body['reqRes'] == 'false') {
+      res = false;
+    }
+    return res;
+  }
+
+  Future<bool> deleteCatalogueProductImage({productImageId}) async {
+    var response = await http.post(
+        Uri.parse(
+            'https://manager.fixme.ng/delete-product-catalog-image?user_id=$userId&product_image_id=$productImageId'),
+        headers: {
+          "Content-type": "application/json",
+          'Authorization': 'Bearer $bearer',
+        });
+    var body = json.decode(response.body);
+    bool res;
+    if (body['reqRes'] == 'true') {
+      res = true;
+    } else if (body['reqRes'] == 'false') {
+      res = false;
+    }
+    return res;
+  }
+}

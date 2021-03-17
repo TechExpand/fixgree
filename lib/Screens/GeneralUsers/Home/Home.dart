@@ -595,7 +595,7 @@ class Home extends StatelessWidget {
                                                         bottom: 4,
                                                         child: Container(
                                                           height: 20,
-                                                          width: 115,
+                                                          width: 130,
                                                           padding:
                                                               const EdgeInsets
                                                                       .only(
@@ -880,7 +880,7 @@ class Home extends StatelessWidget {
                                                         bottom: 4,
                                                         child: Container(
                                                           height: 20,
-                                                          width: 115,
+                                                          width: 130,
                                                           padding:
                                                               const EdgeInsets
                                                                       .only(

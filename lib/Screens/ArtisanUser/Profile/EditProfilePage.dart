@@ -112,27 +112,25 @@ class _EditProfilePageState extends State<EditProfilePage> {
                                 ],
                               ),
                               Row(
-                                mainAxisAlignment:
-                                    MainAxisAlignment.spaceBetween,
                                 children: [
-                                  Wrap(
-                                    children: [
-                                      Align(
-                                        alignment: Alignment.centerLeft,
-                                        child: Padding(
-                                          padding:
-                                              const EdgeInsets.only(top: 10),
-                                          child: Text(
-                                            '${snapshot.data['firstName']} ${snapshot.data['lastName']}',
-                                            style: TextStyle(
-                                                color: Color(0xFF333333),
-                                                fontSize: 16,
-                                                fontWeight: FontWeight.w400),
-                                          ),
+                                  SizedBox(
+                                    width:
+                                        MediaQuery.of(context).size.width / 1.5,
+                                    child: Align(
+                                      alignment: Alignment.centerLeft,
+                                      child: Padding(
+                                        padding: const EdgeInsets.only(top: 10),
+                                        child: Text(
+                                          '${snapshot.data['firstName']} ${snapshot.data['lastName']}',
+                                          style: TextStyle(
+                                              color: Color(0xFF333333),
+                                              fontSize: 16,
+                                              fontWeight: FontWeight.w400),
                                         ),
                                       ),
-                                    ],
+                                    ),
                                   ),
+                                  Spacer(),
                                   InkWell(
                                     onTap: () {
                                       _editName(snapshot.data['firstName'],
@@ -175,28 +173,27 @@ class _EditProfilePageState extends State<EditProfilePage> {
                                   ],
                                 ),
                                 Row(
-                                  mainAxisAlignment:
-                                      MainAxisAlignment.spaceBetween,
                                   children: [
-                                    Wrap(
-                                      children: [
-                                        Align(
-                                          alignment: Alignment.centerLeft,
-                                          child: Padding(
-                                            padding:
-                                                const EdgeInsets.only(top: 10),
-                                            child: Text(
-                                              '${snapshot.data['serviceArea']}'
-                                                  .toUpperCase(),
-                                              style: TextStyle(
-                                                  color: Color(0xFF333333),
-                                                  fontSize: 16,
-                                                  fontWeight: FontWeight.w500),
-                                            ),
+                                    SizedBox(
+                                      width: MediaQuery.of(context).size.width /
+                                          1.5,
+                                      child: Align(
+                                        alignment: Alignment.centerLeft,
+                                        child: Padding(
+                                          padding:
+                                              const EdgeInsets.only(top: 10),
+                                          child: Text(
+                                            '${snapshot.data['serviceArea']}'
+                                                .toUpperCase(),
+                                            style: TextStyle(
+                                                color: Color(0xFF333333),
+                                                fontSize: 16,
+                                                fontWeight: FontWeight.w500),
                                           ),
                                         ),
-                                      ],
+                                      ),
                                     ),
+                                    Spacer(),
                                     InkWell(
                                       onTap: () {
                                         _editService();
@@ -238,30 +235,31 @@ class _EditProfilePageState extends State<EditProfilePage> {
                                     ),
                                   ],
                                 ),
-                                Wrap(
-                                  runAlignment: WrapAlignment.spaceBetween,
+                                Row(
                                   children: [
-                                    Wrap(
-                                      children: [
-                                        Align(
-                                          alignment: Alignment.centerLeft,
-                                          child: Padding(
-                                            padding:
-                                                const EdgeInsets.only(top: 10),
-                                            child: Text(
-                                              snapshot.data['bio'] == null ||
-                                                      snapshot.data['bio'] == ''
-                                                  ? "No bio set"
-                                                  : '${snapshot.data['bio']}',
-                                              style: TextStyle(
-                                                  color: Color(0xFF333333),
-                                                  fontSize: 16,
-                                                  fontWeight: FontWeight.w500),
-                                            ),
+                                    SizedBox(
+                                      width: MediaQuery.of(context).size.width /
+                                          1.5,
+                                      child: Align(
+                                        alignment: Alignment.centerLeft,
+                                        child: Padding(
+                                          padding:
+                                              const EdgeInsets.only(top: 10),
+                                          child: Text(
+                                            snapshot.data['bio'] == null ||
+                                                    snapshot.data['bio'] == ''
+                                                ? "No bio set"
+                                                : '${snapshot.data['bio']}',
+                                            textAlign: TextAlign.start,
+                                            style: TextStyle(
+                                                color: Color(0xFF333333),
+                                                fontSize: 16,
+                                                fontWeight: FontWeight.w500),
                                           ),
                                         ),
-                                      ],
+                                      ),
                                     ),
+                                    Spacer(),
                                     InkWell(
                                       onTap: () {
                                         _editAbout('${snapshot.data['bio']}');
@@ -304,27 +302,26 @@ class _EditProfilePageState extends State<EditProfilePage> {
                                   ],
                                 ),
                                 Row(
-                                  mainAxisAlignment:
-                                      MainAxisAlignment.spaceBetween,
                                   children: [
-                                    Wrap(
-                                      children: [
-                                        Align(
-                                          alignment: Alignment.centerLeft,
-                                          child: Padding(
-                                            padding:
-                                                const EdgeInsets.only(top: 10),
-                                            child: Text(
-                                              '${snapshot.data['businessAddress'].toString().isEmpty ? snapshot.data['address'] : snapshot.data['businessAddress']}',
-                                              style: TextStyle(
-                                                  color: Color(0xFF333333),
-                                                  fontSize: 16,
-                                                  fontWeight: FontWeight.w500),
-                                            ),
+                                    SizedBox(
+                                      width: MediaQuery.of(context).size.width /
+                                          1.5,
+                                      child: Align(
+                                        alignment: Alignment.centerLeft,
+                                        child: Padding(
+                                          padding:
+                                              const EdgeInsets.only(top: 10),
+                                          child: Text(
+                                            '${snapshot.data['businessAddress'].toString().isEmpty ? snapshot.data['address'] : snapshot.data['businessAddress']}',
+                                            style: TextStyle(
+                                                color: Color(0xFF333333),
+                                                fontSize: 16,
+                                                fontWeight: FontWeight.w500),
                                           ),
                                         ),
-                                      ],
+                                      ),
                                     ),
+                                    Spacer(),
                                     InkWell(
                                       onTap: () {
                                         _editAddress(

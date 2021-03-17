@@ -1,5 +1,6 @@
 import 'dart:io';
 
+import 'package:fixme/Screens/ArtisanUser/Profile/ArtisanProvider.dart';
 import 'package:fixme/Screens/ArtisanUser/Profile/EditProfilePage.dart';
 import 'package:fixme/Services/network_service.dart';
 import 'package:fixme/Utils/utils.dart';
@@ -27,10 +28,22 @@ class _ProfilePageNewState extends State<ProfilePageNew> {
   TabController _tabController;
   final GlobalKey<ScaffoldState> scaffoldKey = GlobalKey<ScaffoldState>();
 
+  Future<dynamic> cataloguePhotos;
+  int catalogueCount;
+
+  getCataloguePhotos(context) async {
+    var network = Provider.of<WebServices>(context, listen: false);
+    setState(() {
+      cataloguePhotos = network.getServiceImage(network.userId, network.userId);
+      cataloguePhotos.then((data) {
+        catalogueCount = data.length;
+      });
+    });
+  }
+
   @override
   Widget build(BuildContext context) {
-    var data = Provider.of<Utils>(context, listen: false);
-    // var location = Provider.of<LocationService>(context);
+    getCataloguePhotos(context);
     var network = Provider.of<WebServices>(context, listen: false);
     return Scaffold(
         appBar: AppBar(
@@ -82,11 +95,15 @@ class _ProfilePageNewState extends State<ProfilePageNew> {
                                   decoration: BoxDecoration(
                                       color: Color(0xFFFB8333),
                                       shape: BoxShape.circle),
-                                  child: Icon(
-                                    Icons.check,
-                                    size: 11,
-                                    color: Colors.white,
-                                  ),
+                                  child:
+                                      snapshot.data['identificationStatus'] ==
+                                              'un-verified'
+                                          ? SizedBox()
+                                          : Icon(
+                                              Icons.check,
+                                              size: 11,
+                                              color: Colors.white,
+                                            ),
                                 ),
                               ),
                             ]),
@@ -332,12 +349,13 @@ class _ProfilePageNewState extends State<ProfilePageNew> {
                           indicatorColor: Colors.black54,
                           tabs: [
                             Tab(
-                                child: Text('Catalogue(0)',
+                                child: Text('Catalogue($catalogueCount)',
                                     style: GoogleFonts.openSans(
                                         fontSize: 16,
                                         fontWeight: FontWeight.w600))),
                             Tab(
-                                child: Text('Reviews(0)',
+                                child: Text(
+                                    'Reviews(${snapshot.data['reviews']})',
                                     style: GoogleFonts.openSans(
                                         fontSize: 16,
                                         fontWeight: FontWeight.w600))),
@@ -354,8 +372,9 @@ class _ProfilePageNewState extends State<ProfilePageNew> {
                               Container(
                                 child: snapshot.data['role'] == 'artisan'
                                     ? FutureBuilder(
-                                        future: network.getServiceImage(
-                                            network.userId, network.userId),
+                                        // future: network.getServiceImage(
+                                        //     network.userId, network.userId),
+                                        future: cataloguePhotos,
                                         builder: (context, snapshot) {
                                           Widget mainWidget;
                                           if (snapshot.connectionState ==
@@ -421,39 +440,39 @@ class _ProfilePageNewState extends State<ProfilePageNew> {
                                                     itemBuilder:
                                                         (BuildContext context,
                                                             int index) {
-                                                      return InkWell(
-                                                        onTap: () {
-                                                          Navigator.push(
-                                                            context,
-                                                            PageRouteBuilder(
-                                                              pageBuilder: (context,
-                                                                  animation,
-                                                                  secondaryAnimation) {
-                                                                return PhotoView(
-                                                                  'https://uploads.fixme.ng/originals/${snapshot.data[index]['imageFileName']}',
-                                                                  snapshot.data[
-                                                                          index]
-                                                                      [
-                                                                      'imageFileName'],
-                                                                );
-                                                              },
-                                                              transitionsBuilder:
-                                                                  (context,
+                                                      return Stack(
+                                                        children: [
+                                                          InkWell(
+                                                            onTap: () {
+                                                              Navigator.push(
+                                                                context,
+                                                                PageRouteBuilder(
+                                                                  pageBuilder: (context,
+                                                                      animation,
+                                                                      secondaryAnimation) {
+                                                                    return PhotoView(
+                                                                      'https://uploads.fixme.ng/originals/${snapshot.data[index]['imageFileName']}',
+                                                                      snapshot.data[
+                                                                              index]
+                                                                          [
+                                                                          'imageFileName'],
+                                                                    );
+                                                                  },
+                                                                  transitionsBuilder: (context,
                                                                       animation,
                                                                       secondaryAnimation,
                                                                       child) {
-                                                                return FadeTransition(
-                                                                  opacity:
-                                                                      animation,
-                                                                  child: child,
-                                                                );
-                                                              },
-                                                            ),
-                                                          );
-                                                        },
-                                                        child: Stack(
-                                                          children: [
-                                                            Hero(
+                                                                    return FadeTransition(
+                                                                      opacity:
+                                                                          animation,
+                                                                      child:
+                                                                          child,
+                                                                    );
+                                                                  },
+                                                                ),
+                                                              );
+                                                            },
+                                                            child: Hero(
                                                               tag: snapshot
                                                                           .data[
                                                                       index][
@@ -467,9 +486,32 @@ class _ProfilePageNewState extends State<ProfilePageNew> {
                                                                         .cover,
                                                                   )),
                                                             ),
-                                                            Positioned(
-                                                              bottom: 0,
-                                                              right: 0,
+                                                          ),
+                                                          Positioned(
+                                                            bottom: 0,
+                                                            right: 0,
+                                                            child: InkWell(
+                                                              onTap: () async {
+                                                                bool
+                                                                    deleteStatus =
+                                                                    await network.deleteServiceCatalogueImage(
+                                                                        imageFileName:
+                                                                            snapshot.data[index]['imageFileName']);
+                                                                if (deleteStatus) {
+                                                                  ScaffoldMessenger.of(
+                                                                          context)
+                                                                      .showSnackBar(SnackBar(
+                                                                          content:
+                                                                              Text('Photo deleted successful.')));
+                                                                  setState(
+                                                                      () {});
+                                                                } else
+                                                                  ScaffoldMessenger.of(
+                                                                          context)
+                                                                      .showSnackBar(SnackBar(
+                                                                          content:
+                                                                              Text('Photo delete failed.')));
+                                                              },
                                                               child: Container(
                                                                 padding:
                                                                     const EdgeInsets
@@ -486,8 +528,8 @@ class _ProfilePageNewState extends State<ProfilePageNew> {
                                                                 ),
                                                               ),
                                                             ),
-                                                          ],
-                                                        ),
+                                                          ),
+                                                        ],
                                                       );
                                                     },
                                                   ));
@@ -531,12 +573,7 @@ class _ProfilePageNewState extends State<ProfilePageNew> {
                                           if (snapshot.connectionState ==
                                               ConnectionState.done) {
                                             if (snapshot.data == null) {
-                                            } else {
-                                              // model.setCatalogueCount =
-                                              //     snapshot.data == null
-                                              //         ? 0
-                                              //         : snapshot.data.length;
-                                            }
+                                            } else {}
                                           }
                                           return Container(
                                               margin: const EdgeInsets.only(

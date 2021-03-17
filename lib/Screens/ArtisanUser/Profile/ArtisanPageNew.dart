@@ -42,6 +42,21 @@ class _ArtisanPageNewState extends State<ArtisanPageNew> {
     });
   }
 
+  Future<dynamic> cataloguePhotos;
+
+  getCataloguePhotos(context) async {
+    var network = Provider.of<WebServices>(context, listen: false);
+    final artisanProvider =
+        Provider.of<ArtisanProvider>(context, listen: false);
+    cataloguePhotos =
+        network.getServiceImage(network.userId, widget.userData.id);
+    cataloguePhotos.then((data) {
+      int catalogueCount = data.length;
+      print('The catalog count: $catalogueCount');
+      artisanProvider.setCatalogueCount = catalogueCount;
+    });
+  }
+
   @override
   Widget build(BuildContext context) {
     var data = Provider.of<Utils>(context, listen: false);
@@ -54,6 +69,7 @@ class _ArtisanPageNewState extends State<ArtisanPageNew> {
           ),
         ],
         builder: (context, _) {
+          getCataloguePhotos(context);
           return Scaffold(
               appBar: AppBar(
                 backgroundColor: Colors.white,
@@ -131,11 +147,14 @@ class _ArtisanPageNewState extends State<ArtisanPageNew> {
                                 decoration: BoxDecoration(
                                     color: Color(0xFFFB8333),
                                     shape: BoxShape.circle),
-                                child: Icon(
-                                  Icons.check,
-                                  size: 11,
-                                  color: Colors.white,
-                                ),
+                                child: widget.userData.verification ==
+                                        'un-verified'
+                                    ? SizedBox()
+                                    : Icon(
+                                        Icons.check,
+                                        size: 11,
+                                        color: Colors.white,
+                                      ),
                               ),
                             ),
                           ]),
@@ -433,8 +452,8 @@ class _ArtisanPageNewState extends State<ArtisanPageNew> {
                                 borderRadius: BorderRadius.circular(5)),
                             child: FlatButton(
                               disabledColor: Color(0x909B049B),
-                              onPressed: () {
-                                UrlLauncher.launch(
+                              onPressed: () async {
+                                await UrlLauncher.launch(
                                     "tel://${widget.userData.fullNumber}");
                               },
                               // full_number
@@ -539,8 +558,7 @@ class _ArtisanPageNewState extends State<ArtisanPageNew> {
                             Container(
                               child: widget.userData.userRole == 'artisan'
                                   ? FutureBuilder(
-                                      future: network.getServiceImage(
-                                          network.userId, widget.userData.id),
+                                      future: cataloguePhotos,
                                       builder: (context, snapshot) {
                                         Widget mainWidget;
                                         if (snapshot.connectionState ==

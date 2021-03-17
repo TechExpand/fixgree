@@ -183,25 +183,25 @@ class _EditProfileState extends State<EditProfile> {
                               ],
                             ),
                             Row(
-                              mainAxisAlignment: MainAxisAlignment.spaceBetween,
                               children: [
-                                Wrap(
-                                  children: [
-                                    Align(
-                                      alignment: Alignment.centerLeft,
-                                      child: Padding(
-                                        padding: const EdgeInsets.only(top: 10),
-                                        child: Text(
-                                          '${snapshot.data['firstname']} ${snapshot.data['lastname']}',
-                                          style: TextStyle(
-                                              color: Color(0xFF333333),
-                                              fontSize: 16,
-                                              fontWeight: FontWeight.w400),
-                                        ),
+                                SizedBox(
+                                  width:
+                                      MediaQuery.of(context).size.width / 1.5,
+                                  child: Align(
+                                    alignment: Alignment.centerLeft,
+                                    child: Padding(
+                                      padding: const EdgeInsets.only(top: 10),
+                                      child: Text(
+                                        '${snapshot.data['firstname']} ${snapshot.data['lastname']}',
+                                        style: TextStyle(
+                                            color: Color(0xFF333333),
+                                            fontSize: 16,
+                                            fontWeight: FontWeight.w400),
                                       ),
                                     ),
-                                  ],
+                                  ),
                                 ),
+                                Spacer(),
                                 InkWell(
                                   onTap: () {
                                     _showEditNameModal(
@@ -245,30 +245,28 @@ class _EditProfileState extends State<EditProfile> {
                                 ],
                               ),
                               Row(
-                                mainAxisAlignment:
-                                    MainAxisAlignment.spaceBetween,
                                 children: [
-                                  Wrap(
-                                    children: [
-                                      Align(
-                                        alignment: Alignment.centerLeft,
-                                        child: Padding(
-                                          padding:
-                                              const EdgeInsets.only(top: 10),
-                                          child: Text(
-                                            snapshot.data['about'] == null ||
-                                                    snapshot.data['about'] == ''
-                                                ? "No bio set"
-                                                : '${snapshot.data['about']}',
-                                            style: TextStyle(
-                                                color: Color(0xFF333333),
-                                                fontSize: 16,
-                                                fontWeight: FontWeight.w500),
-                                          ),
+                                  SizedBox(
+                                    width:
+                                        MediaQuery.of(context).size.width / 1.5,
+                                    child: Align(
+                                      alignment: Alignment.centerLeft,
+                                      child: Padding(
+                                        padding: const EdgeInsets.only(top: 10),
+                                        child: Text(
+                                          snapshot.data['about'] == null ||
+                                                  snapshot.data['about'] == ''
+                                              ? "No bio set"
+                                              : '${snapshot.data['about']}',
+                                          style: TextStyle(
+                                              color: Color(0xFF333333),
+                                              fontSize: 16,
+                                              fontWeight: FontWeight.w500),
                                         ),
                                       ),
-                                    ],
+                                    ),
                                   ),
+                                  Spacer(),
                                   InkWell(
                                     onTap: () {
                                       _showAboutModal(
