@@ -365,7 +365,9 @@ class _ArtisanPageNewState extends State<ArtisanPageNew> {
                                     'https://uploads.fixme.ng/originals/${widget.userData.urlAvatar}',
                                 name: widget.userData.name,
                               );
-
+                              FirebaseApi.uploadCheckChat(
+                                widget.userData.id,
+                              );
                               Navigator.push(
                                 context,
                                 PageRouteBuilder(

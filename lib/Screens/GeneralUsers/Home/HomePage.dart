@@ -1,5 +1,7 @@
 import 'dart:io';
 import 'dart:ui';
+import 'package:cloud_firestore/cloud_firestore.dart';
+import 'package:fixme/Model/Notify.dart';
 import 'package:fixme/Services/Firebase_service.dart';
 import 'package:fixme/Services/network_service.dart';
 import 'package:firebase_messaging/firebase_messaging.dart';
@@ -87,6 +89,9 @@ class _HomePageState extends State<HomePage> {
         '${message["data"]["bidId"]}',
         '${message["data"]["bidderId"]}',
       );
+      FirebaseApi.uploadCheckNotify(
+        network.userId.toString(),
+      );
       showNotification(message["notification"]["body"]);
       print(message);
       print(message);
@@ -119,7 +124,8 @@ class _HomePageState extends State<HomePage> {
   @override
   Widget build(BuildContext context) {
     var data = Provider.of<DataProvider>(context);
-
+    WebServices network = Provider.of<WebServices>(context, listen: false);
+    List<Notify> notify;
     // FirebaseApi.updateUsertoOnline(datas.mobile_device_token);
     var widget = Scaffold(
       key: scafoldKey,
@@ -183,7 +189,55 @@ class _HomePageState extends State<HomePage> {
               BottomNavigationBarItem(
                 icon: Padding(
                   padding: const EdgeInsets.only(bottom: 3),
-                  child: Icon(FeatherIcons.bell),
+                  child: Stack(
+                    children: [
+                      StreamBuilder(
+                          stream: FirebaseApi.userCheckNotifyStream(
+                              network.userId.toString()),
+                          builder:
+                              (context, AsyncSnapshot<QuerySnapshot> snapshot) {
+                            if (snapshot.hasData) {
+                              notify = snapshot.data.docs
+                                  .map((doc) =>
+                                      Notify.fromMap(doc.data(), doc.id))
+                                  .toList();
+
+                              switch (snapshot.connectionState) {
+                                case ConnectionState.waiting:
+                                  return Positioned(
+                                      left: 12,
+                                      child: Container());
+                                default:
+                                  if (snapshot.hasError) {
+                                    return Positioned(
+                                        left: 12,
+                                        child: Container());
+                                  } else {
+                                    final users = notify;
+                                    if (users.isEmpty || users == null) {
+                                      return Positioned(
+                                          left: 12,
+                                          child: Container());
+                                    } else {
+                                      return Positioned(
+                                        left: 12,
+                                          child: Icon(
+                                        Icons.circle,
+                                        color: Color(0xFF9B049B),
+                                            size: 12,
+                                      ));
+                                    }
+                                  }
+                              }
+                            } else {
+                              return Positioned(
+                                  left: 12,
+                                  child: Container());
+                            }
+                          }),
+                      Icon(FeatherIcons.bell),
+                    ],
+                  ),
                 ),
                 label: 'Notifications',
               ),

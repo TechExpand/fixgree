@@ -218,6 +218,7 @@ class _BidderPageState extends State<BidderPage> {
                               'https://uploads.fixme.ng/originals/${snapshot.data.urlAvatar}',
                               name: snapshot.data.name,
                             );
+
                             Navigator.push(
                               context,
                               PageRouteBuilder(

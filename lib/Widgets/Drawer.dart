@@ -1,6 +1,7 @@
 import 'package:fixme/Screens/ArtisanUser/Profile/ProfilePage.dart';
 import 'package:fixme/Screens/ArtisanUser/Profile/ProfilePageNew.dart';
 import 'package:fixme/Screens/GeneralUsers/Profile/ProfileNew.dart';
+import 'package:fixme/Services/Firebase_service.dart';
 import 'package:share/share.dart';
 import 'package:fixme/Screens/ArtisanUser/RegisterArtisan/thankyou.dart';
 import 'package:fixme/Screens/GeneralUsers/Chat/Chats.dart';
@@ -142,6 +143,9 @@ class _DrawerState extends State<DrawerWidget> {
                     },
                   ),
                 );
+                FirebaseApi.clearCheckNotify(
+                  network.userId.toString(),
+                );
               },
               child: SizedBox(
                 height: 45,
@@ -217,20 +221,7 @@ class _DrawerState extends State<DrawerWidget> {
                   ),
                 ),
               )),
-          SizedBox(
-            height: 40,
-            child: ListTile(
-              leading: Icon(Icons.assignment, color: Color(0xF0A40C85)),
-              contentPadding: const EdgeInsets.only(
-                left: 10,
-              ),
-              minLeadingWidth: 10,
-              title: Text(
-                'Manage orders',
-                style: TextStyle(fontSize: 15, fontWeight: FontWeight.w400),
-              ),
-            ),
-          ),
+
           InkWell(
             onTap: () {
               Navigator.pop(context);

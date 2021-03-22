@@ -1,6 +1,7 @@
 import 'dart:convert';
 import 'package:fixme/Model/UserSearch.dart';
 import 'package:fixme/Model/info.dart';
+import 'package:fixme/Model/Project.dart';
 import 'package:fixme/Screens/ArtisanUser/Profile/ProfilePage.dart';
 import 'package:fixme/Screens/GeneralUsers/Home/HomePage.dart';
 import 'package:fixme/Services/postrequest_service.dart';
@@ -1168,7 +1169,7 @@ class WebServices extends ChangeNotifier {
 
   Future<dynamic> requestPayment(project_owner_user_id, bid_id) async {
     var response = await http
-        .post(Uri.parse('https://api.fixme.ng/completed-project-and-payment '), body: {
+        .post(Uri.parse('https://manager.fixme.ng/completed-project-and-payment'), body: {
       'bidder_user_id': userId.toString(),
       'project_owner_user_id': project_owner_user_id.toString(),
       'bid_id':  bid_id.toString(),
@@ -1195,13 +1196,22 @@ class WebServices extends ChangeNotifier {
       "Content-type": "application/x-www-form-urlencoded",
       'Authorization': 'Bearer $bearer',
     });
-    var body = json.decode(response.body);
+
+    var body1 = json.decode(response.body);
+    List body = body1['projects'];
+    List<Project> projects = body
+        .map((data) {
+      return Project.fromJson(data);
+    })
+        .toSet()
+        .toList();
+
     notifyListeners();
-    if (body['reqRes'] == 'true') {
-      print(body['projects']);
-      return body['projects'];
-    } else if (body['reqRes'] == 'false') {
-      print(body['message']);
+    if (body1['reqRes'] == 'true') {
+      print(body1['projects']);
+      return projects;
+    } else if (body1['reqRes'] == 'false') {
+      print(body1['message']);
     }
   }
 

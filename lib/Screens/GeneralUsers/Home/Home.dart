@@ -1,4 +1,6 @@
+import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:fixme/DummyData.dart';
+import 'package:fixme/Model/Notify.dart';
 import 'package:fixme/Screens/ArtisanUser/Profile/ArtisanPageNew.dart';
 import 'package:fixme/Screens/GeneralUsers/Chat/Chats.dart';
 import 'package:fixme/Screens/GeneralUsers/Home/NearbyArtisansSeeAll.dart';
@@ -6,6 +8,7 @@ import 'package:fixme/Screens/GeneralUsers/Home/NearbyShopsSeeAll.dart';
 import 'package:fixme/Screens/GeneralUsers/Home/PopularServices.dart';
 import 'package:fixme/Screens/GeneralUsers/Home/Search.dart';
 import 'package:fixme/Screens/ArtisanUser/Profile/ArtisanPage.dart';
+import 'package:fixme/Services/Firebase_service.dart';
 import 'package:fixme/Services/location_service.dart';
 import 'package:fixme/Services/network_service.dart';
 import 'package:fixme/Utils/Provider.dart';
@@ -36,6 +39,7 @@ class Home extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     var network = Provider.of<WebServices>(context, listen: false);
+    List<Notify> notify;
     var location = Provider.of<LocationService>(context);
     var data = Provider.of<DataProvider>(context);
     return Stack(
@@ -112,13 +116,61 @@ class Home extends StatelessWidget {
                           },
                         ),
                       );
+
+                      FirebaseApi.clearCheckNotify(
+                        network.userId.toString(),
+                      );
                     },
                     child: Padding(
                       padding: const EdgeInsets.all(8.0),
-                      child: Icon(
-                        Icons.chat,
-                        color: Color(0xFF9B049B),
-                        size: 25,
+                      child: Stack(
+                        children: [
+                          Icon(
+                            Icons.chat,
+                            color: Color(0xFF9B049B),
+                            size: 25,
+                          ),
+                          StreamBuilder(
+                              stream: FirebaseApi.userCheckChatStream(
+                                  network.userId.toString()),
+                              builder: (context,
+                                  AsyncSnapshot<QuerySnapshot> snapshot) {
+                                if (snapshot.hasData) {
+                                  notify = snapshot.data.docs
+                                      .map((doc) =>
+                                          Notify.fromMap(doc.data(), doc.id))
+                                      .toList();
+
+                                  switch (snapshot.connectionState) {
+                                    case ConnectionState.waiting:
+                                      return Positioned(
+                                          left: 12, child: Container());
+                                    default:
+                                      if (snapshot.hasError) {
+                                        return Positioned(
+                                            left: 12, child: Container());
+                                      } else {
+                                        final users = notify;
+                                        if (users.isEmpty || users == null) {
+                                          return Positioned(
+                                              left: 12, child: Container());
+                                        } else {
+                                          return Positioned(
+                                              right: 14.4,
+                                              child: Icon(
+                                                Icons.circle,
+                                                color: Color(0xFF9B049B),
+                                                size: 12,
+                                              ));
+                                        }
+                                      }
+                                  }
+                                } else {
+                                  return Positioned(
+                                      left: 12, child: Container());
+                                }
+                              }),
+                        ],
                       ),
                     ),
                   ),

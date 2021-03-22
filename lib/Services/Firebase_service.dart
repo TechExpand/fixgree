@@ -246,9 +246,52 @@ class FirebaseApi {
   static Stream<QuerySnapshot> userNotificatioStream(id) {
     var data = FirebaseFirestore.instance
         .collection('Notification')
+        .where('userid', isEqualTo: id).orderBy('createdAt', descending: true);
+    return data.snapshots();
+  }
+
+  static Stream<QuerySnapshot> userCheckNotifyStream(id) {
+    var data = FirebaseFirestore.instance
+        .collection('CheckNotify')
         .where('userid', isEqualTo: id);
     return data.snapshots();
   }
+
+
+  static clearCheckNotify(String id) {
+    var documentReference = FirebaseFirestore.instance
+        .collection('CheckNotify')
+        .where('userid' , isEqualTo: id);
+
+    documentReference.get().then((querySnapshot) {
+      querySnapshot.docs.forEach((doc) {
+        doc.reference.delete();
+      });
+    });
+  }
+
+
+
+  static Stream<QuerySnapshot> userCheckChatStream(id) {
+    var data = FirebaseFirestore.instance
+        .collection('CheckChat')
+        .where('userid', isEqualTo: id);
+    return data.snapshots();
+  }
+
+
+  static clearCheckChat(String id) {
+    var documentReference = FirebaseFirestore.instance
+        .collection('CheckChat')
+        .where('userid' , isEqualTo: id);
+
+    documentReference.get().then((querySnapshot) {
+      querySnapshot.docs.forEach((doc) {
+        doc.reference.delete();
+      });
+    });
+  }
+
 
   static Stream<QuerySnapshot> userBidStream(id) {
     var data = FirebaseFirestore.instance
@@ -257,9 +300,31 @@ class FirebaseApi {
     return data.snapshots();
   }
 
+
+  static Future uploadCheckNotify(
+      String id,) async {
+    final refMessages = FirebaseFirestore.instance.collection('CheckNotify');
+
+    await refMessages.doc().set({
+      'userid': id,
+      'createdAt': DateTime.now(),
+    });
+  }
+
+  static Future uploadCheckChat(
+      String id,) async {
+    final refMessages = FirebaseFirestore.instance.collection('CheckChat');
+
+    await refMessages.doc().set({
+      'userid': id,
+      'createdAt': DateTime.now(),
+    });
+  }
+
+
+
   static Future uploadNotification(
       String id, String message, type, name, jobId, bidId, bidderId) async {
-    print('bcbbcbcbcbcbcbc');
     final refMessages = FirebaseFirestore.instance.collection('Notification');
 
     await refMessages.doc().set({

@@ -1,5 +1,8 @@
+import 'package:cloud_firestore/cloud_firestore.dart';
+import 'package:fixme/Model/Notify.dart';
 import 'package:fixme/Screens/GeneralUsers/Chat/Chats.dart';
 import 'package:fixme/Screens/GeneralUsers/Home/Search.dart';
+import 'package:fixme/Services/Firebase_service.dart';
 import 'package:fixme/Services/network_service.dart';
 import 'package:flutter/material.dart';
 import 'package:grouped_list/grouped_list.dart';
@@ -21,6 +24,7 @@ class _PendingScreenState extends State<PendingScreen> {
   @override
   Widget build(BuildContext context) {
     var network = Provider.of<WebServices>(context, listen: false);
+    List<Notify> notify;
     return DefaultTabController(
       length: 3,
       initialIndex: 0,
@@ -137,8 +141,8 @@ class _PendingScreenState extends State<PendingScreen> {
                                   (context, animation, secondaryAnimation) {
                                 return ListenIncoming();
                               },
-                              transitionsBuilder: (context, animation,
-                                  secondaryAnimation, child) {
+                              transitionsBuilder:
+                                  (context, animation, secondaryAnimation, child) {
                                 return FadeTransition(
                                   opacity: animation,
                                   child: child,
@@ -147,13 +151,84 @@ class _PendingScreenState extends State<PendingScreen> {
                             ),
                           );
                         },
-                        child: Padding(
-                          padding: const EdgeInsets.only(
-                              top: 15.0, bottom: 8, right: 13),
-                          child: Icon(
-                            Icons.chat,
-                            color: Color(0xFF9B049B),
-                            size: 25,
+                        child: InkWell(
+                          onTap: () {
+                            Navigator.push(
+                              context,
+                              PageRouteBuilder(
+                                pageBuilder:
+                                    (context, animation, secondaryAnimation) {
+                                  return ListenIncoming();
+                                },
+                                transitionsBuilder:
+                                    (context, animation, secondaryAnimation, child) {
+                                  return FadeTransition(
+                                    opacity: animation,
+                                    child: child,
+                                  );
+                                },
+                              ),
+                            );
+                            FirebaseApi.clearCheckNotify(
+                              network.userId.toString(),
+                            );
+                          },
+                          child: Padding(
+                            padding: const EdgeInsets.all(8.0),
+                            child: Stack(
+                              children: [
+                                Icon(
+                                  Icons.chat,
+                                  color: Color(0xFF9B049B),
+                                  size: 25,
+                                ),
+                                StreamBuilder(
+                                    stream: FirebaseApi.userCheckChatStream(
+                                        network.userId.toString()),
+                                    builder:
+                                        (context, AsyncSnapshot<QuerySnapshot> snapshot) {
+                                      if (snapshot.hasData) {
+                                        notify = snapshot.data.docs
+                                            .map((doc) =>
+                                            Notify.fromMap(doc.data(), doc.id))
+                                            .toList();
+
+                                        switch (snapshot.connectionState) {
+                                          case ConnectionState.waiting:
+                                            return Positioned(
+                                                left: 12,
+                                                child: Container());
+                                          default:
+                                            if (snapshot.hasError) {
+                                              return Positioned(
+                                                  left: 12,
+                                                  child: Container());
+                                            } else {
+                                              final users = notify;
+                                              if (users.isEmpty || users == null) {
+                                                return Positioned(
+                                                    left: 12,
+                                                    child: Container());
+                                              } else {
+                                                return   Positioned(
+                                                    right: 14.4,
+                                                    child: Icon(
+                                                      Icons.circle,
+                                                      color: Color(0xFF9B049B),
+                                                      size: 12,
+                                                    ));
+                                              }
+                                            }
+                                        }
+                                      } else {
+                                        return Positioned(
+                                            left: 12,
+                                            child: Container());
+                                      }
+                                    }),
+
+                              ],
+                            ),
                           ),
                         ),
                       ),
@@ -179,6 +254,7 @@ class _PendingScreenState extends State<PendingScreen> {
                 FutureBuilder(
                     future: network.getUndoneProject(),
                     builder: (context, snapshot) {
+
                       return snapshot.hasData
                           ? ListView(
                           padding: EdgeInsets.only(top:2),
@@ -242,115 +318,114 @@ class _PendingScreenState extends State<PendingScreen> {
                               itemCount: snapshot.data.length,
                               padding: EdgeInsets.only(top:2),
                               itemBuilder: (context, index) {
-                                return snapshot.data[index]
-                                ['status'] ==
+                                return snapshot.data[index].status ==
                                     'pending'
                                     ? Padding(
-                                      padding:
-                                      const EdgeInsets.only(
-                                          left: 20,
-                                          right: 20,
-                                          bottom: 14),
-                                      child: Row(
-                                        children: [
-                                          Container(
-                                              height: 25,
-                                              child: Center(
-                                                  child: Text(
-                                                    '${snapshot.data[index]['job_title']}',
-                                                    style: TextStyle(
-                                                        color: Color(
-                                                            0xFF9B049B),
-                                                        fontWeight:
-                                                        FontWeight
-                                                            .bold,
-                                                        fontSize: 9.5),
-                                                    textAlign: TextAlign
-                                                        .center,
-                                                  )),
-                                              width: 73,
-                                              decoration:
-                                              BoxDecoration(
-                                                borderRadius:
-                                                BorderRadius
-                                                    .circular(
-                                                    30),
-                                                color: Color(
-                                                    0xFFA40C85)
-                                                    .withOpacity(
-                                                    0.35),
-                                              )),
-                                          Padding(
-                                            padding:
-                                            const EdgeInsets
-                                                .only(
-                                                left: 10.0),
-                                            child: Column(
-                                              crossAxisAlignment:
-                                              CrossAxisAlignment
-                                                  .start,
-                                              children: [
-                                                Padding(
-                                                  padding: const EdgeInsets
-                                                      .only(
-                                                      bottom:
-                                                      4.0),
-                                                  child: Text(
-                                                      '${snapshot.data[index]['job_description']}'.isEmpty?'No Desription': '${snapshot.data[index]['job_description']}',
-                                                      style: TextStyle(
-                                                          color:
-                                                          Colors.black)),
-                                                ),
-                                                Text(
-                                                    '${snapshot.data[index]['status']}',
-                                                    style: TextStyle(
-                                                        color: Colors
-                                                            .black,
-                                                        fontSize:
-                                                        13)),
-                                              ],
-                                            ),
-                                          ),
-                                          Spacer(),
-                                          Column(
-                                            children: [
-                                              Padding(
-                                                  padding:
-                                                  const EdgeInsets.only(
-                                                      bottom: 3.0),
-                                                  child: PopupMenuButton(
-                                                      offset: const Offset(0, 10),
-                                                      elevation: 5,
-                                                      icon: Icon(
-                                                        Icons.more_vert,
-                                                        size: 22,
-                                                      ),
-                                                      itemBuilder: (context) => [
-                                                        PopupMenuItem(
-                                                            value: 1,
-                                                            child: InkWell(
-                                                              onTap: () {
-//                                                                    FirebaseApi.deleteNotification(users[index].id);
-//                                                                    Navigator.pop(context);
-                                                              },
-                                                              child: Padding(
-                                                                padding: const EdgeInsets.all(8),
-                                                                child: Text('Clear Message'),
-                                                              ),
-                                                            )),
-
-                                                      ])
-                                              ),
-                                              Text(
-                                                '${snapshot.data[index]['date_oppened'].toString().substring(0,10)}',
+                                  padding:
+                                  const EdgeInsets.only(
+                                      left: 20,
+                                      right: 20,
+                                      bottom: 14),
+                                  child: Row(
+                                    children: [
+                                      Container(
+                                          height: 25,
+                                          child: Center(
+                                              child: Text(
+                                                '${snapshot.data[index].jobTitle}',
                                                 style: TextStyle(
-                                                    color: Colors.black38),
-                                              )
-                                            ],
+                                                    color: Color(
+                                                        0xFF9B049B),
+                                                    fontWeight:
+                                                    FontWeight
+                                                        .bold,
+                                                    fontSize: 9.5),
+                                                textAlign: TextAlign
+                                                    .center,
+                                              )),
+                                          width: 73,
+                                          decoration:
+                                          BoxDecoration(
+                                            borderRadius:
+                                            BorderRadius
+                                                .circular(
+                                                30),
+                                            color: Color(
+                                                0xFFA40C85)
+                                                .withOpacity(
+                                                0.35),
+                                          )),
+                                      Padding(
+                                        padding:
+                                        const EdgeInsets
+                                            .only(
+                                            left: 10.0),
+                                        child: Column(
+                                          crossAxisAlignment:
+                                          CrossAxisAlignment
+                                              .start,
+                                          children: [
+                                            Padding(
+                                              padding: const EdgeInsets
+                                                  .only(
+                                                  bottom:
+                                                  4.0),
+                                              child: Text(
+                                                  '${snapshot.data[index].jobDescription}'.isEmpty?'No Desription': '${snapshot.data[index].jobDescription}',
+                                                  style: TextStyle(
+                                                      color:
+                                                      Colors.black)),
+                                            ),
+                                            Text(
+                                                '${snapshot.data[index].status}',
+                                                style: TextStyle(
+                                                    color: Colors
+                                                        .black,
+                                                    fontSize:
+                                                    13)),
+                                          ],
+                                        ),
+                                      ),
+                                      Spacer(),
+                                      Column(
+                                        children: [
+                                          Padding(
+                                              padding:
+                                              const EdgeInsets.only(
+                                                  bottom: 3.0),
+                                              child: PopupMenuButton(
+                                                  offset: const Offset(0, 1),
+                                                  elevation: 5,
+                                                  icon: Icon(
+                                                    Icons.more_vert,
+                                                    size: 22,
+                                                  ),
+                                                  itemBuilder: (context) => [
+                                                    PopupMenuItem(
+                                                        value: 1,
+                                                        child: InkWell(
+                                                          onTap: () {
+//                                                                    network.requestPayment(network.user_id, bid_id);
+//                                                                    Navigator.pop(context);
+                                                          },
+                                                          child: Padding(
+                                                            padding: const EdgeInsets.all(8),
+                                                            child: Text('Request for payment ${snapshot.data[0]}'),
+                                                          ),
+                                                        )),
+
+                                                  ])
                                           ),
+                                          Text(
+                                            '${snapshot.data[index].dateOpen.toString()}',
+                                            style: TextStyle(
+                                                color: Colors.black38),
+                                          )
                                         ],
                                       ),
-                                    )
+                                    ],
+                                  ),
+                                )
                                     : Container();
                               }),
                         ]),
@@ -393,6 +468,7 @@ class _PendingScreenState extends State<PendingScreen> {
                 FutureBuilder(
                     future: network.getUndoneProject(),
                     builder: (context, snapshot) {
+
                       return snapshot.hasData
                           ? ListView(
                           padding: EdgeInsets.only(top:2),
@@ -456,8 +532,7 @@ class _PendingScreenState extends State<PendingScreen> {
                                   itemCount: snapshot.data.length,
                                   padding: EdgeInsets.only(top:2),
                                   itemBuilder: (context, index) {
-                                    return snapshot.data[index]
-                                    ['status'] ==
+                                    return snapshot.data[index].status ==
                                         'ongoing'
                                         ? Padding(
                                       padding:
@@ -471,7 +546,7 @@ class _PendingScreenState extends State<PendingScreen> {
                                               height: 25,
                                               child: Center(
                                                   child: Text(
-                                                    '${snapshot.data[index]['job_title']}',
+                                                    '${snapshot.data[index].jobTitle}',
                                                     style: TextStyle(
                                                         color: Color(
                                                             0xFF9B049B),
@@ -510,13 +585,226 @@ class _PendingScreenState extends State<PendingScreen> {
                                                       bottom:
                                                       4.0),
                                                   child: Text(
-                                                      '${snapshot.data[index]['job_description']}'.isEmpty?'No Desription': '${snapshot.data[index]['job_description']}',
+                                                      '${snapshot.data[index].jobDescription}'.isEmpty?'No Desription': '${snapshot.data[index].jobDescription}',
                                                       style: TextStyle(
                                                           color:
                                                           Colors.black)),
                                                 ),
                                                 Text(
-                                                    '${snapshot.data[index]['status']}',
+                                                    '${snapshot.data[index].status}',
+                                                    style: TextStyle(
+                                                        color: Colors
+                                                            .black,
+                                                        fontSize:
+                                                        13)),
+                                              ],
+                                            ),
+                                          ),
+                                          Spacer(),
+                                          Column(
+                                            children: [
+                                              Padding(
+                                                  padding:
+                                                  const EdgeInsets.only(
+                                                      bottom: 3.0),
+                                                  child: PopupMenuButton(
+                                                      offset: const Offset(0, 1),
+                                                      elevation: 5,
+                                                      icon: Icon(
+                                                        Icons.more_vert,
+                                                        size: 22,
+                                                      ),
+                                                      itemBuilder: (context) => [
+                                                        PopupMenuItem(
+                                                            value: 1,
+                                                            child: InkWell(
+                                                              onTap: () {
+//                                                                    network.requestPayment(network.user_id, bid_id);
+//                                                                    Navigator.pop(context);
+                                                              },
+                                                              child: Padding(
+                                                                padding: const EdgeInsets.all(8),
+                                                                child: Text('Request for payment'),
+                                                              ),
+                                                            )),
+
+                                                      ])
+                                              ),
+                                          Text(
+                                            '${snapshot.data[index].dateOpen.toString().substring(0,10)}',
+                                            style: TextStyle(
+                                                color: Colors.black38),
+                                          )
+                                            ],
+                                          ),
+                                        ],
+                                      ),
+                                    )
+                                        : Container();
+                                  }),
+                            ]),
+                          ])
+                          : Center(
+                        child: Column(
+                          mainAxisAlignment: MainAxisAlignment.center,
+                          children: [
+                            Theme(
+                                data: Theme.of(context).copyWith(
+                                    accentColor: Color(0xFF9B049B)),
+                                child: CircularProgressIndicator(
+                                  strokeWidth: 2,
+                                  backgroundColor: Colors.white,
+                                )),
+                            Text(
+                              'Loading',
+                              style: TextStyle(
+                                  fontSize: 18, color: Colors.black38),
+                              textAlign: TextAlign.center,
+                            ),
+                          ],
+                        ),
+                      );
+                    }),
+
+
+
+
+
+
+
+
+
+
+
+
+
+                FutureBuilder(
+                    future: network.getUndoneProject(),
+                    builder: (context, snapshot) {
+
+                      return snapshot.hasData
+                          ? ListView(
+                          padding: EdgeInsets.only(top:2),
+                          physics: ScrollPhysics(),
+                          shrinkWrap: true,
+                          children: [
+                            Column(children: [
+                              Container(
+                                height: 67,
+                                width:
+                                MediaQuery.of(context).size.width * 0.92,
+                                child: Card(
+                                  color: Color(0xFF9B049B),
+                                  child: Center(
+                                    child: FutureBuilder(
+                                      future:
+                                      network.getUserInfo(network.userId),
+                                      builder: (context, snapshot) {
+                                        return snapshot.data == null
+                                            ? RichText(
+                                            text: TextSpan(children: [
+                                              TextSpan(
+                                                  text: 'Wallet  Balance ',
+                                                  style: TextStyle(
+                                                      fontWeight:
+                                                      FontWeight.bold,
+                                                      color: Colors.white)),
+                                              TextSpan(
+                                                  text: '₦0',
+                                                  style: TextStyle(
+                                                      fontWeight:
+                                                      FontWeight.bold,
+                                                      fontSize: 19,
+                                                      color: Colors.white)),
+                                            ]))
+                                            : RichText(
+                                            text: TextSpan(children: [
+                                              TextSpan(
+                                                  text: 'Wallet  Balance ',
+                                                  style: TextStyle(
+                                                      fontWeight:
+                                                      FontWeight.bold,
+                                                      color: Colors.white)),
+                                              TextSpan(
+                                                  text:
+                                                  '₦${snapshot.data['balance']}',
+                                                  style: TextStyle(
+                                                      fontWeight:
+                                                      FontWeight.bold,
+                                                      fontSize: 19,
+                                                      color: Colors.white)),
+                                            ]));
+                                      },
+                                    ),
+                                  ),
+                                ),
+                              ),
+                              ListView.builder(
+                                  physics: NeverScrollableScrollPhysics(),
+                                  shrinkWrap: true,
+                                  itemCount: snapshot.data.length,
+                                  padding: EdgeInsets.only(top:2),
+                                  itemBuilder: (context, index) {
+                                    return snapshot.data[index].status ==
+                                        'completed'
+                                        ? Padding(
+                                      padding:
+                                      const EdgeInsets.only(
+                                          left: 20,
+                                          right: 20,
+                                          bottom: 14),
+                                      child: Row(
+                                        children: [
+                                          Container(
+                                              height: 25,
+                                              child: Center(
+                                                  child: Text(
+                                                    '${snapshot.data[index].jobTitle}',
+                                                    style: TextStyle(
+                                                        color: Color(
+                                                            0xFF9B049B),
+                                                        fontWeight:
+                                                        FontWeight
+                                                            .bold,
+                                                        fontSize: 9.5),
+                                                    textAlign: TextAlign
+                                                        .center,
+                                                  )),
+                                              width: 73,
+                                              decoration:
+                                              BoxDecoration(
+                                                borderRadius:
+                                                BorderRadius
+                                                    .circular(
+                                                    30),
+                                                color: Color(
+                                                    0xFFA40C85)
+                                                    .withOpacity(
+                                                    0.35),
+                                              )),
+                                          Padding(
+                                            padding:
+                                            const EdgeInsets
+                                                .only(
+                                                left: 10.0),
+                                            child: Column(
+                                              crossAxisAlignment:
+                                              CrossAxisAlignment
+                                                  .start,
+                                              children: [
+                                                Padding(
+                                                  padding: const EdgeInsets
+                                                      .only(
+                                                      bottom:
+                                                      4.0),
+                                                  child: Text(
+                                                      '${snapshot.data[index].jobDescription}'.isEmpty?'No Desription': '${snapshot.data[index].jobDescription}',
+                                                      style: TextStyle(
+                                                          color:
+                                                          Colors.black)),
+                                                ),
+                                                Text(
+                                                    '${snapshot.data[index].status}',
                                                     style: TextStyle(
                                                         color: Colors
                                                             .black,
@@ -555,216 +843,11 @@ class _PendingScreenState extends State<PendingScreen> {
 
                                                       ])
                                               ),
-                                              Text(
-                                                '${snapshot.data[index]['date_oppened'].toString().substring(0,10)}',
-                                                style: TextStyle(
-                                                    color: Colors.black38),
-                                              )
-                                            ],
-                                          ),
-                                        ],
-                                      ),
-                                    )
-                                        : Container();
-                                  }),
-                            ]),
-                          ])
-                          : Center(
-                        child: Column(
-                  mainAxisAlignment: MainAxisAlignment.center,
-                          children: [
-                            Theme(
-                                data: Theme.of(context).copyWith(
-                                    accentColor: Color(0xFF9B049B)),
-                                child: CircularProgressIndicator(
-                                  strokeWidth: 2,
-                                  backgroundColor: Colors.white,
-                                )),
-                            Text(
-                              'Loading',
-                              style: TextStyle(
-                                  fontSize: 18, color: Colors.black38),
-                              textAlign: TextAlign.center,
-                            ),
-                          ],
-                        ),
-                      );
-                    }),
-
-
-
-
-
-                FutureBuilder(
-                    future: network.getUndoneProject(),
-                    builder: (context, snapshot) {
-                      return snapshot.hasData
-                          ? ListView(
-                          padding: EdgeInsets.only(top:2),
-                          physics: ScrollPhysics(),
-                          shrinkWrap: true,
-                          children: [
-                            Column(children: [
-                              Container(
-                                height: 67,
-                                width:
-                                MediaQuery.of(context).size.width * 0.92,
-                                child: Card(
-                                  color: Color(0xFF9B049B),
-                                  child: Center(
-                                    child: FutureBuilder(
-                                      future:
-                                      network.getUserInfo(network.userId),
-                                      builder: (context, snapshot) {
-                                        return snapshot.data == null
-                                            ? RichText(
-                                            text: TextSpan(children: [
-                                              TextSpan(
-                                                  text: 'Wallet  Balance ',
-                                                  style: TextStyle(
-                                                      fontWeight:
-                                                      FontWeight.bold,
-                                                      color: Colors.white)),
-                                              TextSpan(
-                                                  text: '₦0',
-                                                  style: TextStyle(
-                                                      fontWeight:
-                                                      FontWeight.bold,
-                                                      fontSize: 19,
-                                                      color: Colors.white)),
-                                            ]))
-                                            : RichText(
-                                            text: TextSpan(children: [
-                                              TextSpan(
-                                                  text: 'Wallet  Balance ',
-                                                  style: TextStyle(
-                                                      fontWeight:
-                                                      FontWeight.bold,
-                                                      color: Colors.white)),
-                                              TextSpan(
-                                                  text:
-                                                  '₦${snapshot.data['balance']}',
-                                                  style: TextStyle(
-                                                      fontWeight:
-                                                      FontWeight.bold,
-                                                      fontSize: 19,
-                                                      color: Colors.white)),
-                                            ]));
-                                      },
-                                    ),
-                                  ),
-                                ),
-                              ),
-                              ListView.builder(
-                                  physics: NeverScrollableScrollPhysics(),
-                                  shrinkWrap: true,
-                                  itemCount: snapshot.data.length,
-                                  padding: EdgeInsets.only(top:2),
-                                  itemBuilder: (context, index) {
-                                    return snapshot.data[index]
-                                    ['status'] ==
-                                        'completed'
-                                        ? Padding(
-                                      padding:
-                                      const EdgeInsets.only(
-                                          left: 20,
-                                          right: 20,
-                                          bottom: 14),
-                                      child: Row(
-                                        children: [
-                                          Container(
-                                              height: 25,
-                                              child: Center(
-                                                  child: Text(
-                                                    '${snapshot.data[index]['job_title']}',
-                                                    style: TextStyle(
-                                                        color: Color(
-                                                            0xFF9B049B),
-                                                        fontWeight:
-                                                        FontWeight
-                                                            .bold,
-                                                        fontSize: 9.5),
-                                                    textAlign: TextAlign
-                                                        .center,
-                                                  )),
-                                              width: 73,
-                                              decoration:
-                                              BoxDecoration(
-                                                borderRadius:
-                                                BorderRadius
-                                                    .circular(
-                                                    30),
-                                                color: Color(
-                                                    0xFFA40C85)
-                                                    .withOpacity(
-                                                    0.35),
-                                              )),
-                                          Padding(
-                                            padding:
-                                            const EdgeInsets
-                                                .only(
-                                                left: 10.0),
-                                            child: Column(
-                                              crossAxisAlignment:
-                                              CrossAxisAlignment
-                                                  .start,
-                                              children: [
-                                                Padding(
-                                                  padding: const EdgeInsets
-                                                      .only(
-                                                      bottom:
-                                                      4.0),
-                                                  child: Text(
-                                                      '${snapshot.data[index]['job_description']}'.isEmpty?'No Desription': '${snapshot.data[index]['job_description']}',
-                                                      style: TextStyle(
-                                                          color:
-                                                          Colors.black)),
-                                                ),
-                                                Text(
-                                                    '${snapshot.data[index]['status']}',
-                                                    style: TextStyle(
-                                                        color: Colors
-                                                            .black,
-                                                        fontSize:
-                                                        13)),
-                                              ],
-                                            ),
-                                          ),
-                                          Spacer(),
-                                          Column(
-                                            children: [
-                                              Padding(
-                                                  padding:
-                                                  const EdgeInsets.only(
-                                                      bottom: 3.0),
-                                                  child: PopupMenuButton(
-                                                      offset: const Offset(0, 10),
-                                                      elevation: 5,
-                                                      icon: Icon(
-                                                        Icons.more_vert,
-                                                        size: 22,
-                                                      ),
-                                                      itemBuilder: (context) => [
-                                                        PopupMenuItem(
-                                                            value: 1,
-                                                            child: InkWell(
-                                                              onTap: () {
-//                                                                    FirebaseApi.deleteNotification(users[index].id);
-//                                                                    Navigator.pop(context);
-                                                              },
-                                                              child: Padding(
-                                                                padding: const EdgeInsets.all(8),
-                                                                child: Text('Clear Message'),
-                                                              ),
-                                                            )),
-
-                                                      ])
-                                              ),
-                                              Text(
-                                                '${snapshot.data[index]['date_oppened'].toString().substring(0,10)}',
-                                                style: TextStyle(
-                                                    color: Colors.black38),
-                                              )
+                                        Text(
+                                            '${snapshot.data[index].dateOpen.toString().substring(0,10)}',
+                                            style: TextStyle(
+                                                color: Colors.black38),
+                                          )
                                             ],
                                           ),
                                         ],
