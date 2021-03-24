@@ -21,15 +21,13 @@ class NearbyArtisansSeeAll extends StatefulWidget {
 }
 
 class _NearbyArtisansSeeAllState extends State<NearbyArtisansSeeAll> {
-  String getDistance({double artisanLongitude, double artisanLatitude}) {
-    double distanceInMeters = Geolocator.distanceBetween(
-        widget.latitude, widget.longitude, artisanLatitude, artisanLongitude);
-    var kilometers = distanceInMeters / 1000;
+  String getDistance({String rawDistance}) {
     String distance;
-    if (kilometers.truncate() != 0) {
-      distance = '${kilometers.truncate()} km';
+    print('The distance $rawDistance');
+    if (rawDistance.length > 3) {
+      distance = '$rawDistance' + 'km';
     } else {
-      distance = '${distanceInMeters.truncate()} m';
+      distance = '$rawDistance' + 'm';
     }
     return distance;
   }
@@ -164,10 +162,8 @@ class _NearbyArtisansSeeAllState extends State<NearbyArtisansSeeAll> {
                               padding: const EdgeInsets.only(left: 5, right: 5),
                               itemBuilder: (context, index) {
                                 String distance = getDistance(
-                                    artisanLatitude:
-                                        snapshot.data[index].latitude,
-                                    artisanLongitude:
-                                        snapshot.data[index].longitude);
+                                    rawDistance:
+                                        '${snapshot.data[index].distance}');
 
                                 return Container(
                                   alignment: Alignment.center,

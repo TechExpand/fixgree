@@ -4,7 +4,7 @@ import "package:flutter_feather_icons/flutter_feather_icons.dart";
 import 'package:flutter_multi_formatter/flutter_multi_formatter.dart';
 
 class CardPayment extends StatefulWidget {
-  CardPayment({Key key}) : super(key: key);
+  CardPayment({data});
 
   @override
   _CardPaymentState createState() => _CardPaymentState();
@@ -85,78 +85,8 @@ class _CardPaymentState extends State<CardPayment> {
             ],
           ),
         ),
-        Container(
-          height: 50,
-          alignment: Alignment.center,
-          padding: const EdgeInsets.only(left: 12),
-          margin:
-              const EdgeInsets.only(bottom: 10, left: 12, right: 12, top: 5),
-          decoration: BoxDecoration(
-              color: Color(0xFFFFFFFF),
-              border: Border.all(color: Color(0xFFF1F1FD)),
-              boxShadow: [
-                BoxShadow(
-                    color: Color(0xFFF1F1FD),
-                    blurRadius: 15.0,
-                    offset: Offset(0.3, 4.0))
-              ],
-              borderRadius: BorderRadius.all(Radius.circular(7))),
-          child: Row(
-            mainAxisAlignment: MainAxisAlignment.spaceBetween,
-            children: [
-              Expanded(
-                child: TextFormField(
-                  inputFormatters: [CreditCardNumberInputFormatter()],
-                  keyboardType: TextInputType.number,
-                  style: TextStyle(
-                      fontSize: 16,
-                      color: Color(0xFF270F33),
-                      fontWeight: FontWeight.w600),
-                  decoration: InputDecoration.collapsed(
-                    hintText: 'Account number',
-                    hintStyle:
-                        TextStyle(fontSize: 16, fontWeight: FontWeight.w600),
-                    focusColor: Color(0xFF2B1137),
-                    fillColor: Color(0xFF2B1137),
-                    hoverColor: Color(0xFF2B1137),
-                  ),
-                ),
-              ),
-            ],
-          ),
-        ),
-        Row(
-          mainAxisAlignment: MainAxisAlignment.end,
-          children: <Widget>[
-            Padding(
-              padding: const EdgeInsets.only(right: 12, bottom: 10),
-              child: InkWell(
-                onTap: () {
-                  Navigator.of(context).push(
-                    PageRouteBuilder(
-                      pageBuilder: (context, animation, secondaryAnimation) {
-                        return SeeBeneficiaries();
-                      },
-                      transitionsBuilder:
-                          (context, animation, secondaryAnimation, child) {
-                        return FadeTransition(
-                          opacity: animation,
-                          child: child,
-                        );
-                      },
-                    ),
-                  );
-                },
-                child: Text('Choose beneficiary',
-                    style: TextStyle(
-                        color: Color(0xFF9B049B),
-                        fontSize: 16,
-                        height: 1.4,
-                        fontWeight: FontWeight.w600)),
-              ),
-            ),
-          ],
-        ),
+
+
         Row(
           children: [
             Container(
@@ -342,7 +272,7 @@ class _CardPaymentState extends State<CardPayment> {
         Container(
           height: 50,
           margin:
-              const EdgeInsets.only(top: 10, left: 12, right: 12, bottom: 20),
+              const EdgeInsets.only(top: 30, left: 12, right: 12, bottom: 20),
           decoration: BoxDecoration(
             borderRadius: BorderRadius.all(Radius.circular(25)),
             color: Color(0xFF9B049B),

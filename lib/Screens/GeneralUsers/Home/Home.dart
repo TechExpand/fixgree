@@ -562,8 +562,6 @@ class Home extends StatelessWidget {
                                             ? 3
                                             : snapshot.data.length,
                                         itemBuilder: (context, index) {
-                                          print(
-                                              'The Distance: ${snapshot.data[index].distance}');
                                           String distance = getDistance(
                                               rawDistance:
                                                   '${snapshot.data[index].distance}');
@@ -649,7 +647,7 @@ class Home extends StatelessWidget {
                                                         bottom: 4,
                                                         child: Container(
                                                           height: 20,
-                                                          width: 115,
+                                                          width: 130,
                                                           padding:
                                                               const EdgeInsets
                                                                       .only(
@@ -934,7 +932,7 @@ class Home extends StatelessWidget {
                                                         bottom: 4,
                                                         child: Container(
                                                           height: 20,
-                                                          width: 115,
+                                                          width: 130,
                                                           padding:
                                                               const EdgeInsets
                                                                       .only(

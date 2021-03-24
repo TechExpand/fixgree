@@ -382,6 +382,35 @@ class WebServices extends ChangeNotifier {
     }
   }
 
+  Future<dynamic> confirmPaymentAndReview([rating, jobid, comment, scafoldKey, artisanId, userId]) async {
+    var response = await http.post(
+        Uri.parse('https://manager.fixme.ng/confirm-project-completion-rating'
+            ''),
+        body: {
+          'reviewing_user_id': userId.toString(),
+          'reviewed_user_id': artisanId.toString(),
+          'job_id': jobid.toString(),
+          'rating': rating.toString(),
+          'review': comment.toString(),
+        },
+        headers: {
+          "Content-type": "application/x-www-form-urlencoded",
+          'Authorization': 'Bearer $bearer',
+        });
+    var body = json.decode(response.body);
+    notifyListeners();
+    if (body['reqRes'] == 'true') {
+      print(body);
+      scafoldKey.currentState.showSnackBar(
+          SnackBar(content: Text('Review Successfully Submited')));
+      return body;
+    } else if (body['reqRes'] == 'false') {
+      print(body);
+    }
+  }
+
+
+
   Future<dynamic> bidProject([userId, jobId, scaffoldKey]) async {
     var response = await http
         .post(Uri.parse('https://manager.fixme.ng/bid-project'), body: {
@@ -1171,8 +1200,7 @@ class WebServices extends ChangeNotifier {
     var response = await http
         .post(Uri.parse('https://manager.fixme.ng/completed-project-and-payment'), body: {
       'bidder_user_id': userId.toString(),
-      'project_owner_user_id': project_owner_user_id.toString(),
-      'bid_id':  bid_id.toString(),
+      'project_id':  bid_id.toString(),
     }, headers: {
       "Content-type": "application/x-www-form-urlencoded",
       'Authorization': 'Bearer $bearer',
@@ -1180,10 +1208,10 @@ class WebServices extends ChangeNotifier {
     var body = json.decode(response.body);
     notifyListeners();
     if (body['reqRes'] == 'true') {
-      print(body['projects']);
-      return body['projects'];
+      print(body+'dddddddddddddddddddd');
+      return body;
     } else if (body['reqRes'] == 'false') {
-      print(body['message']);
+      print(body+'nnnnnnnnnnnnnnnnnnnnn');
     }
   }
 
@@ -1416,6 +1444,61 @@ class WebServices extends ChangeNotifier {
     var response = await http.post(
         Uri.parse(
             'https://manager.fixme.ng/support-request?user_id=264&topic=$topic&message=$message'),
+        headers: {
+          "Content-type": "application/json",
+          'Authorization': 'Bearer $bearer',
+        });
+    var body = json.decode(response.body);
+    bool res;
+    if (body['reqRes'] == 'true') {
+      res = true;
+    } else if (body['reqRes'] == 'false') {
+      res = false;
+    }
+    return res;
+  }
+
+  Future<bool> deleteServiceCatalogueImage({imageFileName}) async {
+    var response = await http.post(
+        Uri.parse(
+            'https://manager.fixme.ng/del-svc-img?user_id=$userId&imageFileName=$imageFileName'),
+        headers: {
+          "Content-type": "application/json",
+          'Authorization': 'Bearer $bearer',
+        });
+    var body = json.decode(response.body);
+    print('The response: ' + body.toString());
+    bool res;
+    if (body['reqRes'] == 'true') {
+      res = true;
+    } else if (body['reqRes'] == 'false') {
+      res = false;
+    }
+    return res;
+  }
+
+  Future<bool> deleteCatalogueProducts({productId}) async {
+    var response = await http.post(
+        Uri.parse(
+            'https://manager.fixme.ng/delete-product-catalog?user_id=$userId&product_id=$productId'),
+        headers: {
+          "Content-type": "application/json",
+          'Authorization': 'Bearer $bearer',
+        });
+    var body = json.decode(response.body);
+    bool res;
+    if (body['reqRes'] == 'true') {
+      res = true;
+    } else if (body['reqRes'] == 'false') {
+      res = false;
+    }
+    return res;
+  }
+
+  Future<bool> deleteCatalogueProductImage({productImageId}) async {
+    var response = await http.post(
+        Uri.parse(
+            'https://manager.fixme.ng/delete-product-catalog-image?user_id=$userId&product_image_id=$productImageId'),
         headers: {
           "Content-type": "application/json",
           'Authorization': 'Bearer $bearer',

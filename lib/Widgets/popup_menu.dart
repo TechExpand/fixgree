@@ -22,14 +22,14 @@ class PopUpMenu extends StatelessWidget {
     var network = Provider.of<WebServices>(context, listen: false);
 
     return PopupMenuButton(
-        offset: const Offset(0, 80),
+        offset: const Offset(0, 10),
         elevation: 5,
         icon: Icon(
           Icons.more_vert,
           size: 28,
         ),
         itemBuilder: (context) => [
-              user.project_owner_user_id.toString() !=
+              user.project_owner_user_id.toString() ==
                           network.userId.toString() ||
                       user.project_owner_user_id == null
                   ? null

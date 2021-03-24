@@ -122,11 +122,11 @@ class _ProfileNewState extends State<ProfileNew> {
                               decoration: BoxDecoration(
                                   color: Color(0xFFFB8333),
                                   shape: BoxShape.circle),
-                              child: Icon(
-                                Icons.check,
-                                size: 11,
-                                color: Colors.white,
-                              ),
+                              // child: Icon(
+                              //   Icons.check,
+                              //   size: 11,
+                              //   color: Colors.white,
+                              // ),
                             ),
                           ),
                         ]),

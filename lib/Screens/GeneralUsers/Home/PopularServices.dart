@@ -27,15 +27,12 @@ class PopularServices extends StatefulWidget {
 
 //6.4889151, 3.0683489
 class _PopularServicesState extends State<PopularServices> {
-  String getDistance({double artisanLongitude, double artisanLatitude}) {
-    double distanceInMeters = Geolocator.distanceBetween(
-        widget.latitude, widget.longitude, artisanLatitude, artisanLongitude);
-    var kilometers = distanceInMeters / 1000;
+  String getDistance({String rawDistance}) {
     String distance;
-    if (kilometers.truncate() != 0) {
-      distance = '${kilometers.truncate()} km';
+    if (rawDistance.length > 3) {
+      distance = '$rawDistance' + 'km';
     } else {
-      distance = '${distanceInMeters.truncate()} m';
+      distance = '$rawDistance' + 'm';
     }
     return distance;
   }
@@ -118,8 +115,6 @@ class _PopularServicesState extends State<PopularServices> {
           Expanded(
             child: Container(
               child: FutureBuilder(
-                // latitude: '6.295660',
-                //   longitude: '5.642040',
                 future: network.getServiceProviderByServiceID(
                     latitude: widget.latitude,
                     longitude: widget.longitude,
@@ -174,10 +169,8 @@ class _PopularServicesState extends State<PopularServices> {
                             padding: const EdgeInsets.only(left: 5, right: 5),
                             itemBuilder: (context, index) {
                               String distance = getDistance(
-                                  artisanLatitude: snapshot.data[index]
-                                      ['latitude'],
-                                  artisanLongitude: snapshot.data[index]
-                                      ['longitude']);
+                                  rawDistance:
+                                      '${snapshot.data[index]['distance']}');
                               return Container(
                                 alignment: Alignment.center,
                                 height: 90,

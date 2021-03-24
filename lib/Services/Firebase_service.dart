@@ -324,7 +324,7 @@ class FirebaseApi {
 
 
   static Future uploadNotification(
-      String id, String message, type, name, jobId, bidId, bidderId) async {
+      String id, String message, type, name, jobId, bidId, bidderId, artisanId) async {
     final refMessages = FirebaseFirestore.instance.collection('Notification');
 
     await refMessages.doc().set({
@@ -333,6 +333,7 @@ class FirebaseApi {
       'jobId': jobId,
       'type': type,
       'name': name,
+      'artisanId': artisanId,
       'bidded': 'bid',
       'bidderId': bidderId ?? '',
       'bidId': bidId ?? '',

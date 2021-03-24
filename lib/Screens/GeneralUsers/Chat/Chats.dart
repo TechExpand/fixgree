@@ -106,8 +106,7 @@ class _ListenIncomingState extends State<ListenIncoming> {
                   SizedBox(width: 8),
                   Icon(Icons.search),
                   SizedBox(width: 8),
-                  Text('${network.mobileDeviceToken}',
-                      style: TextStyle(color: Colors.black)),
+
                   Spacer(),
                   InkWell(
                       onTap: data.isExpanded

@@ -15,6 +15,7 @@ class Notify {
   final String type;
   final String name;
   final String jobid;
+  final String artisanId;
   final String bidded;
   final DateTime createdAt;
 
@@ -23,6 +24,7 @@ class Notify {
     this.message,
     this.jobid,
     this.userid,
+    this.artisanId,
     this.bidded,
     this.bidderId,
     this.bidId,
@@ -40,6 +42,7 @@ class Notify {
         message = snapshot['message'] ?? '',
         name = snapshot['name'] ?? '',
         userid = snapshot['userid'] ?? '',
+        artisanId = snapshot['artisanId'] ?? '',
         type = snapshot['type'] ?? '',
         createdAt =  Utils.toDateTime(snapshot['createdAt']);
 
@@ -49,6 +52,7 @@ class Notify {
     'name': name,
     'bidded': bidded,
     'bidderId': bidderId,
+    'artisanId': artisanId,
     'bidId': bidId,
     'jobid': jobid,
     'userid': userid,

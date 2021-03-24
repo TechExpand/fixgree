@@ -619,12 +619,13 @@ class _PendingScreenState extends State<PendingScreen> {
                                                             value: 1,
                                                             child: InkWell(
                                                               onTap: () {
-//                                                                    network.requestPayment(network.user_id, bid_id);
-//                                                                    Navigator.pop(context);
+                                                                    network.requestPayment(network.userId, snapshot.data[index].sn);
+                                                                    print(network.bearer);
+                                                                    Navigator.pop(context);
                                                               },
                                                               child: Padding(
                                                                 padding: const EdgeInsets.all(8),
-                                                                child: Text('Request for payment'),
+                                                                child: Text('Request for payment ${snapshot.data[index].sn} ${network.userId} ${network.bearer}'),
                                                               ),
                                                             )),
 

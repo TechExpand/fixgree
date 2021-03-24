@@ -21,15 +21,12 @@ class NearbyShopsSeeAll extends StatefulWidget {
 }
 
 class _NearbyShopsSeeAllState extends State<NearbyShopsSeeAll> {
-  String getDistance({double artisanLongitude, double artisanLatitude}) {
-    double distanceInMeters = Geolocator.distanceBetween(
-        widget.latitude, widget.longitude, artisanLatitude, artisanLongitude);
-    var kilometers = distanceInMeters / 1000;
+  String getDistance({String rawDistance}) {
     String distance;
-    if (kilometers.truncate() != 0) {
-      distance = '${kilometers.truncate()} km';
+    if (rawDistance.length > 3) {
+      distance = '$rawDistance' + 'km';
     } else {
-      distance = '${distanceInMeters.truncate()} m';
+      distance = '$rawDistance' + 'm';
     }
     return distance;
   }
@@ -111,8 +108,6 @@ class _NearbyShopsSeeAllState extends State<NearbyShopsSeeAll> {
         Expanded(
           child: Container(
               child: FutureBuilder(
-                  // latitude: '6.295660',
-                  //   longitude: '5.642040',
                   future: network.nearbyShop(
                       latitude: location.locationLatitude,
                       longitude: location.locationLongitude),
@@ -166,10 +161,8 @@ class _NearbyShopsSeeAllState extends State<NearbyShopsSeeAll> {
                               padding: const EdgeInsets.only(left: 5, right: 5),
                               itemBuilder: (context, index) {
                                 String distance = getDistance(
-                                    artisanLatitude:
-                                        snapshot.data[index].latitude,
-                                    artisanLongitude:
-                                        snapshot.data[index].longitude);
+                                    rawDistance:
+                                        '${snapshot.data[index].distance}');
                                 return Container(
                                   alignment: Alignment.center,
                                   height: 90,

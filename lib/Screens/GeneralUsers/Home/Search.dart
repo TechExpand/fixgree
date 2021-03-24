@@ -120,9 +120,9 @@ class SearchResultState extends State<SearchResult> {
   String getDistance({String rawDistance}) {
     String distance;
     if (rawDistance.length > 3) {
-      distance = '$rawDistance km';
+      distance = '$rawDistance' + 'km';
     } else {
-      distance = '$rawDistance m';
+      distance = '$rawDistance' + 'm';
     }
     return distance;
   }
@@ -131,7 +131,6 @@ class SearchResultState extends State<SearchResult> {
   Widget build(BuildContext context) {
     var network = Provider.of<WebServices>(context, listen: false);
     var location = Provider.of<LocationService>(context);
-    // TODO: implement build
     return FutureBuilder(
       future: network.search(
         searchquery: widget.searchValue,

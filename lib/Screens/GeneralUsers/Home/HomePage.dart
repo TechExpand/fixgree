@@ -88,6 +88,7 @@ class _HomePageState extends State<HomePage> {
         '${message["data"]["jobId"]}',
         '${message["data"]["bidId"]}',
         '${message["data"]["bidderId"]}',
+        '${message["data"]["artisanId"]}',
       );
       FirebaseApi.uploadCheckNotify(
         network.userId.toString(),
