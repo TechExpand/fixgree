@@ -53,7 +53,6 @@ class _ArtisanPageNewState extends State<ArtisanPageNew> {
         network.getServiceImage(network.userId, widget.userData.id);
     cataloguePhotos.then((data) {
       int catalogueCount = data.length;
-      print('The catalog count: $catalogueCount');
       artisanProvider.setCatalogueCount = catalogueCount;
     });
   }
