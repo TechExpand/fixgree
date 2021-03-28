@@ -126,40 +126,43 @@ class _EditProfileState extends State<EditProfile> {
                         const EdgeInsets.only(left: 18, right: 18, top: 18),
                     child: Row(
                       children: [
-                        Stack(children: <Widget>[
-                          CircleAvatar(
-                            child: Text(''),
-                            radius: 40,
-                            backgroundImage: NetworkImage(
-                              snapshot.data['photoUrl'] != 'no_picture_upload'
-                                  ? '${snapshot.data['photoUrl']}'
-                                  : 'https://uploads.fixme.ng/originals/no_picture_upload',
+                        Container(
+                          width: 200,
+                          child: Stack(children: <Widget>[
+                            CircleAvatar(
+                              child: Text(''),
+                              radius: 40,
+                              backgroundImage: NetworkImage(
+                                snapshot.data['photoUrl'] != 'no_picture_upload'
+                                    ? '${snapshot.data['photoUrl']}'
+                                    : 'https://uploads.fixme.ng/originals/no_picture_upload',
+                              ),
+                              foregroundColor: Colors.white,
+                              backgroundColor: Colors.white,
                             ),
-                            foregroundColor: Colors.white,
-                            backgroundColor: Colors.white,
-                          ),
-                          Positioned(
-                            left: 55,
-                            top: 50,
-                            child: InkWell(
-                              onTap: () => pickImage(
-                                  source: ImageSource.gallery,
-                                  context: context),
-                              child: Container(
-                                height: 25,
-                                width: 25,
-                                decoration: BoxDecoration(
-                                    color: Color(0xFFA40C85),
-                                    shape: BoxShape.circle),
-                                child: Icon(
-                                  FeatherIcons.camera,
-                                  size: 13,
-                                  color: Colors.white,
+                            Positioned(
+                              left: 55,
+                              top: 50,
+                              child: InkWell(
+                                onTap: () => pickImage(
+                                    source: ImageSource.gallery,
+                                    context: context),
+                                child: Container(
+                                  height: 28,
+                                  width: 28,
+                                  decoration: BoxDecoration(
+                                      color: Color(0xFFA40C85),
+                                      shape: BoxShape.circle),
+                                  child: Icon(
+                                    FeatherIcons.camera,
+                                    size: 13,
+                                    color: Colors.white,
+                                  ),
                                 ),
                               ),
                             ),
-                          ),
-                        ]),
+                          ]),
+                        ),
                       ],
                     ),
                   ),

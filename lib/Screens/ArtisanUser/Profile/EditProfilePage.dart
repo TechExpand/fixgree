@@ -5,6 +5,7 @@ import 'package:fixme/Utils/utils.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_feather_icons/flutter_feather_icons.dart';
 import 'package:google_fonts/google_fonts.dart';
+import 'package:image_picker/image_picker.dart';
 import 'package:provider/provider.dart';
 
 class EditProfilePage extends StatefulWidget {
@@ -15,12 +16,29 @@ class EditProfilePage extends StatefulWidget {
 class _EditProfilePageState extends State<EditProfilePage> {
   List<Services> result = [];
   Future<dynamic> userInfo;
+  PickedFile selectedImage;
+  final picker = ImagePicker();
 
   update(BuildContext context) async {
     var network = Provider.of<WebServices>(context, listen: false);
     setState(() {
       userInfo = network.getUserInfo(network.userId);
     });
+  }
+
+  void pickImage({@required ImageSource source, context}) async {
+    var network = Provider.of<WebServices>(context, listen: false);
+    var data = Provider.of<Utils>(context, listen: false);
+    var image = await picker.getImage(source: source);
+    setState(() => selectedImage = image);
+
+    String imageName = await network.uploadProfilePhoto(
+      path: selectedImage.path,
+    );
+
+    data.storeData('profile_pic_file_name', imageName);
+    network.initializeValues();
+    update(context);
   }
 
   @override
@@ -52,43 +70,51 @@ class _EditProfilePageState extends State<EditProfilePage> {
           future: userInfo,
           builder: (context, snapshot) {
             return snapshot.hasData
-                ? Column(children: [
+                ? ListView(children: [
                     Padding(
                       padding:
                           const EdgeInsets.only(left: 18, right: 18, top: 18),
                       child: Row(
                         children: [
-                          Stack(children: <Widget>[
-                            CircleAvatar(
-                              child: Text(''),
-                              radius: 40,
-                              backgroundImage: NetworkImage(
-                                network.profilePicFileName ==
-                                            'no_picture_upload' ||
-                                        network.profilePicFileName == null
-                                    ? 'https://uploads.fixme.ng/originals/no_picture_upload'
-                                    : 'https://uploads.fixme.ng/originals/${network.profilePicFileName}',
+                          Container(
+                            width: 200,
+                            child: Stack(children: <Widget>[
+                              CircleAvatar(
+                                child: Text(''),
+                                radius: 40,
+                                backgroundImage: NetworkImage(
+                                  network.profilePicFileName ==
+                                              'no_picture_upload' ||
+                                          network.profilePicFileName == null
+                                      ? 'https://uploads.fixme.ng/originals/no_picture_upload'
+                                      : 'https://uploads.fixme.ng/originals/${network.profilePicFileName}',
+                                ),
+                                foregroundColor: Colors.white,
+                                backgroundColor: Colors.white,
                               ),
-                              foregroundColor: Colors.white,
-                              backgroundColor: Colors.white,
-                            ),
-                            Positioned(
-                              left: 55,
-                              top: 50,
-                              child: Container(
-                                height: 25,
-                                width: 25,
-                                decoration: BoxDecoration(
-                                    color: Color(0xFFA40C85),
-                                    shape: BoxShape.circle),
-                                child: Icon(
-                                  FeatherIcons.camera,
-                                  size: 13,
-                                  color: Colors.white,
+                              Positioned(
+                                left: 55,
+                                top: 50,
+                                child: InkWell(
+                                  onTap: () => pickImage(
+                                      source: ImageSource.gallery,
+                                      context: context),
+                                  child: Container(
+                                    height: 28,
+                                    width: 28,
+                                    decoration: BoxDecoration(
+                                        color: Color(0xFFA40C85),
+                                        shape: BoxShape.circle),
+                                    child: Icon(
+                                      FeatherIcons.camera,
+                                      size: 13,
+                                      color: Colors.white,
+                                    ),
+                                  ),
                                 ),
                               ),
-                            ),
-                          ]),
+                            ]),
+                          ),
                         ],
                       ),
                     ),
@@ -215,6 +241,67 @@ class _EditProfilePageState extends State<EditProfilePage> {
                                       ),
                                     ),
                                   ],
+                                ),
+                              ],
+                            ),
+                          ),
+                          Padding(
+                            padding: const EdgeInsets.only(top: 20),
+                            child: Column(
+                              children: [
+                                Divider(),
+                                Row(
+                                  children: [
+                                    Text(
+                                      'Edit subservices',
+                                      style: TextStyle(
+                                          color: Color(0xFF333333),
+                                          fontSize: 16,
+                                          fontWeight: FontWeight.w600),
+                                    ),
+                                  ],
+                                ),
+                                Align(
+                                  alignment: Alignment.centerLeft,
+                                  child: Wrap(
+                                    spacing: 5,
+                                    alignment: WrapAlignment.start,
+                                    children: [
+                                      for (dynamic subService
+                                          in snapshot.data['subServices'])
+                                        Chip(
+                                          backgroundColor: Color(0xFF9B049B)
+                                              .withOpacity(0.5),
+                                          deleteIcon: Icon(
+                                            FeatherIcons.x,
+                                            size: 15,
+                                          ),
+                                          onDeleted: () {},
+                                          deleteIconColor: Colors.white,
+                                          label: Text(
+                                            subService['subservice'].toString(),
+                                            style:
+                                                TextStyle(color: Colors.white),
+                                          ),
+                                        ),
+                                      Container(
+                                        height: 32,
+                                        width: 32,
+                                        margin: const EdgeInsets.only(top: 10),
+                                        decoration: BoxDecoration(
+                                            border: Border.all(
+                                              width: 1,
+                                              color: Color(0xFFA40C85),
+                                            ),
+                                            shape: BoxShape.circle),
+                                        child: Icon(
+                                          FeatherIcons.plus,
+                                          size: 16,
+                                          color: Color(0xFFA40C85),
+                                        ),
+                                      ),
+                                    ],
+                                  ),
                                 ),
                               ],
                             ),

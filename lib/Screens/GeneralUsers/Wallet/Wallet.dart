@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:fixme/Services/network_service.dart';
 import "package:flutter_feather_icons/flutter_feather_icons.dart";
+import 'package:google_fonts/google_fonts.dart';
 import 'package:provider/provider.dart';
 import 'package:fixme/Model/UserBankInfo.dart';
 import 'package:fixme/Model/TransactionDetails.dart';
@@ -122,14 +123,32 @@ class _WalletState extends State<Wallet> {
                                           Padding(
                                             padding:
                                                 const EdgeInsets.only(top: 5),
-                                            child: Text(
-                                                '\₦${userBankInfo.balance}',
+                                            child: RichText(
+                                              text: TextSpan(
+                                                text: '\u{20A6}',
                                                 style: TextStyle(
-                                                    color: Colors.white,
                                                     fontSize: 24,
                                                     height: 1.5,
+                                                    fontFamily: 'Roboto',
+                                                    color: Colors.white,
                                                     fontWeight:
-                                                        FontWeight.w600)),
+                                                        FontWeight.w600),
+                                                children: <TextSpan>[
+                                                  TextSpan(
+                                                      text:
+                                                          '${userBankInfo.balance}',
+                                                      style:
+                                                          GoogleFonts.openSans(
+                                                              color:
+                                                                  Colors.white,
+                                                              fontSize: 24,
+                                                              height: 1.5,
+                                                              fontWeight:
+                                                                  FontWeight
+                                                                      .w600)),
+                                                ],
+                                              ),
+                                            ),
                                           ),
                                         ],
                                       ),
@@ -526,18 +545,46 @@ class _WalletState extends State<Wallet> {
     Widget text;
     switch (type) {
       case "credit":
-        text = Text('+ ${currencySymbol(currency)}$amount',
+        text = RichText(
+          text: TextSpan(
+            text: '+ ${currencySymbol(currency)}',
             style: TextStyle(
                 fontSize: 16,
+                fontFamily: 'Roboto',
                 color: Color(0xFF02FF1B),
-                fontWeight: FontWeight.w600));
+                fontWeight: FontWeight.w600),
+            children: <TextSpan>[
+              TextSpan(
+                  text: '$amount',
+                  style: GoogleFonts.openSans(
+                      fontSize: 16,
+                      color: Color(0xFF02FF1B),
+                      fontWeight: FontWeight.w600)),
+            ],
+          ),
+        );
+
         break;
       case "withdrawal":
-        text = Text('- ${currencySymbol(currency)}$amount',
+        text = RichText(
+          text: TextSpan(
+            text: '- ${currencySymbol(currency)}',
             style: TextStyle(
+                fontFamily: 'Roboto',
                 fontSize: 16,
                 color: Color(0xFFFF0202),
-                fontWeight: FontWeight.w600));
+                fontWeight: FontWeight.w600),
+            children: <TextSpan>[
+              TextSpan(
+                  text: '$amount',
+                  style: GoogleFonts.openSans(
+                      fontSize: 16,
+                      color: Color(0xFFFF0202),
+                      fontWeight: FontWeight.w600)),
+            ],
+          ),
+        );
+
         break;
       default:
     }
