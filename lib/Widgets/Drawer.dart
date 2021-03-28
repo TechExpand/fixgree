@@ -253,21 +253,7 @@ class _DrawerState extends State<DrawerWidget> {
                     style:
                         TextStyle(fontSize: 16, fontWeight: FontWeight.w600)),
               )),
-          SizedBox(
-            height: 40,
-            child: ListTile(
-              leading: Icon(Icons.offline_pin, color: Color(0xF0A40C85)),
-              contentPadding: const EdgeInsets.only(
-                left: 10,
-              ),
-              minLeadingWidth: 10,
-              title: Text(
-                'Online status',
-                style: TextStyle(fontSize: 15, fontWeight: FontWeight.w400),
-              ),
-              trailing: Switch(value: true, onChanged: null),
-            ),
-          ),
+
           InkWell(
             onTap: () {
               Navigator.pop(context);

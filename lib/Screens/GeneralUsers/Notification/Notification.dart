@@ -2,9 +2,9 @@ import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:fixme/Model/Notify.dart';
 import 'package:fixme/Screens/GeneralUsers/Chat/Chats.dart';
 import 'package:fixme/Screens/GeneralUsers/Home/Search.dart';
-import 'package:fixme/Screens/GeneralUsers/Wallet/CardPayment.dart';
+import 'package:fixme/Screens/GeneralUsers/Wallet/WalletPay.dart';
+import 'package:fixme/Screens/GeneralUsers/Notification/Pay.dart';
 import 'package:fixme/Services/Firebase_service.dart';
-import 'package:fixme/Services/flutterwave.dart';
 import 'package:fixme/Services/network_service.dart';
 import 'package:fixme/Utils/utils.dart';
 import 'package:fixme/Widgets/Rating.dart';
@@ -14,10 +14,14 @@ import 'package:google_fonts/google_fonts.dart';
 import 'package:provider/provider.dart';
 import 'package:rating_dialog/rating_dialog.dart';
 
+
+
+
 class NotificationPage extends StatefulWidget {
   final scafoldKey;
+  final myPage;
 
-  NotificationPage(this.scafoldKey);
+  NotificationPage(this.scafoldKey, this.myPage);
 
   @override
   _NotificationState createState() => _NotificationState();
@@ -439,13 +443,27 @@ class _NotificationState extends State<NotificationPage> {
                                                                           'bid_approval'
                                                                       ? Text('')
                                                                       : InkWell(
-                                                                          onTap:
-                                                                              () {
+                                                                          onTap:(){
+                                                                            FirebaseApi
+                                                                                .updateNotification(
+                                                                                users[index]
+                                                                                    .id,
+                                                                                'confirm')
+                                                                                .then((value) {
+                                                                              network.confirmBudget(
+                                                                                  users[index]
+                                                                                      .bidderId,
+                                                                                  users[index]
+                                                                                      .bidId,
+                                                                                  widget
+                                                                                      .scafoldKey);
+                                                                            });
                                                                                 Navigator.push(
                                                                                   context,
                                                                                   PageRouteBuilder(
                                                                                     pageBuilder: (context, animation, secondaryAnimation) {
-                                                                                      return  MyHomePage(data:users[index]); //SignUpAddress();
+                                                                                      return Pay(controller:widget.myPage);
+                                                                                   //   userBankInfo: users[index]// ignUpAddress();
                                                                                     },
                                                                                     transitionsBuilder: (context, animation, secondaryAnimation, child) {
                                                                                       return FadeTransition(

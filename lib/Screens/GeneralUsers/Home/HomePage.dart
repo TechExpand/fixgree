@@ -392,7 +392,7 @@ class _HomePageState extends State<HomePage> {
             Home(scafoldKey, data, _myPage),
             Wallet(),
             PostScreen(),
-            NotificationPage(scafoldKey),
+            NotificationPage(scafoldKey,  _myPage),
             PendingScreen(scafoldKey),
           ],
         ),

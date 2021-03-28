@@ -410,14 +410,14 @@ class _PendingScreenState extends State<PendingScreen> {
                                                           },
                                                           child: Padding(
                                                             padding: const EdgeInsets.all(8),
-                                                            child: Text('Request for payment ${snapshot.data[0]}'),
+                                                            child: Text('Project Still Pending'),
                                                           ),
                                                         )),
 
                                                   ])
                                           ),
                                           Text(
-                                            '${snapshot.data[index].dateOpen.toString()}',
+                                            '${snapshot.data[index].dateOpen.toString().substring(0,10)}',
                                             style: TextStyle(
                                                 color: Colors.black38),
                                           )
@@ -838,7 +838,7 @@ class _PendingScreenState extends State<PendingScreen> {
                                                               },
                                                               child: Padding(
                                                                 padding: const EdgeInsets.all(8),
-                                                                child: Text('Request for payment ${snapshot.data[0]}'),
+                                                                child: Text('Project Has Been Completed'),
                                                               ),
                                                             )),
 
