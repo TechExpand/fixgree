@@ -1,3 +1,4 @@
+import 'package:clipboard/clipboard.dart';
 import 'package:fixme/Screens/GeneralUsers/Home/HomePage.dart';
 import 'package:fixme/Screens/GeneralUsers/Wallet/Providers/BankProvider.dart';
 import 'package:fixme/Screens/GeneralUsers/Wallet/WalletPayCompletePayment.dart';
@@ -12,16 +13,11 @@ import 'package:fixme/Model/BankInfo.dart';
 import 'package:provider/provider.dart';
 
 
-class Pay extends StatefulWidget {
+class Pay extends StatelessWidget{
   var controller;
+  var data;
 //
-  Pay({@required this.controller});
-
-  @override
-  PayState createState() => PayState();
-}
-
-class PayState extends State<Pay> {
+  Pay({@required this.controller, @required this.data});
   var transferModes = ['Direct \n Transfer', 'Wallet \n Transfer'];
 
   TextEditingController accountNo = new TextEditingController();
@@ -35,23 +31,19 @@ class PayState extends State<Pay> {
     bottomLeft: Radius.circular(15.0),
     bottomRight: Radius.circular(15.0),
   );
+  final GlobalKey<ScaffoldState> scaffoldKey = GlobalKey<ScaffoldState>();
 
-  @override
-  void dispose() {
-    super.dispose();
-  }
 
   @override
   Widget build(BuildContext context) {
     var deviceSize = MediaQuery.of(context).size;
-    controller(){
-      widget.controller.jumpToPage(1);
-    }
+
     var network = Provider.of<WebServices>(context, listen: false);
     return ChangeNotifierProvider<BankProvider>(
       create: (_) => BankProvider(),
       builder: (context, _) {
         return Scaffold(
+          key: scaffoldKey,
           appBar: AppBar(
             backgroundColor: Colors.white,
             leading: IconButton(
@@ -180,7 +172,7 @@ class PayState extends State<Pay> {
 
                     Container(
                       // margin: const EdgeInsets.only(right: 25, left: 25),
-                      height: 135,
+                      height: 145,
                       decoration: BoxDecoration(
                         borderRadius: radiusBottom,
                         color: Color(0xFFFFFFFF),
@@ -191,66 +183,86 @@ class PayState extends State<Pay> {
                               offset: Offset(0.3, 4.0))
                         ],
                       ),
-                      child: Column(
-                        children: <Widget>[
-                          Row(
-                            mainAxisAlignment: MainAxisAlignment.center,
+                      child: FutureBuilder(
+                        future: network.getUserBankInfo(data.bidderId) ,
+                        builder: (context, snapshot) {
+                          return snapshot.data==null?Center(child: Text('Loading',  style: TextStyle(
+                              color: Color(0xFF333333),
+                              fontSize: 22,
+                              height: 1.4))):Column(
                             children: <Widget>[
+                              Row(
+                                mainAxisAlignment: MainAxisAlignment.center,
+                                children: <Widget>[
+                                  Padding(
+                                    padding:
+                                    const EdgeInsets.only(top: 7, bottom: 5),
+                                    child: Text(
+                                    snapshot.data==null?'':snapshot.data['bankName'].toString()
+                                            .toUpperCase(),
+                                        style: TextStyle(
+                                            color: Color(0xFF333333),
+                                            fontSize: 22,
+                                            height: 1.4)),
+                                  ),
+                                ],
+                              ),
+
                               Padding(
-                                padding:
-                                const EdgeInsets.only(top: 7, bottom: 5),
-                                child: Text(
-                                    'First Bank'
-                                        .toUpperCase(),
-                                    style: TextStyle(
-                                        color: Color(0xFF333333),
-                                        fontSize: 22,
-                                        height: 1.4)),
+                                padding: const EdgeInsets.only(top: 10),
+                                child: Row(
+                                  mainAxisAlignment: MainAxisAlignment.center,
+                                  children: [
+                                    Text('Account No: ',
+                                        style: TextStyle(
+                                          // letterSpacing: 4,
+                                            color: Color(0xFF333333),
+                                            fontSize: 20,
+                                            fontWeight: FontWeight.w400)),
+                                    Text(
+                                        snapshot.data==null?'':snapshot.data['accountNumber'].toString(),
+                                        style: TextStyle(
+                                            color: Color(0xFF333333),
+                                            fontSize: 21,
+                                            fontWeight: FontWeight.w400)),
+                                    IconButton(
+                                      icon: Icon(Icons.content_copy),
+                                      color: Color(0xFF333333),
+                                      onPressed: () async {
+                                        FlutterClipboard.copy(
+                                            snapshot.data==null?'':snapshot.data['accountNumber'].toString())
+                                            .then((value) {
+                                          scaffoldKey.currentState.showSnackBar(SnackBar(
+                                              content: Text('Account number copied.')));
+                                        });
+                                      },
+                                    )
+                                  ],
+                                ),
+                              ),
+                              Padding(
+                                padding: const EdgeInsets.only(top: 10),
+                                child: Row(
+                                  mainAxisAlignment: MainAxisAlignment.center,
+                                  children: [
+                                    Text('Account Name: ',
+                                        style: TextStyle(
+                                          // letterSpacing: 4,
+                                            color: Color(0xFF333333),
+                                            fontSize: 20,
+                                            fontWeight: FontWeight.w400)),
+                                    Text(
+                                        snapshot.data==null?'':snapshot.data['account_name'].toString(),
+                                        style: TextStyle(
+                                            color: Color(0xFF333333),
+                                            fontSize: 21,
+                                            fontWeight: FontWeight.w400)),
+                                  ],
+                                ),
                               ),
                             ],
-                          ),
-
-                          Padding(
-                            padding: const EdgeInsets.only(top: 10),
-                            child: Row(
-                              mainAxisAlignment: MainAxisAlignment.center,
-                              children: [
-                                Text('Account No: ',
-                                    style: TextStyle(
-                                      // letterSpacing: 4,
-                                        color: Color(0xFF333333),
-                                        fontSize: 20,
-                                        fontWeight: FontWeight.w400)),
-                                Text(
-                                    '124567876543',
-                                    style: TextStyle(
-                                        color: Color(0xFF333333),
-                                        fontSize: 21,
-                                        fontWeight: FontWeight.w400)),
-                              ],
-                            ),
-                          ),
-                          Padding(
-                            padding: const EdgeInsets.only(top: 10),
-                            child: Row(
-                              mainAxisAlignment: MainAxisAlignment.center,
-                              children: [
-                                Text('Account Name: ',
-                                    style: TextStyle(
-                                      // letterSpacing: 4,
-                                        color: Color(0xFF333333),
-                                        fontSize: 20,
-                                        fontWeight: FontWeight.w400)),
-                                Text(
-                                    'Fixme Org',
-                                    style: TextStyle(
-                                        color: Color(0xFF333333),
-                                        fontSize: 21,
-                                        fontWeight: FontWeight.w400)),
-                              ],
-                            ),
-                          ),
-                        ],
+                          );
+                        }
                       ),
                     )
                   ],
@@ -301,7 +313,7 @@ class PayState extends State<Pay> {
                       padding: EdgeInsets.all(10),
                       onPressed: () {
                         Navigator.pop(context);
-                        controller();
+                        controller.jumpToPage(1);
                         data.setSelectedBottomNavBar(1);
 
                       },

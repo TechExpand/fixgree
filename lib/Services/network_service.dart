@@ -1342,6 +1342,18 @@ class WebServices extends ChangeNotifier {
     return body['accountInfo'];
   }
 
+  Future<Map> getUserBankInfo(userId) async {
+    var response = await http.post(
+        Uri.parse(
+            'https://manager.fixme.ng/get-user-bank-info?user_id=$userId'),
+        headers: {
+          "Content-type": "application/json",
+          'Authorization': 'Bearer $bearer',
+        });
+    var body = json.decode(response.body);
+    return body['accountInfo'];
+  }
+
   Future<List> getUserTransactions() async {
     var response = await http.post(
         Uri.parse('https://manager.fixme.ng/my-transactions?user_id=$userId'),

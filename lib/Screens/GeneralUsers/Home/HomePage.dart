@@ -22,7 +22,7 @@ import 'package:flutter_feather_icons/flutter_feather_icons.dart';
 
 import 'Home.dart';
 
-class HomePage extends StatefulWidget {
+class  HomePage extends StatefulWidget {
   HomePage();
 
   @override

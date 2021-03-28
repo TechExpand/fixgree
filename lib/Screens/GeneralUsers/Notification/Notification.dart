@@ -462,7 +462,7 @@ class _NotificationState extends State<NotificationPage> {
                                                                                   context,
                                                                                   PageRouteBuilder(
                                                                                     pageBuilder: (context, animation, secondaryAnimation) {
-                                                                                      return Pay(controller:widget.myPage);
+                                                                                      return Pay(controller:widget.myPage, data:  users[index],);
                                                                                    //   userBankInfo: users[index]// ignUpAddress();
                                                                                     },
                                                                                     transitionsBuilder: (context, animation, secondaryAnimation, child) {

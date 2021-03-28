@@ -5,8 +5,6 @@ import 'package:fixme/Screens/GeneralUsers/Home/Search.dart';
 import 'package:fixme/Services/Firebase_service.dart';
 import 'package:fixme/Services/network_service.dart';
 import 'package:flutter/material.dart';
-import 'package:grouped_list/grouped_list.dart';
-import 'package:flutter_slidable/flutter_slidable.dart';
 import 'package:provider/provider.dart';
 
 class PendingScreen extends StatefulWidget {
@@ -625,7 +623,7 @@ class _PendingScreenState extends State<PendingScreen> {
                                                               },
                                                               child: Padding(
                                                                 padding: const EdgeInsets.all(8),
-                                                                child: Text('Request for payment ${snapshot.data[index].sn} ${network.userId} ${network.bearer}'),
+                                                                child: Text('Request for payment'),
                                                               ),
                                                             )),
 
