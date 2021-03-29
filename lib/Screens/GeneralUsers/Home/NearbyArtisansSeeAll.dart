@@ -23,12 +23,7 @@ class NearbyArtisansSeeAll extends StatefulWidget {
 class _NearbyArtisansSeeAllState extends State<NearbyArtisansSeeAll> {
   String getDistance({String rawDistance}) {
     String distance;
-    print('The distance $rawDistance');
-    if (rawDistance.length > 3) {
-      distance = '$rawDistance' + 'km';
-    } else {
-      distance = '$rawDistance' + 'm';
-    }
+    distance = '$rawDistance' + 'km';
     return distance;
   }
 

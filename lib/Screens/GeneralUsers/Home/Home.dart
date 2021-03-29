@@ -28,11 +28,9 @@ class Home extends StatelessWidget {
 
   String getDistance({String rawDistance}) {
     String distance;
-    if (rawDistance.length > 3) {
+   
       distance = '$rawDistance' + 'km';
-    } else {
-      distance = '$rawDistance' + 'm';
-    }
+  
     return distance;
   }
 

@@ -119,11 +119,7 @@ class SearchResult extends StatefulWidget {
 class SearchResultState extends State<SearchResult> {
   String getDistance({String rawDistance}) {
     String distance;
-    if (rawDistance.length > 3) {
-      distance = '$rawDistance' + 'km';
-    } else {
-      distance = '$rawDistance' + 'm';
-    }
+    distance = '$rawDistance' + 'km';
     return distance;
   }
 

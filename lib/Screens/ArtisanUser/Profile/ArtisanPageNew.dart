@@ -249,19 +249,44 @@ class _ArtisanPageNewState extends State<ArtisanPageNew> {
                           ),
                           Row(
                             children: [
+                              // Text(
+                              //   widget.userData.userRole == 'artisan'
+                              //       ? 'Expertise Level: '
+                              //       : 'Store Rating: ',
+                              //   style: TextStyle(
+                              //       color: Color(0xFF333333),
+                              //       fontSize: 16,
+                              //       fontWeight: FontWeight.w600),
+                              // ),
                               Text(
-                                widget.userData.userRole == 'artisan'
-                                    ? 'Expertise Level: '
-                                    : 'Store Rating: ',
+                                '${double.parse(widget.userData.userRating.toString())}',
                                 style: TextStyle(
                                     color: Color(0xFF333333),
                                     fontSize: 16,
                                     fontWeight: FontWeight.w600),
                               ),
-                              StarRating(
-                                rating: double.parse(
-                                    widget.userData.userRating.toString()),
+                              SizedBox(
+                                width: 3,
                               ),
+                              Icon(
+                                Icons.star,
+                                color: Colors.amber,
+                                size: 18,
+                              ),
+                              SizedBox(
+                                width: 3,
+                              ),
+                              Text(
+                                '(${this.widget.userData.reviews} reviews)',
+                                style: TextStyle(
+                                    color: Color(0xFF333333),
+                                    fontSize: 16,
+                                    fontWeight: FontWeight.w600),
+                              ),
+                              // StarRating(
+                              //   rating: double.parse(
+                              //       widget.userData.userRating.toString()),
+                              // ),
                             ],
                           ),
                           widget.userData.bio == null ||

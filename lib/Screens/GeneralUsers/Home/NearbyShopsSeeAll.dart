@@ -23,11 +23,7 @@ class NearbyShopsSeeAll extends StatefulWidget {
 class _NearbyShopsSeeAllState extends State<NearbyShopsSeeAll> {
   String getDistance({String rawDistance}) {
     String distance;
-    if (rawDistance.length > 3) {
-      distance = '$rawDistance' + 'km';
-    } else {
-      distance = '$rawDistance' + 'm';
-    }
+    distance = '$rawDistance' + 'km';
     return distance;
   }
 

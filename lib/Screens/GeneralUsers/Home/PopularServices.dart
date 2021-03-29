@@ -30,11 +30,7 @@ class PopularServices extends StatefulWidget {
 class _PopularServicesState extends State<PopularServices> {
   String getDistance({String rawDistance}) {
     String distance;
-    if (rawDistance.length > 3) {
-      distance = '$rawDistance' + 'km';
-    } else {
-      distance = '$rawDistance' + 'm';
-    }
+    distance = '$rawDistance' + 'km';
     return distance;
   }
 
