@@ -8,13 +8,10 @@ import 'package:fixme/Model/TransactionDetails.dart';
 import 'package:fixme/Utils/utils.dart';
 import 'package:intl/intl.dart';
 import 'Providers/WalletProvider.dart';
-import 'WalletAddCard.dart';
 import 'WalletFund.dart';
 import 'WalletHistory.dart';
 import 'WalletPay.dart';
 import 'WalletWithdraw.dart';
-
-
 
 class Wallet extends StatefulWidget {
   @override
@@ -345,39 +342,39 @@ class _WalletState extends State<Wallet> {
               decoration:
                   BoxDecoration(borderRadius: radius, color: Colors.white),
               child: Column(children: [
-                InkWell(
-                  onTap: () {
-                    Navigator.of(context).push(
-                      PageRouteBuilder(
-                        pageBuilder: (context, animation, secondaryAnimation) {
-                          return WalletAddCard();
-                        },
-                        transitionsBuilder:
-                            (context, animation, secondaryAnimation, child) {
-                          return FadeTransition(
-                            opacity: animation,
-                            child: child,
-                          );
-                        },
-                      ),
-                    );
-                  },
-                  child: Row(
-                    mainAxisAlignment: MainAxisAlignment.center,
-                    children: [
-                      Icon(FeatherIcons.plus, color: Color(0xFF333333)),
-                      SizedBox(
-                        width: 5,
-                      ),
-                      Text('Add payment card',
-                          style: TextStyle(
-                              color: Color(0xFF333333),
-                              fontSize: 16,
-                              height: 1.4,
-                              fontWeight: FontWeight.w500)),
-                    ],
-                  ),
-                ),
+                // InkWell(
+                //   onTap: () {
+                //     Navigator.of(context).push(
+                //       PageRouteBuilder(
+                //         pageBuilder: (context, animation, secondaryAnimation) {
+                //           return WalletAddCard();
+                //         },
+                //         transitionsBuilder:
+                //             (context, animation, secondaryAnimation, child) {
+                //           return FadeTransition(
+                //             opacity: animation,
+                //             child: child,
+                //           );
+                //         },
+                //       ),
+                //     );
+                //   },
+                //   child: Row(
+                //     mainAxisAlignment: MainAxisAlignment.center,
+                //     children: [
+                //       Icon(FeatherIcons.plus, color: Color(0xFF333333)),
+                //       SizedBox(
+                //         width: 5,
+                //       ),
+                //       Text('Add payment card',
+                //           style: TextStyle(
+                //               color: Color(0xFF333333),
+                //               fontSize: 16,
+                //               height: 1.4,
+                //               fontWeight: FontWeight.w500)),
+                //     ],
+                //   ),
+                // ),
                 Container(
                   height: 30,
                   child: Row(
@@ -461,20 +458,14 @@ class _WalletState extends State<Wallet> {
                             ),
                           );
                         } else {
-                          if (snapshot.data == null) {
+                          if (snapshot.data == null ||
+                              snapshot.data.length == 0) {
                             mainWidget = Center(
                               child: Column(
                                 mainAxisAlignment: MainAxisAlignment.center,
                                 crossAxisAlignment: CrossAxisAlignment.center,
                                 children: [
-                                  Theme(
-                                      data: Theme.of(context).copyWith(
-                                          accentColor: Color(0xFF9B049B)),
-                                      child: CircularProgressIndicator()),
-                                  SizedBox(
-                                    height: 10,
-                                  ),
-                                  Text('Loading',
+                                  Text('No transactions.',
                                       style: TextStyle(
                                           color: Color(0xFF333333),
                                           fontSize: 18,

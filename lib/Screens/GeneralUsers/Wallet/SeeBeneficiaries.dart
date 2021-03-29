@@ -303,7 +303,7 @@ class _SeeBeneficiariesState extends State<SeeBeneficiaries> {
       return;
     } else {
       userItems.forEach((item) {
-        if (item.accountName.toLowerCase().startsWith(query.toLowerCase())) {
+        if (item.accountName.toLowerCase().contains(query.toLowerCase())) {
           filteredItems.add(item);
         }
       });

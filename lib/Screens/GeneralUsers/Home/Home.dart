@@ -268,14 +268,14 @@ class Home extends StatelessWidget {
                             style: TextStyle(
                                 fontWeight: FontWeight.w600, fontSize: 15),
                           ),
-                          InkWell(
-                            onTap: () {
-                              //TODO: here
-                            },
-                            child: Text('See all',
-                                style: TextStyle(
-                                    color: Color(0xFF9B049B), fontSize: 14)),
-                          )
+                          // InkWell(
+                          //   onTap: () {
+                          //     //TODO: here
+                          //   },
+                          //   child: Text('See all',
+                          //       style: TextStyle(
+                          //           color: Color(0xFF9B049B), fontSize: 14)),
+                          // )
                         ],
                       ),
                     ),

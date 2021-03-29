@@ -265,7 +265,9 @@ class _ProfilePageNewState extends State<ProfilePageNew> {
                                 Row(
                                   children: [
                                     Text(
-                                      'Expertise level: '.capitalizeFirstOfEach,
+                                      snapshot.data['role'] == 'artisan'
+                                          ? 'Expertise Level: '
+                                          : 'Store Rating: ',
                                       style: TextStyle(
                                           color: Color(0xFF333333),
                                           fontSize: 16,
@@ -362,38 +364,45 @@ class _ProfilePageNewState extends State<ProfilePageNew> {
                                           ],
                                         ),
                                       ),
-                                Container(
-                                  child: Column(
-                                    children: [
-                                      Divider(),
-                                      Row(
-                                        children: [
-                                          Text(
-                                            'Business Address',
-                                            style: TextStyle(
-                                                color: Color(0xFF333333),
-                                                fontSize: 16,
-                                                fontWeight: FontWeight.w600),
-                                          ),
-                                        ],
-                                      ),
-                                      Wrap(
-                                        children: [
-                                          Align(
-                                            alignment: Alignment.centerLeft,
-                                            child: Text(
-                                              '${snapshot.data['businessAddress'].toString().isEmpty ? snapshot.data['address'] : snapshot.data['businessAddress']}',
-                                              style: TextStyle(
-                                                  color: Color(0xFF333333),
-                                                  fontSize: 16,
-                                                  fontWeight: FontWeight.w400),
+                                snapshot.data['businessAddress'] == null ||
+                                        snapshot.data['businessAddress'] == ''
+                                    ? SizedBox()
+                                    : Container(
+                                        child: Column(
+                                          children: [
+                                            Divider(),
+                                            Row(
+                                              children: [
+                                                Text(
+                                                  'Business Address',
+                                                  style: TextStyle(
+                                                      color: Color(0xFF333333),
+                                                      fontSize: 16,
+                                                      fontWeight:
+                                                          FontWeight.w600),
+                                                ),
+                                              ],
                                             ),
-                                          ),
-                                        ],
+                                            Wrap(
+                                              children: [
+                                                Align(
+                                                  alignment:
+                                                      Alignment.centerLeft,
+                                                  child: Text(
+                                                    '${snapshot.data['businessAddress'].toString().isEmpty ? snapshot.data['address'] : snapshot.data['businessAddress']}',
+                                                    style: TextStyle(
+                                                        color:
+                                                            Color(0xFF333333),
+                                                        fontSize: 16,
+                                                        fontWeight:
+                                                            FontWeight.w400),
+                                                  ),
+                                                ),
+                                              ],
+                                            ),
+                                          ],
+                                        ),
                                       ),
-                                    ],
-                                  ),
-                                ),
                               ])),
                           SizedBox(
                             height: 10,

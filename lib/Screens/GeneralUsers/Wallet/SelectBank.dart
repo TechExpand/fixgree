@@ -21,7 +21,6 @@ class _SelectBankState extends State<SelectBank> {
 
   @override
   Widget build(BuildContext context) {
-    print('Rebuilds');
     var network = Provider.of<WebServices>(context, listen: false);
     // var bankProvider = Provider.of<BankProvider>(this.context, listen: false);
     return Scaffold(
@@ -81,7 +80,6 @@ class _SelectBankState extends State<SelectBank> {
                         fontWeight: FontWeight.w600),
                     controller: searchController,
                     onChanged: (value) {
-                      print('Tapped!');
                       filterSearchResults(value);
                     },
                     decoration: InputDecoration.collapsed(
@@ -288,7 +286,7 @@ class _SelectBankState extends State<SelectBank> {
       return;
     } else {
       userItems.forEach((item) {
-        if (item.name.toLowerCase().startsWith(query.toLowerCase())) {
+        if (item.name.toLowerCase().contains(query.toLowerCase())) {
           filteredItems.add(item);
         }
       });

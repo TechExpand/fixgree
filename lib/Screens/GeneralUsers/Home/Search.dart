@@ -139,7 +139,13 @@ class SearchResultState extends State<SearchResult> {
       ),
       builder: (context, snapshot) {
         return snapshot.connectionState == ConnectionState.waiting
-            ? Expanded(child: Center(child: Text('Loading')))
+            ? Expanded(
+                child: Center(
+                    child: Text('Loading',
+                        style: TextStyle(
+                            color: Color(0xFF333333),
+                            fontSize: 18,
+                            fontWeight: FontWeight.w600))))
             : widget.searchValue == '' || widget.searchValue == null
                 ? Expanded(
                     child: Center(child: Text('Search for Artisans/Services')))

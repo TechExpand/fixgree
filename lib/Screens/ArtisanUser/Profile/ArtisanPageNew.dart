@@ -250,7 +250,9 @@ class _ArtisanPageNewState extends State<ArtisanPageNew> {
                           Row(
                             children: [
                               Text(
-                                'Expertise level: '.capitalizeFirstOfEach,
+                                widget.userData.userRole == 'artisan'
+                                    ? 'Expertise Level: '
+                                    : 'Store Rating: ',
                                 style: TextStyle(
                                     color: Color(0xFF333333),
                                     fontSize: 16,
