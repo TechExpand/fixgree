@@ -119,11 +119,7 @@ class SearchResult extends StatefulWidget {
 class SearchResultState extends State<SearchResult> {
   String getDistance({String rawDistance}) {
     String distance;
-    if (rawDistance.length > 3) {
-      distance = '$rawDistance' + 'km';
-    } else {
-      distance = '$rawDistance' + 'm';
-    }
+    distance = '$rawDistance' + 'km';
     return distance;
   }
 
@@ -139,7 +135,13 @@ class SearchResultState extends State<SearchResult> {
       ),
       builder: (context, snapshot) {
         return snapshot.connectionState == ConnectionState.waiting
-            ? Expanded(child: Center(child: Text('Loading')))
+            ? Expanded(
+                child: Center(
+                    child: Text('Loading',
+                        style: TextStyle(
+                            color: Color(0xFF333333),
+                            fontSize: 18,
+                            fontWeight: FontWeight.w600))))
             : widget.searchValue == '' || widget.searchValue == null
                 ? Expanded(
                     child: Center(child: Text('Search for Artisans/Services')))

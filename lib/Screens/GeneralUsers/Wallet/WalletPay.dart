@@ -20,7 +20,7 @@ class WalletPay extends StatefulWidget {
 }
 
 class _WalletPayState extends State<WalletPay> {
-  var transferModes = ['Wallet \n Transfer', 'Card \n Payment'];
+  var transferModes = ['Wallet \n Transfer'];
 
   TextEditingController accountNo = new TextEditingController();
 
@@ -66,60 +66,79 @@ class _WalletPayState extends State<WalletPay> {
                 alignment: Alignment.center,
                 child: Image.asset('assets/images/fixme.png'),
               ),
-              Row(
-                children: [
-                  Container(
-                    width: 25.0,
-                    height: 40.0,
-                    color: Colors.transparent,
-                  ),
-                  Text('Select Transfer Mode',
-                      style: TextStyle(
-                          fontSize: 16,
-                          color: Color(0xFF333333),
-                          fontWeight: FontWeight.w600))
-                ],
+
+              Padding(
+                padding: const EdgeInsets.only(right: 25, left: 25, top: 5),
+                child: Wrap(
+                  children: [
+                    Text(
+                        'Send money from your wallet to another user\'s wallet. ',
+                        softWrap: true,
+                        // textAlign: TextAlign.center,
+                        style: TextStyle(
+                            color: Color(0xFF333333),
+                            fontSize: 18,
+                            height: 1.4,
+                            fontWeight: FontWeight.w600)),
+                  ],
+                ),
               ),
-              Consumer<BankProvider>(builder: (context, model, widget) {
-                return Material(
-                  color: Colors.transparent,
-                  child: Container(
-                      height: 140,
-                      padding: const EdgeInsets.only(left: 15),
-                      child: ListView.builder(
-                        physics: BouncingScrollPhysics(),
-                        itemCount: transferModes.length,
-                        scrollDirection: Axis.horizontal,
-                        itemBuilder: (context, index) {
-                          return InkWell(
-                            onTap: () {
-                              model.setSelectValue = index;
-                            },
-                            child: AnimatedContainer(
-                              duration: Duration(milliseconds: 400),
-                              height: 140,
-                              width: 120,
-                              margin: const EdgeInsets.all(10),
-                              decoration: BoxDecoration(
-                                  color: model.getSelectValue == index
-                                      ? Color(0xFFEBCDEB)
-                                      : Colors.white,
-                                  border: Border.all(color: Color(0xFF9B049B)),
-                                  borderRadius:
-                                      BorderRadius.all(Radius.circular(10))),
-                              child: Center(
-                                  child: Text(transferModes[index],
-                                      textAlign: TextAlign.center,
-                                      style: TextStyle(
-                                          color: Color(0xFF333333),
-                                          fontSize: 17,
-                                          fontWeight: FontWeight.w500))),
-                            ),
-                          );
-                        },
-                      )),
-                );
-              }),
+              // Row(
+              //   children: [
+              //     Container(
+              //       width: 25.0,
+              //       height: 40.0,
+              //       color: Colors.transparent,
+              //     ),
+              //     Text('Select Transfer Mode',
+              //         style: TextStyle(
+              //             fontSize: 16,
+              //             color: Color(0xFF333333),
+              //             fontWeight: FontWeight.w600))
+              //   ],
+              // ),
+              // Consumer<BankProvider>(builder: (context, model, widget) {
+              //   return Material(
+              //     color: Colors.transparent,
+              //     child: Container(
+              //         height: 140,
+              //         padding: const EdgeInsets.only(left: 15),
+              //         child: ListView.builder(
+              //           physics: BouncingScrollPhysics(),
+              //           itemCount: transferModes.length,
+              //           scrollDirection: Axis.horizontal,
+              //           itemBuilder: (context, index) {
+              //             return InkWell(
+              //               onTap: () {
+              //                 model.setSelectValue = index;
+              //               },
+              //               splashColor: Colors.transparent,
+              //               highlightColor: Colors.transparent,
+              //               child: AnimatedContainer(
+              //                 duration: Duration(milliseconds: 400),
+              //                 height: 140,
+              //                 width: 120,
+              //                 margin: const EdgeInsets.all(10),
+              //                 decoration: BoxDecoration(
+              //                     color: model.getSelectValue == index
+              //                         ? Color(0xFFEBCDEB)
+              //                         : Colors.white,
+              //                     border: Border.all(color: Color(0xFF9B049B)),
+              //                     borderRadius:
+              //                         BorderRadius.all(Radius.circular(10))),
+              //                 child: Center(
+              //                     child: Text(transferModes[index],
+              //                         textAlign: TextAlign.center,
+              //                         style: TextStyle(
+              //                             color: Color(0xFF333333),
+              //                             fontSize: 17,
+              //                             fontWeight: FontWeight.w500))),
+              //               ),
+              //             );
+              //           },
+              //         )),
+              //   );
+              // }),
               Container(
                 margin: const EdgeInsets.only(top: 20, right: 25, left: 25),
                 decoration: BoxDecoration(

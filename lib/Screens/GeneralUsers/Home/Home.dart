@@ -29,18 +29,15 @@ class Home extends StatelessWidget {
 
   String getDistance({String rawDistance}) {
     String distance;
-    if (rawDistance.length > 3) {
-      distance = '$rawDistance' + 'km';
-    } else {
-      distance = '$rawDistance' + 'm';
-    }
+
+    distance = '$rawDistance' + 'km';
+
     return distance;
   }
 
   @override
   Widget build(BuildContext context) {
-
-    showOverLay()async{
+    showOverLay() async {
       SharedPreferences prefs = await SharedPreferences.getInstance();
       var overlay = prefs.getString('overlay');
       var data = Provider.of<DataProvider>(context, listen: false);
@@ -51,11 +48,11 @@ class Home extends StatelessWidget {
         var numberDialog = Container(
           margin: const EdgeInsets.all(3.0),
           child: Align(
-            alignment: Alignment(-0.8,-0.9),
+            alignment: Alignment(-0.8, -0.9),
             child: Material(
               color: Colors.black87,
-              shape:
-              RoundedRectangleBorder(borderRadius: BorderRadius.circular(10.0)),
+              shape: RoundedRectangleBorder(
+                  borderRadius: BorderRadius.circular(10.0)),
               child: Container(
                 padding: const EdgeInsets.all(4.0),
                 width: 140,
@@ -70,7 +67,8 @@ class Home extends StatelessWidget {
                     Text(
                       'You can become an artisan by clicking this picture',
                       textAlign: TextAlign.center,
-                      style: TextStyle(color: Colors.white, fontWeight: FontWeight.bold),
+                      style: TextStyle(
+                          color: Colors.white, fontWeight: FontWeight.bold),
                     ),
                   ],
                 ),
@@ -84,12 +82,10 @@ class Home extends StatelessWidget {
           builder: (BuildContext context) {
             return numberDialog;
           },
-        ).whenComplete((){
+        ).whenComplete(() {
           prefs.setString('overlay', 'overlay');
         });
-
-      }else{}
-
+      } else {}
     }
 
     showOverLay();
@@ -323,15 +319,15 @@ class Home extends StatelessWidget {
                             style: TextStyle(
                                 fontWeight: FontWeight.w600, fontSize: 15),
                           ),
-                          InkWell(
-                            onTap: () {
 
-
-                            },
-                            child: Text('See all',
-                                style: TextStyle(
-                                    color: Color(0xFF9B049B), fontSize: 14)),
-                          )
+                          // InkWell(
+                          //   onTap: () {
+                          //     //TODO: here
+                          //   },
+                          //   child: Text('See all',
+                          //       style: TextStyle(
+                          //           color: Color(0xFF9B049B), fontSize: 14)),
+                          // )
                         ],
                       ),
                     ),
@@ -579,7 +575,8 @@ class Home extends StatelessWidget {
                     FutureBuilder(
                         future: network.nearbyShop(
                             latitude: location.locationLatitude,
-                            longitude: location.locationLongitude, context: context),
+                            longitude: location.locationLongitude,
+                            context: context),
                         builder: (context, snapshot) {
                           return !snapshot.hasData
                               ? Padding(

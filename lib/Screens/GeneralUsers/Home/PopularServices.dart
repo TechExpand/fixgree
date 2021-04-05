@@ -1,4 +1,5 @@
 import 'package:fixme/Screens/ArtisanUser/Profile/ArtisanPage.dart';
+import 'package:fixme/Screens/ArtisanUser/Profile/ArtisanPageNew.dart';
 import 'package:fixme/Services/network_service.dart';
 import 'package:fixme/Widgets/Rating.dart';
 import 'package:flutter/material.dart';
@@ -29,13 +30,14 @@ class PopularServices extends StatefulWidget {
 class _PopularServicesState extends State<PopularServices> {
   String getDistance({String rawDistance}) {
     String distance;
-    if (rawDistance.length > 3) {
-      distance = '$rawDistance' + 'km';
-    } else {
-      distance = '$rawDistance' + 'm';
-    }
+    distance = '$rawDistance' + 'km';
     return distance;
   }
+
+  TextEditingController searchController = TextEditingController();
+
+  var userItems = [];
+  var filteredItems = [];
 
   @override
   Widget build(BuildContext context) {
@@ -94,10 +96,9 @@ class _PopularServicesState extends State<PopularServices> {
                         fontSize: 16,
                         color: Color(0xFF270F33),
                         fontWeight: FontWeight.w600),
-                    // controller: searchController,
+                    controller: searchController,
                     onChanged: (value) {
-                      // print('Tapped!');
-                      // filterSearchResults(value);
+                      filterSearchResults(value);
                     },
                     decoration: InputDecoration.collapsed(
                       hintText: 'Search ${widget.serviceName}s',
@@ -153,7 +154,6 @@ class _PopularServicesState extends State<PopularServices> {
                             children: [
                               Text('No nearby ${widget.serviceName}s',
                                   style: TextStyle(
-                                      // letterSpacing: 4,
                                       color: Color(0xFF333333),
                                       fontSize: 18,
                                       fontWeight: FontWeight.w600)),
@@ -161,116 +161,241 @@ class _PopularServicesState extends State<PopularServices> {
                           ),
                         );
                       } else {
-                        mainWidget = ListView.separated(
-                            separatorBuilder: (context, index) {
-                              return Divider();
-                            },
-                            itemCount: snapshot.data.length,
-                            padding: const EdgeInsets.only(left: 5, right: 5),
-                            itemBuilder: (context, index) {
-                              String distance = getDistance(
-                                  rawDistance:
-                                      '${snapshot.data[index]['distance']}');
-                              return Container(
-                                alignment: Alignment.center,
-                                height: 90,
-                                margin:
-                                    const EdgeInsets.only(bottom: 5, top: 5),
-                                child: ListTile(
-                                  onTap: () {
-                                    Navigator.push(
-                                      context,
-                                      PageRouteBuilder(
-                                        pageBuilder: (context, animation,
-                                            secondaryAnimation) {
-                                          return ArtisanPage(
-                                              snapshot.data[index]);
-                                        },
-                                        transitionsBuilder: (context, animation,
-                                            secondaryAnimation, child) {
-                                          return FadeTransition(
-                                            opacity: animation,
-                                            child: child,
-                                          );
-                                        },
+                        userItems = List.generate(snapshot.data.length,
+                            (index) => snapshot.data[index]);
+                        mainWidget = filteredItems.length != 0 ||
+                                searchController.text.isNotEmpty
+                            ? ListView.separated(
+                                separatorBuilder: (context, index) {
+                                  return Divider();
+                                },
+                                itemCount: filteredItems.length,
+                                padding:
+                                    const EdgeInsets.only(left: 5, right: 5),
+                                itemBuilder: (context, index) {
+                                  String distance = getDistance(
+                                      rawDistance:
+                                          '${filteredItems[index].distance}');
+                                  return Container(
+                                    alignment: Alignment.center,
+                                    height: 90,
+                                    margin: const EdgeInsets.only(
+                                        bottom: 5, top: 5),
+                                    child: ListTile(
+                                      onTap: () {
+                                        Navigator.push(
+                                          context,
+                                          PageRouteBuilder(
+                                            pageBuilder: (context, animation,
+                                                secondaryAnimation) {
+                                              return ArtisanPageNew(
+                                                  filteredItems[index]);
+                                            },
+                                            transitionsBuilder: (context,
+                                                animation,
+                                                secondaryAnimation,
+                                                child) {
+                                              return FadeTransition(
+                                                opacity: animation,
+                                                child: child,
+                                              );
+                                            },
+                                          ),
+                                        );
+                                      },
+                                      leading: CircleAvatar(
+                                        child: Text(''),
+                                        radius: 35,
+                                        backgroundImage: NetworkImage(
+                                          filteredItems[index].urlAvatar ==
+                                                      'no_picture_upload' ||
+                                                  filteredItems[index]
+                                                          .urlAvatar ==
+                                                      null
+                                              ? 'https://uploads.fixme.ng/originals/no_picture_upload'
+                                              : 'https://uploads.fixme.ng/originals/${filteredItems[index].urlAvatar}',
+                                        ),
+                                        foregroundColor: Colors.white,
+                                        backgroundColor: Colors.white,
                                       ),
-                                    );
-                                  },
-                                  leading: CircleAvatar(
-                                    child: Text(''),
-                                    radius: 35,
-                                    backgroundImage: NetworkImage(
-                                      snapshot.data[index][
-                                                      'profile_pic_file_name'] ==
-                                                  'no_picture_upload' ||
-                                              snapshot.data[index][
-                                                      'profile_pic_file_name'] ==
-                                                  null
-                                          ? 'https://uploads.fixme.ng/originals/no_picture_upload'
-                                          : 'https://uploads.fixme.ng/originals/${snapshot.data[index]['profile_pic_file_name']}',
-                                    ),
-                                    foregroundColor: Colors.white,
-                                    backgroundColor: Colors.white,
-                                  ),
-                                  title: Padding(
-                                    padding: const EdgeInsets.only(top: 10),
-                                    child: Text(
-                                      '${snapshot.data[index]['user_first_name']} ${snapshot.data[index]['user_last_name']}'
-                                          .capitalizeFirstOfEach,
-                                      style: TextStyle(
-                                          color: Color(0xFF333333),
-                                          fontSize: 16,
-                                          fontWeight: FontWeight.w600),
-                                    ),
-                                  ),
-                                  subtitle: Column(
-                                    children: [
-                                      Wrap(
+                                      title: Padding(
+                                        padding: const EdgeInsets.only(top: 10),
+                                        child: Text(
+                                          '${filteredItems[index].name} ${filteredItems[index].userLastName}'
+                                              .capitalizeFirstOfEach,
+                                          style: TextStyle(
+                                              color: Color(0xFF333333),
+                                              fontSize: 16,
+                                              fontWeight: FontWeight.w600),
+                                        ),
+                                      ),
+                                      subtitle: Column(
                                         children: [
-                                          Align(
-                                            alignment: Alignment.centerLeft,
-                                            child: Text(
-                                              '${snapshot.data[index]['service_area']}'
-                                                  .capitalizeFirstOfEach,
-                                              style: TextStyle(
-                                                  color: Color(0xFF333333),
-                                                  fontSize: 15,
-                                                  fontWeight: FontWeight.w500),
-                                            ),
+                                          Wrap(
+                                            children: [
+                                              Align(
+                                                alignment: Alignment.centerLeft,
+                                                child: Text(
+                                                  '${filteredItems[index].serviceArea}'
+                                                      .capitalizeFirstOfEach,
+                                                  style: TextStyle(
+                                                      color: Color(0xFF333333),
+                                                      fontSize: 15,
+                                                      fontWeight:
+                                                          FontWeight.w500),
+                                                ),
+                                              ),
+                                            ],
+                                          ),
+                                          Padding(
+                                            padding:
+                                                const EdgeInsets.only(top: 8),
+                                            child: StarRating(
+                                                rating: double.parse(
+                                                    filteredItems[index]
+                                                        .userRating
+                                                        .toString())),
+                                          )
+                                        ],
+                                      ),
+                                      trailing: Column(
+                                        crossAxisAlignment:
+                                            CrossAxisAlignment.center,
+                                        mainAxisAlignment:
+                                            MainAxisAlignment.center,
+                                        children: [
+                                          Icon(
+                                            Icons.location_on_outlined,
+                                            color: Colors.amber,
+                                            size: 23,
+                                          ),
+                                          Text(
+                                            '$distance',
+                                            style: TextStyle(
+                                                color: Color(0xFF333333),
+                                                fontSize: 15,
+                                                fontWeight: FontWeight.w600),
                                           ),
                                         ],
                                       ),
-                                      Padding(
-                                        padding: const EdgeInsets.only(top: 8),
-                                        child: StarRating(
-                                            rating: double.parse(snapshot
-                                                .data[index]['user_rating']
-                                                .toString())),
-                                      )
-                                    ],
-                                  ),
-                                  trailing: Column(
-                                    crossAxisAlignment:
-                                        CrossAxisAlignment.center,
-                                    mainAxisAlignment: MainAxisAlignment.center,
-                                    children: [
-                                      Icon(
-                                        Icons.location_on_outlined,
-                                        color: Colors.amber,
-                                        size: 23,
+                                    ),
+                                  );
+                                })
+                            : ListView.separated(
+                                separatorBuilder: (context, index) {
+                                  return Divider();
+                                },
+                                itemCount: userItems.length,
+                                padding:
+                                    const EdgeInsets.only(left: 5, right: 5),
+                                itemBuilder: (context, index) {
+                                  String distance = getDistance(
+                                      rawDistance:
+                                          '${userItems[index].distance}');
+                                  return Container(
+                                    alignment: Alignment.center,
+                                    height: 90,
+                                    margin: const EdgeInsets.only(
+                                        bottom: 5, top: 5),
+                                    child: ListTile(
+                                      onTap: () {
+                                        Navigator.push(
+                                          context,
+                                          PageRouteBuilder(
+                                            pageBuilder: (context, animation,
+                                                secondaryAnimation) {
+                                              return ArtisanPageNew(
+                                                  userItems[index]);
+                                            },
+                                            transitionsBuilder: (context,
+                                                animation,
+                                                secondaryAnimation,
+                                                child) {
+                                              return FadeTransition(
+                                                opacity: animation,
+                                                child: child,
+                                              );
+                                            },
+                                          ),
+                                        );
+                                      },
+                                      leading: CircleAvatar(
+                                        child: Text(''),
+                                        radius: 35,
+                                        backgroundImage: NetworkImage(
+                                          userItems[index].urlAvatar ==
+                                                      'no_picture_upload' ||
+                                                  userItems[index].urlAvatar ==
+                                                      null
+                                              ? 'https://uploads.fixme.ng/originals/no_picture_upload'
+                                              : 'https://uploads.fixme.ng/originals/${userItems[index].urlAvatar}',
+                                        ),
+                                        foregroundColor: Colors.white,
+                                        backgroundColor: Colors.white,
                                       ),
-                                      Text(
-                                        '$distance',
-                                        style: TextStyle(
-                                            color: Color(0xFF333333),
-                                            fontSize: 15,
-                                            fontWeight: FontWeight.w600),
+                                      title: Padding(
+                                        padding: const EdgeInsets.only(top: 10),
+                                        child: Text(
+                                          '${userItems[index].name} ${userItems[index].userLastName}'
+                                              .capitalizeFirstOfEach,
+                                          style: TextStyle(
+                                              color: Color(0xFF333333),
+                                              fontSize: 16,
+                                              fontWeight: FontWeight.w600),
+                                        ),
                                       ),
-                                    ],
-                                  ),
-                                ),
-                              );
-                            });
+                                      subtitle: Column(
+                                        children: [
+                                          Wrap(
+                                            children: [
+                                              Align(
+                                                alignment: Alignment.centerLeft,
+                                                child: Text(
+                                                  '${userItems[index].serviceArea}'
+                                                      .capitalizeFirstOfEach,
+                                                  style: TextStyle(
+                                                      color: Color(0xFF333333),
+                                                      fontSize: 15,
+                                                      fontWeight:
+                                                          FontWeight.w500),
+                                                ),
+                                              ),
+                                            ],
+                                          ),
+                                          Padding(
+                                            padding:
+                                                const EdgeInsets.only(top: 8),
+                                            child: StarRating(
+                                                rating: double.parse(
+                                                    userItems[index]
+                                                        .userRating
+                                                        .toString())),
+                                          )
+                                        ],
+                                      ),
+                                      trailing: Column(
+                                        crossAxisAlignment:
+                                            CrossAxisAlignment.center,
+                                        mainAxisAlignment:
+                                            MainAxisAlignment.center,
+                                        children: [
+                                          Icon(
+                                            Icons.location_on_outlined,
+                                            color: Colors.amber,
+                                            size: 23,
+                                          ),
+                                          Text(
+                                            '$distance',
+                                            style: TextStyle(
+                                                color: Color(0xFF333333),
+                                                fontSize: 15,
+                                                fontWeight: FontWeight.w600),
+                                          ),
+                                        ],
+                                      ),
+                                    ),
+                                  );
+                                });
                       }
                     }
                   } else {
@@ -304,5 +429,21 @@ class _PopularServicesState extends State<PopularServices> {
         ],
       ),
     );
+  }
+
+  void filterSearchResults(String query) {
+    filteredItems.clear();
+    if (query.isEmpty) {
+      setState(() {});
+
+      return;
+    } else {
+      userItems.forEach((item) {
+        if (item.name.toLowerCase().contains(query.toLowerCase())) {
+          filteredItems.add(item);
+        }
+      });
+      setState(() {});
+    }
   }
 }

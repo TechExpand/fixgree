@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:fixme/Services/network_service.dart';
 import "package:flutter_feather_icons/flutter_feather_icons.dart";
+import 'package:google_fonts/google_fonts.dart';
 import 'package:provider/provider.dart';
 import 'package:fixme/Model/TransactionDetails.dart';
 import 'package:fixme/Utils/utils.dart';
@@ -142,18 +143,44 @@ class _WalletHistoryState extends State<WalletHistory> {
     Widget text;
     switch (type) {
       case "credit":
-        text = Text('+ ${currencySymbol(currency)}$amount',
+        text = RichText(
+          text: TextSpan(
+            text: '+ ${currencySymbol(currency)}',
             style: TextStyle(
-                fontSize: 17,
+                fontSize: 16,
+                fontFamily: 'Roboto',
                 color: Color(0xFF02FF1B),
-                fontWeight: FontWeight.w600));
+                fontWeight: FontWeight.w600),
+            children: <TextSpan>[
+              TextSpan(
+                  text: '$amount',
+                  style: GoogleFonts.openSans(
+                      fontSize: 16,
+                      color: Color(0xFF02FF1B),
+                      fontWeight: FontWeight.w600)),
+            ],
+          ),
+        );
         break;
       case "withdrawal":
-        text = Text('- ${currencySymbol(currency)}$amount',
+        text = RichText(
+          text: TextSpan(
+            text: '- ${currencySymbol(currency)}',
             style: TextStyle(
-                fontSize: 17,
+                fontFamily: 'Roboto',
+                fontSize: 16,
                 color: Color(0xFFFF0202),
-                fontWeight: FontWeight.w600));
+                fontWeight: FontWeight.w600),
+            children: <TextSpan>[
+              TextSpan(
+                  text: '$amount',
+                  style: GoogleFonts.openSans(
+                      fontSize: 16,
+                      color: Color(0xFFFF0202),
+                      fontWeight: FontWeight.w600)),
+            ],
+          ),
+        );
         break;
       default:
     }
