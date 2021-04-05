@@ -219,6 +219,12 @@ class DataProvider extends ChangeNotifier {
     notifyListeners();
   }
 
+bool overlay = false;
+  setOverLay(bool val) {
+    overlay = val;
+    notifyListeners();
+  }
+
   String categorizeUrl(String s) {
     if (s.contains('https://firebasestorage.googleapis.com')) {
       var pos = s.lastIndexOf('.');

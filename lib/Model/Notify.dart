@@ -9,6 +9,7 @@ class MessageField {
 class Notify {
   final String id;
   final userid;
+  final budget;
   final String message;
   final String bidderId;
   final String bidId;
@@ -20,6 +21,7 @@ class Notify {
   final DateTime createdAt;
 
   const Notify({
+    this.budget,
     this.id,
     this.message,
     this.jobid,
@@ -39,6 +41,7 @@ class Notify {
         jobid = snapshot['jobId']??'',
         bidderId = snapshot['bidderId']??'',
         bidId = snapshot['bidId']??'',
+        budget = snapshot['budget']??'',
         message = snapshot['message'] ?? '',
         name = snapshot['name'] ?? '',
         userid = snapshot['userid'] ?? '',
@@ -48,6 +51,7 @@ class Notify {
 
   Map<String, dynamic> toJson() => {
     'type': type,
+    'budget': budget,
     'message': message,
     'name': name,
     'bidded': bidded,

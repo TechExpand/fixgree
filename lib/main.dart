@@ -4,6 +4,7 @@ import 'package:provider/provider.dart';
 import 'package:firebase_core/firebase_core.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 import 'package:google_fonts/google_fonts.dart';
+import 'Screens/ArtisanUser/Profile/ArtisanProvider.dart';
 import 'Screens/GeneralUsers/Wallet/Providers/PinProvider.dart';
 import 'Screens/GeneralUsers/Wallet/Providers/WalletProvider.dart';
 import 'Screens/Splash.dart';
@@ -113,6 +114,9 @@ void main() async {
     ),
     ChangeNotifierProvider<WalletProvider>(
       create: (context) => WalletProvider(),
+    ),
+    ChangeNotifierProvider<ArtisanProvider>(
+      create: (_) => ArtisanProvider(),
     ),
   ], child: MyApp())); // MyApp(widget)));
 }

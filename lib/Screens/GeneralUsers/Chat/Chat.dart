@@ -120,6 +120,9 @@ class _ChatPageState extends State<ChatPage> {
     var data = Provider.of<Utils>(context, listen: false);
     var datas = Provider.of<DataProvider>(context, listen: false);
     var network = Provider.of<WebServices>(context, listen: false);
+    final GlobalKey<ScaffoldState> scaffoldKey = GlobalKey<ScaffoldState>();
+
+
     final picker = ImagePicker();
     void pickImage({@required ImageSource source, context}) async {
       final selectedImage = await picker.getImage(source: source);
@@ -611,6 +614,7 @@ class _ChatPageState extends State<ChatPage> {
             child: PopUpMenu(
                 idUser: widget.user.idUser,
                 user: widget.user,
+                scaffoldKey: scaffoldKey,
                 popData: widget.popData),
           ),
         ],

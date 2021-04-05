@@ -181,6 +181,56 @@ class FirebaseApi {
   }
 
   static Future addUserChat({
+    idUser,
+    name,
+    urlAvatar,
+    docid,
+    idArtisan,
+    name2,
+    urlAvatar2,
+    userMobile,
+    artisanMobile,
+  }) async {
+    final refUsers =
+    FirebaseFirestore.instance.collection('UserChat/$idArtisan/individual');
+    final refAritisan =
+    FirebaseFirestore.instance.collection('UserChat/$idUser/individual');
+    await refUsers.doc(idUser).set({
+//      'bid_id': bidData.bid_id ?? '',
+//      'project_id': bidData.job_id ?? '',
+//      'project_owner_user_id': bidData.project_owner_user_id ?? '',
+//      'service_id': bidData.service_id ?? '',
+      'chatid': idArtisan,
+      'read': false,
+      'idUser': idUser,
+      'name': name,
+      'block': false,
+      'userMobile': userMobile,
+      'lastMessage': 'No Message yet',
+      'urlAvatar': urlAvatar,
+      'lastMessageTime': DateTime.now(),
+    });
+    await refAritisan.doc(idArtisan).set({
+//      'bid_id': bidData.bid_id ?? '',
+//      'project_id': bidData.job_id ?? '',
+//      'project_owner_user_id': bidData.project_owner_user_id ?? '',
+//      'service_id': bidData.service_id ?? '',
+      'chatid': idUser,
+      'read': false,
+      'block': false,
+      'idUser': idArtisan,
+      'lastMessage': 'No Message yet',
+      'name': name2,
+      'userMobile': artisanMobile,
+      'urlAvatar': urlAvatar2,
+      'lastMessageTime': DateTime.now(),
+    });
+  }
+
+
+
+
+  static Future addUserBidChat({
     bidData,
     idUser,
     name,
@@ -324,7 +374,7 @@ class FirebaseApi {
 
 
   static Future uploadNotification(
-      String id, String message, type, name, jobId, bidId, bidderId, artisanId) async {
+      String id, String message, type, name, jobId, bidId, bidderId, artisanId, budget) async {
     final refMessages = FirebaseFirestore.instance.collection('Notification');
 
     await refMessages.doc().set({
@@ -337,6 +387,7 @@ class FirebaseApi {
       'bidded': 'bid',
       'bidderId': bidderId ?? '',
       'bidId': bidId ?? '',
+      'budget': budget??'',
       'createdAt': DateTime.now(),
     });
   }

@@ -67,8 +67,9 @@ class MessageWidget extends StatelessWidget {
   Widget buildMessageReceiver(context) {
     var data = Provider.of<Utils>(context, listen: false);
     var datas = Provider.of<DataProvider>(context, listen: false);
-    var date = data
-        .formatTime(message.createdAt);
+//    var date = data
+//        .formatTime(message.createdAt);
+    var date =  data.compareDate(message.createdAt);
     return Column(
       crossAxisAlignment:
       isMe ? CrossAxisAlignment.end : CrossAxisAlignment.start,
@@ -227,8 +228,9 @@ class MessageWidget extends StatelessWidget {
   Widget buildMessageSender(context) {
     var data = Provider.of<Utils>(context, listen: false);
     var datas = Provider.of<DataProvider>(context, listen: false);
-    var date = data
-        .formatTime(message.createdAt);
+//    var date = data
+//        .formatTime(message.createdAt);
+    var date =  data.compareDate(message.createdAt);
     return Column(
       crossAxisAlignment:
       isMe ? CrossAxisAlignment.end : CrossAxisAlignment.start,

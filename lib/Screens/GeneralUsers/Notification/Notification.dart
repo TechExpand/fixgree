@@ -7,15 +7,13 @@ import 'package:fixme/Screens/GeneralUsers/Notification/Pay.dart';
 import 'package:fixme/Services/Firebase_service.dart';
 import 'package:fixme/Services/network_service.dart';
 import 'package:fixme/Utils/utils.dart';
-import 'package:fixme/Widgets/Rating.dart';
+import 'package:intl/intl.dart';
+import 'dart:io';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:google_fonts/google_fonts.dart';
 import 'package:provider/provider.dart';
 import 'package:rating_dialog/rating_dialog.dart';
-
-
-
 
 class NotificationPage extends StatefulWidget {
   final scafoldKey;
@@ -412,11 +410,14 @@ class _NotificationState extends State<NotificationPage> {
                                                                   ? InkWell(
                                                                       onTap:
                                                                           () {
-                                                                            showDialog(
-                                                                              barrierDismissible: false,
-                                                                              context: context,
-                                                                              builder: (context) => dialog(users[index]),
-                                                                            );
+                                                                        showDialog(
+                                                                          barrierDismissible:
+                                                                              false,
+                                                                          context:
+                                                                              context,
+                                                                          builder: (context) =>
+                                                                              dialog(users[index]),
+                                                                        );
                                                                       },
                                                                       child:
                                                                           Container(
@@ -442,28 +443,39 @@ class _NotificationState extends State<NotificationPage> {
                                                                               .type ==
                                                                           'bid_approval'
                                                                       ? Text('')
-                                                                      : InkWell(
-                                                                          onTap:(){
-                                                                            FirebaseApi
-                                                                                .updateNotification(
-                                                                                users[index]
-                                                                                    .id,
-                                                                                'confirm')
-                                                                                .then((value) {
-                                                                              network.confirmBudget(
-                                                                                  users[index]
-                                                                                      .bidderId,
-                                                                                  users[index]
-                                                                                      .bidId,
-                                                                                  widget
-                                                                                      .scafoldKey);
-                                                                            });
+                                                                      : Column(
+                                                                          crossAxisAlignment:
+                                                                              CrossAxisAlignment.start,
+                                                                          children: [
+                                                                            users[index].budget.toString().isEmpty
+                                                                                ? Container()
+                                                                                : Padding(
+                                                                                    padding: const EdgeInsets.only(top: 6.0),
+                                                                                    child: Row(
+                                                                                      children: [
+                                                                                        Text(
+                                                                                          '₦' + '${users[index].budget}',
+                                                                                          style: TextStyle(
+                                                                                              fontFamily: 'Roboto',
+                                                                                              fontWeight: FontWeight.bold, fontSize: 15),
+                                                                                        ),
+                                                                                      ],
+                                                                                    ),
+                                                                                  ),
+                                                                            InkWell(
+                                                                              onTap: () {
+                                                                                FirebaseApi.updateNotification(users[index].id, 'confirm').then((value) {
+                                                                                  network.confirmBudget(users[index].bidderId, users[index].bidId, widget.scafoldKey);
+                                                                                });
                                                                                 Navigator.push(
                                                                                   context,
                                                                                   PageRouteBuilder(
                                                                                     pageBuilder: (context, animation, secondaryAnimation) {
-                                                                                      return Pay(controller:widget.myPage, data:  users[index],);
-                                                                                   //   userBankInfo: users[index]// ignUpAddress();
+                                                                                      return Pay(
+                                                                                        controller: widget.myPage,
+                                                                                        data: users[index],
+                                                                                      );
+                                                                                      //   userBankInfo: users[index]// ignUpAddress();
                                                                                     },
                                                                                     transitionsBuilder: (context, animation, secondaryAnimation, child) {
                                                                                       return FadeTransition(
@@ -472,23 +484,18 @@ class _NotificationState extends State<NotificationPage> {
                                                                                       );
                                                                                     },
                                                                                   ),
-
                                                                                 );
 //
-                                                                          },
-                                                                          child:
-                                                                              Container(
-                                                                            margin:
-                                                                                EdgeInsets.only(top: 15, bottom: 5),
-                                                                            width:
-                                                                                105,
-                                                                            height:
-                                                                                28,
-                                                                            child:
-                                                                                Center(child: Text('CONFIRM', style: TextStyle(fontSize: 13, color: Color(0xFFA40C85), fontWeight: FontWeight.w500))),
-                                                                            decoration:
-                                                                                BoxDecoration(border: Border.all(color: Color(0xFFA40C85)), borderRadius: BorderRadius.circular(4)),
-                                                                          ),
+                                                                              },
+                                                                              child: Container(
+                                                                                margin: EdgeInsets.only(top: 15, bottom: 5),
+                                                                                width: 105,
+                                                                                height: 28,
+                                                                                child: Center(child: Text('CONFIRM', style: TextStyle(fontSize: 13, color: Color(0xFFA40C85), fontWeight: FontWeight.w500))),
+                                                                                decoration: BoxDecoration(border: Border.all(color: Color(0xFFA40C85)), borderRadius: BorderRadius.circular(4)),
+                                                                              ),
+                                                                            ),
+                                                                          ],
                                                                         ),
                                               Text(
                                                 '$date',
@@ -557,37 +564,39 @@ class _NotificationState extends State<NotificationPage> {
     ]);
   }
 
+  dialog(index) {
+    WebServices network = Provider.of<WebServices>(context, listen: false);
+    return RatingDialog(
+      title: 'Rate this Artisan/Vendor',
+      message:
+          'Tap a star to set your rating. Write review on this user(optional).',
+      image: Container(
+          width: 120,
+          height: 120,
+          child: Image.asset('assets/images/fixme.png')),
+      submitButton: 'Submit',
+      onSubmitted: (response) {
+        FirebaseApi.updateNotification(index.id, 'confirm').then((value) {
+          network.confirmPaymentAndReview(
+              response.rating,
+              index.jobid,
+              response.comment,
+              widget.scafoldKey,
+              index.artisanId,
+              network.userId,
+              context,
+          );
+        });
+      },
+    );
+  }
 
-   dialog(index) {
-     WebServices network = Provider.of<WebServices>(context, listen: false);
-     return RatingDialog(
-       title: 'Rate this Artisan/Vendor',
-       message:
-       'Tap a star to set your rating. Write review on this user(optional).',
-       image: Container(
-           width: 120,
-           height: 120,
-           child: Image.asset('assets/images/fixme.png')),
-       submitButton: 'Submit',
-       onSubmitted: (response) {
-         FirebaseApi.updateNotification(index.id, 'confirm').then((
-             value) {
-           network.confirmPaymentAndReview(
-               response.rating, index.jobid,response.comment, widget.scafoldKey, index.artisanId, network.userId
-           );
-         });
-       },
-     );
-   }
-
-
-
-     Widget buildText(String text) => Padding(
-       padding: const EdgeInsets.only(top: 200.0),
-       child: Text(
-         text,
-         style: TextStyle(fontSize: 18, color: Colors.black38),
-         textAlign: TextAlign.center,
-       ),
-     );
-   }
+  Widget buildText(String text) => Padding(
+        padding: const EdgeInsets.only(top: 200.0),
+        child: Text(
+          text,
+          style: TextStyle(fontSize: 18, color: Colors.black38),
+          textAlign: TextAlign.center,
+        ),
+      );
+}

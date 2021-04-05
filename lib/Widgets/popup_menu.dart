@@ -5,15 +5,16 @@ import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 
 class PopUpMenu extends StatelessWidget {
-  final GlobalKey<ScaffoldState> scaffoldKey = GlobalKey<ScaffoldState>();
   final String idUser;
   final user;
   final popData;
+  final scaffoldKey;
 
   PopUpMenu({
     this.user,
     this.popData,
     @required this.idUser,
+    @required this.scaffoldKey,
     Key key,
   }) : super(key: key);
 
@@ -29,7 +30,7 @@ class PopUpMenu extends StatelessWidget {
           size: 28,
         ),
         itemBuilder: (context) => [
-              user.project_owner_user_id.toString() ==
+              user.project_owner_user_id.toString() !=
                           network.userId.toString() ||
                       user.project_owner_user_id == null
                   ? null

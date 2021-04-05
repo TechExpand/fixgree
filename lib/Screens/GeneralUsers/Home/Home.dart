@@ -15,8 +15,9 @@ import 'package:fixme/Utils/Provider.dart';
 import 'package:fixme/Widgets/Rating.dart';
 import 'package:flutter/material.dart';
 import 'package:fixme/Utils/utils.dart';
-import 'package:geolocator/geolocator.dart';
 import 'package:provider/provider.dart';
+import 'package:shared_preferences/shared_preferences.dart';
+import 'package:super_tooltip/super_tooltip.dart';
 
 class Home extends StatelessWidget {
   final scafoldKey;
@@ -38,6 +39,60 @@ class Home extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+
+    showOverLay()async{
+      SharedPreferences prefs = await SharedPreferences.getInstance();
+      var overlay = prefs.getString('overlay');
+      var data = Provider.of<DataProvider>(context, listen: false);
+      if (overlay == null || overlay == 'null' || overlay == '') {
+        print('bsssssssssssssssssssssssssssssssssss');
+        print('bsssssssssssssssssssssssssssssssssss');
+
+        var numberDialog = Container(
+          margin: const EdgeInsets.all(3.0),
+          child: Align(
+            alignment: Alignment(-0.8,-0.9),
+            child: Material(
+              color: Colors.black87,
+              shape:
+              RoundedRectangleBorder(borderRadius: BorderRadius.circular(10.0)),
+              child: Container(
+                padding: const EdgeInsets.all(4.0),
+                width: 140,
+                child: Column(
+                  mainAxisSize: MainAxisSize.min,
+                  children: <Widget>[
+                    Text(
+                      'Welcome!!',
+                      style: TextStyle(color: Colors.white),
+                      textAlign: TextAlign.center,
+                    ),
+                    Text(
+                      'You can become an artisan by clicking this picture',
+                      textAlign: TextAlign.center,
+                      style: TextStyle(color: Colors.white, fontWeight: FontWeight.bold),
+                    ),
+                  ],
+                ),
+              ),
+            ),
+          ),
+        );
+        showDialog(
+          barrierColor: Colors.transparent,
+          context: context,
+          builder: (BuildContext context) {
+            return numberDialog;
+          },
+        ).whenComplete((){
+          prefs.setString('overlay', 'overlay');
+        });
+
+      }else{}
+
+    }
+
+    showOverLay();
     var network = Provider.of<WebServices>(context, listen: false);
     List<Notify> notify;
     var location = Provider.of<LocationService>(context);
@@ -270,7 +325,8 @@ class Home extends StatelessWidget {
                           ),
                           InkWell(
                             onTap: () {
-                              //TODO: here
+
+
                             },
                             child: Text('See all',
                                 style: TextStyle(
@@ -523,7 +579,7 @@ class Home extends StatelessWidget {
                     FutureBuilder(
                         future: network.nearbyShop(
                             latitude: location.locationLatitude,
-                            longitude: location.locationLongitude),
+                            longitude: location.locationLongitude, context: context),
                         builder: (context, snapshot) {
                           return !snapshot.hasData
                               ? Padding(

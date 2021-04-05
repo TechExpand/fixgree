@@ -45,7 +45,6 @@ dependencies:
   geocoder: ^0.2.1
   flutter_ringtone_player: ^2.0.0
   audioplayer:
-  grouped_list: ^3.7.1
   gx_file_picker:
   flutter_feather_icons: ^1.0.3
   flutter_multi_formatter:
@@ -61,7 +60,7 @@ dependencies:
   flutter_tawk: ^0.0.5
   share: ^0.6.5+4
   rating_dialog: ^2.0.0
-  flutterwave: ^0.0.2
+  super_tooltip: ^1.0.1
   google_fonts: ^1.1.2
 
 

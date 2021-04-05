@@ -19,6 +19,7 @@ import 'package:provider/provider.dart';
 import 'package:fixme/Widgets/Drawer.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_feather_icons/flutter_feather_icons.dart';
+import 'package:shared_preferences/shared_preferences.dart';
 
 import 'Home.dart';
 
@@ -43,7 +44,6 @@ class _HomePageState extends State<HomePage> {
   void initState() {
     super.initState();
     getMessage();
-
     var data = Provider.of<Utils>(context, listen: false);
     var network = Provider.of<WebServices>(context, listen: false);
     var datas = Provider.of<DataProvider>(context, listen: false);
@@ -75,11 +75,17 @@ class _HomePageState extends State<HomePage> {
     data.setSelectedBottomNavBar(3);
   }
 
+
+
+
+
   void getMessage() {
     var network = Provider.of<WebServices>(context, listen: false);
     _firebaseMessaging.configure(
         onMessage: (Map<String, dynamic> message) async {
-      // if(message["notification"]["title"].toString() == 'new_bid'){
+          print(message);
+          print(message);
+          showNotification(message["notification"]["title"],message["notification"]["body"]);
       FirebaseApi.uploadNotification(
         network.userId.toString(),
         message["notification"]["title"],
@@ -89,13 +95,11 @@ class _HomePageState extends State<HomePage> {
         '${message["data"]["bidId"]}',
         '${message["data"]["bidderId"]}',
         '${message["data"]["artisanId"]}',
+        '${message['data']['budget']}'
       );
       FirebaseApi.uploadCheckNotify(
         network.userId.toString(),
       );
-      showNotification(message["notification"]["body"]);
-      print(message);
-      print(message);
       //}
 
       setState(() => _message = message["notification"]["title"]);
@@ -106,13 +110,13 @@ class _HomePageState extends State<HomePage> {
     });
   }
 
-  showNotification(value) async {
+  showNotification(value1, value2) async {
     var android = AndroidNotificationDetails('id', 'channel ', 'description',
         priority: Priority.high, importance: Importance.max);
     var iOS = IOSNotificationDetails();
     var platform = new NotificationDetails(android: android, iOS: iOS);
     await flutterLocalNotificationsPlugin.show(
-        0, 'New bid on project', '$value', platform,
+        0, '$value1', '$value2', platform,
         payload: 'New job is available around you');
   }
 
@@ -128,6 +132,7 @@ class _HomePageState extends State<HomePage> {
     WebServices network = Provider.of<WebServices>(context, listen: false);
     List<Notify> notify;
     // FirebaseApi.updateUsertoOnline(datas.mobile_device_token);
+
     var widget = Scaffold(
       key: scafoldKey,
       drawer: SizedBox(
