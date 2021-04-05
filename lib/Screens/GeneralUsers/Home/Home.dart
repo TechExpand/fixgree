@@ -2,6 +2,8 @@ import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:fixme/DummyData.dart';
 import 'package:fixme/Model/Notify.dart';
 import 'package:fixme/Screens/ArtisanUser/Profile/ArtisanPageNew.dart';
+import 'package:fixme/Screens/ArtisanUser/Profile/ProfilePageNew.dart';
+import 'package:fixme/Screens/ArtisanUser/RegisterArtisan/thankyou.dart';
 import 'package:fixme/Screens/GeneralUsers/Chat/Chats.dart';
 import 'package:fixme/Screens/GeneralUsers/Home/NearbyArtisansSeeAll.dart';
 import 'package:fixme/Screens/GeneralUsers/Home/NearbyShopsSeeAll.dart';
@@ -1096,14 +1098,6 @@ class Home extends StatelessWidget {
                                       : Container();
                         }),
                     Divider(),
-                    Padding(
-                      padding: const EdgeInsets.all(8.0),
-                      child: Text(
-                        'Introduce your friends to the fastest way to get things done',
-                        textAlign: TextAlign.center,
-                        style: TextStyle(fontWeight: FontWeight.w500),
-                      ),
-                    ),
                     Align(
                       alignment: Alignment.center,
                       child: Container(
@@ -1111,7 +1105,41 @@ class Home extends StatelessWidget {
                         decoration: BoxDecoration(
                             borderRadius: BorderRadius.circular(7)),
                         child: FlatButton(
-                          onPressed: () {},
+                          onPressed: () {
+                            network.role == 'artisan' || network.role == 'business'
+                                ? Navigator.push(
+                              context,
+                              PageRouteBuilder(
+                                pageBuilder:
+                                    (context, animation, secondaryAnimation) {
+                                  return ProfilePageNew();
+                                },
+                                transitionsBuilder:
+                                    (context, animation, secondaryAnimation, child) {
+                                  return FadeTransition(
+                                    opacity: animation,
+                                    child: child,
+                                  );
+                                },
+                              ),
+                            )
+                                : Navigator.push(
+                              context,
+                              PageRouteBuilder(
+                                pageBuilder:
+                                    (context, animation, secondaryAnimation) {
+                                  return SignThankyou();
+                                },
+                                transitionsBuilder:
+                                    (context, animation, secondaryAnimation, child) {
+                                  return FadeTransition(
+                                    opacity: animation,
+                                    child: child,
+                                  );
+                                },
+                              ),
+                            );
+                          },
                           color: Color(0xFF9B049B),
                           shape: RoundedRectangleBorder(
                               borderRadius: BorderRadius.circular(7)),
@@ -1126,7 +1154,7 @@ class Home extends StatelessWidget {
                                   minHeight: 45.0),
                               alignment: Alignment.center,
                               child: Text(
-                                "Invite Friends",
+                                "Become an Artisan",
                                 textAlign: TextAlign.center,
                                 style: TextStyle(
                                     color: Colors.white,
@@ -1138,6 +1166,10 @@ class Home extends StatelessWidget {
                         ),
                       ),
                     ),
+                    Container(
+                      child:Text(''),
+                      height:80,
+                    )
                   ],
                 ),
               ),
