@@ -30,7 +30,7 @@ class PopUpMenu extends StatelessWidget {
           size: 28,
         ),
         itemBuilder: (context) => [
-              user.project_owner_user_id.toString() !=
+              user.project_owner_user_id.toString() ==
                           network.userId.toString() ||
                       user.project_owner_user_id == null
                   ? null
