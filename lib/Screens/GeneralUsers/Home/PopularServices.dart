@@ -26,7 +26,6 @@ class PopularServices extends StatefulWidget {
   _PopularServicesState createState() => _PopularServicesState();
 }
 
-//6.4889151, 3.0683489
 class _PopularServicesState extends State<PopularServices> {
   String getDistance({String rawDistance}) {
     String distance;
