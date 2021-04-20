@@ -613,8 +613,8 @@ class Home extends StatelessWidget {
                                       margin: const EdgeInsets.only(bottom: 6),
                                       child: ListView.builder(
                                         scrollDirection: Axis.horizontal,
-                                        itemCount: snapshot.data.length > 3
-                                            ? 3
+                                        itemCount: snapshot.data.length > 10
+                                            ? 10
                                             : snapshot.data.length,
                                         itemBuilder: (context, index) {
                                           String distance = getDistance(
@@ -898,8 +898,8 @@ class Home extends StatelessWidget {
                                       margin: const EdgeInsets.only(bottom: 6),
                                       child: ListView.builder(
                                         scrollDirection: Axis.horizontal,
-                                        itemCount: snapshot.data.length > 3
-                                            ? 3
+                                        itemCount: snapshot.data.length > 10
+                                            ? 10
                                             : snapshot.data.length,
                                         itemBuilder: (context, index) {
                                           String distance = getDistance(
