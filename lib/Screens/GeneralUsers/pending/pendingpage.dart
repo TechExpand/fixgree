@@ -5,6 +5,9 @@ import 'package:fixme/Screens/GeneralUsers/Home/Search.dart';
 import 'package:fixme/Services/Firebase_service.dart';
 import 'package:fixme/Services/network_service.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter_feather_icons/flutter_feather_icons.dart';
+import 'package:intl/intl.dart';
+import 'package:google_fonts/google_fonts.dart';
 import 'package:provider/provider.dart';
 
 class PendingScreen extends StatefulWidget {
@@ -236,10 +239,17 @@ class _PendingScreenState extends State<PendingScreen> {
               indicatorColor: Color(0xFF9B049B),
               tabs: [
                 Tab(
-                  text: "Pending",
-                ),
-                Tab(text: "Ongoing"),
-                Tab(text: "Completed"),
+                    child: Text('Pending',
+                        style: GoogleFonts.openSans(
+                            fontSize: 15, fontWeight: FontWeight.w600))),
+                Tab(
+                    child: Text('Started',
+                        style: GoogleFonts.openSans(
+                            fontSize: 15, fontWeight: FontWeight.w600))),
+                Tab(
+                    child: Text('Completed',
+                        style: GoogleFonts.openSans(
+                            fontSize: 15, fontWeight: FontWeight.w600))),
               ],
             ),
           ),
@@ -316,7 +326,10 @@ class _PendingScreenState extends State<PendingScreen> {
                                         ),
                                       ),
                                     ),
-                                    ListView.builder(
+                                    ListView.separated(
+                                        separatorBuilder: (context, index) {
+                                          return Divider();
+                                        },
                                         physics: NeverScrollableScrollPhysics(),
                                         shrinkWrap: true,
                                         itemCount: snapshot.data.length,
@@ -333,6 +346,10 @@ class _PendingScreenState extends State<PendingScreen> {
                                                   child: Row(
                                                     children: [
                                                       Container(
+                                                          margin:
+                                                              const EdgeInsets
+                                                                      .only(
+                                                                  top: 10),
                                                           height: 25,
                                                           child: Center(
                                                               child: Text(
@@ -396,26 +413,36 @@ class _PendingScreenState extends State<PendingScreen> {
                                                       ),
                                                       Spacer(),
                                                       Column(
+                                                        mainAxisAlignment:
+                                                            MainAxisAlignment
+                                                                .end,
+                                                        crossAxisAlignment:
+                                                            CrossAxisAlignment
+                                                                .end,
                                                         children: [
                                                           Padding(
                                                               padding:
-                                                                  const EdgeInsets
-                                                                          .only(
+                                                                  const EdgeInsets.only(
                                                                       bottom:
                                                                           3.0),
                                                               child:
                                                                   PopupMenuButton(
-                                                                      offset: const Offset(
-                                                                          0, 1),
+                                                                      offset:
+                                                                          const Offset(
+                                                                              0,
+                                                                              1),
                                                                       elevation:
-                                                                          5,
-                                                                      icon:
-                                                                          Icon(
-                                                                        Icons
-                                                                            .more_vert,
-                                                                        size:
-                                                                            22,
-                                                                      ),
+                                                                          0.1,
+                                                                      color: Color(
+                                                                          0xFFF6F6F6),
+                                                                      shape: RoundedRectangleBorder(
+                                                                          borderRadius: BorderRadius.circular(
+                                                                              5)),
+                                                                      icon: Icon(
+                                                                          FeatherIcons
+                                                                              .moreHorizontal,
+                                                                          color: Color(
+                                                                              0xFF9B049B)),
                                                                       itemBuilder:
                                                                           (context) =>
                                                                               [
@@ -428,12 +455,12 @@ class _PendingScreenState extends State<PendingScreen> {
                                                                                       },
                                                                                       child: Padding(
                                                                                         padding: const EdgeInsets.all(8),
-                                                                                        child: Text('Project Still Pending'),
+                                                                                        child: Text('Project still pending'),
                                                                                       ),
                                                                                     )),
                                                                               ])),
                                                           Text(
-                                                            '${snapshot.data[index].dateOpen.toString().substring(0, 10)}',
+                                                            '${DateFormat('MMM dd, y').format(DateTime.parse(snapshot.data[index].dateOpen))}',
                                                             style: TextStyle(
                                                                 color: Colors
                                                                     .black38),
@@ -477,9 +504,15 @@ class _PendingScreenState extends State<PendingScreen> {
                           indicatorColor: Color(0xFF9B049B),
                           tabs: [
                             Tab(
-                              text: "Ongoing posted job",
-                            ),
-                            Tab(text: "Ongoing bidded job"),
+                                child: Text('Ongoing posted job',
+                                    style: GoogleFonts.openSans(
+                                        fontSize: 14,
+                                        fontWeight: FontWeight.w600))),
+                            Tab(
+                                child: Text('Ongoing bidded job',
+                                    style: GoogleFonts.openSans(
+                                        fontSize: 14,
+                                        fontWeight: FontWeight.w600))),
                           ],
                         ),
 
@@ -934,9 +967,15 @@ class _PendingScreenState extends State<PendingScreen> {
                           indicatorColor: Color(0xFF9B049B),
                           tabs: [
                             Tab(
-                              text: "Completed posted job",
-                            ),
-                            Tab(text: "Completed bidded job"),
+                                child: Text('Completed posted job',
+                                    style: GoogleFonts.openSans(
+                                        fontSize: 14,
+                                        fontWeight: FontWeight.w600))),
+                            Tab(
+                                child: Text('Completed bidded job',
+                                    style: GoogleFonts.openSans(
+                                        fontSize: 14,
+                                        fontWeight: FontWeight.w600))),
                           ],
                         ),
 

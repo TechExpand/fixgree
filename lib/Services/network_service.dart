@@ -234,7 +234,8 @@ class WebServices extends ChangeNotifier {
         setStates(() {});
         loginPopSetState();
         Navigator.pop(context);
-        ScaffoldMessenger.of(context).showSnackBar( SnackBar(content: new Text("JOB INITIATED")));
+        ScaffoldMessenger.of(context)
+            .showSnackBar(SnackBar(content: new Text("JOB INITIATED")));
 
         return body;
       } else if (body['reqRes'] == 'false') {
@@ -329,9 +330,12 @@ class WebServices extends ChangeNotifier {
           'Authorization': 'Bearer $bearer',
         });
     var body = json.decode(response.body);
-    print('The body: ' + body.toString());
+    List result = body['sortedUsers'];
+    List<UserSearch> serviceProviders = result.map((data) {
+      return UserSearch.fromJson(data);
+    }).toList();
     if (body['reqRes'] == 'true') {
-      return body['sortedUsers'];
+      return serviceProviders;
     } else if (body['reqRes'] == 'false') {
       return body['message'];
     }
@@ -402,7 +406,8 @@ class WebServices extends ChangeNotifier {
     notifyListeners();
     if (body['reqRes'] == 'true') {
       print(body);
-      ScaffoldMessenger.of(context).showSnackBar( SnackBar(content: new Text("Review Successfully Submited")));
+      ScaffoldMessenger.of(context).showSnackBar(
+          SnackBar(content: new Text("Review Successfully Submited")));
       return body;
     } else if (body['reqRes'] == 'false') {
       print(body);
@@ -467,9 +472,7 @@ class WebServices extends ChangeNotifier {
 //print(info.fullNumber);
     notifyListeners();
     if (body['reqRes'] == 'true') {
-
       return body;
-
     } else if (body['reqRes'] == 'false') {
       print(body['message']);
     }
@@ -1219,7 +1222,6 @@ class WebServices extends ChangeNotifier {
   }
 
   Future<dynamic> getUndoneProject(context) async {
-
     var response = await http
         .post(Uri.parse('https://manager.fixme.ng/user-projects'), body: {
       'user_id': userId.toString(),
@@ -1241,29 +1243,28 @@ class WebServices extends ChangeNotifier {
     if (body1['reqRes'] == 'true') {
       print(body1['projects']);
       return projects;
-    } else if (body1['reqRes'] == 'false') {
-
-    }}
-
-
+    } else if (body1['reqRes'] == 'false') {}
+  }
 
   Future<dynamic> getBiddedJobs(context) async {
     print(userId);
     print(bearer);
-    var response = await http
-        .post(Uri.parse('https://manager.fixme.ng/all-my-bids-projects'), body: {
-      'user_id': userId.toString(),
-    }, headers: {
-      "Content-type": "application/x-www-form-urlencoded",
-      'Authorization': 'Bearer $bearer',
-    });
+    var response = await http.post(
+        Uri.parse('https://manager.fixme.ng/all-my-bids-projects'),
+        body: {
+          'user_id': userId.toString(),
+        },
+        headers: {
+          "Content-type": "application/x-www-form-urlencoded",
+          'Authorization': 'Bearer $bearer',
+        });
 
     var body1 = json.decode(response.body);
     List body = body1['projects'];
     List<Project> projects = body
         .map((data) {
-      return Project.fromJson(data);
-    })
+          return Project.fromJson(data);
+        })
         .toSet()
         .toList();
 
@@ -1271,13 +1272,8 @@ class WebServices extends ChangeNotifier {
     if (body1['reqRes'] == 'true') {
       print(body1);
       return projects;
-    } else if (body1['reqRes'] == 'false') {
-
-    }}
-
-
-
-
+    } else if (body1['reqRes'] == 'false') {}
+  }
 
   Future<dynamic> nearbyArtisans({longitude, latitude}) async {
     var response = await http
@@ -1304,33 +1300,25 @@ class WebServices extends ChangeNotifier {
   }
 
   Future<dynamic> nearbyShop({longitude, latitude, context}) async {
+    var response = await http
+        .post(Uri.parse('https://manager.fixme.ng/near-shops-business'), body: {
+      'user_id': userId.toString(),
+      'longitude': longitude.toString(),
+      'latitude': latitude.toString(),
+    }, headers: {
+      "Content-type": "application/x-www-form-urlencoded",
+      'Authorization': 'Bearer $bearer',
+    });
+    var body = json.decode(response.body);
+    List result = body['sortedUsers'];
+    List<UserSearch> nearebyList = result.map((data) {
+      return UserSearch.fromJson(data);
+    }).toList();
+    notifyListeners();
 
-      var response = await http.post(
-          Uri.parse('https://manager.fixme.ng/near-shops-business'),
-          body: {
-            'user_id': userId.toString(),
-            'longitude': longitude.toString(),
-            'latitude': latitude.toString(),
-          },
-          headers: {
-            "Content-type": "application/x-www-form-urlencoded",
-            'Authorization': 'Bearer $bearer',
-          });
-      var body = json.decode(response.body);
-      List result = body['sortedUsers'];
-      List<UserSearch> nearebyList = result.map((data) {
-        return UserSearch.fromJson(data);
-      }).toList();
-      notifyListeners();
-
-      if (body['reqRes'] == 'true') {
-        return nearebyList;
-      } else if (body['reqRes'] == 'false') {
-
-
-      }
-
-
+    if (body['reqRes'] == 'true') {
+      return nearebyList;
+    } else if (body['reqRes'] == 'false') {}
   }
 
   Future search({longitude, latitude, searchquery}) async {
@@ -1371,13 +1359,13 @@ class WebServices extends ChangeNotifier {
   }
 
   Future<Map> getUserWalletInfo() async {
-      var response = await http.post(
-          Uri.parse(
-              'https://manager.fixme.ng/get-user-bank-info?user_id=$userId'),
-          headers: {
-            "Content-type": "application/json",
-            'Authorization': 'Bearer $bearer',
-          });
+    var response = await http.post(
+        Uri.parse(
+            'https://manager.fixme.ng/get-user-bank-info?user_id=$userId'),
+        headers: {
+          "Content-type": "application/json",
+          'Authorization': 'Bearer $bearer',
+        });
     var body = json.decode(response.body);
     return body['accountInfo'];
   }

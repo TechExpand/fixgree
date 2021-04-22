@@ -2,6 +2,8 @@ import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:fixme/DummyData.dart';
 import 'package:fixme/Model/Notify.dart';
 import 'package:fixme/Screens/ArtisanUser/Profile/ArtisanPageNew.dart';
+import 'package:fixme/Screens/ArtisanUser/Profile/ProfilePageNew.dart';
+import 'package:fixme/Screens/ArtisanUser/RegisterArtisan/thankyou.dart';
 import 'package:fixme/Screens/GeneralUsers/Chat/Chats.dart';
 import 'package:fixme/Screens/GeneralUsers/Home/NearbyArtisansSeeAll.dart';
 import 'package:fixme/Screens/GeneralUsers/Home/NearbyShopsSeeAll.dart';
@@ -29,18 +31,15 @@ class Home extends StatelessWidget {
 
   String getDistance({String rawDistance}) {
     String distance;
-    if (rawDistance.length > 3) {
-      distance = '$rawDistance' + 'km';
-    } else {
-      distance = '$rawDistance' + 'm';
-    }
+
+    distance = '$rawDistance' + 'km';
+
     return distance;
   }
 
   @override
   Widget build(BuildContext context) {
-
-    showOverLay()async{
+    showOverLay() async {
       SharedPreferences prefs = await SharedPreferences.getInstance();
       var overlay = prefs.getString('overlay');
       var data = Provider.of<DataProvider>(context, listen: false);
@@ -51,11 +50,11 @@ class Home extends StatelessWidget {
         var numberDialog = Container(
           margin: const EdgeInsets.all(3.0),
           child: Align(
-            alignment: Alignment(-0.8,-0.9),
+            alignment: Alignment(-0.8, -0.9),
             child: Material(
               color: Colors.black87,
-              shape:
-              RoundedRectangleBorder(borderRadius: BorderRadius.circular(10.0)),
+              shape: RoundedRectangleBorder(
+                  borderRadius: BorderRadius.circular(10.0)),
               child: Container(
                 padding: const EdgeInsets.all(4.0),
                 width: 140,
@@ -70,7 +69,8 @@ class Home extends StatelessWidget {
                     Text(
                       'You can become an artisan by clicking this picture',
                       textAlign: TextAlign.center,
-                      style: TextStyle(color: Colors.white, fontWeight: FontWeight.bold),
+                      style: TextStyle(
+                          color: Colors.white, fontWeight: FontWeight.bold),
                     ),
                   ],
                 ),
@@ -84,12 +84,10 @@ class Home extends StatelessWidget {
           builder: (BuildContext context) {
             return numberDialog;
           },
-        ).whenComplete((){
+        ).whenComplete(() {
           prefs.setString('overlay', 'overlay');
         });
-
-      }else{}
-
+      } else {}
     }
 
     showOverLay();
@@ -323,15 +321,15 @@ class Home extends StatelessWidget {
                             style: TextStyle(
                                 fontWeight: FontWeight.w600, fontSize: 15),
                           ),
-                          InkWell(
-                            onTap: () {
 
-
-                            },
-                            child: Text('See all',
-                                style: TextStyle(
-                                    color: Color(0xFF9B049B), fontSize: 14)),
-                          )
+                          // InkWell(
+                          //   onTap: () {
+                          //     //TODO: here
+                          //   },
+                          //   child: Text('See all',
+                          //       style: TextStyle(
+                          //           color: Color(0xFF9B049B), fontSize: 14)),
+                          // )
                         ],
                       ),
                     ),
@@ -579,7 +577,8 @@ class Home extends StatelessWidget {
                     FutureBuilder(
                         future: network.nearbyShop(
                             latitude: location.locationLatitude,
-                            longitude: location.locationLongitude, context: context),
+                            longitude: location.locationLongitude,
+                            context: context),
                         builder: (context, snapshot) {
                           return !snapshot.hasData
                               ? Padding(
@@ -614,8 +613,8 @@ class Home extends StatelessWidget {
                                       margin: const EdgeInsets.only(bottom: 6),
                                       child: ListView.builder(
                                         scrollDirection: Axis.horizontal,
-                                        itemCount: snapshot.data.length > 3
-                                            ? 3
+                                        itemCount: snapshot.data.length > 10
+                                            ? 10
                                             : snapshot.data.length,
                                         itemBuilder: (context, index) {
                                           String distance = getDistance(
@@ -899,8 +898,8 @@ class Home extends StatelessWidget {
                                       margin: const EdgeInsets.only(bottom: 6),
                                       child: ListView.builder(
                                         scrollDirection: Axis.horizontal,
-                                        itemCount: snapshot.data.length > 3
-                                            ? 3
+                                        itemCount: snapshot.data.length > 10
+                                            ? 10
                                             : snapshot.data.length,
                                         itemBuilder: (context, index) {
                                           String distance = getDistance(
@@ -1099,14 +1098,6 @@ class Home extends StatelessWidget {
                                       : Container();
                         }),
                     Divider(),
-                    Padding(
-                      padding: const EdgeInsets.all(8.0),
-                      child: Text(
-                        'Introduce your friends to the fastest way to get things done',
-                        textAlign: TextAlign.center,
-                        style: TextStyle(fontWeight: FontWeight.w500),
-                      ),
-                    ),
                     Align(
                       alignment: Alignment.center,
                       child: Container(
@@ -1114,7 +1105,41 @@ class Home extends StatelessWidget {
                         decoration: BoxDecoration(
                             borderRadius: BorderRadius.circular(7)),
                         child: FlatButton(
-                          onPressed: () {},
+                          onPressed: () {
+                            network.role == 'artisan' || network.role == 'business'
+                                ? Navigator.push(
+                              context,
+                              PageRouteBuilder(
+                                pageBuilder:
+                                    (context, animation, secondaryAnimation) {
+                                  return ProfilePageNew();
+                                },
+                                transitionsBuilder:
+                                    (context, animation, secondaryAnimation, child) {
+                                  return FadeTransition(
+                                    opacity: animation,
+                                    child: child,
+                                  );
+                                },
+                              ),
+                            )
+                                : Navigator.push(
+                              context,
+                              PageRouteBuilder(
+                                pageBuilder:
+                                    (context, animation, secondaryAnimation) {
+                                  return SignThankyou();
+                                },
+                                transitionsBuilder:
+                                    (context, animation, secondaryAnimation, child) {
+                                  return FadeTransition(
+                                    opacity: animation,
+                                    child: child,
+                                  );
+                                },
+                              ),
+                            );
+                          },
                           color: Color(0xFF9B049B),
                           shape: RoundedRectangleBorder(
                               borderRadius: BorderRadius.circular(7)),
@@ -1129,7 +1154,7 @@ class Home extends StatelessWidget {
                                   minHeight: 45.0),
                               alignment: Alignment.center,
                               child: Text(
-                                "Invite Friends",
+                                "Become an Artisan",
                                 textAlign: TextAlign.center,
                                 style: TextStyle(
                                     color: Colors.white,
@@ -1141,6 +1166,10 @@ class Home extends StatelessWidget {
                         ),
                       ),
                     ),
+                    Container(
+                      child:Text(''),
+                      height:80,
+                    )
                   ],
                 ),
               ),
