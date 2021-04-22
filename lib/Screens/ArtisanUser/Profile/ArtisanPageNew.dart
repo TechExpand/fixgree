@@ -34,7 +34,7 @@ class _ArtisanPageNewState extends State<ArtisanPageNew> {
 
   address() async {
     final coordinates =
-        new Coordinates(widget.userData.longitude, widget.userData.latitude);
+        new Coordinates(widget.userData.latitude, widget.userData.longitude);
     var addresses =
         await Geocoder.local.findAddressesFromCoordinates(coordinates);
     setState(() {

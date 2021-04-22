@@ -4,9 +4,11 @@ import 'package:fixme/Screens/GeneralUsers/Chat/Chats.dart';
 import 'package:fixme/Screens/GeneralUsers/Home/HomePage.dart';
 import 'package:fixme/Services/location_service.dart';
 import 'package:flutter_feather_icons/flutter_feather_icons.dart';
+import 'package:google_fonts/google_fonts.dart';
 import 'package:url_launcher/url_launcher.dart' as UrlLauncher;
 import 'package:fixme/Services/network_service.dart';
 import 'package:fixme/Widgets/photoView.dart';
+import 'package:intl/intl.dart';
 import 'package:flutter/material.dart';
 import 'package:geocoder/geocoder.dart';
 import 'package:provider/provider.dart';
@@ -155,26 +157,26 @@ class _BidderPageState extends State<BidderPage> {
                                           ],
                                         ),
                                       ),
-                                      snapshot.data['identificationStatus'] ==
-                                              'un-verified'
-                                          ? Padding(
-                                              padding: const EdgeInsets.only(
-                                                  left: 10.0, bottom: 6),
-                                              child: Text('Unverified',
-                                                  style: TextStyle(
-                                                    color: Color(0xFFFF0000)
-                                                        .withOpacity(0.75),
-                                                  )),
-                                            )
-                                          : Padding(
-                                              padding: const EdgeInsets.only(
-                                                  left: 10.0, bottom: 6),
-                                              child: Text('Verified',
-                                                  style: TextStyle(
-                                                    color: Color(0xFF27AE60)
-                                                        .withOpacity(0.9),
-                                                  )),
-                                            ),
+//                                      snapshot.data['identificationStatus'] ==
+//                                              'un-verified'
+//                                          ? Padding(
+//                                              padding: const EdgeInsets.only(
+//                                                  left: 10.0, bottom: 6),
+//                                              child: Text('Unverified',
+//                                                  style: TextStyle(
+//                                                    color: Color(0xFFFF0000)
+//                                                        .withOpacity(0.75),
+//                                                  )),
+//                                            )
+//                                          : Padding(
+//                                              padding: const EdgeInsets.only(
+//                                                  left: 10.0, bottom: 6),
+//                                              child: Text('Verified',
+//                                                  style: TextStyle(
+//                                                    color: Color(0xFF27AE60)
+//                                                        .withOpacity(0.9),
+//                                                  )),
+//                                            ),
                                     ],
                                   ),
                                 ],
@@ -241,7 +243,7 @@ class _BidderPageState extends State<BidderPage> {
                                   decoration: BoxDecoration(
                                       borderRadius: BorderRadius.circular(5)),
                                   child: FlatButton(
-                                    onPressed: () {
+                                    onPressed: (){
                                       FirebaseApi.addUserBidChat(
                                         bidData: widget.data,
                                         urlAvatar2:
@@ -252,7 +254,7 @@ class _BidderPageState extends State<BidderPage> {
                                         userMobile: snapshot.data['fullNumber'],
                                         idUser: snapshot.data['firebase_id'],
                                         urlAvatar:
-                                            'https://uploads.fixme.ng/originals/${snapshot.data.urlAvatar}',
+                                            'https://uploads.fixme.ng/originals/${snapshot.data['profile_pic_file_name']}',
                                         name: snapshot.data['firstName'],
                                       );
 
@@ -585,25 +587,57 @@ class _BidderPageState extends State<BidderPage> {
                                                         int index) {
                                                   return ClipRRect(
                                                     borderRadius:
-                                                        BorderRadius.circular(
-                                                            10),
+                                                    BorderRadius.circular(
+                                                        10),
                                                     child: Container(
                                                       child: ListTile(
+
+                                                        contentPadding:
+                                                        const EdgeInsets
+                                                            .only(
+                                                            left: 0),
+                                                        leading: CircleAvatar(
+                                                          child: Text(''),
+                                                          radius: 40,
+                                                          backgroundImage:
+                                                          NetworkImage(
+                                                            'https://uploads.fixme.ng/originals/${snapshot.data[index]['productImages'][0]['imageFileName']}',
+                                                          ),
+                                                          foregroundColor:
+                                                          Colors.white,
+                                                          backgroundColor:
+                                                          Colors.white,
+                                                        ),
                                                         title: Text(
-                                                            "${snapshots.data[index]['product_name']}",
+                                                            "${snapshot.data[index]['product_name']}"
+                                                                ,
                                                             style: TextStyle(
                                                                 color: Colors
                                                                     .black)),
-                                                        subtitle: Text(
-                                                            "${snapshots.data[index]['price']}",
+                                                        subtitle: RichText(
+                                                          text: TextSpan(
+                                                            text: '\u{20A6} ',
                                                             style: TextStyle(
+                                                                fontFamily:
+                                                                'Roboto',
                                                                 color: Colors
                                                                     .green,
                                                                 fontWeight:
-                                                                    FontWeight
-                                                                        .bold)),
-                                                        trailing: Text(
-                                                            '${snapshots.data[index]['status']}'),
+                                                                FontWeight
+                                                                    .bold),
+                                                            children: <
+                                                                TextSpan>[
+                                                              TextSpan(
+                                                                  text:
+                                                                  "${snapshot.data[index]['price']}",
+                                                                  style: GoogleFonts.openSans(
+                                                                      color: Colors
+                                                                          .green,
+                                                                      fontWeight:
+                                                                      FontWeight.bold)),
+                                                            ],
+                                                          ),
+                                                        ),
                                                       ),
                                                     ),
                                                   );
@@ -612,183 +646,179 @@ class _BidderPageState extends State<BidderPage> {
                                         ],
                                       );
                                     }),
+
+                            Padding(
+                              padding: const EdgeInsets.all(8.0),
+                              child: Text(
+                                  'Reviews',
+                                  style: GoogleFonts.openSans(
+                                      fontSize:
+                                      19,
+                                      fontWeight:
+                                      FontWeight
+                                          .w500)),
+                            ),
                             StatefulBuilder(builder:
                                 (BuildContext context, StateSetter setStates) {
                               return FutureBuilder(
                                   future: network
                                       .getArtisanReviews(snapshot.data['id']),
                                   builder: (context, snapshot) {
-                                    return snapshot.hasData
-                                        ? Column(
+                                    Widget mainWidget;
+                                    if (snapshot.connectionState ==
+                                        ConnectionState.done) {
+                                      if (snapshot.data == null ||
+                                          snapshot.data.length == 0) {
+                                        mainWidget = Center(
+                                          child: Column(
+                                            mainAxisAlignment:
+                                            MainAxisAlignment.center,
+                                            crossAxisAlignment:
+                                            CrossAxisAlignment.center,
                                             children: [
-                                              Padding(
-                                                padding: const EdgeInsets.only(
-                                                    top: 13.0,
-                                                    bottom: 10,
-                                                    left: 18,
-                                                    right: 18),
-                                                child: Row(children: [
-                                                  Text(
-                                                    'Comments',
-                                                    style: TextStyle(
-                                                        fontWeight:
-                                                            FontWeight.w500,
-                                                        fontSize: 19),
-                                                  ),
-                                                  Padding(
-                                                    padding: EdgeInsets.only(
-                                                        top: 1, left: 10),
-                                                    child: Text(
-                                                      '(${snapshot.data.length})',
-                                                      style: TextStyle(
-                                                          fontWeight:
-                                                              FontWeight.w500,
-                                                          fontSize: 17,
-                                                          color: Color(
-                                                              0xFF444444)),
-                                                    ),
-                                                  )
-                                                ]),
-                                              ),
-                                              Container(
-                                                width: MediaQuery.of(context)
-                                                    .size
-                                                    .width,
-                                                child: ListView.separated(
-                                                    separatorBuilder:
-                                                        (BuildContext context,
-                                                                int index) =>
-                                                            Material(
-                                                              elevation: 1.8,
-                                                              child: Container(
-                                                                width: double
-                                                                    .infinity,
-                                                                color: Color(
-                                                                        0xFF666666)
-                                                                    .withOpacity(
-                                                                        0.5),
-                                                                height: 1,
-                                                              ),
-                                                            ),
-                                                    shrinkWrap: true,
-                                                    itemCount:
-                                                        snapshot.data.length,
-                                                    physics: ScrollPhysics(),
-                                                    itemBuilder:
-                                                        (context, index) {
-                                                      return Padding(
-                                                        padding:
-                                                            const EdgeInsets
-                                                                    .only(
-                                                                top: 13.0,
-                                                                bottom: 7,
-                                                                left: 18,
-                                                                right: 18),
-                                                        child: Row(
-                                                          children: [
-                                                            CircleAvatar(
-                                                              child: Text(''),
-                                                              radius: 22,
-                                                              backgroundImage:
-                                                                  NetworkImage(
-                                                                network.profilePicFileName ==
-                                                                            'no_picture_upload' ||
-                                                                        network.profilePicFileName ==
-                                                                            null
-                                                                    ? 'https://uploads.fixme.ng/originals/no_picture_upload'
-                                                                    : 'https://uploads.fixme.ng/originals/${network.profilePicFileName}',
-                                                              ),
-                                                              foregroundColor:
-                                                                  Colors.white,
-                                                              backgroundColor:
-                                                                  Colors.white,
-                                                            ),
-                                                            Column(
-                                                              crossAxisAlignment:
-                                                                  CrossAxisAlignment
-                                                                      .start,
-                                                              children: [
-                                                                Text(''),
-                                                                Padding(
-                                                                  padding: const EdgeInsets
-                                                                          .only(
-                                                                      left: 6.8,
-                                                                      bottom:
-                                                                          6),
-                                                                  child: Row(
-                                                                    children: [
-                                                                      Text(
-                                                                          '${snapshot.data[index]['reviewed_by'].toString()}'),
-                                                                      Container(
-                                                                        margin: const EdgeInsets.only(
-                                                                            left:
-                                                                                5,
-                                                                            right:
-                                                                                5),
-                                                                        height:
-                                                                            5,
-                                                                        width:
-                                                                            5,
-                                                                        decoration: BoxDecoration(
-                                                                            color:
-                                                                                Color(0xFF444444),
-                                                                            shape: BoxShape.circle),
-                                                                        child: Text(
-                                                                            ''),
-                                                                      ),
-                                                                      Text(
-                                                                          '${snapshot.data[index]['dateAdded'].toString()}'),
-                                                                    ],
-                                                                  ),
-                                                                ),
-                                                                Padding(
-                                                                    padding: const EdgeInsets
-                                                                            .only(
-                                                                        left:
-                                                                            6.8,
-                                                                        bottom:
-                                                                            4),
-                                                                    child: Text(
-                                                                        '${snapshot.data[index]['review'].toString()}')),
-                                                                Padding(
-                                                                  padding: const EdgeInsets
-                                                                          .only(
-                                                                      left: 6.8,
-                                                                      bottom:
-                                                                          4),
-                                                                  child:
-                                                                      StarRating(
-                                                                    rating: double
-                                                                        .parse(
-                                                                            '${snapshot.data[index]['rating']}'),
-
-                                                                    /// onRatingChanged: (rating) => setState(() => this.rating = rating),
-                                                                  ),
-                                                                )
-                                                              ],
-                                                            ),
-                                                          ],
-                                                        ),
-                                                      );
-//                           ]
-//                       )
-//                     );
-                                                    }),
-                                              ),
+                                              Text('No reviews',
+                                                  style: TextStyle(
+                                                    // letterSpacing: 4,
+                                                      color: Color(0xFF333333),
+                                                      fontSize: 18,
+                                                      fontWeight:
+                                                      FontWeight.w600)),
                                             ],
-                                          )
-                                        : Padding(
-                                            padding: const EdgeInsets.all(8.0),
-                                            child: Center(
-                                                child: CircularProgressIndicator(
-                                                    valueColor:
-                                                        AlwaysStoppedAnimation<
-                                                                Color>(
-                                                            Color(
-                                                                0xFF9B049B)))),
-                                          );
+                                          ),
+                                        );
+                                      } else {
+                                        if (snapshot.data.length == 0) {
+                                          print('empty');
+                                        }
+                                        mainWidget = Container(
+                                          width:
+                                          MediaQuery.of(context).size.width,
+                                          child: ListView.separated(
+                                              separatorBuilder:
+                                                  (BuildContext context,
+                                                  int index) =>
+                                                  Divider(),
+                                              shrinkWrap: true,
+                                              itemCount: snapshot.data.length,
+                                              physics: ScrollPhysics(),
+                                              itemBuilder: (context, index) {
+                                                DateTime dateOfReview =
+                                                DateTime.parse(snapshot
+                                                    .data[index]
+                                                ['dateAdded']
+                                                    .toString());
+                                                return Column(
+                                                  children: [
+                                                    Padding(
+                                                      padding:
+                                                      const EdgeInsets.only(
+                                                          top: 12,
+                                                          left: 15,
+                                                          right: 15,
+                                                          bottom: 2),
+                                                      child: Wrap(
+                                                        children: [
+                                                          Align(
+                                                            alignment: Alignment
+                                                                .centerLeft,
+                                                            child: Text(
+                                                                '${snapshot.data[index]['reviewer']['user_first_name'].toString()} ${snapshot.data[index]['reviewer']['user_last_name'].toString()}',
+                                                                style: GoogleFonts.openSans(
+                                                                    fontSize:
+                                                                    17,
+                                                                    fontWeight:
+                                                                    FontWeight
+                                                                        .w600)),
+                                                          ),
+                                                          Align(
+                                                            alignment: Alignment
+                                                                .centerLeft,
+                                                            child: Text(
+                                                                '${snapshot.data[index]['review'].toString()}',
+                                                                style: GoogleFonts.openSans(
+                                                                    fontSize:
+                                                                    16,
+                                                                    fontWeight:
+                                                                    FontWeight
+                                                                        .w500)),
+                                                          )
+                                                        ],
+                                                      ),
+                                                    ),
+                                                    ListTile(
+                                                      leading: CircleAvatar(
+                                                        child: Text(''),
+                                                        radius: 22,
+                                                        backgroundImage:
+                                                        NetworkImage(
+                                                          network.profilePicFileName ==
+                                                              'no_picture_upload' ||
+                                                              network.profilePicFileName ==
+                                                                  null
+                                                              ? 'https://uploads.fixme.ng/originals/no_picture_upload'
+                                                              : 'https://uploads.fixme.ng/originals/${network.profilePicFileName}',
+                                                        ),
+                                                        foregroundColor:
+                                                        Colors.white,
+                                                        backgroundColor:
+                                                        Colors.white,
+                                                      ),
+                                                      title: Text(
+                                                          '${DateFormat('MMM dd, y').format(dateOfReview)}',
+                                                          style: GoogleFonts
+                                                              .openSans(
+                                                              fontSize: 17,
+                                                              fontWeight:
+                                                              FontWeight
+                                                                  .w600)),
+                                                      subtitle: Padding(
+                                                        padding:
+                                                        const EdgeInsets
+                                                            .only(top: 5),
+                                                        child: StarRating(
+                                                          rating: double.parse(
+                                                              '${snapshot.data[index]['rating']}'),
+                                                        ),
+                                                      ),
+                                                    )
+                                                  ],
+                                                );
+                                              }),
+                                        );
+                                      }
+                                    } else {
+                                      mainWidget = Center(
+                                        child: Column(
+                                          mainAxisAlignment:
+                                          MainAxisAlignment.center,
+                                          crossAxisAlignment:
+                                          CrossAxisAlignment.center,
+                                          children: [
+                                            Theme(
+                                                data: Theme.of(context)
+                                                    .copyWith(
+                                                    accentColor:
+                                                    Color(0xFF9B049B)),
+                                                child:
+                                                CircularProgressIndicator()),
+                                            SizedBox(
+                                              height: 10,
+                                            ),
+                                            Text('Loading',
+                                                style: TextStyle(
+                                                  // letterSpacing: 4,
+                                                    color: Color(0xFF333333),
+                                                    fontSize: 18,
+                                                    fontWeight:
+                                                    FontWeight.w600)),
+                                          ],
+                                        ),
+                                      );
+                                    }
+
+                                    return mainWidget;
                                   });
-                            })
+                            }),
                           ],
                         ),
                       )
