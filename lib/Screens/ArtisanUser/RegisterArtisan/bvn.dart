@@ -69,11 +69,12 @@ class SignUpBvnState extends State<SignUpBvn> {
                     Navigator.push(
                       context,
                       PageRouteBuilder(
-                        pageBuilder: (context, animation, secondaryAnimation) {
-                          return SignThankyou();
+                        pageBuilder:
+                            (context, animation, secondaryAnimation) {
+                          return SignUpProfileSetupPage();
                         },
-                        transitionsBuilder:
-                            (context, animation, secondaryAnimation, child) {
+                        transitionsBuilder: (context, animation,
+                            secondaryAnimation, child) {
                           return FadeTransition(
                             opacity: animation,
                             child: child,
