@@ -6,7 +6,6 @@ import 'package:flutter/material.dart';
 import 'package:flutter_feather_icons/flutter_feather_icons.dart';
 import 'package:google_fonts/google_fonts.dart';
 import 'package:image_picker/image_picker.dart';
-import 'package:permission_handler/permission_handler.dart';
 import 'package:provider/provider.dart';
 
 class EditProfilePage extends StatefulWidget {
@@ -98,11 +97,9 @@ class _EditProfilePageState extends State<EditProfilePage> {
                                 top: 50,
                                 child: InkWell(
                                   onTap: ()async {
-                                    if(await Permission.camera.isGranted && await Permission.photos.isGranted){
                                       pickImage(
                                           source: ImageSource.gallery,
                                           context: context);
-                                    }
 
                                   },
                                   child: Container(
