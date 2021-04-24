@@ -208,8 +208,9 @@ class WebServices extends ChangeNotifier {
     phoneNum = prefs.getString('phoneNum');
     bio = prefs.getString('about');
     role = prefs.getString('role');
-    notifyListeners();
     lastName = prefs.getString('lastName');
+    notifyListeners();
+
   }
 
   Future<dynamic> initiateProject(projectOwnerUserId, bidId, projectId,

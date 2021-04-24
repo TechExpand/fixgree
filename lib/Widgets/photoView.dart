@@ -7,6 +7,15 @@ class PhotoView extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
+      appBar:AppBar(
+        backgroundColor: Colors.black,
+        leading: IconButton(
+          icon:Icon(Icons.arrow_back),
+          onPressed: (){
+            Navigator.pop(context);
+          },
+        )
+      ),
       backgroundColor: Colors.black,
       body: Center(
         child: Hero(
