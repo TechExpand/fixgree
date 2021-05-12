@@ -1159,34 +1159,7 @@ class _ArtisanPageNewState extends State<ArtisanPageNew> {
                     ),
                   ],
                 ),
-                Container(
-                  height: 50,
-                  margin: const EdgeInsets.only(
-                      top: 20, left: 20, right: 20, bottom: 20),
-                  decoration: BoxDecoration(
-                    borderRadius: BorderRadius.all(Radius.circular(25)),
-                    color: Color(0xFF9B049B),
-                  ),
-                  child: new FlatButton(
-                    padding: EdgeInsets.all(10),
-                    onPressed: () {},
-                    child: Padding(
-                      padding: const EdgeInsets.only(left: 7, right: 7),
-                      child: Row(
-                        mainAxisAlignment: MainAxisAlignment.center,
-                        children: [
-                          Text(
-                            'Buy',
-                            style: TextStyle(
-                                color: Colors.white,
-                                fontSize: 17,
-                                fontWeight: FontWeight.w600),
-                          ),
-                        ],
-                      ),
-                    ),
-                  ),
-                )
+              
               ],
             ),
           );

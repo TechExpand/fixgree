@@ -96,9 +96,12 @@ class _EditProfilePageState extends State<EditProfilePage> {
                                 left: 55,
                                 top: 50,
                                 child: InkWell(
-                                  onTap: () => pickImage(
-                                      source: ImageSource.gallery,
-                                      context: context),
+                                  onTap: ()async {
+                                      pickImage(
+                                          source: ImageSource.gallery,
+                                          context: context);
+
+                                  },
                                   child: Container(
                                     height: 28,
                                     width: 28,

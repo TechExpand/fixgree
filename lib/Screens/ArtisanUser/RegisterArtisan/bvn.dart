@@ -69,11 +69,12 @@ class SignUpBvnState extends State<SignUpBvn> {
                     Navigator.push(
                       context,
                       PageRouteBuilder(
-                        pageBuilder: (context, animation, secondaryAnimation) {
-                          return SignThankyou();
+                        pageBuilder:
+                            (context, animation, secondaryAnimation) {
+                          return SignUpProfileSetupPage();
                         },
-                        transitionsBuilder:
-                            (context, animation, secondaryAnimation, child) {
+                        transitionsBuilder: (context, animation,
+                            secondaryAnimation, child) {
                           return FadeTransition(
                             opacity: animation,
                             child: child,
@@ -106,30 +107,30 @@ class SignUpBvnState extends State<SignUpBvn> {
                   onPressed: data.bvn.isEmpty
                       ? null
                       : () {
-                          Navigator.push(
-                            context,
-                            PageRouteBuilder(
-                              pageBuilder:
-                                  (context, animation, secondaryAnimation) {
-                                return SignUpProfileSetupPage();
-                              },
-                              transitionsBuilder: (context, animation,
-                                  secondaryAnimation, child) {
-                                return FadeTransition(
-                                  opacity: animation,
-                                  child: child,
-                                );
-                              },
-                            ),
+                    Navigator.push(
+                      context,
+                      PageRouteBuilder(
+                        pageBuilder:
+                            (context, animation, secondaryAnimation) {
+                          return SignUpProfileSetupPage();
+                        },
+                        transitionsBuilder: (context, animation,
+                            secondaryAnimation, child) {
+                          return FadeTransition(
+                            opacity: animation,
+                            child: child,
                           );
                         },
+                      ),
+                    );
+                  },
                   color: Color(0xFF9B049B),
                   shape: RoundedRectangleBorder(
                       borderRadius: BorderRadius.circular(26)),
                   padding: EdgeInsets.all(0.0),
                   child: Ink(
                     decoration:
-                        BoxDecoration(borderRadius: BorderRadius.circular(26)),
+                    BoxDecoration(borderRadius: BorderRadius.circular(26)),
                     child: Container(
                       constraints: BoxConstraints(
                           maxWidth: MediaQuery.of(context).size.width / 1.3,
