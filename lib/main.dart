@@ -4,6 +4,7 @@ import 'package:provider/provider.dart';
 import 'package:firebase_core/firebase_core.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 import 'package:google_fonts/google_fonts.dart';
+import 'package:user_experior/user_experior.dart';
 import 'Screens/ArtisanUser/Profile/ArtisanProvider.dart';
 import 'Screens/GeneralUsers/Wallet/Providers/PinProvider.dart';
 import 'Screens/GeneralUsers/Wallet/Providers/WalletProvider.dart';
@@ -11,7 +12,6 @@ import 'Screens/Splash.dart';
 import 'Services/call_service.dart';
 import 'Services/location_service.dart';
 import 'Services/network_service.dart';
-//import 'package:user_experior/user_experior.dart';
 import 'Services/postrequest_service.dart';
 import 'Services/pending_service.dart';
 import 'Utils/Provider.dart';
@@ -123,7 +123,7 @@ void main() async {
 }
 
 class MyApp extends StatefulWidget {
-  //UserExperior.startRecording("996996bf-f383-453d-8803-40dea8592e49");
+
   final Widget widget;
   MyApp({this.widget});
 
@@ -134,6 +134,7 @@ class MyApp extends StatefulWidget {
 class _MyAppState extends State<MyApp> {
   @override
   Widget build(BuildContext context) {
+    UserExperior.startRecording("996996bf-f383-453d-8803-40dea8592e49");
     return MaterialApp(
       theme: ThemeData(
         accentColor: Colors.white10,
