@@ -1,3 +1,4 @@
+import 'dart:async';
 import 'dart:convert';
 import 'package:fixme/Model/UserSearch.dart';
 import 'package:fixme/Model/info.dart';
@@ -9,6 +10,7 @@ import 'package:fixme/Utils/Provider.dart';
 import 'package:fixme/Utils/utils.dart';
 import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
+import 'package:get/get.dart';
 import 'package:http/http.dart' as http;
 import 'package:provider/provider.dart';
 import 'package:shared_preferences/shared_preferences.dart';
@@ -186,7 +188,13 @@ class WebServices extends ChangeNotifier {
             },
           ),
         );
-      } else if (body['reqRes'] == 'false') {
+      }
+      else if (body['message'] == "Invalid Credentials!") {
+        scaffoldKey.currentState
+            .showSnackBar(SnackBar(content: Text(body['message'])));
+        loginSetState();
+      }
+      else if (body['reqRes'] == 'false') {
         scaffoldKey.currentState
             .showSnackBar(SnackBar(content: Text(body['message'])));
         loginSetState();
@@ -1230,6 +1238,35 @@ class WebServices extends ChangeNotifier {
       'Authorization': 'Bearer $bearer',
     });
 
+    if(response.statusCode == 500){
+      showDialog<void>(
+        context: context,
+        barrierDismissible: false, // user must tap button!
+        builder: (BuildContext context) {
+          return AlertDialog(
+            title: Center(child: Text('Connection TimeOut')),
+            content: SingleChildScrollView(
+              child: ListBody(
+                children: <Widget>[
+                  Center(child: Text('Retry or Login Again')),
+                ],
+              ),
+            ),
+            actions: <Widget>[
+              TextButton(
+                child: Text('exit', style: TextStyle( color:Color(0xFF9B049B)),),
+                onPressed: () {
+                  Navigator.of(context).pop();
+                },
+              ),
+            ],
+          );
+        },
+      );
+      return response.statusCode;
+
+    }else{
+
     var body1 = json.decode(response.body);
     List body = body1['projects'];
     List<Project> projects = body
@@ -1244,7 +1281,7 @@ class WebServices extends ChangeNotifier {
       print(body1['projects']);
       return projects;
     } else if (body1['reqRes'] == 'false') {}
-  }
+  }}
 
   Future<dynamic> getBiddedJobs(context) async {
     print(userId);
@@ -1258,44 +1295,68 @@ class WebServices extends ChangeNotifier {
           "Content-type": "application/x-www-form-urlencoded",
           'Authorization': 'Bearer $bearer',
         });
+    if (response.statusCode == 500) {
 
-    var body1 = json.decode(response.body);
-    List body = body1['projects'];
-    List<Project> projects = body
-        .map((data) {
-          return Project.fromJson(data);
-        })
-        .toSet()
-        .toList();
+    } else {
+      var body1 = json.decode(response.body);
+      List body = body1['projects'];
+      List<Project> projects = body
+          .map((data) {
+        return Project.fromJson(data);
+      })
+          .toSet()
+          .toList();
 
-    notifyListeners();
-    if (body1['reqRes'] == 'true') {
-      print(body1);
-      return projects;
-    } else if (body1['reqRes'] == 'false') {}
+      notifyListeners();
+      if (body1['reqRes'] == 'true') {
+        print(body1);
+        return projects;
+      } else if (body1['reqRes'] == 'false') {}
+    }
   }
 
-  Future<dynamic> nearbyArtisans({longitude, latitude}) async {
+
+  Future<dynamic> nearbyArtisans({longitude, latitude, context}) async {
+    try{
     var response = await http
         .post(Uri.parse('https://manager.fixme.ng/near-artisans'), body: {
       'user_id': userId.toString(),
-      'longitude': longitude.toString(),
-      'latitude': latitude.toString(),
+    'latitude':  '5.001190',
+    'longitude' :'8.334840'
+
+//      'longitude': longitude.toString(),
+//      'latitude': latitude.toString(),
     }, headers: {
       "Content-type": "application/x-www-form-urlencoded",
       'Authorization': 'Bearer $bearer',
+    }).timeout(const Duration(seconds: 60), onTimeout: () {
+      print('nnnnnn');
+      throw TimeoutException('The connection has timed out, Please check your'
+          ' internet connection and try again!');
     });
-    var body = json.decode(response.body);
-    print(body.toString());
-    List result = body['sortedUsers'];
-    List<UserSearch> nearebyList = result.map((data) {
-      return UserSearch.fromJson(data);
-    }).toList();
-    notifyListeners();
-    if (body['reqRes'] == 'true') {
-      return nearebyList;
-    } else if (body['reqRes'] == 'false') {
-      print(body['message']);
+    print(response.statusCode);
+    if(response.statusCode == 500){
+      print("You are not connected to internet");
+    }else{
+      var body = json.decode(response.body);
+      print(body.toString());
+      List result = body['sortedUsers'];
+      List<UserSearch> nearebyList = result.map((data) {
+        return UserSearch.fromJson(data);
+      }).toList();
+      notifyListeners();
+      if (body['reqRes'] == 'true') {
+        return nearebyList;
+      } else if (body['reqRes'] == 'false') {
+        print(body['message']);
+      }
+    }
+   }on TimeoutException catch (err) {
+      print('nnnnnn');
+     // artisanRegStatus = Status.timeOut;
+      Get.snackbar('nnncc', 'jjdjjd');
+
+      return err.message;
     }
   }
 
@@ -1303,22 +1364,52 @@ class WebServices extends ChangeNotifier {
     var response = await http
         .post(Uri.parse('https://manager.fixme.ng/near-shops-business'), body: {
       'user_id': userId.toString(),
-      'longitude': longitude.toString(),
-      'latitude': latitude.toString(),
+      'latitude':  '5.001190',
+      'longitude' :'8.334840',
+//      'longitude': longitude.toString(),
+//      'latitude': latitude.toString(),
     }, headers: {
       "Content-type": "application/x-www-form-urlencoded",
       'Authorization': 'Bearer $bearer',
     });
-    var body = json.decode(response.body);
-    List result = body['sortedUsers'];
-    List<UserSearch> nearebyList = result.map((data) {
-      return UserSearch.fromJson(data);
-    }).toList();
-    notifyListeners();
+    if(response.statusCode == 500){
+      print("You are not connected to internet");
+      showDialog<void>(
+        context: context,
+        barrierDismissible: false, // user must tap button!
+        builder: (BuildContext context) {
+          return AlertDialog(
+            title: Center(child: Text('Connection TimeOut')),
+            content: SingleChildScrollView(
+              child: ListBody(
+                children: <Widget>[
+                  Center(child: Text('Retry or Login Again')),
+                ],
+              ),
+            ),
+            actions: <Widget>[
+              TextButton(
+                child: Text('exit', style: TextStyle( color:Color(0xFF9B049B)),),
+                onPressed: () {
+                  Navigator.of(context).pop();
+                },
+              ),
+            ],
+          );
+        },
+      );}else{
+      var body = json.decode(response.body);
+      List result = body['sortedUsers'];
+      List<UserSearch> nearebyList = result.map((data) {
+        return UserSearch.fromJson(data);
+      }).toList();
+      notifyListeners();
 
-    if (body['reqRes'] == 'true') {
-      return nearebyList;
-    } else if (body['reqRes'] == 'false') {}
+      if (body['reqRes'] == 'true') {
+        return nearebyList;
+      } else if (body['reqRes'] == 'false') {}
+    }
+
   }
 
   Future search({longitude, latitude, searchquery}) async {
@@ -1358,7 +1449,7 @@ class WebServices extends ChangeNotifier {
     return body['bankInfo'];
   }
 
-  Future<Map> getUserWalletInfo() async {
+  Future<Map> getUserWalletInfo(context) async {
     var response = await http.post(
         Uri.parse(
             'https://manager.fixme.ng/get-user-bank-info?user_id=$userId'),
@@ -1366,8 +1457,36 @@ class WebServices extends ChangeNotifier {
           "Content-type": "application/json",
           'Authorization': 'Bearer $bearer',
         });
-    var body = json.decode(response.body);
-    return body['accountInfo'];
+    if(response.statusCode == 500){
+      showDialog<void>(
+        context: context,
+        barrierDismissible: false, // user must tap button!
+        builder: (BuildContext context) {
+          return AlertDialog(
+            title: Center(child: Text('Connection TimeOut')),
+            content: SingleChildScrollView(
+              child: ListBody(
+                children: <Widget>[
+                  Center(child: Text('Retry or Login Again')),
+                ],
+              ),
+            ),
+            actions: <Widget>[
+              TextButton(
+                child: Text('exit', style: TextStyle( color:Color(0xFF9B049B)),),
+                onPressed: () {
+                  Navigator.of(context).pop();
+                },
+              ),
+            ],
+          );
+        },
+      );
+    }
+    else{
+      var body = json.decode(response.body);
+      return body['accountInfo'];
+    }
   }
 
   Future<Map> getUserBankInfo(userId) async {

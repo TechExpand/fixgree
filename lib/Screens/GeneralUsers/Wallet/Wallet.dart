@@ -57,7 +57,7 @@ class _WalletState extends State<Wallet> {
                         Padding(
                           padding: const EdgeInsets.all(20),
                           child: FutureBuilder<Map>(
-                            future: network.getUserWalletInfo(),
+                            future: network.getUserWalletInfo(context),
                             builder: (context, AsyncSnapshot<Map> snapshot) {
                               Widget mainWidget;
                               if (snapshot.connectionState ==

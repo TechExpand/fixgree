@@ -863,7 +863,9 @@ class Home extends StatelessWidget {
                     FutureBuilder(
                         future: network.nearbyArtisans(
                             latitude: location.locationLatitude,
-                            longitude: location.locationLongitude),
+                            longitude: location.locationLongitude,
+                            context:context
+                        ),
                         builder: (context, snapshot) {
                           return !snapshot.hasData
                               ? Padding(

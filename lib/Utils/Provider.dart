@@ -60,6 +60,19 @@ class DataProvider extends ChangeNotifier {
     notifyListeners();
   }
 
+  var userItems = [];
+  var userItems1 = [];
+  setUseritems(v1,v2){
+    userItems = v1 + v2;
+    notifyListeners();
+  }
+
+  setUseritems1(v1,v2){
+    userItems1 = v1 + v2;
+    notifyListeners();
+  }
+
+
 // combine all otp textfield as one
   setCombineOtpValue({cont1, cont2, cont3, cont4, cont5, cont6}) {
     otp =
