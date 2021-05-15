@@ -49,13 +49,13 @@ class _NearbyArtisansSeeAllState extends State<NearbyArtisansSeeAll> {
       bool isLoading = false;
       if (scrollController.position.maxScrollExtent ==
           scrollController.position.pixels){
-        print('kkkkkkk');
+        var location = Provider.of<LocationService>(context);
         var network = Provider.of<WebServices>(context, listen: false);
         var response = await http
             .post(Uri.parse('https://manager.fixme.ng/load-more-service-providers'), body: {
           'user_id': network.userId.toString(),
-          'latitude':  '5.001190',
-          'longitude' :'8.334840',
+          'latitude':  location.locationLatitude.toString(),
+          'longitude' :location.locationLongitude.toString(),
           'highestId':  providers.userItems.length.toString(),
 
 //      'longitude': longitude.toString(),
