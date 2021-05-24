@@ -15,6 +15,30 @@
       },
       "oauth_client": [
         {
+          "client_id": "937645709717-a7gmqub6g2ib3p8je45u70lq463cj392.apps.googleusercontent.com",
+          "client_type": 1,
+          "android_info": {
+            "package_name": "com.fixme",
+            "certificate_hash": "2409c60cfba5ca265f5db495d8f165bd876bd118"
+          }
+        },
+        {
+          "client_id": "937645709717-dhb4a15vlg22ans3bs6rm9ir69s6r6hd.apps.googleusercontent.com",
+          "client_type": 1,
+          "android_info": {
+            "package_name": "com.fixme",
+            "certificate_hash": "851f1764b96d04e62ac3385b18e6ccb40da74d55"
+          }
+        },
+        {
+          "client_id": "937645709717-flqhg9ou2dcv49u3t8j6gg943se64bh8.apps.googleusercontent.com",
+          "client_type": 1,
+          "android_info": {
+            "package_name": "com.fixme",
+            "certificate_hash": "004015099fd35c485728d0d50fa2cf710bbfb506"
+          }
+        },
+        {
           "client_id": "937645709717-jf2c7sagqcb1q3jlfvhub1jrhuc442jc.apps.googleusercontent.com",
           "client_type": 1,
           "android_info": {
@@ -38,6 +62,14 @@
             {
               "client_id": "937645709717-17b5j79lved0vt1erictiofil880g8m8.apps.googleusercontent.com",
               "client_type": 3
+            },
+            {
+              "client_id": "937645709717-bt9n9fm46s062f242sr4bdbqadbfu9d4.apps.googleusercontent.com",
+              "client_type": 2,
+              "ios_info": {
+                "bundle_id": "com.fixme.fixmeapk",
+                "app_store_id": "1564736924"
+              }
             }
           ]
         }
