@@ -44,8 +44,6 @@ class Home extends StatelessWidget {
       var overlay = prefs.getString('overlay');
       var data = Provider.of<DataProvider>(context, listen: false);
       if (overlay == null || overlay == 'null' || overlay == '') {
-        print('bsssssssssssssssssssssssssssssssssss');
-        print('bsssssssssssssssssssssssssssssssssss');
 
         var numberDialog = Container(
           margin: const EdgeInsets.all(3.0),
@@ -67,7 +65,7 @@ class Home extends StatelessWidget {
                       textAlign: TextAlign.center,
                     ),
                     Text(
-                      'You can become an artisan by clicking this picture',
+                      'You can  change to business account by clicking this picture',
                       textAlign: TextAlign.center,
                       style: TextStyle(
                           color: Colors.white, fontWeight: FontWeight.bold),
@@ -1156,7 +1154,7 @@ class Home extends StatelessWidget {
                                   minHeight: 45.0),
                               alignment: Alignment.center,
                               child: Text(
-                                "Become an Artisan",
+                                'Change to Business Account',
                                 textAlign: TextAlign.center,
                                 style: TextStyle(
                                     color: Colors.white,

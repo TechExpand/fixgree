@@ -1,3 +1,4 @@
+import 'package:fixme/Screens/GeneralUsers/Wallet/WalletAddCard.dart';
 import 'package:flutter/material.dart';
 import 'package:fixme/Services/network_service.dart';
 import "package:flutter_feather_icons/flutter_feather_icons.dart";
@@ -11,6 +12,7 @@ import 'Providers/WalletProvider.dart';
 import 'WalletFund.dart';
 import 'WalletHistory.dart';
 import 'WalletPay.dart';
+import 'CardDetails.dart';
 import 'WalletWithdraw.dart';
 
 class Wallet extends StatefulWidget {
@@ -342,39 +344,39 @@ class _WalletState extends State<Wallet> {
               decoration:
                   BoxDecoration(borderRadius: radius, color: Colors.white),
               child: Column(children: [
-                // InkWell(
-                //   onTap: () {
-                //     Navigator.of(context).push(
-                //       PageRouteBuilder(
-                //         pageBuilder: (context, animation, secondaryAnimation) {
-                //           return WalletAddCard();
-                //         },
-                //         transitionsBuilder:
-                //             (context, animation, secondaryAnimation, child) {
-                //           return FadeTransition(
-                //             opacity: animation,
-                //             child: child,
-                //           );
-                //         },
-                //       ),
-                //     );
-                //   },
-                //   child: Row(
-                //     mainAxisAlignment: MainAxisAlignment.center,
-                //     children: [
-                //       Icon(FeatherIcons.plus, color: Color(0xFF333333)),
-                //       SizedBox(
-                //         width: 5,
-                //       ),
-                //       Text('Add payment card',
-                //           style: TextStyle(
-                //               color: Color(0xFF333333),
-                //               fontSize: 16,
-                //               height: 1.4,
-                //               fontWeight: FontWeight.w500)),
-                //     ],
-                //   ),
-                // ),
+                 InkWell(
+                   onTap: () {
+                     Navigator.of(context).push(
+                       PageRouteBuilder(
+                         pageBuilder: (context, animation, secondaryAnimation) {
+                           return CardDetails();
+                         },
+                         transitionsBuilder:
+                             (context, animation, secondaryAnimation, child) {
+                           return FadeTransition(
+                             opacity: animation,
+                             child: child,
+                           );
+                         },
+                       ),
+                     );
+                   },
+                   child: Row(
+                     mainAxisAlignment: MainAxisAlignment.center,
+                     children: [
+                       Icon(FeatherIcons.creditCard, color: Color(0xFF333333)),
+                       SizedBox(
+                         width: 5,
+                       ),
+                       Text('View card details',
+                           style: TextStyle(
+                               color: Color(0xFF333333),
+                               fontSize: 16,
+                               height: 1.4,
+                               fontWeight: FontWeight.w500)),
+                     ],
+                   ),
+                 ),
                 Container(
                   height: 30,
                   child: Row(

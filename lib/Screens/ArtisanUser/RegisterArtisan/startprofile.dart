@@ -27,13 +27,14 @@ class SignStartProfileState extends State<SignStartProfile> {
     // var network = Provider.of<WebServices>(context);
     return Scaffold(
         appBar: AppBar(
+          elevation: 0,
             leading: InkWell(
                 child: Icon(Icons.arrow_back, color: Color(0xFF9B049B)),
                 onTap: () {
                   Navigator.pop(context);
                 }),
-            backgroundColor: Colors.white,
-            title: Text('Fill out your profile to apply',
+            backgroundColor: Colors.transparent,
+            title: Text('Getting Started',
                 style: TextStyle(color: Colors.black, fontSize: 16))),
         body: Column(
           children: <Widget>[
@@ -41,7 +42,7 @@ class SignStartProfileState extends State<SignStartProfile> {
                 padding: EdgeInsets.only(top: 25, left: 15),
                 child: Align(
                   child: Text(
-                      "To provide a high quality experience to all customers, admission to fixme is highly competitive",
+                      "Fixme prides in offering a great experience for every user, we need thatthe following are kept in mind, to gain the most from our platform:",
                       style:
                           TextStyle(height: 1.6, fontWeight: FontWeight.w500)),
                   alignment: Alignment.bottomLeft,
@@ -89,7 +90,22 @@ class SignStartProfileState extends State<SignStartProfile> {
                         Text('3.  ', style: TextStyle(color: Colors.black)),
                         Expanded(
                           child: Text(
-                              'You’ll receive an email within 24 hours to let you know if you were accepted',
+                              'Offer good services or products to every customer that contacts you and gain good reviews.',
+                              style: TextStyle(color: Colors.black)),
+                        )
+                      ]),
+                  alignment: Alignment.bottomLeft,
+                )),
+            Padding(
+                padding: EdgeInsets.only(top: 25, left: 15),
+                child: Align(
+                  child: Row(
+                      crossAxisAlignment: CrossAxisAlignment.start,
+                      children: [
+                        Text('4.  ', style: TextStyle(color: Colors.black)),
+                        Expanded(
+                          child: Text(
+                              'Upload good pictures of services or products sold to increase your chance of getting sales.',
                               style: TextStyle(color: Colors.black)),
                         )
                       ]),

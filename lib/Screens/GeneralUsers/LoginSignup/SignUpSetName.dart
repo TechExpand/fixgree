@@ -17,18 +17,19 @@ class SignUpSetProfileState extends State<SignUpSetProfile> {
     var network = Provider.of<WebServices>(context);
     var data = Provider.of<DataProvider>(context);
     return Scaffold(
-      appBar:AppBar(
-          backgroundColor: Colors.white,
-          leading: IconButton(
-            icon:Icon(Icons.arrow_back),
-            onPressed: (){
-              Navigator.pop(context);
-            },
-          )
+      appBar: AppBar(
+        elevation: 0,
+        backgroundColor: Colors.transparent,
+        leading:  IconButton(
+          icon:Icon(Icons.keyboard_backspace, color: Colors.black,),
+          onPressed: (){
+            Navigator.pop(context);
+          },
+        ),
       ),
       key: scaffoldKey,
       body: Padding(
-        padding: const EdgeInsets.only(left: 20.0, right: 20, top: 45),
+        padding: const EdgeInsets.only(left: 20.0, right: 20),
         child: Material(
           child: Column(
             crossAxisAlignment: CrossAxisAlignment.start,

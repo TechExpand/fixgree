@@ -19,8 +19,15 @@ class DescribePageState extends State<DescribePage> {
     var data = Provider.of<DataProvider>(context);
     return Scaffold(
       appBar: AppBar(
+        elevation: 0,
+        leading: IconButton(
+          icon:Icon(Icons.keyboard_backspace, color: Colors.black,),
+          onPressed: (){
+            Navigator.pop(context);
+          },
+        ),
         automaticallyImplyLeading: false,
-        backgroundColor: Colors.white,
+        backgroundColor: Colors.transparent,
         title: Text(
             'Post A Request', style:TextStyle(color:Colors.black)
         ),

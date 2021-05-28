@@ -28,6 +28,7 @@ class DataProvider extends ChangeNotifier {
   bool isWriting = false;
   int selectedPage = 0;
   String emails = '';
+  String businessName = '';
   String homeAddress = '';
   String bvn = '';
   String officeAddress = '';
@@ -48,6 +49,11 @@ class DataProvider extends ChangeNotifier {
     notifyListeners();
   }
 
+
+  setBusinessName(value){
+    businessName = value;
+    notifyListeners();
+  }
   //change password obcure text
   setSelectedBottomNavBar(value) {
     selectedPage = value;

@@ -215,6 +215,7 @@ class WebServices extends ChangeNotifier {
     firstName = prefs.getString('firstName');
     phoneNum = prefs.getString('phoneNum');
     bio = prefs.getString('about');
+    email = prefs.getString('email');
     role = prefs.getString('role');
     lastName = prefs.getString('lastName');
     notifyListeners();
@@ -276,7 +277,7 @@ class WebServices extends ChangeNotifier {
         'identification_number': data.bvn ?? '',
         'business_address': data.officeAddress ?? '',
         'house_address': data.homeAddress ?? '',
-        'business_name': data.firstName ?? '',
+        'business_name': data.businessName ?? '',
         'sub_services':
             '${data.subcat}'.replaceAll('[', '').replaceAll(']', ''),
         'bio': data.overview ?? '',
@@ -731,6 +732,20 @@ class WebServices extends ChangeNotifier {
       loginSetState();
     }
   }
+
+
+  Future validatePayment(refId) async {
+    var response = await http.post(
+        Uri.parse('https://manager.fixme.ng/verify-payment?payment_reference_id=$refId&user_id=$userId'),
+        headers: {
+          "Content-type": "application/json",
+          'Authorization': 'Bearer $bearer',
+        });
+    var body = json.decode(response.body);
+    print(body['message']);
+    return body['message'];
+  }
+
 
   Future addProductCatalog(
       {bio, productName, price, scaffoldKey, path, context}) async {
@@ -1512,6 +1527,11 @@ class WebServices extends ChangeNotifier {
     return body['transactionDetails'];
   }
 
+
+
+
+
+
   Future<dynamic> validateUserAccountName({bankCode, accountNumber}) async {
     var response = await http.post(
         Uri.parse(
@@ -1526,6 +1546,23 @@ class WebServices extends ChangeNotifier {
     } else if (body['reqRes'] == 'false') {
       return body['message'];
     }
+  }
+
+  Future getCardDetails() async {
+    var response = await http.post(
+        Uri.parse('https://manager.fixme.ng/get-payment-details?user_id=$userId'),
+        headers: {
+          "Content-type": "application/json",
+          'Authorization': 'Bearer $bearer',
+        });
+    var body = json.decode(response.body);
+    print(response.body);
+     notifyListeners();
+     if (body['reqRes'] == 'true') {
+         return body['cardInfo'];
+     } else if (body['reqRes'] == 'false') {
+       print('failed');
+     }
   }
 
   Future<dynamic> checkSecurePin() async {
@@ -1571,6 +1608,13 @@ class WebServices extends ChangeNotifier {
     //   print('failed');
     // }
   }
+
+
+
+
+
+
+
 
   Future<Map> initiateTransfer(
       {bankCode,

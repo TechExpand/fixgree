@@ -15,9 +15,19 @@ class SignUpEmailState extends State<SignUpEmail> {
   @override
   Widget build(BuildContext context) {
     var data = Provider.of<DataProvider>(context);
-    return Material(
-      child: Padding(
-        padding: const EdgeInsets.only(left: 20.0, right: 20, top: 45),
+    return Scaffold(
+      appBar: AppBar(
+        elevation: 0,
+        backgroundColor: Colors.transparent,
+        leading:  IconButton(
+          icon:Icon(Icons.keyboard_backspace, color: Colors.black,),
+          onPressed: (){
+            Navigator.pop(context);
+          },
+        ),
+      ),
+      body: Padding(
+        padding: const EdgeInsets.only(left: 20.0, right: 20),
         child: Column(
           crossAxisAlignment: CrossAxisAlignment.start,
           children: <Widget>[

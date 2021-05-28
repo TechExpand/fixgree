@@ -15,9 +15,19 @@ class SignUpAddressState extends State<SignUpAddress> {
   @override
   Widget build(BuildContext context) {
     var data = Provider.of<DataProvider>(context);
-    return Material(
-      child: Padding(
-        padding: const EdgeInsets.only(left: 20.0, right: 20, top: 45),
+    return Scaffold(
+      appBar: AppBar(
+        elevation: 0,
+        backgroundColor: Colors.transparent,
+        leading:  IconButton(
+          icon:Icon(Icons.keyboard_backspace, color: Colors.black,),
+          onPressed: (){
+            Navigator.pop(context);
+          },
+        ),
+      ),
+      body: Padding(
+        padding: const EdgeInsets.only(left: 20.0, right: 20,),
         child: Column(
           crossAxisAlignment: CrossAxisAlignment.start,
           children: <Widget>[
@@ -72,6 +82,45 @@ class SignUpAddressState extends State<SignUpAddress> {
                 decoration: InputDecoration(
                   labelStyle: TextStyle(color: Colors.black38),
                   labelText: 'Office Address',
+                  enabledBorder: OutlineInputBorder(
+                      borderSide: const BorderSide(
+                          color: Color(0xFF9B049B), width: 0.0),
+                      borderRadius: BorderRadius.all(Radius.circular(12))),
+                  focusedBorder: OutlineInputBorder(
+                      borderSide: const BorderSide(
+                          color: Color(0xFF9B049B), width: 0.0),
+                      borderRadius: BorderRadius.all(Radius.circular(12))),
+                  border: OutlineInputBorder(
+                      borderSide: const BorderSide(
+                          color: Color(0xFF9B049B), width: 0.0),
+                      borderRadius: BorderRadius.all(Radius.circular(12))),
+                ),
+              ),
+            ),
+            Padding(
+              padding: const EdgeInsets.only(bottom: 12.0, top: 15),
+              child: Text(
+                'Enter your Business Name',
+                style: TextStyle(
+                  fontSize: 15,
+                  fontWeight: FontWeight.w600,
+                  letterSpacing: 0.5,
+                ),
+              ),
+            ),
+            Container(
+              margin: EdgeInsets.only(bottom: 15),
+              width: MediaQuery.of(context).size.width / 0.2,
+              height: 55,
+              child: TextFormField(
+                onChanged: (value) {
+                  data.setBusinessName(value);
+                },
+                style: TextStyle(color: Colors.black),
+                cursorColor: Colors.black,
+                decoration: InputDecoration(
+                  labelStyle: TextStyle(color: Colors.black38),
+                  labelText: 'Business Name',
                   enabledBorder: OutlineInputBorder(
                       borderSide: const BorderSide(
                           color: Color(0xFF9B049B), width: 0.0),

@@ -115,10 +115,20 @@ class OTPState extends State<OTPPAGE> {
     }
 
     return Scaffold(
+      appBar: AppBar(
+        elevation: 0,
+        backgroundColor: Colors.transparent,
+        leading:  IconButton(
+          icon:Icon(Icons.keyboard_backspace, color: Colors.black,),
+          onPressed: (){
+            Navigator.pop(context);
+          },
+        ),
+      ),
       key: scaffoldKey,
       body: Material(
         child: Padding(
-          padding: const EdgeInsets.only(left: 20.0, right: 20, top: 45),
+          padding: const EdgeInsets.only(left: 20.0, right: 20,),
           child: Column(
             crossAxisAlignment: CrossAxisAlignment.start,
             children: <Widget>[

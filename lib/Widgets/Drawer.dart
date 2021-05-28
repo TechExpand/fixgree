@@ -218,7 +218,7 @@ class _DrawerState extends State<DrawerWidget> {
                   ),
                   minLeadingWidth: 10,
                   title: Text(
-                    'Become an Artisan',
+                    'Change to Business Account',
                     style: TextStyle(fontSize: 15, fontWeight: FontWeight.w400),
                   ),
                 ),

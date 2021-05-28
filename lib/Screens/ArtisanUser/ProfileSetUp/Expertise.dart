@@ -33,7 +33,7 @@ class _ExpertisePageState extends State<ExpertisePage> {
           ),
           Padding(
             padding: const EdgeInsets.only(top: 13.0, bottom: 13),
-            child: Text('What are the main services you offer?'),
+            child: Text('What is the main service you offer?'),
           ),
           InkWell(
             splashColor: Colors.transparent,
@@ -55,7 +55,7 @@ class _ExpertisePageState extends State<ExpertisePage> {
                   labelText: postRequestProvider.selecteService == null
                       ? 'Category'
                       : postRequestProvider.selecteService.service,
-                  suffixIcon: Icon(Icons.arrow_downward, color: Colors.black38),
+                  suffixIcon: Icon(Icons.keyboard_arrow_down, color: Colors.black38),
                   disabledBorder: OutlineInputBorder(
                       borderSide: const BorderSide(
                           color: Color(0xFF9B049B), width: 0.0),
@@ -74,7 +74,7 @@ class _ExpertisePageState extends State<ExpertisePage> {
           ),
           Padding(
             padding: const EdgeInsets.only(top: 8.0, bottom: 13),
-            child: Text('What skills do you offer clients?'),
+            child: Text('What other skills or services do you offer?'),
           ),
           InkWell(
             onTap: chip.length >= 5

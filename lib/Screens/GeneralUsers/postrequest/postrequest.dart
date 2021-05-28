@@ -1,9 +1,15 @@
+import 'dart:io';
+
+import 'package:fixme/Screens/GeneralUsers/Wallet/CardPayment.dart';
+import 'package:fixme/Services/network_service.dart';
 import 'package:fixme/Services/postrequest_service.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter_paystack/flutter_paystack.dart';
 import 'package:google_fonts/google_fonts.dart';
 import 'package:provider/provider.dart';
 import 'package:fixme/Model/service.dart';
 import 'package:fixme/Screens/GeneralUsers/postrequest/describe.dart';
+import 'package:shared_preferences/shared_preferences.dart';
 
 class PostScreen extends StatefulWidget {
   PostScreen({Key key, this.title}) : super(key: key);
@@ -15,6 +21,7 @@ class PostScreen extends StatefulWidget {
 }
 
 class PostScreenState extends State<PostScreen> {
+  var publicKey = 'pk_test_e649742f1bb7b167891de8869b49caea0d3c6069';
   List categorylist = ['Category1', 'Category2', 'Category3'];
   String thevalue;
   var selectedDate = DateTime.now();
@@ -32,12 +39,57 @@ class PostScreenState extends State<PostScreen> {
       });
   }
 
+
+
+  @override
+  void initState(){
+    super.initState();
+    PaystackPlugin.initialize(publicKey: publicKey);
+  }
+
   List<Services> result = [];
 
   @override
   Widget build(BuildContext context) {
+    String _getReference() {
+      String platform;
+      if (Platform.isIOS) {
+        platform = 'iOS';
+      } else {
+        platform = 'Android';
+      }
+      return 'ChargedFrom${platform}_${DateTime
+          .now()
+          .millisecondsSinceEpoch}';
+    }
+    var network = Provider.of<WebServices>(context, listen: false);
+
+    paymentMethod(context, amount, email)async{
+      Charge charge = Charge()
+        ..amount = amount
+//        ..putMetaData('is_refund', is_refund)
+//        ..putMetaData('artisan_id', signController.currentUser.user.id)
+//        ..putMetaData('start_date', DateTime.now().toString())
+        ..reference = _getReference()
+      // or ..accessCode = _getAccessCodeFrmInitialization()
+        ..email = email;
+      CheckoutResponse response = await PaystackPlugin.checkout(
+        context,
+        method: CheckoutMethod.card, // Defaults to CheckoutMethod.selectable
+        charge: charge,
+      );
+      if (response.status) {
+        network.validatePayment(response.reference);
+        SharedPreferences prefs = await SharedPreferences.getInstance();
+        prefs.setBool('card', true);
+        print(response.reference);
+      }
+    }
+
+
     PostRequestProvider postRequestProvider =
     Provider.of<PostRequestProvider>(context);
+
     return Scaffold(
       appBar: AppBar(
         backgroundColor: Colors.white,
@@ -146,9 +198,19 @@ class PostScreenState extends State<PostScreen> {
             InkWell(
               splashColor: Colors.transparent,
               highlightColor: Colors.transparent,
-              onTap: () {
-                result = postRequestProvider.allservicesList;
-                dialogPage(context);
+              onTap: ()async {
+                SharedPreferences prefs = await SharedPreferences.getInstance();
+                var card = prefs.getBool('card');
+                if(card == false || card == null){
+//                  Navigator.push(context, MaterialPageRoute(builder: (context){
+//                    return CardPayment();
+//                  }));
+                print(network.bearer);
+                  paymentMethod(context, 5000, network.email);
+                }else{
+                  result = postRequestProvider.allservicesList;
+                  dialogPage(context);
+                }
               },
               child: TextFormField(
                 keyboardType: TextInputType.multiline,

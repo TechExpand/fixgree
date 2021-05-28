@@ -45,62 +45,9 @@ class _CardPaymentState extends State<CardPayment> {
                     fontWeight: FontWeight.w600))
           ],
         ),
-        Container(
-          height: 50,
-          alignment: Alignment.center,
-          padding: const EdgeInsets.only(left: 12),
-          margin:
-              const EdgeInsets.only(bottom: 10, left: 12, right: 12, top: 5),
-          decoration: BoxDecoration(
-              color: Color(0xFFFFFFFF),
-              border: Border.all(color: Color(0xFFF1F1FD)),
-              boxShadow: [
-                BoxShadow(
-                    color: Color(0xFFF1F1FD),
-                    blurRadius: 15.0,
-                    offset: Offset(0.3, 4.0))
-              ],
-              borderRadius: BorderRadius.all(Radius.circular(7))),
-          child: Row(
-            mainAxisAlignment: MainAxisAlignment.spaceBetween,
-            children: [
-              Expanded(
-                child: TextFormField(
-                  inputFormatters: [CreditCardNumberInputFormatter()],
-                  keyboardType: TextInputType.number,
-                  style: TextStyle(
-                      fontSize: 16,
-                      color: Color(0xFF270F33),
-                      fontWeight: FontWeight.w600),
-                  decoration: InputDecoration.collapsed(
-                    hintText: 'Amount',
-                    hintStyle:
-                        TextStyle(fontSize: 16, fontWeight: FontWeight.w600),
-                    focusColor: Color(0xFF2B1137),
-                    fillColor: Color(0xFF2B1137),
-                    hoverColor: Color(0xFF2B1137),
-                  ),
-                ),
-              ),
-            ],
-          ),
-        ),
 
 
-        Row(
-          children: [
-            Container(
-              width: 20.0,
-              height: 40.0,
-              color: Colors.transparent,
-            ),
-            Text('Input your card details',
-                style: TextStyle(
-                    fontSize: 18,
-                    color: Color(0xFF333333),
-                    fontWeight: FontWeight.w600))
-          ],
-        ),
+
         Container(
           height: 50,
           alignment: Alignment.center,
@@ -259,7 +206,15 @@ class _CardPaymentState extends State<CardPayment> {
           child: Wrap(
             children: [
               Text(
-                  'Your card details are secure with Fixme and will not be disclosed for any reason.',
+                  'To confirm your card and profile we will charge your card a token of N50.',
+                  softWrap: true,
+                  style: TextStyle(
+                      color: Color(0xFF333333),
+                      fontSize: 16,
+                      height: 1.4,
+                      fontWeight: FontWeight.bold)),
+              Text(
+                      'Your card details are secure with Fixme and will never be disclosed for any reason.',
                   softWrap: true,
                   style: TextStyle(
                       color: Color(0xFF333333),
@@ -279,7 +234,9 @@ class _CardPaymentState extends State<CardPayment> {
           ),
           child: new FlatButton(
             padding: EdgeInsets.all(10),
-            onPressed: () async {},
+            onPressed: () async {
+
+            },
             child: Padding(
               padding: const EdgeInsets.only(left: 7, right: 7),
               child: Row(
