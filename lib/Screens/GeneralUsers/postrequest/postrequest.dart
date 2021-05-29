@@ -21,7 +21,7 @@ class PostScreen extends StatefulWidget {
 }
 
 class PostScreenState extends State<PostScreen> {
-  var publicKey = 'pk_test_e649742f1bb7b167891de8869b49caea0d3c6069';
+  var publicKey = 'pk_live_624bc595811d2051eead2a9baae6fe3f77f7746f';
   List categorylist = ['Category1', 'Category2', 'Category3'];
   String thevalue;
   var selectedDate = DateTime.now();
@@ -205,7 +205,6 @@ class PostScreenState extends State<PostScreen> {
 //                  Navigator.push(context, MaterialPageRoute(builder: (context){
 //                    return CardPayment();
 //                  }));
-                print(network.bearer);
                   paymentMethod(context, 5000, network.email);
                 }else{
                   result = postRequestProvider.allservicesList;

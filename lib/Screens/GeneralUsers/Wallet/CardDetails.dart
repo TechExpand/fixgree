@@ -16,7 +16,7 @@ class _WalletAddCardState extends State<CardDetails> {
   TextEditingController cardNo = new TextEditingController();
   TextEditingController expiryDate = new TextEditingController();
   TextEditingController cvvCode = new TextEditingController();
-  var publicKey = 'pk_test_e649742f1bb7b167891de8869b49caea0d3c6069';
+  var publicKey = 'pk_live_624bc595811d2051eead2a9baae6fe3f77f7746f';
 
   @override
   void initState(){
