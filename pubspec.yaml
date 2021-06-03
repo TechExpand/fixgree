@@ -40,7 +40,7 @@ dependencies:
   firebase_messaging: ^7.0.3
   location: ^3.0.2
   user_experior: ^1.1.22
-  agora_rtc_engine:
+  agora_rtc_engine: ^3.3.1
   flutter_audio_recorder: ^0.5.5
   permission_handler:
   image: ^2.1.19

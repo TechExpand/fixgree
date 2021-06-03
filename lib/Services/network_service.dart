@@ -1560,6 +1560,8 @@ class WebServices extends ChangeNotifier {
      notifyListeners();
      if (body['reqRes'] == 'true') {
          return body['cardInfo'];
+     }else if (body['message'] =='No Available Card'){
+       return 'No Available Card';
      } else if (body['reqRes'] == 'false') {
        print('failed');
      }

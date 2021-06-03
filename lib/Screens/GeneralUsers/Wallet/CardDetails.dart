@@ -83,7 +83,13 @@ class _WalletAddCardState extends State<CardDetails> {
       body: FutureBuilder(
           future: network.getCardDetails() ,
           builder: (context, snapshot) {
-            return snapshot.hasData?Column(
+            return snapshot.hasData?snapshot.data =='No Available Card'?
+            Center(child: Text(snapshot.data, style: TextStyle(
+                color: Colors.black,
+                fontSize: 21,
+                fontFamily: 'Firesans',
+                height: 1.4,
+                fontWeight: FontWeight.w500)),):Column(
               crossAxisAlignment: CrossAxisAlignment.start,
               children: [
                 Padding(

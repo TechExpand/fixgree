@@ -39,56 +39,56 @@ class Home extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    showOverLay() async {
-      SharedPreferences prefs = await SharedPreferences.getInstance();
-      var overlay = prefs.getString('overlay');
-      var data = Provider.of<DataProvider>(context, listen: false);
-      if (overlay == null || overlay == 'null' || overlay == '') {
+    // showOverLay() async {
+    //   SharedPreferences prefs = await SharedPreferences.getInstance();
+    //   var overlay = prefs.getString('overlay');
+    //   var data = Provider.of<DataProvider>(context, listen: false);
+    //   if (overlay == null || overlay == 'null' || overlay == '') {
 
-        var numberDialog = Container(
-          margin: const EdgeInsets.all(3.0),
-          child: Align(
-            alignment: Alignment(-0.8, -0.9),
-            child: Material(
-              color: Colors.black87,
-              shape: RoundedRectangleBorder(
-                  borderRadius: BorderRadius.circular(10.0)),
-              child: Container(
-                padding: const EdgeInsets.all(4.0),
-                width: 140,
-                child: Column(
-                  mainAxisSize: MainAxisSize.min,
-                  children: <Widget>[
-                    Text(
-                      'Welcome!!',
-                      style: TextStyle(color: Colors.white),
-                      textAlign: TextAlign.center,
-                    ),
-                    Text(
-                      'You can  change to business account by clicking this picture',
-                      textAlign: TextAlign.center,
-                      style: TextStyle(
-                          color: Colors.white, fontWeight: FontWeight.bold),
-                    ),
-                  ],
-                ),
-              ),
-            ),
-          ),
-        );
-        showDialog(
-          barrierColor: Colors.transparent,
-          context: context,
-          builder: (BuildContext context) {
-            return numberDialog;
-          },
-        ).whenComplete(() {
-          prefs.setString('overlay', 'overlay');
-        });
-      } else {}
-    }
+        // var numberDialog = Container(
+        //   margin: const EdgeInsets.all(3.0),
+        //   child: Align(
+        //     alignment: Alignment(-0.8, -0.9),
+        //     child: Material(
+        //       color: Colors.black87,
+        //       shape: RoundedRectangleBorder(
+        //           borderRadius: BorderRadius.circular(10.0)),
+        //       child: Container(
+        //         padding: const EdgeInsets.all(4.0),
+        //         width: 140,
+        //         child: Column(
+        //           mainAxisSize: MainAxisSize.min,
+        //           children: <Widget>[
+        //             Text(
+        //               'Welcome!!',
+        //               style: TextStyle(color: Colors.white),
+        //               textAlign: TextAlign.center,
+        //             ),
+        //             Text(
+        //               'You can  change to business account by clicking this picture',
+        //               textAlign: TextAlign.center,
+        //               style: TextStyle(
+        //                   color: Colors.white, fontWeight: FontWeight.bold),
+        //             ),
+        //           ],
+        //         ),
+        //       ),
+        //     ),
+        //   ),
+        // );
+    //     showDialog(
+    //       barrierColor: Colors.transparent,
+    //       context: context,
+    //       builder: (BuildContext context) {
+    //         return numberDialog;
+    //       },
+    //     ).whenComplete(() {
+    //       prefs.setString('overlay', 'overlay');
+    //     });
+    //   } else {}
+    // }
 
-    showOverLay();
+    // showOverLay();
     var network = Provider.of<WebServices>(context, listen: false);
     List<Notify> notify;
     var location = Provider.of<LocationService>(context);
@@ -1176,8 +1176,7 @@ class Home extends StatelessWidget {
             ),
           ],
         ),
-        data.showCallToAction
-            ? Align(
+       Align(
                 alignment: Alignment.bottomCenter,
                 child: Container(
                   height: 80,
@@ -1239,7 +1238,7 @@ class Home extends StatelessWidget {
                   ),
                 ),
               )
-            : SizedBox(),
+
       ],
     );
   }
