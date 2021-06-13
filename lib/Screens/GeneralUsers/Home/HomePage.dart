@@ -113,7 +113,11 @@ class _HomePageState extends State<HomePage> {
   showNotification(value1, value2) async {
     var android = AndroidNotificationDetails('id', 'channel ', 'description',
         priority: Priority.high, importance: Importance.max);
-    var iOS = IOSNotificationDetails();
+    var iOS = IOSNotificationDetails(
+      presentAlert: true,
+      presentBadge: true,
+      presentSound: true,
+    );
     var platform = new NotificationDetails(android: android, iOS: iOS);
     await flutterLocalNotificationsPlugin.show(
         0, '$value1', '$value2', platform,
