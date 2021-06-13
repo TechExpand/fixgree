@@ -46,8 +46,10 @@ class SignUpProfileSetupPageState extends State<SignUpProfileSetupPage> {
                 children: [
                   InkWell(
                       onTap: () {
+                        print(network.bearer);
+                        print(selected);
                         selected == 10
-                            ? () {}
+                            ? Navigator.pop(context)
                             : selected == 20
                                 ? _myPage.jumpToPage(0)
                                 : selected == 30

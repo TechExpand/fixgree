@@ -43,7 +43,10 @@ class ProductCatelogPageState extends State<ProductCatelogPage> {
                 height: 55,
                 child: TextFormField(
                   onChanged: (value) {
-                    datas.setProductName(value);
+                    setState(() {
+                      datas.setProductName(value);
+                    });
+
                   },
                   style: TextStyle(color: Colors.black),
                   cursorColor: Colors.black,
@@ -72,7 +75,10 @@ class ProductCatelogPageState extends State<ProductCatelogPage> {
                 child: TextFormField(
                   keyboardType: TextInputType.number,
                   onChanged: (value) {
-                    datas.setProductPrice(value);
+                    setState(() {
+                      datas.setProductPrice(value);
+                    });
+
                   },
                   style: TextStyle(color: Colors.black),
                   cursorColor: Colors.black,
@@ -100,7 +106,10 @@ class ProductCatelogPageState extends State<ProductCatelogPage> {
                 height: 55,
                 child: TextFormField(
                   onChanged: (value) {
-                    datas.setProductBio(value);
+                    setState(() {
+                      datas.setProductBio(value);
+                    });
+
                   },
                   style: TextStyle(color: Colors.black),
                   cursorColor: Colors.black,
@@ -179,7 +188,9 @@ class ProductCatelogPageState extends State<ProductCatelogPage> {
                 ),
               ),
               Spacer(),
-              Align(
+    Consumer2<DataProvider,Utils >(
+    builder: (context, conData,conData2 ,child) {
+    return Align(
                   alignment: Alignment.center,
                   child: !network.loginState
                       ? Container(
@@ -188,10 +199,10 @@ class ProductCatelogPageState extends State<ProductCatelogPage> {
                               borderRadius: BorderRadius.circular(26)),
                           child: FlatButton(
                             disabledColor: Color(0x909B049B),
-                            onPressed: datas.productBio.isEmpty ||
-                                    datas.productPrice.isEmpty ||
-                                    datas.productName.isEmpty ||
-                                    data.selectedImage2 == null
+                            onPressed: conData.productBio.isEmpty ||
+                                    conData.productPrice.isEmpty ||
+                                    conData.productName.isEmpty ||
+                                    conData2.selectedImage2 == null
                                 ? () {}
                                 : () {
                                     network.loginSetState();
@@ -203,6 +214,10 @@ class ProductCatelogPageState extends State<ProductCatelogPage> {
                                       price: datas.productPrice,
                                       path: data.selectedImage2.path,
                                     );
+                                    FocusScopeNode currentFocus = FocusScope.of(context);
+                                    if (!currentFocus.hasPrimaryFocus) {
+                                      currentFocus.unfocus();
+                                    }
                                   },
                             color: Color(0xFF9B049B),
                             shape: RoundedRectangleBorder(
@@ -232,7 +247,7 @@ class ProductCatelogPageState extends State<ProductCatelogPage> {
                             valueColor: AlwaysStoppedAnimation<Color>(
                                 Color(0xFF9B049B)),
                           ),
-                        )),
+                        ));}),
             ],
           ),
         ),

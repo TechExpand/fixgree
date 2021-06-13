@@ -188,13 +188,11 @@ class WebServices extends ChangeNotifier {
             },
           ),
         );
-      }
-      else if (body['message'] == "Invalid Credentials!") {
+      } else if (body['message'] == "Invalid Credentials!") {
         scaffoldKey.currentState
             .showSnackBar(SnackBar(content: Text(body['message'])));
         loginSetState();
-      }
-      else if (body['reqRes'] == 'false') {
+      } else if (body['reqRes'] == 'false') {
         scaffoldKey.currentState
             .showSnackBar(SnackBar(content: Text(body['message'])));
         loginSetState();
@@ -219,7 +217,6 @@ class WebServices extends ChangeNotifier {
     role = prefs.getString('role');
     lastName = prefs.getString('lastName');
     notifyListeners();
-
   }
 
   Future<dynamic> initiateProject(projectOwnerUserId, bidId, projectId,
@@ -733,10 +730,10 @@ class WebServices extends ChangeNotifier {
     }
   }
 
-
   Future validatePayment(refId) async {
     var response = await http.post(
-        Uri.parse('https://manager.fixme.ng/verify-payment?payment_reference_id=$refId&user_id=$userId'),
+        Uri.parse(
+            'https://manager.fixme.ng/verify-payment?payment_reference_id=$refId&user_id=$userId'),
         headers: {
           "Content-type": "application/json",
           'Authorization': 'Bearer $bearer',
@@ -746,75 +743,53 @@ class WebServices extends ChangeNotifier {
     return body['message'];
   }
 
-
   Future addProductCatalog(
       {bio, productName, price, scaffoldKey, path, context}) async {
-    try {
-      var res = await http.post(
-          Uri.parse('https://manager.fixme.ng/save-catlog-product'),
-          body: {
-            'product_name': productName.toString() ?? '',
-            'price': price.toString() ?? '',
-            'bio': bio.toString() ?? '',
-            'user_id': '$userId',
-          },
-          headers: {
-            "Content-type": "application/x-www-form-urlencoded",
-            'Authorization': 'Bearer $bearer',
-          });
+    var res = await http
+        .post(Uri.parse('https://manager.fixme.ng/save-catlog-product'), body: {
+      'product_name': productName.toString() ?? '',
+      'price': price.toString() ?? '',
+      'bio': bio.toString() ?? '',
+      'user_id': '$userId',
+    }, headers: {
+      "Content-type": "application/x-www-form-urlencoded",
+      'Authorization': 'Bearer $bearer',
+    });
 
-      var body = jsonDecode(res.body);
-      notifyListeners();
-      if (body['reqRes'] == 'true') {
-        var upload = http.MultipartRequest(
-            'POST', Uri.parse('https://uploads.fixme.ng/product-image-upload'));
-        var file = await http.MultipartFile.fromPath('file', path);
-        upload.files.add(file);
-        upload.fields['product_id'] = body['productId'].toString();
-        upload.fields['product_name'] = productName.toString();
-        upload.fields['user_id'] = userId.toString();
-        upload.headers['authorization'] = 'Bearer $bearer';
+    var body = jsonDecode(res.body);
+    print(body);
+    notifyListeners();
+    if (body['reqRes'] == 'true') {
+      var upload = http.MultipartRequest(
+          'POST', Uri.parse('https://uploads.fixme.ng/product-image-upload'));
+      var file = await http.MultipartFile.fromPath('file', path);
+      upload.files.add(file);
+      upload.fields['product_id'] = body['productId'].toString();
+      upload.fields['product_name'] = productName.toString();
+      upload.fields['user_id'] = userId.toString();
+      upload.headers['authorization'] = 'Bearer $bearer';
 
-        final stream = await upload.send();
-        var resp = await http.Response.fromStream(stream);
-        var bodys = jsonDecode(resp.body);
+      final stream = await upload.send();
+      var resp = await http.Response.fromStream(stream);
+      var bodys = jsonDecode(resp.body);
 
-        if (bodys['upldRes'] == 'true') {
-          return bodys;
-        } else if (bodys['upldRes'] == 'false') {
-          showDialog(
-              builder: (ctx) {
-                return AlertDialog(
-                  title: Center(
-                    child: Text('There was a Problem Working on it!',
-                        style: TextStyle(color: Colors.blue)),
-                  ),
-                );
-              },
-              context: context);
-        }
-      } else if (body['reqRes'] == 'false') {
-        showDialog(
-            builder: (ctx) {
-              return AlertDialog(
-                title: Center(
-                  child: Text('There was a Problem Working on it!',
-                      style: TextStyle(color: Colors.blue)),
-                ),
-              );
-            },
-            context: context);
+      if (bodys['upldRes'] == 'true') {
+        SnackBar(
+          content:
+              Text(bodys.toString(), style: TextStyle(color: Colors.white)),
+        );
+        return 'success';
+      } else if (bodys['upldRes'] == 'false') {
+        SnackBar(
+          content: Text('There was a Problem Working on it!',
+              style: TextStyle(color: Colors.white)),
+        );
       }
-    } catch (e) {
-      showDialog(
-          builder: (ctx) {
-            return AlertDialog(
-              title: Center(
-                child: Text('$e', style: TextStyle(color: Colors.blue)),
-              ),
-            );
-          },
-          context: context);
+    } else if (body['reqRes'] == 'false') {
+      SnackBar(
+        content: Text('There was a Problem Working on it!',
+            style: TextStyle(color: Colors.white)),
+      );
     }
   }
 
@@ -1252,51 +1227,31 @@ class WebServices extends ChangeNotifier {
       "Content-type": "application/x-www-form-urlencoded",
       'Authorization': 'Bearer $bearer',
     });
-
-    if(response.statusCode == 500){
+    if (response.statusCode == 500) {
       showDialog<void>(
         context: context,
         barrierDismissible: false, // user must tap button!
         builder: (BuildContext context) {
-          return AlertDialog(
-            title: Center(child: Text('Connection TimeOut')),
-            content: SingleChildScrollView(
-              child: ListBody(
-                children: <Widget>[
-                  Center(child: Text('Retry or Login Again')),
-                ],
-              ),
-            ),
-            actions: <Widget>[
-              TextButton(
-                child: Text('exit', style: TextStyle( color:Color(0xFF9B049B)),),
-                onPressed: () {
-                  Navigator.of(context).pop();
-                },
-              ),
-            ],
-          );
+          return SnackBar(content: Center(child: Text('Connection TimeOut')));
         },
       );
       return response.statusCode;
+    } else {
+      var body1 = json.decode(response.body);
+      List body = body1['projects'];
+      List<Project> projects = body
+          .map((data) {
+            return Project.fromJson(data);
+          })
+          .toSet()
+          .toList();
 
-    }else{
-
-    var body1 = json.decode(response.body);
-    List body = body1['projects'];
-    List<Project> projects = body
-        .map((data) {
-          return Project.fromJson(data);
-        })
-        .toSet()
-        .toList();
-
-    notifyListeners();
-    if (body1['reqRes'] == 'true') {
-      print(body1['projects']);
-      return projects;
-    } else if (body1['reqRes'] == 'false') {}
-  }}
+      notifyListeners();
+      if (body1['reqRes'] == 'true') {
+        return projects;
+      } else if (body1['reqRes'] == 'false') {}
+    }
+  }
 
   Future<dynamic> getBiddedJobs(context) async {
     print(userId);
@@ -1311,14 +1266,13 @@ class WebServices extends ChangeNotifier {
           'Authorization': 'Bearer $bearer',
         });
     if (response.statusCode == 500) {
-
     } else {
       var body1 = json.decode(response.body);
       List body = body1['projects'];
       List<Project> projects = body
           .map((data) {
-        return Project.fromJson(data);
-      })
+            return Project.fromJson(data);
+          })
           .toSet()
           .toList();
 
@@ -1330,45 +1284,44 @@ class WebServices extends ChangeNotifier {
     }
   }
 
-
   Future<dynamic> nearbyArtisans({longitude, latitude, context}) async {
-    try{
-    var response = await http
-        .post(Uri.parse('https://manager.fixme.ng/near-artisans'), body: {
-      'user_id': userId.toString(),
+    try {
+      var response = await http
+          .post(Uri.parse('https://manager.fixme.ng/near-artisans'), body: {
+        'user_id': userId.toString(),
 //    'latitude':  '5.001190',
 //    'longitude' :'8.334840'
 
-      'longitude': longitude.toString(),
-      'latitude': latitude.toString(),
-    }, headers: {
-      "Content-type": "application/x-www-form-urlencoded",
-      'Authorization': 'Bearer $bearer',
-    }).timeout(const Duration(seconds: 60), onTimeout: () {
-      print('nnnnnn');
-      throw TimeoutException('The connection has timed out, Please check your'
-          ' internet connection and try again!');
-    });
-    print(response.statusCode);
-    if(response.statusCode == 500){
-      print("You are not connected to internet");
-    }else{
-      var body = json.decode(response.body);
-      print(body.toString());
-      List result = body['sortedUsers'];
-      List<UserSearch> nearebyList = result.map((data) {
-        return UserSearch.fromJson(data);
-      }).toList();
-      notifyListeners();
-      if (body['reqRes'] == 'true') {
-        return nearebyList;
-      } else if (body['reqRes'] == 'false') {
-        print(body['message']);
+        'longitude': longitude.toString(),
+        'latitude': latitude.toString(),
+      }, headers: {
+        "Content-type": "application/x-www-form-urlencoded",
+        'Authorization': 'Bearer $bearer',
+      }).timeout(const Duration(seconds: 60), onTimeout: () {
+        print('nnnnnn');
+        throw TimeoutException('The connection has timed out, Please check your'
+            ' internet connection and try again!');
+      });
+      print(response.statusCode);
+      if (response.statusCode == 500) {
+        print("You are not connected to internet");
+      } else {
+        var body = json.decode(response.body);
+        print(body.toString());
+        List result = body['sortedUsers'];
+        List<UserSearch> nearebyList = result.map((data) {
+          return UserSearch.fromJson(data);
+        }).toList();
+        notifyListeners();
+        if (body['reqRes'] == 'true') {
+          return nearebyList;
+        } else if (body['reqRes'] == 'false') {
+          print(body['message']);
+        }
       }
-    }
-   }on TimeoutException catch (err) {
+    } on TimeoutException catch (err) {
       print('nnnnnn');
-     // artisanRegStatus = Status.timeOut;
+      // artisanRegStatus = Status.timeOut;
       Get.snackbar('nnncc', 'jjdjjd');
 
       return err.message;
@@ -1387,7 +1340,7 @@ class WebServices extends ChangeNotifier {
       "Content-type": "application/x-www-form-urlencoded",
       'Authorization': 'Bearer $bearer',
     });
-    if(response.statusCode == 500){
+    if (response.statusCode == 500) {
       print("You are not connected to internet");
       showDialog<void>(
         context: context,
@@ -1404,7 +1357,10 @@ class WebServices extends ChangeNotifier {
             ),
             actions: <Widget>[
               TextButton(
-                child: Text('exit', style: TextStyle( color:Color(0xFF9B049B)),),
+                child: Text(
+                  'exit',
+                  style: TextStyle(color: Color(0xFF9B049B)),
+                ),
                 onPressed: () {
                   Navigator.of(context).pop();
                 },
@@ -1412,7 +1368,8 @@ class WebServices extends ChangeNotifier {
             ],
           );
         },
-      );}else{
+      );
+    } else {
       var body = json.decode(response.body);
       List result = body['sortedUsers'];
       List<UserSearch> nearebyList = result.map((data) {
@@ -1424,7 +1381,6 @@ class WebServices extends ChangeNotifier {
         return nearebyList;
       } else if (body['reqRes'] == 'false') {}
     }
-
   }
 
   Future search({longitude, latitude, searchquery}) async {
@@ -1472,7 +1428,7 @@ class WebServices extends ChangeNotifier {
           "Content-type": "application/json",
           'Authorization': 'Bearer $bearer',
         });
-    if(response.statusCode == 500){
+    if (response.statusCode == 500) {
       showDialog<void>(
         context: context,
         barrierDismissible: false, // user must tap button!
@@ -1488,7 +1444,10 @@ class WebServices extends ChangeNotifier {
             ),
             actions: <Widget>[
               TextButton(
-                child: Text('exit', style: TextStyle( color:Color(0xFF9B049B)),),
+                child: Text(
+                  'exit',
+                  style: TextStyle(color: Color(0xFF9B049B)),
+                ),
                 onPressed: () {
                   Navigator.of(context).pop();
                 },
@@ -1497,8 +1456,7 @@ class WebServices extends ChangeNotifier {
           );
         },
       );
-    }
-    else{
+    } else {
       var body = json.decode(response.body);
       return body['accountInfo'];
     }
@@ -1527,11 +1485,6 @@ class WebServices extends ChangeNotifier {
     return body['transactionDetails'];
   }
 
-
-
-
-
-
   Future<dynamic> validateUserAccountName({bankCode, accountNumber}) async {
     var response = await http.post(
         Uri.parse(
@@ -1550,21 +1503,22 @@ class WebServices extends ChangeNotifier {
 
   Future getCardDetails() async {
     var response = await http.post(
-        Uri.parse('https://manager.fixme.ng/get-payment-details?user_id=$userId'),
+        Uri.parse(
+            'https://manager.fixme.ng/get-payment-details?user_id=$userId'),
         headers: {
           "Content-type": "application/json",
           'Authorization': 'Bearer $bearer',
         });
     var body = json.decode(response.body);
     print(response.body);
-     notifyListeners();
-     if (body['reqRes'] == 'true') {
-         return body['cardInfo'];
-     }else if (body['message'] =='No Available Card'){
-       return 'No Available Card';
-     } else if (body['reqRes'] == 'false') {
-       print('failed');
-     }
+    notifyListeners();
+    if (body['reqRes'] == 'true') {
+      return body['cardInfo'];
+    } else if (body['message'] == 'No Available Card') {
+      return 'No Available Card';
+    } else if (body['reqRes'] == 'false') {
+      print('failed');
+    }
   }
 
   Future<dynamic> checkSecurePin() async {
@@ -1611,12 +1565,33 @@ class WebServices extends ChangeNotifier {
     // }
   }
 
+  Future addCatalog({path, uploadType}) async {
+    try {
+      var upload = http.MultipartRequest(
+          'POST', Uri.parse('https://uploads.fixme.ng/uploads-processing'));
+      var file = await http.MultipartFile.fromPath('file', path);
+      upload.files.add(file);
+      upload.fields['uploadType'] = uploadType.toString();
+      upload.fields['firstName'] = firstName.toString();
+      upload.fields['user_id'] = userId.toString();
+      upload.headers['authorization'] = 'Bearer $bearer';
 
+      final stream = await upload.send();
+      var res = await http.Response.fromStream(stream);
 
-
-
-
-
+      var body = jsonDecode(res.body);
+      notifyListeners();
+      if (body['upldRes'] == 'true') {
+        SnackBar(content: Text('Image uploaded succesfully'));
+        return 'succesful';
+      } else if (body['upldRes'] == 'false') {
+        SnackBar(content: Text('Image upload was unsuccesful'));
+        return 'failed';
+      }
+    } catch (e) {
+      SnackBar(content: Text(e.toString()));
+    }
+  }
 
   Future<Map> initiateTransfer(
       {bankCode,
@@ -1666,7 +1641,7 @@ class WebServices extends ChangeNotifier {
   Future<bool> deleteServiceCatalogueImage({imageFileName}) async {
     var response = await http.post(
         Uri.parse(
-            'https://manager.fixme.ng/del-svc-img?user_id=$userId&imageFileName=$imageFileName'),
+            'https://manager.fixme.ng/del-svc-img?user_id=$userId&image_id=$imageFileName'),
         headers: {
           "Content-type": "application/json",
           'Authorization': 'Bearer $bearer',

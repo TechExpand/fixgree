@@ -75,7 +75,7 @@ class OTPState extends State<OTPPAGE> {
     controller6.selection = TextSelection.fromPosition(
         TextPosition(offset: controller6.text.length));
     var node = FocusScope.of(context);
-    var data = Provider.of<DataProvider>(context);
+    var data = Provider.of<DataProvider>(context,  listen: true);
     var auth = FirebaseAuth.instance;
     var network = Provider.of<WebServices>(context);
 

@@ -24,7 +24,7 @@ class SignUpState extends State<SignUp> {
   @override
   Widget build(BuildContext context) {
     var network = Provider.of<WebServices>(context);
-    var data = Provider.of<DataProvider>(context);
+    var data = Provider.of<DataProvider>(context,  listen: false);
     dynamic mainCredential = '';
 
     //verify phone number if numbe is correct and if  code is retrieved
@@ -153,7 +153,9 @@ class SignUpState extends State<SignUp> {
                 ),
               ),
               Spacer(),
-              Align(
+    Consumer<DataProvider>(
+    builder: (context, conData, child) {
+    return Align(
                   alignment: Alignment.center,
                   child: !network.loginState
                       ? Container(
@@ -165,12 +167,16 @@ class SignUpState extends State<SignUp> {
                               borderRadius: BorderRadius.circular(26)),
                           child: FlatButton(
                             onPressed:
-                                data.number.toString() == data.number.dialCode
+                                conData.number.toString() == conData.number.dialCode
                                     ? null
                                     : () {
 //                        network.Login();
                                         network.loginSetState();
                                         verifyNumber();
+                                        FocusScopeNode currentFocus = FocusScope.of(context);
+                                        if (!currentFocus.hasPrimaryFocus) {
+                                          currentFocus.unfocus();
+                                        }
                                       },
                             color: Color(0xFF9B049B),
                             disabledColor: Color(0x909B049B),
@@ -204,7 +210,7 @@ class SignUpState extends State<SignUp> {
                             valueColor: AlwaysStoppedAnimation<Color>(
                                 Color(0xFF9B049B)),
                           ),
-                        )),
+                        ));})
             ],
           ),
         ),

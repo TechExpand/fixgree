@@ -15,7 +15,7 @@ class SignUpSetProfileState extends State<SignUpSetProfile> {
   @override
   Widget build(BuildContext context) {
     var network = Provider.of<WebServices>(context);
-    var data = Provider.of<DataProvider>(context);
+    var data = Provider.of<DataProvider>(context,  listen: false);
     return Scaffold(
       appBar: AppBar(
         elevation: 0,
@@ -109,7 +109,9 @@ class SignUpSetProfileState extends State<SignUpSetProfile> {
                 ],
               ),
               Spacer(),
-              Align(
+    Consumer<DataProvider>(
+    builder: (context, conData, child) {
+    return  Align(
                 alignment: Alignment.center,
                 child: Container(
                     margin: EdgeInsets.only(bottom: 30),
@@ -120,13 +122,17 @@ class SignUpSetProfileState extends State<SignUpSetProfile> {
                         ? FlatButton(
                             disabledColor: Color(0x909B049B),
                             onPressed:
-                                data.firstName.isEmpty || data.lastName.isEmpty
+                                conData.firstName.isEmpty || conData.lastName.isEmpty
                                     ? null
                                     : () {
                                         network.loginSetState();
                                         network.register(
                                             context: context,
                                             scaffoldKey: scaffoldKey);
+                                        FocusScopeNode currentFocus = FocusScope.of(context);
+                                        if (!currentFocus.hasPrimaryFocus) {
+                                          currentFocus.unfocus();
+                                        }
                                       },
                             color: Color(0xFF9B049B),
                             shape: RoundedRectangleBorder(
@@ -152,7 +158,7 @@ class SignUpSetProfileState extends State<SignUpSetProfile> {
                         : CircularProgressIndicator(
                             valueColor: AlwaysStoppedAnimation<Color>(
                                 Color(0xFF9B049B)))),
-              )
+              );})
             ],
           ),
         ),

@@ -78,6 +78,10 @@ class DescribePageState extends State<DescribePage> {
                 child: FlatButton(
                   onPressed:() {
                     postRequestProvider.postJob(context);
+                    FocusScopeNode currentFocus = FocusScope.of(context);
+                    if (!currentFocus.hasPrimaryFocus) {
+                      currentFocus.unfocus();
+                    }
                   },
                   color: Color(0xFF9B049B),
                   shape: RoundedRectangleBorder(

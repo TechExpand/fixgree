@@ -14,7 +14,7 @@ class SignUpBvnState extends State<SignUpBvn> {
 
   @override
   Widget build(BuildContext context) {
-    var data = Provider.of<DataProvider>(context);
+    var data = Provider.of<DataProvider>(context, listen: false);
     return Scaffold(
       appBar: AppBar(
         elevation: 0,
@@ -47,7 +47,10 @@ class SignUpBvnState extends State<SignUpBvn> {
               height: 55,
               child: TextFormField(
                 onChanged: (value) {
-                  data.setBVN(value);
+                  setState(() {
+                    data.setBVN(value);
+                  });
+
                 },
                 style: TextStyle(color: Colors.black),
                 cursorColor: Colors.black,
@@ -103,7 +106,9 @@ class SignUpBvnState extends State<SignUpBvn> {
               ),
             ),
             Spacer(),
-            Align(
+    Consumer<DataProvider>(
+    builder: (context, conData, child) {
+    return Align(
               alignment: Alignment.center,
               child: Container(
                 margin: EdgeInsets.only(
@@ -114,7 +119,7 @@ class SignUpBvnState extends State<SignUpBvn> {
                     borderRadius: BorderRadius.circular(26)),
                 child: FlatButton(
                   disabledColor: Color(0x909B049B),
-                  onPressed: data.bvn.isEmpty
+                  onPressed: conData.bvn.isEmpty
                       ? null
                       : () {
                     Navigator.push(
@@ -133,6 +138,10 @@ class SignUpBvnState extends State<SignUpBvn> {
                         },
                       ),
                     );
+                    FocusScopeNode currentFocus = FocusScope.of(context);
+                    if (!currentFocus.hasPrimaryFocus) {
+                      currentFocus.unfocus();
+                    }
                   },
                   color: Color(0xFF9B049B),
                   shape: RoundedRectangleBorder(
@@ -155,7 +164,7 @@ class SignUpBvnState extends State<SignUpBvn> {
                   ),
                 ),
               ),
-            ),
+            );}),
           ],
         ),
       ),

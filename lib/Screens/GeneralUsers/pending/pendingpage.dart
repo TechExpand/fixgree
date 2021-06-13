@@ -519,10 +519,7 @@ class _PendingScreenState extends State<PendingScreen> {
 //
                         body: TabBarView(children: [
                           FutureBuilder(
-                              future: network.getUndoneProject(context).then((value) {
-                                value==500?Navigator.pop(context):null;
-                                print( value==500);
-                              }),
+                              future: network.getUndoneProject(context),
                               builder: (context, snapshot) {
                                 return snapshot.hasData
                                     ? ListView(
@@ -985,10 +982,7 @@ class _PendingScreenState extends State<PendingScreen> {
 //
                         body: TabBarView(children: [
                           FutureBuilder(
-                              future: network.getUndoneProject(context).then((value) {
-                                value==500?Navigator.pop(context):null;
-                                print( value==500);
-                              }),
+                              future: network.getUndoneProject(context),
                               builder: (context, snapshot) {
                                 return snapshot.hasData
                                     ? ListView(

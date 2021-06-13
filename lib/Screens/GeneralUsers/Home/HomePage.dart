@@ -128,7 +128,7 @@ class _HomePageState extends State<HomePage> {
 
   @override
   Widget build(BuildContext context) {
-    var data = Provider.of<DataProvider>(context);
+    var data = Provider.of<DataProvider>(context, listen: false);
     WebServices network = Provider.of<WebServices>(context, listen: false);
     List<Notify> notify;
     // FirebaseApi.updateUsertoOnline(datas.mobile_device_token);
@@ -141,19 +141,24 @@ class _HomePageState extends State<HomePage> {
           child: DrawerWidget(context, _myPage),
         ),
       ),
-      bottomNavigationBar: Container(
+      bottomNavigationBar: Consumer<DataProvider>(
+          builder: (context, conData, child) {
+            return Container(
         height: 60,
         child: BottomNavigationBar(
             onTap: (index) {
-              if (index == data.selectedPage) {
+              if (index == conData.selectedPage) {
               } else {
-                _myPage.jumpToPage(index);
-                data.setSelectedBottomNavBar(index);
+                setState(() {
+                  _myPage.jumpToPage(index);
+                  conData.setSelectedBottomNavBar(index);
+                });
+
               }
             },
             elevation: 20,
             type: BottomNavigationBarType.fixed,
-            currentIndex: data.selectedPage,
+            currentIndex: conData.selectedPage,
             unselectedItemColor: Color(0xFF555555),
             selectedItemColor: Color(0xFFA40C85),
             selectedLabelStyle: TextStyle(fontSize: 12),
@@ -163,7 +168,7 @@ class _HomePageState extends State<HomePage> {
                 icon: Padding(
                   padding: const EdgeInsets.only(bottom: 1),
                   child: Icon(
-                    data.selectedPage == 0
+                    conData.selectedPage == 0
                         ? Icons.home_rounded
                         : Icons.home_outlined,
                     size: 28,
@@ -174,7 +179,7 @@ class _HomePageState extends State<HomePage> {
               BottomNavigationBarItem(
                 icon: Padding(
                   padding: const EdgeInsets.only(bottom: 3),
-                  child: Icon(data.selectedPage == 1
+                  child: Icon(conData.selectedPage == 1
                       ? Icons.account_balance_wallet
                       : Icons.account_balance_wallet_outlined),
                 ),
@@ -183,7 +188,7 @@ class _HomePageState extends State<HomePage> {
               BottomNavigationBarItem(
                 icon: Padding(
                   padding: const EdgeInsets.only(bottom: 3),
-                  child: data.selectedPage == 2
+                  child: conData.selectedPage == 2
                       ? Icon(
                           Icons.add_circle_rounded,
                           size: 25,
@@ -255,7 +260,9 @@ class _HomePageState extends State<HomePage> {
                 label: 'Manage',
               )
             ]),
-      ),
+      );}),
+
+
       body: WillPopScope(
         onWillPop: () {
           return showDialog(

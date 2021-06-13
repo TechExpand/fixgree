@@ -15,7 +15,7 @@ class SignUpPasswordState extends State<SignUpPassword> {
 
   @override
   Widget build(BuildContext context) {
-    var data = Provider.of<DataProvider>(context);
+    var data = Provider.of<DataProvider>(context, listen: false);
     return Scaffold(
       appBar: AppBar(
         elevation: 0,
@@ -107,7 +107,9 @@ class SignUpPasswordState extends State<SignUpPassword> {
                 ),
               ),
               Spacer(),
-              Align(
+    Consumer<DataProvider>(
+    builder: (context, conData, child) {
+    return Align(
                 alignment: Alignment.center,
                 child: Container(
                   margin: EdgeInsets.only(
@@ -118,7 +120,7 @@ class SignUpPasswordState extends State<SignUpPassword> {
                       borderRadius: BorderRadius.circular(26)),
                   child: FlatButton(
                     disabledColor: Color(0x909B049B),
-                    onPressed: data.password.length < 8 || data.password.isEmpty
+                    onPressed: conData.password.length < 8 || conData.password.isEmpty
                         ? null
                         : () {
                             Navigator.push(
@@ -137,6 +139,10 @@ class SignUpPasswordState extends State<SignUpPassword> {
                                 },
                               ),
                             );
+                            FocusScopeNode currentFocus = FocusScope.of(context);
+                            if (!currentFocus.hasPrimaryFocus) {
+                              currentFocus.unfocus();
+                            }
                           },
                     color: Color(0xFF9B049B),
                     shape: RoundedRectangleBorder(
@@ -159,7 +165,7 @@ class SignUpPasswordState extends State<SignUpPassword> {
                     ),
                   ),
                 ),
-              ),
+              );})
             ],
           ),
         ),

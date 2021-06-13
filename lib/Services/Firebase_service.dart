@@ -73,7 +73,7 @@ class FirebaseApi {
         final newMessage = Message(
           chatId: chatId ?? '',
           idUser: network.mobileDeviceToken ?? '',
-          urlAvatar: network.profilePicFileName ?? '',
+          urlAvatar:'https://uploads.fixme.ng/originals/${network.profilePicFileName}' ?? '',
           username: network.firstName ?? '',
           message: imageurl ?? '',
           createdAt: DateTime.now(),
@@ -84,7 +84,7 @@ class FirebaseApi {
       });
     });
 
-    Navigator.pop(context);
+
 
     final refUsers =
     FirebaseFirestore.instance.collection('UserChat/$idUser/individual');
@@ -121,7 +121,7 @@ class FirebaseApi {
         final newMessage = Message(
           chatId: chatId ?? '',
           idUser: network.mobileDeviceToken ?? '',
-          urlAvatar: network.profilePicFileName ?? '',
+          urlAvatar:'https://uploads.fixme.ng/originals/${network.profilePicFileName}' ?? '',
           username: network.firstName ?? '',
           message: imageurl ?? '',
           createdAt: DateTime.now(),

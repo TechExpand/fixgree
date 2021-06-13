@@ -24,7 +24,7 @@ class LoginState extends State<Login> {
   @override
   Widget build(BuildContext context) {
     var network = Provider.of<WebServices>(context);
-    var data = Provider.of<DataProvider>(context);
+    var data = Provider.of<DataProvider>(context, listen: false);
     dynamic mainCredential = '';
     // var otp;
     var auth = FirebaseAuth.instance;
@@ -165,59 +165,71 @@ class LoginState extends State<Login> {
                                       color: Color(0xFF9B049B), fontSize: 16),
                                 )
                               ]))))),
-              Align(
-                  alignment: Alignment.center,
-                  child: !network.loginState
-                      ? Container(
-                    padding: EdgeInsets.only(
-                      bottom: 50,
-                      top: 50,
-                    ),
-                    child: FlatButton(
-                      onPressed:
-                      data.number.toString() == data.number.dialCode
-                          ? null
-                          : () {
-                        network.loginSetState();
-                        verifyNumber();
-                      },
-                      color: Color(0xFF9B049B),
-                      disabledColor: Color(0x909B049B),
-                      shape: RoundedRectangleBorder(
-                          borderRadius: BorderRadius.circular(26)),
-                      padding: EdgeInsets.all(0.0),
-                      child: Ink(
-                        decoration: BoxDecoration(
-                            borderRadius: BorderRadius.circular(26)),
-                        child: Container(
-                          constraints: BoxConstraints(
-                              maxWidth:
-                              MediaQuery.of(context).size.width / 1.3,
-                              minHeight: 45.0),
-                          alignment: Alignment.center,
-                          child: Text(
-                            "LOGIN",
-                            textAlign: TextAlign.center,
-                            style: TextStyle(
-                              color: Colors.white,
-                              fontWeight: FontWeight.w500,
-                            ),
-                          ),
+
+      Consumer<DataProvider>(
+        builder: (context, conData, child) {
+          return Align(
+              alignment: Alignment.center,
+              child: !network.loginState
+                  ? Container(
+                padding: EdgeInsets.only(
+                  bottom: 50,
+                  top: 50,
+                ),
+                child: FlatButton(
+                  onPressed:
+                  conData.number.toString() == conData.number.dialCode
+                      ? null
+                      : () {
+                    network.loginSetState();
+                    FocusScopeNode currentFocus = FocusScope.of(context);
+                    if (!currentFocus.hasPrimaryFocus) {
+                      currentFocus.unfocus();
+                    }
+                    verifyNumber();
+                  },
+                  color: Color(0xFF9B049B),
+                  disabledColor: Color(0x909B049B),
+                  shape: RoundedRectangleBorder(
+                      borderRadius: BorderRadius.circular(26)),
+                  padding: EdgeInsets.all(0.0),
+                  child: Ink(
+                    decoration: BoxDecoration(
+                        borderRadius: BorderRadius.circular(26)),
+                    child: Container(
+                      constraints: BoxConstraints(
+                          maxWidth:
+                          MediaQuery
+                              .of(context)
+                              .size
+                              .width / 1.3,
+                          minHeight: 45.0),
+                      alignment: Alignment.center,
+                      child: Text(
+                        "LOGIN",
+                        textAlign: TextAlign.center,
+                        style: TextStyle(
+                          color: Colors.white,
+                          fontWeight: FontWeight.w500,
                         ),
                       ),
                     ),
-                  )
-                      : Padding(
-                    padding: const EdgeInsets.only(bottom: 50.0, top: 25),
-                    child: Theme(
-                      data: Theme.of(context)
-                          .copyWith(accentColor: Color(0xFF9B049B)),
-                      child: CircularProgressIndicator(
-                        strokeWidth: 2,
-                        backgroundColor: Colors.white,
-                      ),
-                    ),
-                  )),
+                  ),
+                ),
+              )
+                  : Padding(
+                padding: const EdgeInsets.only(bottom: 50.0, top: 25),
+                child: Theme(
+                  data: Theme.of(context)
+                      .copyWith(accentColor: Color(0xFF9B049B)),
+                  child: CircularProgressIndicator(
+                    strokeWidth: 2,
+                    backgroundColor: Colors.white,
+                  ),
+                ),
+              ));
+        }
+              ),
             ],
           ),
         ),

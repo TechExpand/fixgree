@@ -201,15 +201,14 @@ class PostScreenState extends State<PostScreen> {
               onTap: ()async {
                 SharedPreferences prefs = await SharedPreferences.getInstance();
                 var card = prefs.getBool('card');
-                if(card == false || card == null){
-//                  Navigator.push(context, MaterialPageRoute(builder: (context){
-//                    return CardPayment();
-//                  }));
-                  paymentMethod(context, 5000, network.email);
-                }else{
-                  result = postRequestProvider.allservicesList;
-                  dialogPage(context);
-                }
+                // if(card == false || card == null){
+                //   paymentMethod(context, 5000, network.email);
+                // }else{
+                //   result = postRequestProvider.allservicesList;
+                //   dialogPage(context);
+                // }
+                result = postRequestProvider.allservicesList;
+                dialogPage(context);
               },
               child: TextFormField(
                 keyboardType: TextInputType.multiline,

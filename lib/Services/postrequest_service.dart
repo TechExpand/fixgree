@@ -49,8 +49,6 @@ class PostRequestProvider with ChangeNotifier {
     var data = Provider.of<DataProvider>(context, listen: false);
     String userId = prefs.getString('user_id');
     String bearer = prefs.getString('Bearer');
-    print(userId);
-    print(userId);
     try {
       var response = await http
           .post(Uri.parse('https://manager.fixme.ng/new-project'), body: {
@@ -83,7 +81,7 @@ class PostRequestProvider with ChangeNotifier {
       print(e);
       print('na error b tat');
       isLoading(false);
-      popDialog(context, 'Unable To Post', 'assets/images/fail.jpg');
+      popDialogs(context, 'Unable To Post', 'assets/images/fail.jpg');
     }
     isLoading(false);
   }

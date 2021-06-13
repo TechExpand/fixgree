@@ -103,10 +103,18 @@ class MessageWidget extends StatelessWidget {
                   ),
                 );
               },
-              child: Image.network(
-                message.message,
-                height: 100,
-                width: 100,
+              child:Container(
+                height: 170,
+                width: 170,
+                child: Card(
+                  child: Padding(
+                    padding: const EdgeInsets.all(3.0),
+                    child: Image.network(
+                      message.message,
+                      fit: BoxFit.cover,
+                    ),
+                  ),
+                ),
               ),
             ),
           ),
@@ -264,10 +272,18 @@ class MessageWidget extends StatelessWidget {
                   ),
                 );
               },
-              child: Image.network(
-                message.message,
-                height: 100,
-                width: 100,
+              child: Container(
+                height: 170,
+                width: 170,
+                child: Card(
+                  child: Padding(
+                    padding: const EdgeInsets.all(3.0),
+                    child: Image.network(
+                      message.message,
+                      fit: BoxFit.cover,
+                    ),
+                  ),
+                ),
               ),
             ),
           ),

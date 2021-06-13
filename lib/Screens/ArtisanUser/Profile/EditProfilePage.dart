@@ -1,7 +1,12 @@
+import 'dart:io';
+
 import 'package:fixme/Model/service.dart';
+import 'package:fixme/Screens/ArtisanUser/Profile/ArtisanProvider.dart';
 import 'package:fixme/Services/network_service.dart';
 import 'package:fixme/Services/postrequest_service.dart';
+import 'package:fixme/Utils/Provider.dart';
 import 'package:fixme/Utils/utils.dart';
+import 'package:fixme/Widgets/photoView.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_feather_icons/flutter_feather_icons.dart';
 import 'package:google_fonts/google_fonts.dart';
@@ -18,6 +23,30 @@ class _EditProfilePageState extends State<EditProfilePage> {
   Future<dynamic> userInfo;
   PickedFile selectedImage;
   final picker = ImagePicker();
+  Future<dynamic> cataloguePhotos;
+  Future<dynamic> products;
+
+  getCataloguePhotos(context) async {
+    var network = Provider.of<WebServices>(context, listen: false);
+    final artisanProvider =
+        Provider.of<ArtisanProvider>(context, listen: false);
+    cataloguePhotos = network.getServiceImage(network.userId, network.userId);
+    cataloguePhotos.then((data) {
+      int catalogueCount = data.length;
+      artisanProvider.setCatalogueCount = catalogueCount;
+    });
+  }
+
+  getProducts(context) async {
+    var network = Provider.of<WebServices>(context, listen: false);
+    final artisanProvider =
+        Provider.of<ArtisanProvider>(context, listen: false);
+    products = network.getProductImage(network.userId, network.userId);
+    products.then((data) {
+      int productCount = data.length;
+      artisanProvider.setProductCount = productCount;
+    });
+  }
 
   update(BuildContext context) async {
     var network = Provider.of<WebServices>(context, listen: false);
@@ -42,8 +71,16 @@ class _EditProfilePageState extends State<EditProfilePage> {
   }
 
   @override
+  void initState() {
+    super.initState();
+    getCataloguePhotos(context);
+    getProducts(context);
+  }
+
+  @override
   Widget build(BuildContext context) {
     update(context);
+    getCataloguePhotos(context);
     // var data = Provider.of<Utils>(context, listen: false);
     // var location = Provider.of<LocationService>(context);
     var network = Provider.of<WebServices>(context, listen: false);
@@ -96,11 +133,10 @@ class _EditProfilePageState extends State<EditProfilePage> {
                                 left: 55,
                                 top: 50,
                                 child: InkWell(
-                                  onTap: ()async {
-                                      pickImage(
-                                          source: ImageSource.gallery,
-                                          context: context);
-
+                                  onTap: () async {
+                                    pickImage(
+                                        source: ImageSource.gallery,
+                                        context: context);
                                   },
                                   child: Container(
                                     height: 28,
@@ -438,6 +474,335 @@ class _EditProfilePageState extends State<EditProfilePage> {
                               ],
                             ),
                           ),
+                          Divider(),
+                          Row(
+                            mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                            children: [
+                              snapshot.data['role'] == 'artisan'
+                                  ? Text('Catalogues',
+                                      style: GoogleFonts.openSans(
+                                          fontSize: 16,
+                                          fontWeight: FontWeight.w600))
+                                  : Text('Products',
+                                      style: GoogleFonts.openSans(
+                                          fontSize: 16,
+                                          fontWeight: FontWeight.w600)),
+                              InkWell(
+                                borderRadius: BorderRadius.circular(16),
+                                onTap: snapshot.data['role'] == 'artisan'
+                                    ? () {
+                                        _AddCatalogue();
+                                      }
+                                    : () {
+                                        _AddProduct();
+                                      },
+                                child: Container(
+                                  height: 32,
+                                  width: 32,
+                                  margin: const EdgeInsets.only(top: 10),
+                                  decoration: BoxDecoration(
+                                      border: Border.all(
+                                        width: 1,
+                                        color: Color(0xFFA40C85),
+                                      ),
+                                      shape: BoxShape.circle),
+                                  child: Icon(
+                                    FeatherIcons.plus,
+                                    size: 16,
+                                    color: Color(0xFFA40C85),
+                                  ),
+                                ),
+                              ),
+                            ],
+                          ),
+                          Container(
+                            padding: const EdgeInsets.only(top: 8.0),
+                            child: snapshot.data['role'] == 'artisan'
+                                ? FutureBuilder(
+                                    future: cataloguePhotos,
+                                    builder: (context, snapshot) {
+                                      Widget mainWidget;
+                                      if (snapshot.connectionState ==
+                                          ConnectionState.done) {
+                                        if (snapshot.data == null ||
+                                            snapshot.data.length == 0) {
+                                          mainWidget = Center(
+                                            child: Column(
+                                              mainAxisAlignment:
+                                                  MainAxisAlignment.center,
+                                              crossAxisAlignment:
+                                                  CrossAxisAlignment.center,
+                                              children: [
+                                                Text('No images',
+                                                    style: TextStyle(
+                                                        // letterSpacing: 4,
+                                                        color:
+                                                            Color(0xFF333333),
+                                                        fontSize: 18,
+                                                        fontWeight:
+                                                            FontWeight.w600)),
+                                              ],
+                                            ),
+                                          );
+                                        } else {
+                                          mainWidget = Container(
+                                              margin: const EdgeInsets.only(
+                                                  bottom: 5,
+                                                  left: 5,
+                                                  right: 5,
+                                                  top: 5),
+                                              child: GridView.builder(
+                                                shrinkWrap: true,
+                                                physics: ScrollPhysics(),
+                                                itemCount: snapshot.data == null
+                                                    ? 0
+                                                    : snapshot.data.length,
+                                                gridDelegate:
+                                                    SliverGridDelegateWithFixedCrossAxisCount(
+                                                  crossAxisCount: 3,
+                                                  crossAxisSpacing: 5,
+                                                  mainAxisSpacing: 5,
+                                                ),
+                                                itemBuilder:
+                                                    (BuildContext context,
+                                                        int index) {
+                                                  return InkWell(
+                                                    onTap: () {
+                                                      Navigator.push(
+                                                        context,
+                                                        PageRouteBuilder(
+                                                          pageBuilder: (context,
+                                                              animation,
+                                                              secondaryAnimation) {
+                                                            return PhotoView(
+                                                              'https://uploads.fixme.ng/originals/${snapshot.data[index]['imageFileName']}',
+                                                              snapshot.data[
+                                                                      index][
+                                                                  'imageFileName'],
+                                                            );
+                                                          },
+                                                          transitionsBuilder:
+                                                              (context,
+                                                                  animation,
+                                                                  secondaryAnimation,
+                                                                  child) {
+                                                            return FadeTransition(
+                                                              opacity:
+                                                                  animation,
+                                                              child: child,
+                                                            );
+                                                          },
+                                                        ),
+                                                      );
+                                                    },
+                                                    child: Hero(
+                                                      tag: snapshot.data[index]
+                                                          ['imageFileName'],
+                                                      child: Container(
+                                                          width: 200,
+                                                          child: Image.network(
+                                                            'https://uploads.fixme.ng/originals/${snapshot.data[index]['imageFileName']}',
+                                                            fit: BoxFit.cover,
+                                                          )),
+                                                    ),
+                                                  );
+                                                },
+                                              ));
+                                        }
+                                      } else {
+                                        mainWidget = Center(
+                                          child: Column(
+                                            mainAxisAlignment:
+                                                MainAxisAlignment.center,
+                                            crossAxisAlignment:
+                                                CrossAxisAlignment.center,
+                                            children: [
+                                              Theme(
+                                                  data: Theme.of(context)
+                                                      .copyWith(
+                                                          accentColor: Color(
+                                                              0xFF9B049B)),
+                                                  child:
+                                                      CircularProgressIndicator()),
+                                              SizedBox(
+                                                height: 10,
+                                              ),
+                                              Text('Loading',
+                                                  style: TextStyle(
+                                                      // letterSpacing: 4,
+                                                      color: Color(0xFF333333),
+                                                      fontSize: 18,
+                                                      fontWeight:
+                                                          FontWeight.w600)),
+                                            ],
+                                          ),
+                                        );
+                                      }
+                                      return mainWidget;
+                                    })
+                                : FutureBuilder(
+                                    future: products,
+                                    builder: (context, snapshot) {
+                                      Widget mainWidget;
+                                      if (snapshot.connectionState ==
+                                          ConnectionState.done) {
+                                        if (snapshot.data == null ||
+                                            snapshot.data.length == 0) {
+                                          mainWidget = Center(
+                                            child: Column(
+                                              mainAxisAlignment:
+                                                  MainAxisAlignment.center,
+                                              crossAxisAlignment:
+                                                  CrossAxisAlignment.center,
+                                              children: [
+                                                Text('No products',
+                                                    style: TextStyle(
+                                                        // letterSpacing: 4,
+                                                        color:
+                                                            Color(0xFF333333),
+                                                        fontSize: 18,
+                                                        fontWeight:
+                                                            FontWeight.w600)),
+                                              ],
+                                            ),
+                                          );
+                                        } else {
+                                          mainWidget = Container(
+                                              margin: const EdgeInsets.only(
+                                                  bottom: 30.0,
+                                                  left: 8,
+                                                  right: 8),
+                                              child: ListView.builder(
+                                                shrinkWrap: true,
+                                                physics: ScrollPhysics(),
+                                                itemCount: snapshot.data == null
+                                                    ? 0
+                                                    : snapshot.data.length,
+                                                itemBuilder:
+                                                    (BuildContext context,
+                                                        int index) {
+                                                  return ClipRRect(
+                                                    borderRadius:
+                                                        BorderRadius.circular(
+                                                            10),
+                                                    child: Container(
+                                                      child: ListTile(
+                                                        trailing: Container(
+                                                          height: 32,
+                                                          width: 32,
+                                                          margin:
+                                                              const EdgeInsets
+                                                                      .only(
+                                                                  top: 10),
+                                                          decoration:
+                                                              BoxDecoration(
+                                                                  border: Border
+                                                                      .all(
+                                                                    width: 1,
+                                                                    color: Color(
+                                                                        0xFFA40C85),
+                                                                  ),
+                                                                  shape: BoxShape
+                                                                      .circle),
+                                                          child: IconButton(
+                                                              onPressed: () {},
+                                                              icon: Icon(
+                                                                FeatherIcons
+                                                                    .edit3,
+                                                                size: 14,
+                                                                color: Color(
+                                                                    0xFFA40C85),
+                                                              )),
+                                                        ),
+                                                        onTap: () {
+                                                          _viewProduct(
+                                                              data: snapshot
+                                                                  .data[index]);
+                                                        },
+                                                        contentPadding:
+                                                            const EdgeInsets
+                                                                .only(left: 0),
+                                                        leading: CircleAvatar(
+                                                          child: Text(''),
+                                                          radius: 40,
+                                                          backgroundImage:
+                                                              NetworkImage(
+                                                            'https://uploads.fixme.ng/originals/${snapshot.data[index]['productImages'][0]['imageFileName']}',
+                                                          ),
+                                                          foregroundColor:
+                                                              Colors.white,
+                                                          backgroundColor:
+                                                              Colors.white,
+                                                        ),
+                                                        title: Text(
+                                                            "${snapshot.data[index]['product_name']}"
+                                                                .capitalizeFirstOfEach,
+                                                            style: TextStyle(
+                                                                color: Colors
+                                                                    .black)),
+                                                        subtitle: RichText(
+                                                          text: TextSpan(
+                                                            text: '\u{20A6} ',
+                                                            style: TextStyle(
+                                                                fontFamily:
+                                                                    'Roboto',
+                                                                color: Colors
+                                                                    .green,
+                                                                fontWeight:
+                                                                    FontWeight
+                                                                        .bold),
+                                                            children: <
+                                                                TextSpan>[
+                                                              TextSpan(
+                                                                  text:
+                                                                      "${snapshot.data[index]['price']}",
+                                                                  style: GoogleFonts.openSans(
+                                                                      color: Colors
+                                                                          .green,
+                                                                      fontWeight:
+                                                                          FontWeight
+                                                                              .bold)),
+                                                            ],
+                                                          ),
+                                                        ),
+                                                      ),
+                                                    ),
+                                                  );
+                                                },
+                                              ));
+                                        }
+                                      } else {
+                                        mainWidget = Center(
+                                          child: Column(
+                                            mainAxisAlignment:
+                                                MainAxisAlignment.center,
+                                            crossAxisAlignment:
+                                                CrossAxisAlignment.center,
+                                            children: [
+                                              Theme(
+                                                  data: Theme.of(context)
+                                                      .copyWith(
+                                                          accentColor: Color(
+                                                              0xFF9B049B)),
+                                                  child:
+                                                      CircularProgressIndicator()),
+                                              SizedBox(
+                                                height: 10,
+                                              ),
+                                              Text('Loading',
+                                                  style: TextStyle(
+                                                      // letterSpacing: 4,
+                                                      color: Color(0xFF333333),
+                                                      fontSize: 18,
+                                                      fontWeight:
+                                                          FontWeight.w600)),
+                                            ],
+                                          ),
+                                        );
+                                      }
+                                      return mainWidget;
+                                    }),
+                          ),
                         ],
                       ),
                     ),
@@ -477,9 +842,7 @@ class _EditProfilePageState extends State<EditProfilePage> {
         context: context,
         isScrollControlled: true,
         builder: (builder) {
-          return new Padding(
-              padding: MediaQuery.of(context).viewInsets,
-              child: Container(
+          return Container(
                   height: 220.0,
                   padding: EdgeInsets.symmetric(vertical: 20, horizontal: 20),
                   color: Colors.transparent,
@@ -605,7 +968,7 @@ class _EditProfilePageState extends State<EditProfilePage> {
                         ),
                       ])
                     ],
-                  )));
+                  ));
         });
   }
 
@@ -754,9 +1117,7 @@ class _EditProfilePageState extends State<EditProfilePage> {
     showModalBottomSheet(
         context: context,
         builder: (builder) {
-          return new Padding(
-              padding: MediaQuery.of(context).viewInsets,
-              child: Container(
+          return  Container(
                   height: 180.0,
                   padding: EdgeInsets.symmetric(vertical: 20, horizontal: 20),
                   color: Colors.transparent,
@@ -862,7 +1223,431 @@ class _EditProfilePageState extends State<EditProfilePage> {
                         ),
                       ])
                     ],
-                  )));
+                  ));
+        });
+  }
+
+  void _AddProduct() {
+    DataProvider datas = Provider.of<DataProvider>(context, listen: false);
+    Utils data = Provider.of<Utils>(context, listen: false);
+    final _controller = TextEditingController();
+    final _controller1 = TextEditingController();
+    final _controller2 = TextEditingController();
+    var network = Provider.of<WebServices>(context, listen: false);
+    showModalBottomSheet(
+        context: context,
+        isScrollControlled: true,
+        builder: (builder) {
+          return new StatefulBuilder(builder: (context, setStat) {
+            return Container(
+                padding: EdgeInsets.symmetric(vertical: 20, horizontal: 20),
+                color: Colors.transparent,
+                child: ListView(
+                  children: [
+                    SizedBox(height: MediaQuery.of(context).size.height * 0.19),
+                    Text(
+                      "Product Name",
+                      style:
+                          TextStyle(fontWeight: FontWeight.w500, fontSize: 18),
+                    ),
+                    SizedBox(
+                      height: 10,
+                    ),
+                    Container(
+                      height: 50,
+                      alignment: Alignment.center,
+                      padding: const EdgeInsets.only(left: 12),
+                      decoration: BoxDecoration(
+                          color: Color(0xFFFFFFFF),
+                          border: Border.all(color: Color(0xFFF1F1FD)),
+                          borderRadius: BorderRadius.all(Radius.circular(7))),
+                      child: TextField(
+                        controller: _controller,
+                        decoration: InputDecoration.collapsed(
+                          hintText: 'Product Name',
+                          hintStyle:
+                              TextStyle(fontSize: 16, color: Colors.black38),
+                        ),
+                      ),
+                    ),
+                    SizedBox(
+                      height: 10,
+                    ),
+                    Text(
+                      "Product Price",
+                      style:
+                          TextStyle(fontWeight: FontWeight.w500, fontSize: 18),
+                    ),
+                    SizedBox(
+                      height: 10,
+                    ),
+                    Container(
+                      height: 50,
+                      alignment: Alignment.center,
+                      padding: const EdgeInsets.only(left: 12),
+                      decoration: BoxDecoration(
+                          color: Color(0xFFFFFFFF),
+                          border: Border.all(color: Color(0xFFF1F1FD)),
+                          borderRadius: BorderRadius.all(Radius.circular(7))),
+                      child: TextField(
+                        controller: _controller1,
+                        keyboardType: TextInputType.number,
+                        decoration: InputDecoration.collapsed(
+                          hintText: 'Product Price',
+                          hintStyle:
+                              TextStyle(fontSize: 16, color: Colors.black38),
+                        ),
+                      ),
+                    ),
+                    SizedBox(
+                      height: 10,
+                    ),
+                    Text(
+                      "Product Description",
+                      style:
+                          TextStyle(fontWeight: FontWeight.w500, fontSize: 18),
+                    ),
+                    SizedBox(
+                      height: 10,
+                    ),
+                    Container(
+                      height: 50,
+                      alignment: Alignment.center,
+                      padding: const EdgeInsets.only(left: 12),
+                      decoration: BoxDecoration(
+                          color: Color(0xFFFFFFFF),
+                          border: Border.all(color: Color(0xFFF1F1FD)),
+                          borderRadius: BorderRadius.all(Radius.circular(7))),
+                      child: TextField(
+                        controller: _controller2,
+                        decoration: InputDecoration.collapsed(
+                          hintText: 'Product Description',
+                          hintStyle:
+                              TextStyle(fontSize: 16, color: Colors.black38),
+                        ),
+                      ),
+                    ),
+                    SizedBox(
+                      height: 10,
+                    ),
+                    Center(
+                      child: SizedBox(
+                        height: 100, // card height
+                        child: data.selectedImage2 == null
+                            ? Text('No Image Selected')
+                            : Container(
+                                width: 100,
+                                child: Card(
+                                    elevation: 2,
+                                    shape: RoundedRectangleBorder(
+                                        borderRadius:
+                                            BorderRadius.circular(20)),
+                                    child: Image.file(
+                                      File(
+                                        data.selectedImage2.path,
+                                      ),
+                                      fit: BoxFit.cover,
+                                    )),
+                              ),
+                      ),
+                    ),
+                    Padding(
+                      padding: const EdgeInsets.all(8.0),
+                      child: ClipRRect(
+                        borderRadius: BorderRadius.circular(26),
+                        child: Container(
+                          decoration: BoxDecoration(
+                              border: Border.all(color: Colors.white),
+                              borderRadius: BorderRadius.circular(26)),
+                          child: FlatButton(
+                            disabledColor: Color(0xFF9B049B),
+                            onPressed: () {
+                              data
+                                  .selectimage2(source: ImageSource.gallery)
+                                  .then((value) {
+                                setStat(() {});
+                              });
+                            },
+                            color: Color(0xFF9B049B),
+                            shape: RoundedRectangleBorder(
+                                borderRadius: BorderRadius.circular(26)),
+                            padding: EdgeInsets.all(0.0),
+                            child: Ink(
+                              decoration: BoxDecoration(
+                                  borderRadius: BorderRadius.circular(26)),
+                              child: Container(
+                                constraints: BoxConstraints(
+                                    maxWidth:
+                                        MediaQuery.of(context).size.width / 1.3,
+                                    minHeight: 45.0),
+                                alignment: Alignment.center,
+                                child: Text(
+                                  "Select Catalog Photo",
+                                  textAlign: TextAlign.center,
+                                  style: TextStyle(
+                                      fontSize: 17, color: Colors.white),
+                                ),
+                              ),
+                            ),
+                          ),
+                        ),
+                      ),
+                    ),
+                    SizedBox(
+                      height: 30,
+                    ),
+                    Row(mainAxisAlignment: MainAxisAlignment.end, children: [
+                      Container(
+                        height: 34,
+                        decoration: BoxDecoration(
+                            border:
+                                Border.all(color: Color(0xFFE9E9E9), width: 1),
+                            borderRadius: BorderRadius.circular(5)),
+                        child: FlatButton(
+                          disabledColor: Color(0x909B049B),
+                          onPressed: () => Navigator.pop(context),
+                          color: Colors.transparent,
+                          shape: RoundedRectangleBorder(
+                              borderRadius: BorderRadius.circular(5)),
+                          padding: EdgeInsets.all(0.0),
+                          child: Ink(
+                            decoration: BoxDecoration(
+                                borderRadius: BorderRadius.circular(5)),
+                            child: Container(
+                              constraints: BoxConstraints(
+                                  maxWidth: 100, minHeight: 34.0),
+                              alignment: Alignment.center,
+                              child: Text(
+                                "Cancel",
+                                textAlign: TextAlign.center,
+                                style: TextStyle(
+                                    color: Colors.black87,
+                                    fontWeight: FontWeight.w600),
+                              ),
+                            ),
+                          ),
+                        ),
+                      ),
+                      SizedBox(
+                        width: 20,
+                      ),
+                      Container(
+                        height: 34,
+                        decoration: BoxDecoration(
+                            border:
+                                Border.all(color: Color(0xFFE9E9E9), width: 1),
+                            borderRadius: BorderRadius.circular(5)),
+                        child: FlatButton(
+                          disabledColor: Color(0x909B049B),
+                          onPressed: () {
+                            Navigator.pop(context);
+                            network
+                                .addProductCatalog(
+                              context: context,
+                              bio: _controller2.text.toString(),
+                              productName: _controller.text.toString(),
+                              price: _controller1.text.toString(),
+                              path: data.selectedImage2.path,
+                            )
+                                .then((value) {
+                              setState(() {
+                                print('k');
+                              });
+                            });
+                          },
+                          color: Colors.transparent,
+                          shape: RoundedRectangleBorder(
+                              borderRadius: BorderRadius.circular(5)),
+                          padding: EdgeInsets.all(0.0),
+                          child: Ink(
+                            decoration: BoxDecoration(
+                                borderRadius: BorderRadius.circular(5)),
+                            child: Container(
+                              constraints: BoxConstraints(
+                                  maxWidth: 100, minHeight: 34.0),
+                              alignment: Alignment.center,
+                              child: Text(
+                                "Save",
+                                textAlign: TextAlign.center,
+                                style: TextStyle(
+                                    color: Colors.black87,
+                                    fontWeight: FontWeight.w600),
+                              ),
+                            ),
+                          ),
+                        ),
+                      ),
+                    ])
+                  ],
+                ));
+          });
+        });
+  }
+
+  void _AddCatalogue() {
+    DataProvider datas = Provider.of<DataProvider>(context, listen: false);
+    Utils data = Provider.of<Utils>(context, listen: false);
+    var network = Provider.of<WebServices>(context, listen: false);
+    showModalBottomSheet(
+        context: context,
+        isScrollControlled: true,
+        builder: (builder) {
+          return new StatefulBuilder(builder: (context, setStat) {
+            return Container(
+              height: 300,
+                padding: EdgeInsets.symmetric(vertical: 20, horizontal: 20),
+                color: Colors.transparent,
+                child: ListView(
+                  children: [
+                    SizedBox(
+                      height: 10,
+                    ),
+                    Center(
+                      child: SizedBox(
+                        height: 100, // card height
+                        child: data.selectedImage2 == null
+                            ? Text('No Image Selected')
+                            : Container(
+                                width: 100,
+                                child: Card(
+                                    elevation: 2,
+                                    shape: RoundedRectangleBorder(
+                                        borderRadius:
+                                            BorderRadius.circular(20)),
+                                    child: Image.file(
+                                      File(
+                                        data.selectedImage2.path,
+                                      ),
+                                      fit: BoxFit.cover,
+                                    )),
+                              ),
+                      ),
+                    ),
+                    Padding(
+                      padding: const EdgeInsets.all(8.0),
+                      child: ClipRRect(
+                        borderRadius: BorderRadius.circular(26),
+                        child: Container(
+                          decoration: BoxDecoration(
+                              border: Border.all(color: Colors.white),
+                              borderRadius: BorderRadius.circular(26)),
+                          child: FlatButton(
+                            disabledColor: Color(0xFF9B049B),
+                            onPressed: () {
+                              data
+                                  .selectimage2(source: ImageSource.gallery)
+                                  .then((value) {
+                                setStat(() {});
+                              });
+                            },
+                            color: Color(0xFF9B049B),
+                            shape: RoundedRectangleBorder(
+                                borderRadius: BorderRadius.circular(26)),
+                            padding: EdgeInsets.all(0.0),
+                            child: Ink(
+                              decoration: BoxDecoration(
+                                  borderRadius: BorderRadius.circular(26)),
+                              child: Container(
+                                constraints: BoxConstraints(
+                                    maxWidth:
+                                        MediaQuery.of(context).size.width / 1.3,
+                                    minHeight: 45.0),
+                                alignment: Alignment.center,
+                                child: Text(
+                                  "Select Catalog Photo",
+                                  textAlign: TextAlign.center,
+                                  style: TextStyle(
+                                      fontSize: 17, color: Colors.white),
+                                ),
+                              ),
+                            ),
+                          ),
+                        ),
+                      ),
+                    ),
+                    SizedBox(
+                      height: 30,
+                    ),
+                    Row(mainAxisAlignment: MainAxisAlignment.end, children: [
+                      Container(
+                        height: 34,
+                        decoration: BoxDecoration(
+                            border:
+                                Border.all(color: Color(0xFFE9E9E9), width: 1),
+                            borderRadius: BorderRadius.circular(5)),
+                        child: FlatButton(
+                          disabledColor: Color(0x909B049B),
+                          onPressed: () => Navigator.pop(context),
+                          color: Colors.transparent,
+                          shape: RoundedRectangleBorder(
+                              borderRadius: BorderRadius.circular(5)),
+                          padding: EdgeInsets.all(0.0),
+                          child: Ink(
+                            decoration: BoxDecoration(
+                                borderRadius: BorderRadius.circular(5)),
+                            child: Container(
+                              constraints: BoxConstraints(
+                                  maxWidth: 100, minHeight: 34.0),
+                              alignment: Alignment.center,
+                              child: Text(
+                                "Cancel",
+                                textAlign: TextAlign.center,
+                                style: TextStyle(
+                                    color: Colors.black87,
+                                    fontWeight: FontWeight.w600),
+                              ),
+                            ),
+                          ),
+                        ),
+                      ),
+                      SizedBox(
+                        width: 20,
+                      ),
+                      Container(
+                        height: 34,
+                        decoration: BoxDecoration(
+                            border:
+                                Border.all(color: Color(0xFFE9E9E9), width: 1),
+                            borderRadius: BorderRadius.circular(5)),
+                        child: FlatButton(
+                          disabledColor: Color(0x909B049B),
+                          onPressed: () {
+                            Navigator.pop(context);
+                            network.addCatalog(
+                              path: data.selectedImage2.path,
+                              uploadType: 'servicePicture',
+                            ).then((value) {
+                              setState(() {
+                                print(value);
+                              });
+                            });
+                          },
+                          color: Colors.transparent,
+                          shape: RoundedRectangleBorder(
+                              borderRadius: BorderRadius.circular(5)),
+                          padding: EdgeInsets.all(0.0),
+                          child: Ink(
+                            decoration: BoxDecoration(
+                                borderRadius: BorderRadius.circular(5)),
+                            child: Container(
+                              constraints: BoxConstraints(
+                                  maxWidth: 100, minHeight: 34.0),
+                              alignment: Alignment.center,
+                              child: Text(
+                                "Save",
+                                textAlign: TextAlign.center,
+                                style: TextStyle(
+                                    color: Colors.black87,
+                                    fontWeight: FontWeight.w600),
+                              ),
+                            ),
+                          ),
+                        ),
+                      ),
+                    ])
+                  ],
+                ));
+          });
         });
   }
 
@@ -874,9 +1659,7 @@ class _EditProfilePageState extends State<EditProfilePage> {
         context: context,
         isScrollControlled: true,
         builder: (builder) {
-          return new Padding(
-              padding: MediaQuery.of(context).viewInsets,
-              child: Container(
+          return  Container(
                   height: 180.0,
                   padding: EdgeInsets.symmetric(vertical: 20, horizontal: 20),
                   color: Colors.transparent,
@@ -978,7 +1761,7 @@ class _EditProfilePageState extends State<EditProfilePage> {
                         ),
                       ])
                     ],
-                  )));
+                  ));
         });
   }
 
@@ -1048,6 +1831,135 @@ class _EditProfilePageState extends State<EditProfilePage> {
         }).then((v) {
       setState(() {});
     });
+  }
+
+  _viewProduct({data}) {
+    showModalBottomSheet(
+        backgroundColor: Colors.transparent,
+        context: context,
+        isScrollControlled: true,
+        builder: (builder) {
+          return Container(
+            height: 335.0,
+            padding: EdgeInsets.only(
+              top: 10,
+            ),
+            decoration: BoxDecoration(
+                color: Colors.white,
+                borderRadius: BorderRadius.only(
+                  topLeft: Radius.circular(15.0),
+                  topRight: Radius.circular(15.0),
+                )),
+            child: Column(
+              children: [
+                Row(
+                  mainAxisAlignment: MainAxisAlignment.center,
+                  children: <Widget>[
+                    Container(
+                      width: 70,
+                      height: 4,
+                      margin: const EdgeInsets.only(bottom: 10),
+                      decoration: BoxDecoration(
+                          color: Colors.grey[300],
+                          borderRadius:
+                              BorderRadius.all(Radius.circular(12.0))),
+                    ),
+                  ],
+                ),
+                Container(
+                  color: Color(0xFFF0F0F0),
+                  child: Row(
+                    children: [
+                      for (dynamic item in data['productImages'])
+                        Container(
+                          width: 100,
+                          height: 100,
+                          margin: const EdgeInsets.all(8),
+                          child: Stack(
+                            children: [
+                              ClipRRect(
+                                borderRadius: BorderRadius.circular(10),
+                                child: Container(
+                                  width: 100,
+                                  height: 100,
+                                  child: Image.network(
+                                    'https://uploads.fixme.ng/originals/${item['imageFileName']}',
+                                    fit: BoxFit.cover,
+                                  ),
+                                ),
+                              ),
+                            ],
+                          ),
+                        ),
+                    ],
+                  ),
+                ),
+                SizedBox(
+                  height: 7,
+                ),
+                Row(
+                  children: [
+                    SizedBox(
+                      width: 8,
+                    ),
+                    Text(
+                      "Product name",
+                      style:
+                          TextStyle(fontWeight: FontWeight.w600, fontSize: 16),
+                    ),
+                  ],
+                ),
+                Row(
+                  children: [
+                    SizedBox(
+                      width: 8,
+                    ),
+                    Text(
+                      "${data['product_name']}",
+                      style: TextStyle(fontSize: 18),
+                    ),
+                  ],
+                ),
+                Divider(),
+                Row(
+                  children: [
+                    SizedBox(
+                      width: 8,
+                    ),
+                    Text(
+                      "Product amount",
+                      style:
+                          TextStyle(fontWeight: FontWeight.w600, fontSize: 16),
+                    ),
+                  ],
+                ),
+                Row(
+                  children: [
+                    SizedBox(
+                      width: 8,
+                    ),
+                    RichText(
+                      text: TextSpan(
+                        text: '\u{20A6} ',
+                        style: TextStyle(
+                            fontFamily: 'Roboto',
+                            color: Colors.green,
+                            fontWeight: FontWeight.bold),
+                        children: <TextSpan>[
+                          TextSpan(
+                              text: "${data['price']}",
+                              style: GoogleFonts.openSans(
+                                  color: Colors.green,
+                                  fontWeight: FontWeight.bold)),
+                        ],
+                      ),
+                    ),
+                  ],
+                ),
+              ],
+            ),
+          );
+        });
   }
 
   void searchServices(userInputValue) {

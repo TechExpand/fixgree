@@ -7,6 +7,7 @@ void popDialog(BuildContext context, String message, String imagepath) {
   var data = Provider.of<DataProvider>(context, listen: false);
   showModalBottomSheet(
     isDismissible: false,
+    enableDrag: false,
     isScrollControlled: true,
     context: context,
     builder: (BuildContext context) {
@@ -52,7 +53,13 @@ void popDialog(BuildContext context, String message, String imagepath) {
         },
       ),
     );
+
+    showDialog(context: context, builder: (context){
+      return  AlertDialog(content: Text('There is currently no one nearby offering your requested service. Please try again later.'),);
+    });
   });
+
+
 }
 
 Future popDialogs(BuildContext context, String message, String imagepath) async {

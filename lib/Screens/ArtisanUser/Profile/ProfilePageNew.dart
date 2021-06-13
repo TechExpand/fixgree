@@ -596,6 +596,8 @@ class _ProfilePageNewState extends State<ProfilePageNew> {
                                                                           InkWell(
                                                                             onTap:
                                                                                 () {
+                                                                              print(network.bearer);
+                                                                              print(network.userId);
                                                                               Navigator.push(
                                                                                 context,
                                                                                 PageRouteBuilder(

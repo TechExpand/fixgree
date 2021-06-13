@@ -54,7 +54,7 @@ class ProductDetailPageState extends State<ProductDetailPage> {
                   labelText: postRequestProvider.selecteService == null
                       ? 'Category'
                       : postRequestProvider.selecteService.service,
-                  suffixIcon: Icon(Icons.arrow_downward, color: Colors.black38),
+                  suffixIcon: Icon(Icons.keyboard_arrow_down, color: Colors.black38),
                   disabledBorder: OutlineInputBorder(
                       borderSide: const BorderSide(
                           color: Color(0xFF9B049B), width: 0.0),

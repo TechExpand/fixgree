@@ -10,6 +10,7 @@ import 'package:file/local.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:flutter_audio_recorder/flutter_audio_recorder.dart';
+
 // import 'package:gx_file_picker/gx_file_picker.dart';
 import 'package:path_provider/path_provider.dart';
 import 'package:image_picker/image_picker.dart';
@@ -37,7 +38,8 @@ class _ChatPageState extends State<ChatPage> {
   RecordingStatus _currentStatus = RecordingStatus.Unset;
 
   final _controller = TextEditingController();
-  final _controller2 = TextEditingController();
+
+  // final _controller2 = TextEditingController();
   String message = '';
 
   init() async {
@@ -119,6 +121,7 @@ class _ChatPageState extends State<ChatPage> {
   Widget build(BuildContext context) {
     var data = Provider.of<Utils>(context, listen: false);
     var datas = Provider.of<DataProvider>(context, listen: false);
+    var datass = Provider.of<DataProvider>(context, listen: false);
     var network = Provider.of<WebServices>(context, listen: false);
     final GlobalKey<ScaffoldState> scaffoldKey = GlobalKey<ScaffoldState>();
 
@@ -126,15 +129,18 @@ class _ChatPageState extends State<ChatPage> {
     void pickImage({@required ImageSource source, context}) async {
       final selectedImage = await picker.getImage(source: source);
       FocusScope.of(context).unfocus();
-      _controller2.clear();
+      // _controller2.clear();
       _controller.clear();
       datas.setWritingTo(false);
       await FirebaseApi.uploadImage(
-          widget.user.idUser,
-          network.mobileDeviceToken,
-          selectedImage,
-          context,
-          '${network.firstName}-${widget.user.name}');
+              widget.user.idUser,
+              network.mobileDeviceToken,
+              selectedImage,
+              context,
+              '${network.firstName}-${widget.user.name}')
+          .then((value) {
+        Navigator.pop(context);
+      });
     }
 
     pickDoc() async {
@@ -156,7 +162,7 @@ class _ChatPageState extends State<ChatPage> {
       // ]);
 
       FocusScope.of(context).unfocus();
-      _controller2.clear();
+      // _controller2.clear();
       _controller.clear();
       datas.setWritingTo(false);
       // await FirebaseApi.uploadImage(
@@ -169,7 +175,7 @@ class _ChatPageState extends State<ChatPage> {
 
     void record({record, context}) async {
       FocusScope.of(context).unfocus();
-      _controller2.clear();
+      // _controller2.clear();
       _controller.clear();
       datas.setWritingTo(false);
       await FirebaseApi.uploadRecord(
@@ -180,8 +186,11 @@ class _ChatPageState extends State<ChatPage> {
           '${network.firstName}-${widget.user.name}');
     }
 
-    void sendMessage() async {
-      FocusScope.of(context).unfocus();
+    sendMessage() async {
+      FocusScopeNode currentFocus = FocusScope.of(context);
+      if (!currentFocus.hasPrimaryFocus) {
+        currentFocus.unfocus();
+      }
       _controller.clear();
       datas.setWritingTo(false);
       await FirebaseApi.uploadmessage(
@@ -367,180 +376,193 @@ class _ChatPageState extends State<ChatPage> {
       showModalBottomSheet(
           context: context,
           builder: (builder) {
-            return new Container(
-              height: 155.0,
-              color: Colors.transparent,
-              //could change this to Color(0xFF737373),
-              //so you don't have to change MaterialApp canvasColor
-              child: Column(
-                children: [
-                  Container(
-                    height: 65,
-                    color: Color(0xFFA40C85), //164, 12, 133, 0.75
+            return StatefulBuilder(builder: (context, setState) {
+              return new Container(
+                height: 155.0,
+                color: Colors.transparent,
+                //could change this to Color(0xFF737373),
+                //so you don't have to change MaterialApp canvasColor
+                child: Column(
+                  children: [
+                    Container(
+                      height: 65,
+                      color: Color(0xFFA40C85), //164, 12, 133, 0.75
 
-                    child: Row(
-                      mainAxisAlignment: MainAxisAlignment.center,
-                      children: <Widget>[
-                        InkWell(
-                          onTap: () {
-                            Navigator.pop(context);
-                          },
-                          child: Container(
-                              width: 40,
-                              height: 40,
-                              decoration: BoxDecoration(
-                                  color: Colors.white, shape: BoxShape.circle),
-                              child: Icon(Icons.clear)),
-                        ),
-                        SizedBox(
-                          width: 14,
-                        ),
-                        ClipRRect(
-                            borderRadius: BorderRadius.circular(5),
+                      child: Row(
+                        mainAxisAlignment: MainAxisAlignment.center,
+                        children: <Widget>[
+                          InkWell(
+                            onTap: () {
+                              Navigator.pop(context);
+                            },
                             child: Container(
-                              color: Colors.white,
-                              height: 53,
-                              width: MediaQuery.of(context).size.width / 1.45,
-                              child: TextField(
-                                controller: _controller2,
-                                onChanged: (val) {
-                                  (val.length > 0 && val.trim() != "")
-                                      ? datas.setWritingTo(true)
-                                      : datas.setWritingTo(false);
-
-                                  message = val;
-                                },
-                                textCapitalization:
-                                    TextCapitalization.sentences,
-                                autocorrect: true,
-                                // focusNode: textFieldFocus,
-                                enableSuggestions: true,
-                                maxLines: null,
-
-                                decoration: InputDecoration(
-                                  border: InputBorder.none,
-                                  hintStyle: TextStyle(color: Colors.black54),
-                                  hintText: 'Send Message...',
-                                  focusedBorder: InputBorder.none,
-                                  enabledBorder: InputBorder.none,
-                                  errorBorder: InputBorder.none,
-                                  disabledBorder: InputBorder.none,
-                                  isDense: true,
-                                  filled: true,
-                                  fillColor: Colors.white,
-                                ),
-                              ),
-                            )),
-                        Selector<DataProvider, bool>(
-                          selector: (_, model) => model.isWriting,
-                          builder: (_, mo, __) {
-                            return mo
-                                ? IconButton(
-                                    onPressed: sendMessage,
-                                    icon: Icon(Icons.send, color: Colors.white),
-                                  )
-                                : IconButton(
-                                    onPressed: () {
-                                      _modalBottomSheetRecord(datas);
-                                    },
-                                    icon: Icon(
-                                      Icons.mic,
-                                      color: Colors.white,
-                                      size: 30,
-                                    ),
-                                  );
-                          },
-                        ),
-                      ],
-                    ),
-                  ),
-                  Container(
-                    color: Colors.white,
-                    padding: EdgeInsets.all(8),
-                    child: Row(
-                      mainAxisAlignment: MainAxisAlignment.spaceEvenly,
-                      children: <Widget>[
-                        InkWell(
-                          onTap: () {
-                            pickDoc();
-                          },
-                          child: Tab(
-                              icon: Container(
-                                  width: 40,
-                                  height: 40,
-                                  decoration: BoxDecoration(
-                                      color: Color(0xFFA40C85),
-                                      shape: BoxShape.circle),
-                                  child: Icon(
-                                    Icons.attachment,
+                                width: 40,
+                                height: 40,
+                                decoration: BoxDecoration(
                                     color: Colors.white,
-                                  )),
-                              text: 'Attachment'),
-                        ),
-                        InkWell(
-                          onTap: () {
-                            pickImage(
-                                source: ImageSource.camera, context: context);
-                          },
-                          child: Tab(
-                              icon: Container(
-                                  width: 40,
-                                  height: 40,
-                                  decoration: BoxDecoration(
-                                      color: Color(0xFFA40C85),
-                                      shape: BoxShape.circle),
-                                  child: Icon(Icons.camera_alt,
-                                      color: Colors.white)),
-                              text: 'Camera'),
-                        ),
-                        InkWell(
-                          child: Tab(
-                              icon: Container(
-                                  width: 40,
-                                  height: 40,
-                                  decoration: BoxDecoration(
-                                      color: Color(0xFFA40C85),
-                                      shape: BoxShape.circle),
-                                  child: Center(
-                                    child: Text(
-                                      '@',
-                                      style: TextStyle(
-                                          color: Colors.white, fontSize: 20),
-                                      textAlign: TextAlign.center,
-                                    ),
-                                  )),
-                              text: 'Mention'),
-                        ),
-                        InkWell(
-                          onTap: () {
-                            pickImage(
-                                source: ImageSource.gallery, context: context);
-                          },
-                          child: Tab(
-                              icon: Container(
-                                  width: 40,
-                                  height: 40,
-                                  decoration: BoxDecoration(
-                                      color: Color(0xFFA40C85),
-                                      shape: BoxShape.circle),
-                                  child: Center(
-                                    child: Text(
-                                      'GIF',
-                                      style: TextStyle(
-                                          color: Colors.white,
-                                          fontSize: 14,
-                                          fontWeight: FontWeight.bold),
-                                      textAlign: TextAlign.center,
-                                    ),
-                                  )),
-                              text: 'GIF'),
-                        ),
-                      ],
+                                    shape: BoxShape.circle),
+                                child: Icon(Icons.clear)),
+                          ),
+                          SizedBox(
+                            width: 14,
+                          ),
+                          ClipRRect(
+                              borderRadius: BorderRadius.circular(5),
+                              child: Container(
+                                color: Colors.white,
+                                height: 53,
+                                width: MediaQuery.of(context).size.width / 1.45,
+                                child: TextField(
+                                  controller: _controller,
+                                  onChanged: (val) {
+                                    (val.length > 0 && val.trim() != "")
+                                        ? datas.setWritingTo(true)
+                                        : datas.setWritingTo(false);
+
+                                    message = val;
+                                    setState(() {
+                                      print(message);
+                                    });
+                                  },
+                                  textCapitalization:
+                                      TextCapitalization.sentences,
+                                  autocorrect: true,
+                                  // focusNode: textFieldFocus,
+                                  enableSuggestions: true,
+                                  maxLines: null,
+
+                                  decoration: InputDecoration(
+                                    border: InputBorder.none,
+                                    hintStyle: TextStyle(color: Colors.black54),
+                                    hintText: 'Send Message...',
+                                    focusedBorder: InputBorder.none,
+                                    enabledBorder: InputBorder.none,
+                                    errorBorder: InputBorder.none,
+                                    disabledBorder: InputBorder.none,
+                                    isDense: true,
+                                    filled: true,
+                                    fillColor: Colors.white,
+                                  ),
+                                ),
+                              )),
+                          // Selector<DataProvider, bool>(
+                          //   selector: (_, model) => model.isWriting,
+                          //   builder: (_, mo, __) {
+                          //     return
+                          datass.isWriting
+                              ? IconButton(
+                                  onPressed: () {
+                                    sendMessage().then((value) {
+                                      Navigator.pop(context);
+                                    });
+                                  },
+                                  icon: Icon(Icons.send, color: Colors.white),
+                                )
+                              : IconButton(
+                                  onPressed: () {
+                                    _modalBottomSheetRecord(datas);
+                                  },
+                                  icon: Icon(
+                                    Icons.mic,
+                                    color: Colors.white,
+                                    size: 30,
+                                  ),
+                                )
+                          //;
+                          //   },
+                          // ),
+                        ],
+                      ),
                     ),
-                  ),
-                ],
-              ),
-            );
+                    Container(
+                      color: Colors.white,
+                      padding: EdgeInsets.all(8),
+                      child: Row(
+                        mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+                        children: <Widget>[
+                          InkWell(
+                            onTap: () {
+                              pickDoc();
+                            },
+                            child: Tab(
+                                icon: Container(
+                                    width: 40,
+                                    height: 40,
+                                    decoration: BoxDecoration(
+                                        color: Color(0xFFA40C85),
+                                        shape: BoxShape.circle),
+                                    child: Icon(
+                                      Icons.attachment,
+                                      color: Colors.white,
+                                    )),
+                                text: 'Attachment'),
+                          ),
+                          InkWell(
+                            onTap: () {
+                              pickImage(
+                                  source: ImageSource.camera, context: context);
+                            },
+                            child: Tab(
+                                icon: Container(
+                                    width: 40,
+                                    height: 40,
+                                    decoration: BoxDecoration(
+                                        color: Color(0xFFA40C85),
+                                        shape: BoxShape.circle),
+                                    child: Icon(Icons.camera_alt,
+                                        color: Colors.white)),
+                                text: 'Camera'),
+                          ),
+                          InkWell(
+                            child: Tab(
+                                icon: Container(
+                                    width: 40,
+                                    height: 40,
+                                    decoration: BoxDecoration(
+                                        color: Color(0xFFA40C85),
+                                        shape: BoxShape.circle),
+                                    child: Center(
+                                      child: Text(
+                                        '@',
+                                        style: TextStyle(
+                                            color: Colors.white, fontSize: 20),
+                                        textAlign: TextAlign.center,
+                                      ),
+                                    )),
+                                text: 'Mention'),
+                          ),
+                          InkWell(
+                            onTap: () {
+                              pickImage(
+                                  source: ImageSource.gallery,
+                                  context: context);
+                            },
+                            child: Tab(
+                                icon: Container(
+                                    width: 40,
+                                    height: 40,
+                                    decoration: BoxDecoration(
+                                        color: Color(0xFFA40C85),
+                                        shape: BoxShape.circle),
+                                    child: Center(
+                                      child: Text(
+                                        'GIF',
+                                        style: TextStyle(
+                                            color: Colors.white,
+                                            fontSize: 14,
+                                            fontWeight: FontWeight.bold),
+                                        textAlign: TextAlign.center,
+                                      ),
+                                    )),
+                                text: 'GIF'),
+                          ),
+                        ],
+                      ),
+                    ),
+                  ],
+                ),
+              );
+            });
           });
     }
 
@@ -633,79 +655,86 @@ class _ChatPageState extends State<ChatPage> {
                   user: widget.user), //network.mobile_device_token
             ),
           ),
-          Container(
-            height: 65,
-            color: Color(0xFFA40C85),
-            child: widget.user.idUser == null ||
-                    widget.user.idUser.toString().isEmpty ||
-                    network.mobileDeviceToken == null
-                ? Center(
-                    child: Text(
-                    'You Cannot Send Message. You can Contact the user through direct Phone Call by Clicking the phone Icon above',
-                    style: TextStyle(color: Colors.white),
-                    textAlign: TextAlign.center,
-                  ))
-                : Row(
-                    mainAxisAlignment: MainAxisAlignment.center,
-                    children: <Widget>[
-                      InkWell(
-                        onTap: () {
-                          _modalBottomSheetMenu(datas);
-                        },
-                        child: Container(
-                            width: 40,
-                            height: 40,
-                            decoration: BoxDecoration(
-                                color: Colors.white, shape: BoxShape.circle),
-                            child: Icon(
-                              Icons.add,
-                              size: 35,
-                            )),
-                      ),
-                      SizedBox(
-                        width: 14,
-                      ),
-                      ClipRRect(
-                        borderRadius: BorderRadius.circular(5),
-                        child: Container(
-                          color: Colors.white,
-                          height: 53,
-                          width: MediaQuery.of(context).size.width / 1.45,
-                          child: TextField(
-                            onTap: () => FirebaseApi.updateUsertoRead(
-                                idUser: widget.user.idUser,
-                                idArtisan: network.mobileDeviceToken),
-                            controller: _controller,
-                            onChanged: (val) {
-                              (val.length > 0 && val.trim() != "")
-                                  ? datas.setWritingTo(true)
-                                  : datas.setWritingTo(false);
-                              message = val;
+          StatefulBuilder(
+            builder: (context, setState) {
+              return Container(
+                height: 65,
+                color: Color(0xFFA40C85),
+                child: widget.user.idUser == null ||
+                        widget.user.idUser.toString().isEmpty ||
+                        network.mobileDeviceToken == null
+                    ? Center(
+                        child: Text(
+                        'You Cannot Send Message. You can Contact the user through direct Phone Call by Clicking the phone Icon above',
+                        style: TextStyle(color: Colors.white),
+                        textAlign: TextAlign.center,
+                      ))
+                    : Row(
+                        mainAxisAlignment: MainAxisAlignment.center,
+                        children: <Widget>[
+                          InkWell(
+                            onTap: () {
+                              _modalBottomSheetMenu(datas);
                             },
-                            textCapitalization: TextCapitalization.sentences,
-                            autocorrect: true,
-                            // focusNode: textFieldFocus,
-                            enableSuggestions: true,
-                            maxLines: null,
-                            decoration: InputDecoration(
-                              hintText: 'Send Message...',
-                              hintStyle: TextStyle(color: Colors.black54),
-                              border: InputBorder.none,
-                              focusedBorder: InputBorder.none,
-                              enabledBorder: InputBorder.none,
-                              errorBorder: InputBorder.none,
-                              disabledBorder: InputBorder.none,
-                              isDense: true,
-                              filled: true,
-                              fillColor: Colors.white,
+                            child: Container(
+                                width: 40,
+                                height: 40,
+                                decoration: BoxDecoration(
+                                    color: Colors.white, shape: BoxShape.circle),
+                                child: Icon(
+                                  Icons.add,
+                                  size: 35,
+                                )),
+                          ),
+                          SizedBox(
+                            width: 14,
+                          ),
+                          ClipRRect(
+                            borderRadius: BorderRadius.circular(5),
+                            child: Container(
+                              color: Colors.white,
+                              height: 53,
+                              width: MediaQuery.of(context).size.width / 1.45,
+                              child: TextField(
+                                onTap: () => FirebaseApi.updateUsertoRead(
+                                    idUser: widget.user.idUser,
+                                    idArtisan: network.mobileDeviceToken),
+                                controller: _controller,
+                                onChanged: (val) {
+                                  (val.length > 0 && val.trim() != "")
+                                      ? datas.setWritingTo(true)
+                                      : datas.setWritingTo(false);
+                                  message = val;
+                                  setState((){
+                                    print(message);
+                                  });
+                                },
+                                textCapitalization: TextCapitalization.sentences,
+                                autocorrect: true,
+                                // focusNode: textFieldFocus,
+                                enableSuggestions: true,
+                                maxLines: null,
+                                decoration: InputDecoration(
+                                  hintText: 'Send Message...',
+                                  hintStyle: TextStyle(color: Colors.black54),
+                                  border: InputBorder.none,
+                                  focusedBorder: InputBorder.none,
+                                  enabledBorder: InputBorder.none,
+                                  errorBorder: InputBorder.none,
+                                  disabledBorder: InputBorder.none,
+                                  isDense: true,
+                                  filled: true,
+                                  fillColor: Colors.white,
+                                ),
+                              ),
                             ),
                           ),
-                        ),
-                      ),
-                      Selector<DataProvider, bool>(
-                        selector: (_, model) => model.isWriting,
-                        builder: (_, mo, __) {
-                          return mo
+                          // Selector<DataProvider, bool>(
+                          //   selector: (_, model) => model.isWriting,
+                          //   builder: (_, mo, __) {
+                          //     return mo
+                          //         ?
+                          datass.isWriting
                               ? IconButton(
                                   onPressed: sendMessage,
                                   icon: Icon(Icons.send, color: Colors.white),
@@ -719,11 +748,14 @@ class _ChatPageState extends State<ChatPage> {
                                     color: Colors.white,
                                     size: 30,
                                   ),
-                                );
-                        },
+                                )
+                          //;
+                          //   },
+                          // ),
+                        ],
                       ),
-                    ],
-                  ),
+              );
+            }
           ),
         ],
       ),

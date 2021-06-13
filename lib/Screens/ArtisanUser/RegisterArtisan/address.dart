@@ -14,7 +14,7 @@ class SignUpAddressState extends State<SignUpAddress> {
 
   @override
   Widget build(BuildContext context) {
-    var data = Provider.of<DataProvider>(context);
+    var data =Provider.of<DataProvider>(context, listen: false);
     return Scaffold(
       appBar: AppBar(
         elevation: 0,
@@ -48,7 +48,10 @@ class SignUpAddressState extends State<SignUpAddress> {
               height: 55,
               child: TextFormField(
                 onChanged: (value) {
-                  data.sethomeAdress(value);
+                  setState(() {
+                    data.sethomeAdress(value);
+                  });
+
                 },
                 style: TextStyle(color: Colors.black),
                 cursorColor: Colors.black,
@@ -75,7 +78,10 @@ class SignUpAddressState extends State<SignUpAddress> {
               height: 55,
               child: TextFormField(
                 onChanged: (value) {
-                  data.setofficeAddress(value);
+                  setState(() {
+                    data.setofficeAddress(value);
+                  });
+
                 },
                 style: TextStyle(color: Colors.black),
                 cursorColor: Colors.black,
@@ -137,7 +143,9 @@ class SignUpAddressState extends State<SignUpAddress> {
               ),
             ),
             Spacer(),
-            Align(
+    Consumer<DataProvider>(
+    builder: (context, conData, child) {
+    return Align(
               alignment: Alignment.center,
               child: Container(
                 margin: EdgeInsets.only(
@@ -149,7 +157,7 @@ class SignUpAddressState extends State<SignUpAddress> {
                 child: FlatButton(
                   disabledColor: Color(0x909B049B),
                   onPressed:
-                      data.officeAddress.isEmpty || data.homeAddress.isEmpty
+                      conData.officeAddress.isEmpty || conData.homeAddress.isEmpty
                           ? null
                           : () {
                               Navigator.push(
@@ -168,6 +176,10 @@ class SignUpAddressState extends State<SignUpAddress> {
                                   },
                                 ),
                               );
+                              FocusScopeNode currentFocus = FocusScope.of(context);
+                              if (!currentFocus.hasPrimaryFocus) {
+                                currentFocus.unfocus();
+                              }
                             },
                   color: Color(0xFF9B049B),
                   shape: RoundedRectangleBorder(
@@ -190,7 +202,7 @@ class SignUpAddressState extends State<SignUpAddress> {
                   ),
                 ),
               ),
-            ),
+            );}),
           ],
         ),
       ),

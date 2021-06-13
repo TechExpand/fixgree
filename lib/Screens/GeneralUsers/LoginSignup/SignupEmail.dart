@@ -14,7 +14,7 @@ class SignUpEmailState extends State<SignUpEmail> {
 
   @override
   Widget build(BuildContext context) {
-    var data = Provider.of<DataProvider>(context);
+    var data = Provider.of<DataProvider>(context, listen: false);
     return Scaffold(
       appBar: AppBar(
         elevation: 0,
@@ -70,7 +70,10 @@ class SignUpEmailState extends State<SignUpEmail> {
               ),
             ),
             Spacer(),
-            Align(
+    Consumer<DataProvider>(
+    builder: (context, conData, child) {
+    return
+    Align(
               alignment: Alignment.center,
               child: Container(
                 margin: EdgeInsets.only(
@@ -81,7 +84,7 @@ class SignUpEmailState extends State<SignUpEmail> {
                     borderRadius: BorderRadius.circular(26)),
                 child: FlatButton(
                   disabledColor: Color(0x909B049B),
-                  onPressed: data.emails.isEmpty
+                  onPressed: conData.emails.isEmpty
                       ? null
                       : () {
                           Navigator.push(
@@ -100,6 +103,10 @@ class SignUpEmailState extends State<SignUpEmail> {
                               },
                             ),
                           );
+                          FocusScopeNode currentFocus = FocusScope.of(context);
+                          if (!currentFocus.hasPrimaryFocus) {
+                            currentFocus.unfocus();
+                          }
                         },
                   color: Color(0xFF9B049B),
                   shape: RoundedRectangleBorder(
@@ -121,7 +128,8 @@ class SignUpEmailState extends State<SignUpEmail> {
                     ),
                   ),
                 ),
-              ),
+              ));
+    }
             ),
           ],
         ),
