@@ -110,10 +110,27 @@ class _HomePageState extends State<HomePage> {
     });
   }
 
-  showNotification(value1, value2) async {
+  // showNotification(value1, value2) async {
+  //   var android = AndroidNotificationDetails('id', 'channel ', 'description',
+  //       priority: Priority.high, importance: Importance.max);
+  //   var iOS = IOSNotificationDetails(
+  //     presentAlert: true,
+  //     presentBadge: true,
+  //     presentSound: true,
+  //   );
+  //   var platform = new NotificationDetails(android: android, iOS: iOS);
+  //   await flutterLocalNotificationsPlugin.show(
+  //       0, '$value1', '$value2', platform,
+  //       payload: 'New job is available around you');
+  // }
+
+ showNotification(value1, value2) async {
     var android = AndroidNotificationDetails('id', 'channel ', 'description',
-        priority: Priority.high, importance: Importance.max);
+        priority: Priority.high, importance: Importance.max, sound: RawResourceAndroidNotificationSound('sound'),
+      playSound: true,
+    );
     var iOS = IOSNotificationDetails(
+      sound: 'sound.wav',
       presentAlert: true,
       presentBadge: true,
       presentSound: true,
@@ -123,7 +140,6 @@ class _HomePageState extends State<HomePage> {
         0, '$value1', '$value2', platform,
         payload: 'New job is available around you');
   }
-
   @override
   void dispose() {
     _myPage.dispose();

@@ -168,6 +168,7 @@ class SearchResultState extends State<SearchResult> {
                                         bottom: 5, top: 5),
                                     child: ListTile(
                                       onTap: () {
+                                        network.postViewed(snapshot.data[index].id);
                                         Navigator.push(
                                           context,
                                           PageRouteBuilder(

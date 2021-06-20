@@ -480,23 +480,23 @@ class _ChatPageState extends State<ChatPage> {
                       child: Row(
                         mainAxisAlignment: MainAxisAlignment.spaceEvenly,
                         children: <Widget>[
-                          InkWell(
-                            onTap: () {
-                              pickDoc();
-                            },
-                            child: Tab(
-                                icon: Container(
-                                    width: 40,
-                                    height: 40,
-                                    decoration: BoxDecoration(
-                                        color: Color(0xFFA40C85),
-                                        shape: BoxShape.circle),
-                                    child: Icon(
-                                      Icons.attachment,
-                                      color: Colors.white,
-                                    )),
-                                text: 'Attachment'),
-                          ),
+                          // InkWell(
+                          //   onTap: () {
+                          //     pickDoc();
+                          //   },
+                          //   child: Tab(
+                          //       icon: Container(
+                          //           width: 40,
+                          //           height: 40,
+                          //           decoration: BoxDecoration(
+                          //               color: Color(0xFFA40C85),
+                          //               shape: BoxShape.circle),
+                          //           child: Icon(
+                          //             Icons.attachment,
+                          //             color: Colors.white,
+                          //           )),
+                          //       text: 'Attachment'),
+                          // ),
                           InkWell(
                             onTap: () {
                               pickImage(
@@ -513,24 +513,24 @@ class _ChatPageState extends State<ChatPage> {
                                         color: Colors.white)),
                                 text: 'Camera'),
                           ),
-                          InkWell(
-                            child: Tab(
-                                icon: Container(
-                                    width: 40,
-                                    height: 40,
-                                    decoration: BoxDecoration(
-                                        color: Color(0xFFA40C85),
-                                        shape: BoxShape.circle),
-                                    child: Center(
-                                      child: Text(
-                                        '@',
-                                        style: TextStyle(
-                                            color: Colors.white, fontSize: 20),
-                                        textAlign: TextAlign.center,
-                                      ),
-                                    )),
-                                text: 'Mention'),
-                          ),
+                          // InkWell(
+                          //   child: Tab(
+                          //       icon: Container(
+                          //           width: 40,
+                          //           height: 40,
+                          //           decoration: BoxDecoration(
+                          //               color: Color(0xFFA40C85),
+                          //               shape: BoxShape.circle),
+                          //           child: Center(
+                          //             child: Text(
+                          //               '@',
+                          //               style: TextStyle(
+                          //                   color: Colors.white, fontSize: 20),
+                          //               textAlign: TextAlign.center,
+                          //             ),
+                          //           )),
+                          //       text: 'Mention'),
+                          // ),
                           InkWell(
                             onTap: () {
                               pickImage(

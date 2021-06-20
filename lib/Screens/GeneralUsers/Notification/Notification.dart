@@ -327,7 +327,7 @@ class _NotificationState extends State<NotificationPage> {
                                                         height: 28,
                                                         child: Center(
                                                             child: Text(
-                                                                'BID THIS JOB',
+                                                                'GET THIS JOB',
                                                                 style: GoogleFonts.openSans(
                                                                     fontSize:
                                                                         13,

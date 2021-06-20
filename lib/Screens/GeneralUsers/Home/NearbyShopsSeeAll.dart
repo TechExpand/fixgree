@@ -33,66 +33,42 @@ class _NearbyShopsSeeAllState extends State<NearbyShopsSeeAll> {
   }
   ScrollController scrollController = ScrollController();
   TextEditingController searchController = TextEditingController();
-
+  List data;
+  String nodata;
 
   var filteredItems = [];
 
 
-
-
-//  Future<dynamic> nearbyShops({longitude, latitude, highestId}) async {
-//    var network = Provider.of<WebServices>(context, listen: false);
-//    print(network.userId.toString());
-//    var response = await http
-//        .post(Uri.parse('https://manager.fixme.ng/load-more-near-shop'), body: {
-//      'user_id': network.userId.toString(),
-//      'latitude':  '5.001190',
-//      'longitude' :'8.334840',
-//      'highestId':  highestId.toString(),
-//
-////      'longitude': longitude.toString(),
-////      'latitude': latitude.toString(),
-//    }, headers: {
-//      "Content-type": "application/x-www-form-urlencoded",
-//      'Authorization': 'Bearer ${network.bearer}',
-//    });
-//
-//    if(response.statusCode == 500){
-//      print("You are not connected to internet");
-//    }else{
-//      var body = json.decode(response.body);
-//      print(body.toString());
-//      List result = body['sortedUsers'];
-//      List<UserSearch> nearebyList = result.map((data) {
-//        return UserSearch.fromJson(data);
-//      }).toList();
-//      if (body['reqRes'] == 'true') {
-//        provider.userItems1 = provider.userItems1+nearebyList;
-//        print(provider.userItems1.length.toString()+ provider.userItems1[provider.userItems1.length-1].id.toString() +'lllll');
-//        return nearebyList;
-//      } else if (body['reqRes'] == 'false') {
-//        print(body['message']);
-//      }
-//    }
-//  }
-
-
-
   @override
-  Widget build(BuildContext context) {
-    DataProvider providers = Provider.of<DataProvider>(context, listen: false);
+  void initState() {
+    var network = Provider.of<WebServices>(context, listen: false);
+    var location = Provider.of<LocationService>(context, listen: false);
+    network.nearbyShop(
+        latitude: location.locationLatitude,
+        longitude: location.locationLongitude, context: context).then((value) {
+      setState(() {
+        data = value;
+      });
+    });
+
+
+
+
+
     scrollController.addListener(()async{
       bool isLoading = false;
       if (scrollController.position.maxScrollExtent ==
           scrollController.position.pixels){
-        var location = Provider.of<LocationService>(context);
+        var location = Provider.of<LocationService>(context, listen: false);
         var network = Provider.of<WebServices>(context, listen: false);
         var response = await http
             .post(Uri.parse('https://manager.fixme.ng/load-more-near-shop'), body: {
           'user_id': network.userId.toString(),
           'latitude':  location.locationLatitude.toString(),
           'longitude' :location.locationLongitude.toString(),
-          'highestId':  providers.userItems.length.toString(),
+          // 'latitude':  '5.001190',
+          // 'longitude' :'8.334840',
+          'highestId':  data.length.toString(),
 
 //      'longitude': longitude.toString(),
 //      'latitude': latitude.toString(),
@@ -111,10 +87,17 @@ class _NearbyShopsSeeAllState extends State<NearbyShopsSeeAll> {
             return UserSearch.fromJson(data);
           }).toList();
           if (body['reqRes'] == 'true') {
-            providers.setUseritems1(providers.userItems,nearebyList);
-            print(providers.userItems.length.toString() +'lllll');
+            print(body);
+            setState(() {
+              data.addAll(nearebyList);
+            });
             return nearebyList;
-          } else if (body['reqRes'] == 'false') {
+          } else if(body['message'] == 'No Additional Data'){
+            setState(() {
+              nodata = 'No Additional Data';
+            });
+
+          }else if (body['reqRes'] == 'false') {
             print(body['message']);
           }
         }
@@ -129,9 +112,17 @@ class _NearbyShopsSeeAllState extends State<NearbyShopsSeeAll> {
       }
     });
 
-    var provider = Provider.of<DataProvider>(context, listen: false);
+    super.initState();
+  }
+
+  @override
+  Widget build(BuildContext context) {
+    DataProvider providers = Provider.of<DataProvider>(context, listen: false);
+
+
+    var provider = Provider.of<DataProvider>(context, listen: true);
     var network = Provider.of<WebServices>(context, listen: false);
-    var location = Provider.of<LocationService>(context);
+    var location = Provider.of<LocationService>(context, listen: false);
     return Scaffold(
       appBar: AppBar(
         backgroundColor: Colors.white,
@@ -203,14 +194,10 @@ class _NearbyShopsSeeAllState extends State<NearbyShopsSeeAll> {
         ),
         Expanded(
           child: Container(
-              child: FutureBuilder(
-                  future: network.nearbyShop(
-                      latitude: location.locationLatitude,
-                      longitude: location.locationLongitude),
-                  builder: (context, AsyncSnapshot snapshot) {
+              child: Builder(
+                  builder: (context) {
                     Widget mainWidget;
-                    if (snapshot.connectionState == ConnectionState.done) {
-                      if (snapshot.data == null) {
+                      if (data == null) {
                         mainWidget = Center(
                           child: Column(
                             mainAxisAlignment: MainAxisAlignment.center,
@@ -223,7 +210,7 @@ class _NearbyShopsSeeAllState extends State<NearbyShopsSeeAll> {
                               SizedBox(
                                 height: 10,
                               ),
-                              Text('No Network',
+                              Text('Loading',
                                   style: TextStyle(
                                       // letterSpacing: 4,
                                       color: Color(0xFF333333),
@@ -233,7 +220,7 @@ class _NearbyShopsSeeAllState extends State<NearbyShopsSeeAll> {
                           ),
                         );
                       } else {
-                        if (snapshot.data.isEmpty) {
+                        if (data.isEmpty) {
                           mainWidget = Center(
                             child: Column(
                               mainAxisAlignment: MainAxisAlignment.center,
@@ -249,12 +236,11 @@ class _NearbyShopsSeeAllState extends State<NearbyShopsSeeAll> {
                             ),
                           );
                         } else {
-                          provider.userItems1 = List.generate(snapshot.data.length,
-                              (index) => snapshot.data[index]);
+                          provider.userItems1 = List.generate(data.length,
+                              (index) => data[index]);
                           mainWidget = filteredItems.length != 0 ||
                                   searchController.text.isNotEmpty
                               ? ListView.separated(
-                            controller: scrollController,
                                   separatorBuilder: (context, index) {
                                     return Divider();
                                   },
@@ -272,6 +258,7 @@ class _NearbyShopsSeeAllState extends State<NearbyShopsSeeAll> {
                                           bottom: 5, top: 5),
                                       child: ListTile(
                                         onTap: () {
+                          network.postViewed(filteredItems[index].id);
                                           Navigator.push(
                                             context,
                                             PageRouteBuilder(
@@ -373,20 +360,20 @@ class _NearbyShopsSeeAllState extends State<NearbyShopsSeeAll> {
                                       ),
                                     );
                                   })
-                              : Consumer<DataProvider>(
-                              builder: (context, provider, _) {
-                                return ListView.separated(
+                              :  ListView.separated(
+                              controller: scrollController,
                                   separatorBuilder: (context, index) {
                                     return Divider();
                                   },
-                                  itemCount: provider.userItems1.length,
+                                  itemCount: data.length,
                                   padding:
                                       const EdgeInsets.only(left: 5, right: 5),
                                   itemBuilder: (context, index) {
+                                    print(data.length.toString()+nodata.toString());
                                     String distance = getDistance(
                                         rawDistance:
-                                            '${provider.userItems1[index].distance}');
-                                    return index+1 == provider.userItems1.length?Container(
+                                            '${data[index].distance}');
+                                    return index+1 == data.length?Container(
                                       margin:  EdgeInsets.symmetric(horizontal: MediaQuery.of(context).size.width/2.29),
                                       padding: const EdgeInsets.only(top:15,bottom: 15),
                                       child: Theme(
@@ -403,13 +390,14 @@ class _NearbyShopsSeeAllState extends State<NearbyShopsSeeAll> {
                                           bottom: 5, top: 5),
                                       child: ListTile(
                                         onTap: () {
+                                          network.postViewed(data[index].id);
                                           Navigator.push(
                                             context,
                                             PageRouteBuilder(
                                               pageBuilder: (context, animation,
                                                   secondaryAnimation) {
                                                 return ArtisanPageNew(
-                                                    provider.userItems1[index]);
+                                                    data[index]);
                                               },
                                               transitionsBuilder: (context,
                                                   animation,
@@ -427,13 +415,13 @@ class _NearbyShopsSeeAllState extends State<NearbyShopsSeeAll> {
                                           child: Text(''),
                                           radius: 35,
                                           backgroundImage: NetworkImage(
-                                            provider.userItems1[index].urlAvatar ==
+                                            data[index].urlAvatar ==
                                                         'no_picture_upload' ||
-                                                    provider.userItems1[index]
+                                                data[index]
                                                             .urlAvatar ==
                                                         null
                                                 ? 'https://uploads.fixme.ng/originals/no_picture_upload'
-                                                : 'https://uploads.fixme.ng/originals/${provider.userItems1[index].urlAvatar}',
+                                                : 'https://uploads.fixme.ng/originals/${data[index].urlAvatar}',
                                           ),
                                           foregroundColor: Colors.white,
                                           backgroundColor: Colors.white,
@@ -442,7 +430,7 @@ class _NearbyShopsSeeAllState extends State<NearbyShopsSeeAll> {
                                           padding:
                                               const EdgeInsets.only(top: 10),
                                           child: Text(
-                                            '${provider.userItems1[index].name} ${provider.userItems1[index].userLastName}'
+                                            '${data[index].name} ${data[index].userLastName}'
                                                 .capitalizeFirstOfEach,
                                             style: TextStyle(
                                                 color: Color(0xFF333333),
@@ -458,7 +446,7 @@ class _NearbyShopsSeeAllState extends State<NearbyShopsSeeAll> {
                                                   alignment:
                                                       Alignment.centerLeft,
                                                   child: Text(
-                                                    '${provider.userItems1[index].serviceArea}'
+                                                    '${data[index].serviceArea}'
                                                         .capitalizeFirstOfEach,
                                                     style: TextStyle(
                                                         color:
@@ -475,7 +463,7 @@ class _NearbyShopsSeeAllState extends State<NearbyShopsSeeAll> {
                                                   const EdgeInsets.only(top: 8),
                                               child: StarRating(
                                                   rating: double.parse(
-                                                      provider.userItems1[index]
+                                                      data[index]
                                                           .userRating
                                                           .toString())),
                                             )
@@ -504,31 +492,8 @@ class _NearbyShopsSeeAllState extends State<NearbyShopsSeeAll> {
                                       ),
                                     );
                                   });}
-                          );}
                       }
-                    } else {
-                      mainWidget = Center(
-                        child: Column(
-                          mainAxisAlignment: MainAxisAlignment.center,
-                          crossAxisAlignment: CrossAxisAlignment.center,
-                          children: [
-                            Theme(
-                                data: Theme.of(context)
-                                    .copyWith(accentColor: Color(0xFF9B049B)),
-                                child: CircularProgressIndicator()),
-                            SizedBox(
-                              height: 10,
-                            ),
-                            Text('Loading',
-                                style: TextStyle(
-                                    // letterSpacing: 4,
-                                    color: Color(0xFF333333),
-                                    fontSize: 18,
-                                    fontWeight: FontWeight.w600)),
-                          ],
-                        ),
-                      );
-                    }
+
                     return mainWidget;
                   })),
         ),

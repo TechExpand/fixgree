@@ -78,7 +78,7 @@ class WebServices extends ChangeNotifier {
       }, headers: {
         "Content-type": "application/x-www-form-urlencoded",
         'Authorization':
-            'Bearer FIXME_1U90P3444ANdroidAPP4HUisallOkayBY_FIXME_APP_UIONSISJGJANKKI3445fv',
+            'Bearer FIXME_1nsjui2SHDS9823HBCDHN2389HDNSJH23NDI3N132n9jc92h3nj_FIXME_APP_23nujujNHU3JNUN42NJK2N39mjni2jn3nk3n8JNN2NJ9jnkjnjkn23jmIOJ23NJ',
       });
       var body = json.decode(response.body);
       print(body);
@@ -139,7 +139,7 @@ class WebServices extends ChangeNotifier {
       }, headers: {
         "Content-type": "application/x-www-form-urlencoded",
         'Authorization':
-            'Bearer FIXME_1U90P3444ANdroidAPP4HUisallOkayBY_FIXME_APP_UIONSISJGJANKKI3445fv',
+            'Bearer FIXME_1nsjui2SHDS9823HBCDHN2389HDNSJH23NDI3N132n9jc92h3nj_FIXME_APP_23nujujNHU3JNUN42NJK2N39mjni2jn3nk3n8JNN2NJ9jnkjnjkn23jmIOJ23NJ',
       });
       var body = json.decode(response.body);
       bearer = response.headers['bearer'];
@@ -1284,16 +1284,30 @@ class WebServices extends ChangeNotifier {
     }
   }
 
+  Future postViewed(artisanId) async {
+    var response = await http.post(
+        Uri.parse('https://manager.fixme.ng/profile-views-update?viewing_user_id=$userId&viewed_user_id=$artisanId'),
+        headers: {
+          "Content-type": "application/json",
+          'Authorization': 'Bearer $bearer',
+        });
+    var body = json.decode(response.body);
+    print( body['reqRes']+'ree');
+    return body['reqRes'];
+  }
+
+
+
   Future<dynamic> nearbyArtisans({longitude, latitude, context}) async {
     try {
       var response = await http
           .post(Uri.parse('https://manager.fixme.ng/near-artisans'), body: {
         'user_id': userId.toString(),
-//    'latitude':  '5.001190',
-//    'longitude' :'8.334840'
+   'latitude':  '5.001190',
+   'longitude' :'8.334840'
 
-        'longitude': longitude.toString(),
-        'latitude': latitude.toString(),
+        // 'longitude': longitude.toString(),
+        // 'latitude': latitude.toString(),
       }, headers: {
         "Content-type": "application/x-www-form-urlencoded",
         'Authorization': 'Bearer $bearer',
@@ -1332,10 +1346,10 @@ class WebServices extends ChangeNotifier {
     var response = await http
         .post(Uri.parse('https://manager.fixme.ng/near-shops-business'), body: {
       'user_id': userId.toString(),
-//      'latitude':  '5.001190',
-//      'longitude' :'8.334840',
-      'longitude': longitude.toString(),
-      'latitude': latitude.toString(),
+     'latitude':  '5.001190',
+     'longitude' :'8.334840',
+//       'longitude': longitude.toString(),
+//       'latitude': latitude.toString(),
     }, headers: {
       "Content-type": "application/x-www-form-urlencoded",
       'Authorization': 'Bearer $bearer',

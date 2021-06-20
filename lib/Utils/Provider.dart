@@ -69,7 +69,7 @@ class DataProvider extends ChangeNotifier {
   var userItems = [];
   var userItems1 = [];
   setUseritems(v1,v2){
-    userItems = v1 + v2;
+    userItems.addAll(v2);
     notifyListeners();
   }
 
