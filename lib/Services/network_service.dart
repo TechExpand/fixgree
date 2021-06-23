@@ -319,7 +319,6 @@ class WebServices extends ChangeNotifier {
       }
       notifyListeners();
     } catch (e) {
-      print(e);
       loginSetState();
       scaffoldKey.currentState.showSnackBar(
           SnackBar(content: Text('There was a Problem. Working on it.')));
