@@ -92,6 +92,7 @@ class Home extends StatelessWidget {
     var network = Provider.of<WebServices>(context, listen: false);
     List<Notify> notify;
     var location = Provider.of<LocationService>(context);
+
     var data = Provider.of<DataProvider>(context);
     return Stack(
       children: [

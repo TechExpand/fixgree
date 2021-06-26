@@ -43,6 +43,7 @@ class _HomePageState extends State<HomePage> {
   @override
   void initState() {
     super.initState();
+    Provider.of<WebServices>(context, listen: false).initializeValues();
     getMessage();
     var data = Provider.of<Utils>(context, listen: false);
     var network = Provider.of<WebServices>(context, listen: false);

@@ -1,5 +1,6 @@
 import 'package:fixme/Utils/Provider.dart';
 import 'package:flutter/material.dart';
+import 'package:in_app_update/in_app_update.dart';
 import 'GeneralUsers/Home/HomePage.dart';
 import 'GeneralUsers/LoginSignup/Login.dart';
 import 'package:fixme/Utils/utils.dart';
@@ -23,11 +24,13 @@ class SPLASHSTATE extends State<SplashScreen> {
   @override
   void initState() {
     super.initState();
-
+    checkForUpdate();
     Provider.of<WebServices>(context, listen: false).initializeValues();
+    Provider.of<WebServices>(context, listen: false).checkDevice();
     Future.delayed(Duration(seconds: 5), () async {
       //sendAndRetrieveMessage();
       getit();
+
 
       return decideFirstWidget();
     });
@@ -44,6 +47,26 @@ class SPLASHSTATE extends State<SplashScreen> {
       data.setFCMToken(value);
     });
   }
+
+  Future<void> checkForUpdate() async {
+    InAppUpdate.checkForUpdate().then((info) {
+      if(info.updateAvailability == UpdateAvailability.updateAvailable){
+        InAppUpdate.performImmediateUpdate()
+            .catchError((e){
+          print(e);
+        });
+      }
+      print(info.updateAvailability);
+      print(info.updateAvailability);
+      print(info.updateAvailability);
+      print(info.updateAvailability);
+      print(info.updateAvailability);
+    }).catchError((e) {
+      print(e);
+    });
+  }
+
+
 
   Future<Map<String, dynamic>> sendAndRetrieveMessage() async {
     try {

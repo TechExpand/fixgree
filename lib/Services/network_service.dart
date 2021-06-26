@@ -1,7 +1,8 @@
 import 'dart:async';
 import 'dart:convert';
+import 'dart:io';
 import 'package:fixme/Model/UserSearch.dart';
-import 'package:fixme/Model/info.dart';
+import 'package:device_info/device_info.dart';
 import 'package:fixme/Model/Project.dart';
 import 'package:fixme/Screens/ArtisanUser/Profile/ProfilePage.dart';
 import 'package:fixme/Screens/GeneralUsers/Home/HomePage.dart';
@@ -57,6 +58,30 @@ class WebServices extends ChangeNotifier {
     notifyListeners();
   }
 
+
+  String os = '';
+ String info = '';
+  checkDevice()async{
+    DeviceInfoPlugin deviceInfo = DeviceInfoPlugin();
+    if(Platform.isAndroid) {
+      AndroidDeviceInfo androidInfo = await deviceInfo.androidInfo;
+      info = androidInfo.device;
+      os = 'Android';
+      print('Running on ${androidInfo.device}'); //
+
+    }else {
+      IosDeviceInfo iosInfo = await deviceInfo.iosInfo;
+      info = iosInfo.name;
+      os = 'IOS';
+      print('Running on ${iosInfo.utsname.machine}');
+    }
+    notifyListeners();
+  }
+
+
+
+
+
   Future<dynamic> register({context, scaffoldKey}) async {
     var data = Provider.of<DataProvider>(context, listen: false);
     var datas = Provider.of<Utils>(context, listen: false);
@@ -68,8 +93,8 @@ class WebServices extends ChangeNotifier {
         'firstName': data.firstName.toString(),
         'lastName': data.lastName.toString(),
         'device_token': data.firebaseUserId.toString() ?? '',
-        'device_os': 'Andriod',
-        'device_type': 'phone',
+        'device_os': os,
+        'device_type': info,
         'firebaseId': data.firebaseUserId.toString(),
         'email':
             data.emails.toString() == null || data.emails.toString().isEmpty
@@ -81,15 +106,13 @@ class WebServices extends ChangeNotifier {
             'Bearer FIXME_1nsjui2SHDS9823HBCDHN2389HDNSJH23NDI3N132n9jc92h3nj_FIXME_APP_23nujujNHU3JNUN42NJK2N39mjni2jn3nk3n8JNN2NJ9jnkjnjkn23jmIOJ23NJ',
       });
       var body = json.decode(response.body);
-      print(body);
-      print(body);
-      print(body);
-      userId = body['id'];
+      userId = body['user_id'];
       mobileDeviceToken = body['firebaseId'];
       profilePicFileName = body['profile_pic_file_name'];
       firstName = body['firstName'];
+      lastName = body['lastName'];
       phoneNum = body['fullNumber'];
-      role = body['role'];
+      role = body['user_role'];
       bearer = response.headers['bearer'];
       if (body['reqRes'] == 'true') {
         datas.storeData('Bearer', bearer);
