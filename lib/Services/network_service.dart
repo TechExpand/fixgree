@@ -122,7 +122,6 @@ class WebServices extends ChangeNotifier {
         datas.storeData('firstName', firstName);
         datas.storeData('phoneNum', phoneNum);
         datas.storeData('role', role);
-
         loginSetState();
         return Navigator.push(
           context,
@@ -175,16 +174,18 @@ class WebServices extends ChangeNotifier {
       phoneNum = body['fullNumber'];
       email = body['email'];
 
-      var response2 = await http.post(
-          Uri.parse('https://manager.fixme.ng/user-info?user_id=$userId'),
-          headers: {
-            "Content-type": "application/json",
-            'Authorization': 'Bearer $bearer',
-          });
-      var body2 = json.decode(response2.body);
-      bio = body2['bio'];
-      mobileDeviceToken = body['firebase_id'];
+
       if (body['reqRes'] == 'true') {
+        var response2 = await http.post(
+            Uri.parse('https://manager.fixme.ng/user-info?user_id=$userId'),
+            headers: {
+              "Content-type": "application/json",
+              'Authorization': 'Bearer $bearer',
+            });
+        var body2 = json.decode(response2.body);
+        bio = body2['bio'];
+        mobileDeviceToken = body['firebase_id'];
+
         datas.storeData('Bearer', bearer);
         datas.storeData('mobile_device_token', mobileDeviceToken);
         datas.storeData('user_id', userId.toString());
@@ -211,11 +212,11 @@ class WebServices extends ChangeNotifier {
             },
           ),
         );
-      } else if (body['message'] == "Invalid Credentials!") {
+      } else if (body['message'].toString() == "Invalid Credentials!") {
         scaffoldKey.currentState
-            .showSnackBar(SnackBar(content: Text(body['message'])));
+            .showSnackBar(SnackBar(content: Text('User Does Not Exist')));
         loginSetState();
-      } else if (body['reqRes'] == 'false') {
+      } else if (body['reqRes'].toString() == 'false') {
         scaffoldKey.currentState
             .showSnackBar(SnackBar(content: Text(body['message'])));
         loginSetState();

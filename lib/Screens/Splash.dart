@@ -56,11 +56,6 @@ class SPLASHSTATE extends State<SplashScreen> {
           print(e);
         });
       }
-      print(info.updateAvailability);
-      print(info.updateAvailability);
-      print(info.updateAvailability);
-      print(info.updateAvailability);
-      print(info.updateAvailability);
     }).catchError((e) {
       print(e);
     });
