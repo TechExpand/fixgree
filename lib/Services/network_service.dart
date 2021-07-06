@@ -4,7 +4,9 @@ import 'dart:io';
 import 'package:fixme/Model/UserSearch.dart';
 import 'package:device_info/device_info.dart';
 import 'package:fixme/Model/Project.dart';
+import 'package:fixme/Model/info.dart';
 import 'package:fixme/Screens/ArtisanUser/Profile/ProfilePage.dart';
+import 'package:fixme/Screens/ArtisanUser/Profile/ProfilePageNew.dart';
 import 'package:fixme/Screens/GeneralUsers/Home/HomePage.dart';
 import 'package:fixme/Services/postrequest_service.dart';
 import 'package:fixme/Utils/Provider.dart';
@@ -30,6 +32,8 @@ class WebServices extends ChangeNotifier {
   var lastName = '';
   var bio = '';
   var email = '';
+  String mainUrl = 'https://manager.fixme.ng';
+  String mainBearer = 'FIXME_1nsjui2SHDS9823HBCDHN2389HDNSJH23NDI3N132n9jc92h3nj_FIXME_APP_23nujujNHU3JNUN42NJK2N39mjni2jn3nk3n8JNN2NJ9jnkjnjkn23jmIOJ23NJ';
 
   void loginSetState() {
     if (loginState == false) {
@@ -65,7 +69,7 @@ class WebServices extends ChangeNotifier {
     DeviceInfoPlugin deviceInfo = DeviceInfoPlugin();
     if(Platform.isAndroid) {
       AndroidDeviceInfo androidInfo = await deviceInfo.androidInfo;
-      info = androidInfo.device;
+      info = androidInfo.id;
       os = 'Android';
       print('Running on ${androidInfo.device}'); //
 
@@ -87,7 +91,7 @@ class WebServices extends ChangeNotifier {
     var datas = Provider.of<Utils>(context, listen: false);
     try {
       var response = await http
-          .post(Uri.parse('https://manager.fixme.ng/create-user'), body: {
+          .post(Uri.parse('$mainUrl/create-user'), body: {
         'mobile': data.number.toString().substring(
             data.number.dialCode.length, data.number.toString().length),
         'firstName': data.firstName.toString(),
@@ -103,7 +107,7 @@ class WebServices extends ChangeNotifier {
       }, headers: {
         "Content-type": "application/x-www-form-urlencoded",
         'Authorization':
-            'Bearer FIXME_1nsjui2SHDS9823HBCDHN2389HDNSJH23NDI3N132n9jc92h3nj_FIXME_APP_23nujujNHU3JNUN42NJK2N39mjni2jn3nk3n8JNN2NJ9jnkjnjkn23jmIOJ23NJ',
+            'Bearer $mainBearer',
       });
       var body = json.decode(response.body);
       userId = body['user_id'];
@@ -155,13 +159,13 @@ class WebServices extends ChangeNotifier {
     var datas = Provider.of<Utils>(context, listen: false);
     try {
       var response = await http
-          .post(Uri.parse('https://manager.fixme.ng/user-auth'), body: {
+          .post(Uri.parse('$mainUrl/user-auth'), body: {
         'phoneNumber': data.number.toString().substring(
             data.number.dialCode.length, data.number.toString().length),
       }, headers: {
         "Content-type": "application/x-www-form-urlencoded",
         'Authorization':
-            'Bearer FIXME_1nsjui2SHDS9823HBCDHN2389HDNSJH23NDI3N132n9jc92h3nj_FIXME_APP_23nujujNHU3JNUN42NJK2N39mjni2jn3nk3n8JNN2NJ9jnkjnjkn23jmIOJ23NJ',
+            'Bearer $mainBearer',
       });
       var body = json.decode(response.body);
       bearer = response.headers['bearer'];
@@ -177,7 +181,7 @@ class WebServices extends ChangeNotifier {
 
       if (body['reqRes'] == 'true') {
         var response2 = await http.post(
-            Uri.parse('https://manager.fixme.ng/user-info?user_id=$userId'),
+            Uri.parse('$mainUrl/user-info?user_id=$userId'),
             headers: {
               "Content-type": "application/json",
               'Authorization': 'Bearer $bearer',
@@ -247,7 +251,7 @@ class WebServices extends ChangeNotifier {
       serviceId, budget, context, setStates) async {
     try {
       var response = await http
-          .post(Uri.parse('https://manager.fixme.ng/save-send-budget'), body: {
+          .post(Uri.parse('$mainUrl/save-send-budget'), body: {
         'user_id': userId.toString(),
         'project_owner_user_id': '$projectOwnerUserId',
         'bid_id': '$bidId',
@@ -294,13 +298,13 @@ class WebServices extends ChangeNotifier {
 
     try {
       var response = await http
-          .post(Uri.parse('https://manager.fixme.ng/business-account'), body: {
+          .post(Uri.parse('$mainUrl/business-account'), body: {
         'identification_number': data.bvn ?? '',
         'business_address': data.officeAddress ?? '',
         'house_address': data.homeAddress ?? '',
         'business_name': data.businessName ?? '',
         'sub_services':
-            '${data.subcat}'.replaceAll('[', '').replaceAll(']', ''),
+            "${data.subcat}".replaceAll('[', '').replaceAll(']', ''),
         'bio': data.overview ?? '',
         'role': data.artisanVendorChoice,
         'service_id': '${postRequestProvider.selecteService.sn}',
@@ -320,7 +324,7 @@ class WebServices extends ChangeNotifier {
           context,
           PageRouteBuilder(
             pageBuilder: (context, animation, secondaryAnimation) {
-              return ProfilePage();
+              return ProfilePageNew();
             },
             transitionsBuilder:
                 (context, animation, secondaryAnimation, child) {
@@ -353,7 +357,7 @@ class WebServices extends ChangeNotifier {
       {longitude, latitude, serviceID}) async {
     var response = await http.post(
         Uri.parse(
-            'https://manager.fixme.ng/service-area-business-artisans?user_id=$userId&service_id=$serviceID&longitude=$longitude&latitude=$latitude'),
+            '$mainUrl/service-area-business-artisans?user_id=$userId&service_id=$serviceID&longitude=$longitude&latitude=$latitude'),
         headers: {
           "Content-type": "application/json",
           'Authorization': 'Bearer $bearer',
@@ -372,7 +376,7 @@ class WebServices extends ChangeNotifier {
 
   Future<dynamic> getArtisanReviews([userId]) async {
     var response = await http
-        .post(Uri.parse('https://manager.fixme.ng/get-reviews'), body: {
+        .post(Uri.parse('$mainUrl/get-reviews'), body: {
       'user_id': this.userId.toString(),
       'artisan_id': userId.toString(),
     }, headers: {
@@ -392,7 +396,7 @@ class WebServices extends ChangeNotifier {
 
   Future<dynamic> confirmBudget([bidderUserId, bidId, scaffoldKey]) async {
     var response = await http.post(
-        Uri.parse('https://manager.fixme.ng/approve-bid'
+        Uri.parse('$mainUrl/approve-bid'
             ''),
         body: {
           'user_id': userId.toString(),
@@ -418,7 +422,7 @@ class WebServices extends ChangeNotifier {
   Future<dynamic> confirmPaymentAndReview(
       [rating, jobid, comment, scafoldKey, artisanId, userId, context]) async {
     var response = await http.post(
-        Uri.parse('https://manager.fixme.ng/confirm-project-completion-rating'
+        Uri.parse('$mainUrl/confirm-project-completion-rating'
             ''),
         body: {
           'reviewing_user_id': userId.toString(),
@@ -445,7 +449,7 @@ class WebServices extends ChangeNotifier {
 
   Future<dynamic> bidProject([userId, jobId, scaffoldKey]) async {
     var response = await http
-        .post(Uri.parse('https://manager.fixme.ng/bid-project'), body: {
+        .post(Uri.parse('$mainUrl/bid-project'), body: {
       'user_id': userId.toString(),
       'job_id': jobId.toString(),
     }, headers: {
@@ -455,8 +459,6 @@ class WebServices extends ChangeNotifier {
     var body = json.decode(response.body);
     notifyListeners();
     if (body['reqRes'] == 'true') {
-      print(body);
-      print(body);
       scaffoldKey.currentState
           .showSnackBar(SnackBar(content: Text('Project Bid Successfully')));
       return body['reviews'];
@@ -467,7 +469,7 @@ class WebServices extends ChangeNotifier {
 
   Future<dynamic> getUserInfo([userId]) async {
     var response =
-        await http.post(Uri.parse('https://manager.fixme.ng/user-info'), body: {
+        await http.post(Uri.parse('$mainUrl/user-info'), body: {
       'user_id': userId.toString(),
     }, headers: {
       "Content-type": "application/x-www-form-urlencoded",
@@ -486,31 +488,32 @@ class WebServices extends ChangeNotifier {
 
   Future<dynamic> getUserJobInfo([userId, artisanId]) async {
     var response = await http.post(
-        Uri.parse('https://manager.fixme.ng/get-artisan-business-profile'),
+        Uri.parse('$mainUrl/get-artisan-business-profile'),
         body: {
-          'requesting_user_id': 286.toString(),
-          'artisan_user_id': 286.toString(),
+          'requesting_user_id': userId.toString(),
+          'artisan_user_id': artisanId.toString(),
         },
         headers: {
           "Content-type": "application/x-www-form-urlencoded",
           'Authorization': 'Bearer $bearer',
         });
     var body = json.decode(response.body);
-    Map map = json.decode(response.body.toString());
-//    Info info = Info.fromJson(map);
+    // Map map = json.decode(response.body.toString());
+  // Info info = Info.fromJson(body);
 //print(info.fullNumber);
+    print(bearer);
     notifyListeners();
     if (body['reqRes'] == 'true') {
       return body;
     } else if (body['reqRes'] == 'false') {
-      print(body['message']);
+   //   print(body['message']);
     }
   }
 
   Future<dynamic> getServiceImage([userId, requestedId]) async {
     print(userId);
     var response = await http
-        .post(Uri.parse('https://manager.fixme.ng/service-images'), body: {
+        .post(Uri.parse('$mainUrl/service-images'), body: {
       'user_id': userId.toString(),
       'requested_user_id': requestedId.toString()
     }, headers: {
@@ -529,7 +532,7 @@ class WebServices extends ChangeNotifier {
   Future<dynamic> getProductImage([userId, requestedId]) async {
     print(userId);
     var response = await http.post(
-        Uri.parse('https://manager.fixme.ng/get-catalog-products'),
+        Uri.parse('$mainUrl/get-catalog-products'),
         body: {
           'user_id': userId.toString(),
           'requested_user_id': requestedId.toString(),
@@ -548,10 +551,10 @@ class WebServices extends ChangeNotifier {
   }
 
   Future uploadProductCatalog(
-      {bio, productName, price, scaffoldKey, path, context}) async {
+      {bio, productName, price, scaffoldKey, path, context,controlDes,controlName,controlPrice}) async {
     try {
       var res = await http.post(
-          Uri.parse('https://manager.fixme.ng/save-catlog-product'),
+          Uri.parse('$mainUrl/save-catlog-product'),
           body: {
             'product_name': productName.toString() ?? '',
             'price': price.toString() ?? '',
@@ -675,7 +678,12 @@ class WebServices extends ChangeNotifier {
                                       borderRadius: BorderRadius.circular(26)),
                                   child: FlatButton(
                                     onPressed: () {
+                                      Utils data = Provider.of<Utils>(context, listen: false);
+                                      data.selectedImage2toNull();
                                       Navigator.pop(context);
+                                      controlDes.clear();
+                                      controlName.clear();
+                                      controlPrice.clear();
                                     },
                                     color: Colors.green,
                                     shape: RoundedRectangleBorder(
@@ -756,7 +764,7 @@ class WebServices extends ChangeNotifier {
   Future validatePayment(refId) async {
     var response = await http.post(
         Uri.parse(
-            'https://manager.fixme.ng/verify-payment?payment_reference_id=$refId&user_id=$userId'),
+            '$mainUrl/verify-payment?payment_reference_id=$refId&user_id=$userId'),
         headers: {
           "Content-type": "application/json",
           'Authorization': 'Bearer $bearer',
@@ -769,7 +777,7 @@ class WebServices extends ChangeNotifier {
   Future addProductCatalog(
       {bio, productName, price, scaffoldKey, path, context}) async {
     var res = await http
-        .post(Uri.parse('https://manager.fixme.ng/save-catlog-product'), body: {
+        .post(Uri.parse('$mainUrl/save-catlog-product'), body: {
       'product_name': productName.toString() ?? '',
       'price': price.toString() ?? '',
       'bio': bio.toString() ?? '',
@@ -1059,7 +1067,7 @@ class WebServices extends ChangeNotifier {
   Future<bool> editUserName({firstname, lastname}) async {
     var response = await http.post(
         Uri.parse(
-            'https://manager.fixme.ng/e-f-n?user_id=$userId&firstName=$firstname&lastName=$lastname'),
+            '$mainUrl/e-f-n?user_id=$userId&firstName=$firstname&lastName=$lastname'),
         headers: {
           "Content-type": "application/json",
           'Authorization': 'Bearer $bearer',
@@ -1077,7 +1085,7 @@ class WebServices extends ChangeNotifier {
   Future<bool> editUserBio({status}) async {
     var response = await http.post(
         Uri.parse(
-            'https://manager.fixme.ng/update-bio?user_id=$userId&bio=$status'),
+            '$mainUrl/update-bio?user_id=$userId&bio=$status'),
         headers: {
           "Content-type": "application/json",
           'Authorization': 'Bearer $bearer',
@@ -1145,7 +1153,7 @@ class WebServices extends ChangeNotifier {
 
   Future<dynamic> updateFCMToken(userId, fcmToken) async {
     var response = await http
-        .post(Uri.parse('https://manager.fixme.ng/mtk-details-update'), body: {
+        .post(Uri.parse('$mainUrl/mtk-details-update'), body: {
       'user_id': userId.toString(),
       'device_token': fcmToken.toString(),
       'device_os': 'andriod',
@@ -1165,7 +1173,7 @@ class WebServices extends ChangeNotifier {
 
   Future<dynamic> updateBio(bio) async {
     var response = await http
-        .post(Uri.parse('https://manager.fixme.ng/update-bio'), body: {
+        .post(Uri.parse('$mainUrl/update-bio'), body: {
       'user_id': userId.toString(),
       'bio': '$bio',
     }, headers: {
@@ -1184,7 +1192,7 @@ class WebServices extends ChangeNotifier {
 
   Future<dynamic> updateService(sn) async {
     var response = await http
-        .post(Uri.parse('https://manager.fixme.ng/change-service'), body: {
+        .post(Uri.parse('$mainUrl/change-service'), body: {
       'user_id': userId.toString(),
       'service_id': '$sn',
     }, headers: {
@@ -1203,7 +1211,7 @@ class WebServices extends ChangeNotifier {
 
   Future<dynamic> updateFullName(firstName, lastName) async {
     var response =
-        await http.post(Uri.parse('https://manager.fixme.ng/e-f-n'), body: {
+        await http.post(Uri.parse('$mainUrl/e-f-n'), body: {
       'user_id': userId.toString(),
       'firstName': '$firstName',
       'lastName': '$lastName',
@@ -1223,7 +1231,7 @@ class WebServices extends ChangeNotifier {
 
   Future<dynamic> requestPayment(project_owner_user_id, bid_id) async {
     var response = await http.post(
-        Uri.parse('https://manager.fixme.ng/completed-project-and-payment'),
+        Uri.parse('$mainUrl/completed-project-and-payment'),
         body: {
           'bidder_user_id': userId.toString(),
           'project_id': bid_id.toString(),
@@ -1244,7 +1252,7 @@ class WebServices extends ChangeNotifier {
 
   Future<dynamic> getUndoneProject(context) async {
     var response = await http
-        .post(Uri.parse('https://manager.fixme.ng/user-projects'), body: {
+        .post(Uri.parse('$mainUrl/user-projects'), body: {
       'user_id': userId.toString(),
     }, headers: {
       "Content-type": "application/x-www-form-urlencoded",
@@ -1280,7 +1288,7 @@ class WebServices extends ChangeNotifier {
     print(userId);
     print(bearer);
     var response = await http.post(
-        Uri.parse('https://manager.fixme.ng/all-my-bids-projects'),
+        Uri.parse('$mainUrl/all-my-bids-projects'),
         body: {
           'user_id': userId.toString(),
         },
@@ -1309,7 +1317,7 @@ class WebServices extends ChangeNotifier {
 
   Future postViewed(artisanId) async {
     var response = await http.post(
-        Uri.parse('https://manager.fixme.ng/profile-views-update?viewing_user_id=$userId&viewed_user_id=$artisanId'),
+        Uri.parse('$mainUrl/profile-views-update?viewing_user_id=$userId&viewed_user_id=$artisanId'),
         headers: {
           "Content-type": "application/json",
           'Authorization': 'Bearer $bearer',
@@ -1324,7 +1332,7 @@ class WebServices extends ChangeNotifier {
   Future<dynamic> nearbyArtisans({longitude, latitude, context}) async {
     try {
       var response = await http
-          .post(Uri.parse('https://manager.fixme.ng/near-artisans'), body: {
+          .post(Uri.parse('$mainUrl/near-artisans'), body: {
         'user_id': userId.toString(),
    // 'latitude':  '5.001190',
    // 'longitude' :'8.334840'
@@ -1367,7 +1375,7 @@ class WebServices extends ChangeNotifier {
 
   Future<dynamic> nearbyShop({longitude, latitude, context}) async {
     var response = await http
-        .post(Uri.parse('https://manager.fixme.ng/near-shops-business'), body: {
+        .post(Uri.parse('$mainUrl/near-shops-business'), body: {
       'user_id': userId.toString(),
      // 'latitude':  '5.001190',
      // 'longitude' :'8.334840',
@@ -1423,7 +1431,7 @@ class WebServices extends ChangeNotifier {
   Future search({longitude, latitude, searchquery}) async {
     try {
       var response = await http
-          .post(Uri.parse('https://manager.fixme.ng/search-artisans'), body: {
+          .post(Uri.parse('$mainUrl/search-artisans'), body: {
         'user_id': userId.toString(),
         'longitude': longitude.toString(),
         'latitude': latitude.toString(),
@@ -1448,7 +1456,7 @@ class WebServices extends ChangeNotifier {
 
   Future<List> getAvailableBanks() async {
     var response = await http.post(
-        Uri.parse('https://manager.fixme.ng/g-b-info?user_id=$userId'),
+        Uri.parse('$mainUrl/g-b-info?user_id=$userId'),
         headers: {
           "Content-type": "application/json",
           'Authorization': 'Bearer $bearer',
@@ -1460,7 +1468,7 @@ class WebServices extends ChangeNotifier {
   Future<Map> getUserWalletInfo(context) async {
     var response = await http.post(
         Uri.parse(
-            'https://manager.fixme.ng/get-user-bank-info?user_id=$userId'),
+            '$mainUrl/get-user-bank-info?user_id=$userId'),
         headers: {
           "Content-type": "application/json",
           'Authorization': 'Bearer $bearer',
@@ -1502,7 +1510,7 @@ class WebServices extends ChangeNotifier {
   Future<Map> getUserBankInfo(userId) async {
     var response = await http.post(
         Uri.parse(
-            'https://manager.fixme.ng/get-user-bank-info?user_id=$userId'),
+            '$mainUrl/get-user-bank-info?user_id=$userId'),
         headers: {
           "Content-type": "application/json",
           'Authorization': 'Bearer $bearer',
@@ -1513,7 +1521,7 @@ class WebServices extends ChangeNotifier {
 
   Future<List> getUserTransactions() async {
     var response = await http.post(
-        Uri.parse('https://manager.fixme.ng/my-transactions?user_id=$userId'),
+        Uri.parse('$mainUrl/my-transactions?user_id=$userId'),
         headers: {
           "Content-type": "application/json",
           'Authorization': 'Bearer $bearer',
@@ -1525,7 +1533,7 @@ class WebServices extends ChangeNotifier {
   Future<dynamic> validateUserAccountName({bankCode, accountNumber}) async {
     var response = await http.post(
         Uri.parse(
-            'https://manager.fixme.ng/validate-acount-number?user_id=$userId&bankCode=$bankCode&accountNumber=$accountNumber'),
+            '$mainUrl/validate-acount-number?user_id=$userId&bankCode=$bankCode&accountNumber=$accountNumber'),
         headers: {
           "Content-type": "application/json",
           'Authorization': 'Bearer $bearer',
@@ -1541,7 +1549,7 @@ class WebServices extends ChangeNotifier {
   Future getCardDetails() async {
     var response = await http.post(
         Uri.parse(
-            'https://manager.fixme.ng/get-payment-details?user_id=$userId'),
+            '$mainUrl/get-payment-details?user_id=$userId'),
         headers: {
           "Content-type": "application/json",
           'Authorization': 'Bearer $bearer',
@@ -1560,7 +1568,7 @@ class WebServices extends ChangeNotifier {
 
   Future<dynamic> checkSecurePin() async {
     var response = await http.post(
-        Uri.parse('https://manager.fixme.ng/has-security-pin?user_id=$userId'),
+        Uri.parse('$mainUrl/has-security-pin?user_id=$userId'),
         headers: {
           "Content-type": "application/json",
           'Authorization': 'Bearer $bearer',
@@ -1575,7 +1583,7 @@ class WebServices extends ChangeNotifier {
     var base64Str = base64.encode(bytes);
     var response = await http.post(
         Uri.parse(
-            'https://manager.fixme.ng/save-security-pin?user_id=$userId&secPin=Basic $base64Str'),
+            '$mainUrl/save-security-pin?user_id=$userId&secPin=Basic $base64Str'),
         headers: {
           "Content-type": "application/json",
           'Authorization': 'Bearer $bearer',
@@ -1586,7 +1594,7 @@ class WebServices extends ChangeNotifier {
 
   Future<List> getBeneficiaries() async {
     var response = await http.post(
-        Uri.parse('https://manager.fixme.ng/all-beneficiaries?user_id=$userId'),
+        Uri.parse('$mainUrl/all-beneficiaries?user_id=$userId'),
         headers: {
           "Content-type": "application/json",
           'Authorization': 'Bearer $bearer',
@@ -1644,7 +1652,7 @@ class WebServices extends ChangeNotifier {
 
     var response = await http.post(
         Uri.parse(
-            'https://manager.fixme.ng/initiate-transfer?user_id=$userId&bankCode=$bankCode&accountNumber=$accountNumber&accountName=$accountName&amount=$amount&secPin=Basic $base64Str&naration=$naration&isBeneficiary=$isBeneficiary'),
+            '$mainUrl/initiate-transfer?user_id=$userId&bankCode=$bankCode&accountNumber=$accountNumber&accountName=$accountName&amount=$amount&secPin=Basic $base64Str&naration=$naration&isBeneficiary=$isBeneficiary'),
         headers: {
           "Content-type": "application/json",
           'Authorization': 'Bearer $bearer',
@@ -1660,7 +1668,7 @@ class WebServices extends ChangeNotifier {
   Future<bool> sendSupportRequest({String topic, String message}) async {
     var response = await http.post(
         Uri.parse(
-            'https://manager.fixme.ng/support-request?user_id=264&topic=$topic&message=$message'),
+            '$mainUrl/support-request?user_id=264&topic=$topic&message=$message'),
         headers: {
           "Content-type": "application/json",
           'Authorization': 'Bearer $bearer',
@@ -1678,7 +1686,7 @@ class WebServices extends ChangeNotifier {
   Future<bool> deleteServiceCatalogueImage({imageFileName}) async {
     var response = await http.post(
         Uri.parse(
-            'https://manager.fixme.ng/del-svc-img?user_id=$userId&image_id=$imageFileName'),
+            '$mainUrl/del-svc-img?user_id=$userId&image_id=$imageFileName'),
         headers: {
           "Content-type": "application/json",
           'Authorization': 'Bearer $bearer',
@@ -1697,7 +1705,7 @@ class WebServices extends ChangeNotifier {
   Future<bool> deleteCatalogueProducts({productId}) async {
     var response = await http.post(
         Uri.parse(
-            'https://manager.fixme.ng/delete-product-catalog?user_id=$userId&product_id=$productId'),
+            '$mainUrl/delete-product-catalog?user_id=$userId&product_id=$productId'),
         headers: {
           "Content-type": "application/json",
           'Authorization': 'Bearer $bearer',
@@ -1715,7 +1723,7 @@ class WebServices extends ChangeNotifier {
   Future<bool> deleteCatalogueProductImage({productImageId}) async {
     var response = await http.post(
         Uri.parse(
-            'https://manager.fixme.ng/delete-product-catalog-image?user_id=$userId&product_image_id=$productImageId'),
+            '$mainUrl/delete-product-catalog-image?user_id=$userId&product_image_id=$productImageId'),
         headers: {
           "Content-type": "application/json",
           'Authorization': 'Bearer $bearer',

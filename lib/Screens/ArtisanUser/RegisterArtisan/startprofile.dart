@@ -42,7 +42,7 @@ class SignStartProfileState extends State<SignStartProfile> {
                 padding: EdgeInsets.only(top: 25, left: 15),
                 child: Align(
                   child: Text(
-                      "Fixme prides in offering a great experience for every user, we need thatthe following are kept in mind, to gain the most from our platform:",
+                      "Fixme prides in offering a great experience for each user, in order to gain the most from our platform we need you to understand and agree to the following before going forward and filling out your Business details.",
                       style:
                           TextStyle(height: 1.6, fontWeight: FontWeight.w500)),
                   alignment: Alignment.bottomLeft,
@@ -50,7 +50,7 @@ class SignStartProfileState extends State<SignStartProfile> {
             Padding(
                 padding: EdgeInsets.only(top: 25, left: 15),
                 child: Align(
-                  child: Text("Here’s how it works:"),
+                  child: Text("You agree to the following:"),
                   alignment: Alignment.bottomLeft,
                 )),
             Padding(
@@ -115,7 +115,7 @@ class SignStartProfileState extends State<SignStartProfile> {
                 padding: EdgeInsets.only(top: 25, left: 15),
                 child: Align(
                   child: Text(
-                      "Create a stand-out profile to increase your chance of getting a job and also get trust from clients.",
+                      "Create a stand-out profile and build reviews, to increase your chances of getting daily customers.",
                       style: TextStyle(
                         height: 1.6,
                       )),

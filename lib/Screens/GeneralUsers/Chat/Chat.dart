@@ -1,10 +1,13 @@
+import 'package:firebase_messaging/firebase_messaging.dart';
 import 'package:fixme/Services/Firebase_service.dart';
 import 'package:fixme/Services/network_service.dart';
 import 'package:fixme/Utils/Provider.dart';
+import 'dart:convert';
 import 'package:fixme/Utils/utils.dart';
 import 'package:fixme/Widgets/messages_widget.dart';
 import 'package:fixme/Widgets/popup_menu.dart';
 import 'dart:async';
+import 'package:http/http.dart' as http;
 import 'dart:io' as io;
 import 'package:file/local.dart';
 import 'package:flutter/material.dart';
@@ -80,6 +83,63 @@ class _ChatPageState extends State<ChatPage> {
       }
     } catch (e) {}
   }
+
+
+
+
+
+
+  final String serverToken =
+      'AAAA2lAKGZU:APA91bFmok2miRE6jWBUgfmu5jhvxQGJ5ITwrcwrHMghkPOZCIYYxLu-rIs-ub6HQ5YdiEGx3jG2tMvmiEjq-KW4rEgGrckHNkGdFrO2iUDoidvmh867VQj0FKx-_cxbi8AQpR1S3cCu';
+  final FirebaseMessaging firebaseMessaging = FirebaseMessaging();
+
+
+  Future<Map<String, dynamic>> sendAndRetrieveMessage(body, token) async {
+    try {
+      await firebaseMessaging.requestNotificationPermissions(
+        const IosNotificationSettings(
+            sound: true, badge: true, alert: true, provisional: true),
+      );
+
+      await http.post(
+        'https://fcm.googleapis.com/fcm/send',
+        headers: <String, String>{
+          'Content-Type': 'application/json',
+          'Authorization': 'key=$serverToken',
+        },
+        body: jsonEncode(
+          <String, dynamic>{
+            'notification': <String, dynamic>{
+              'body': body.toString(),
+              'title': 'You Have an Awaiting Message',
+            },
+            'priority': 'high',
+            'data': <String, dynamic>{
+              'click_action': 'FLUTTER_NOTIFICATION_CLICK',
+              'id': '1',
+              'status': 'done'
+            },
+            'to': await firebaseMessaging.getToken(),
+          },
+        ),
+      );
+
+      final Completer<Map<String, dynamic>> completer =
+      Completer<Map<String, dynamic>>();
+
+      firebaseMessaging.configure(
+        onMessage: (Map<String, dynamic> message) async {
+          completer.complete(message);
+        },
+      );
+
+      return completer.future;
+    } catch (e) {}
+  }
+
+
+
+
 
   Widget _buildText(RecordingStatus status) {
     var text = "";
@@ -199,6 +259,7 @@ class _ChatPageState extends State<ChatPage> {
           message,
           context,
           '${network.firstName}-${widget.user.name}');
+      sendAndRetrieveMessage(message,  widget.user.token);
     }
 
     void _modalBottomSheetRecord(datas) {

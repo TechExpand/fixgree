@@ -84,9 +84,12 @@ class _HomePageState extends State<HomePage> {
     var network = Provider.of<WebServices>(context, listen: false);
     _firebaseMessaging.configure(
         onMessage: (Map<String, dynamic> message) async {
-          print(message);
-          print(message);
-          showNotification(message["notification"]["title"],message["notification"]["body"]);
+print( message["data"]["notification_type"]);
+print( message["data"]["notification_type"]);
+print( message["data"]["notification_type"]);
+          message["data"]["notification_type"].toString()=='new_project'?showNotification(message["notification"]["title"],message["notification"]["body"]):
+          showNotification2(message["notification"]["title"],message["notification"]["body"]);
+
       FirebaseApi.uploadNotification(
         network.userId.toString(),
         message["notification"]["title"],
@@ -126,12 +129,30 @@ class _HomePageState extends State<HomePage> {
   // }
 
  showNotification(value1, value2) async {
-    var android = AndroidNotificationDetails('id', 'channel ', 'description',
+    var android = AndroidNotificationDetails('myid', 'mychannel ', 'mydescription',
         priority: Priority.high, importance: Importance.max, sound: RawResourceAndroidNotificationSound('sound'),
       playSound: true,
     );
     var iOS = IOSNotificationDetails(
       sound: 'sound.wav',
+      presentAlert: true,
+      presentBadge: true,
+      presentSound: true,
+    );
+    var platform = new NotificationDetails(android: android, iOS: iOS);
+    await flutterLocalNotificationsPlugin.show(
+        1, '$value1', '$value2', platform,
+        payload: 'another job is available around you');
+  }
+
+
+  showNotification2(value1, value2) async {
+    var android = AndroidNotificationDetails('id', 'channel ', 'description',
+      priority: Priority.high, importance: Importance.max, sound: RawResourceAndroidNotificationSound('normal'),
+      playSound: true,
+    );
+    var iOS = IOSNotificationDetails(
+      sound: 'normal.wav',
       presentAlert: true,
       presentBadge: true,
       presentSound: true,

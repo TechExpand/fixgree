@@ -116,6 +116,11 @@ class Utils with ChangeNotifier {
     notifyListeners();
   }
 
+  selectedImage2toNull(){
+selectedImage2 = null;
+notifyListeners();
+  }
+
   opeLink(link) async {
     var url = '$link';
     if (await canLaunch(url)) {

@@ -13,7 +13,7 @@ class ProductDetailPage extends StatefulWidget {
 
 class ProductDetailPageState extends State<ProductDetailPage> {
   List<Services> result = [];
-  List<Widget> chips = [];
+  //List<Widget> chips = [];
 
   @override
   Widget build(BuildContext context) {
@@ -71,66 +71,66 @@ class ProductDetailPageState extends State<ProductDetailPage> {
               ),
             ),
           ),
-          Padding(
-            padding: const EdgeInsets.only(top: 8.0, bottom: 13),
-            child: Text('What product do you sell?'),
-          ),
-          InkWell(
-            onTap: chips.length >= 5
-                ? null
-                : () {
-                    result = postRequestProvider.allservicesList;
-                    dialogPageAdd(context);
-                  },
-            child: Container(
-              width: MediaQuery.of(context).size.width / 0.2,
-              height: 50,
-              child: TextFormField(
-                style: TextStyle(color: Colors.black),
-                cursorColor: Colors.black,
-                enabled: false,
-                decoration: InputDecoration(
-                  prefixIcon: Icon(Icons.add, color: Color(0xFF9B049B)),
-                  labelStyle: TextStyle(color: Color(0xFF9B049B)),
-                  labelText: 'Add',
-                  disabledBorder: OutlineInputBorder(
-                      borderSide: const BorderSide(
-                          color: Color(0xFF9B049B), width: 0.0),
-                      borderRadius: BorderRadius.all(Radius.circular(12))),
-                  focusedBorder: OutlineInputBorder(
-                      borderSide: const BorderSide(
-                          color: Color(0xFF9B049B), width: 0.0),
-                      borderRadius: BorderRadius.all(Radius.circular(12))),
-                  border: OutlineInputBorder(
-                      borderSide: const BorderSide(
-                          color: Color(0xFF9B049B), width: 0.0),
-                      borderRadius: BorderRadius.all(Radius.circular(12))),
-                ),
-              ),
-            ),
-          ),
-          Padding(
-            padding: const EdgeInsets.only(top: 8.0, bottom: 13),
-            child: Align(
-                alignment: Alignment.bottomRight,
-                child: Text('Enter at least 1 product')),
-          ),
-          Wrap(
-            children: chips,
-          ),
-          Padding(
-            padding: const EdgeInsets.all(8.0),
-            child: InkWell(
-                onTap: () {
-                  chips.clear();
-                  data.setclrSubCat();
-                  setState(() {});
-                },
-                child: Text('Clear All',
-                    style: TextStyle(
-                        color: Color(0xFF9B049B),
-                        fontWeight: FontWeight.bold))),
-          ),
+          // Padding(
+          //   padding: const EdgeInsets.only(top: 8.0, bottom: 13),
+          //   child: Text('What product do you sell?'),
+          // ),
+          // InkWell(
+          //   onTap: chips.length >= 5
+          //       ? null
+          //       : () {
+          //           result = postRequestProvider.allservicesList;
+          //           dialogPageAdd(context);
+          //         },
+          //   child: Container(
+          //     width: MediaQuery.of(context).size.width / 0.2,
+          //     height: 50,
+          //     child: TextFormField(
+          //       style: TextStyle(color: Colors.black),
+          //       cursorColor: Colors.black,
+          //       enabled: false,
+          //       decoration: InputDecoration(
+          //         prefixIcon: Icon(Icons.add, color: Color(0xFF9B049B)),
+          //         labelStyle: TextStyle(color: Color(0xFF9B049B)),
+          //         labelText: 'Add',
+          //         disabledBorder: OutlineInputBorder(
+          //             borderSide: const BorderSide(
+          //                 color: Color(0xFF9B049B), width: 0.0),
+          //             borderRadius: BorderRadius.all(Radius.circular(12))),
+          //         focusedBorder: OutlineInputBorder(
+          //             borderSide: const BorderSide(
+          //                 color: Color(0xFF9B049B), width: 0.0),
+          //             borderRadius: BorderRadius.all(Radius.circular(12))),
+          //         border: OutlineInputBorder(
+          //             borderSide: const BorderSide(
+          //                 color: Color(0xFF9B049B), width: 0.0),
+          //             borderRadius: BorderRadius.all(Radius.circular(12))),
+          //       ),
+          //     ),
+          //   ),
+          // ),
+          // Padding(
+          //   padding: const EdgeInsets.only(top: 8.0, bottom: 13),
+          //   child: Align(
+          //       alignment: Alignment.bottomRight,
+          //       child: Text('Enter at least 1 product')),
+          // ),
+          // Wrap(
+          //   children: chips,
+          // ),
+          // Padding(
+          //   padding: const EdgeInsets.all(8.0),
+          //   child: InkWell(
+          //       onTap: () {
+          //         chips.clear();
+          //         data.setclrSubCat();
+          //         setState(() {});
+          //       },
+          //       child: Text('Clear All',
+          //           style: TextStyle(
+          //               color: Color(0xFF9B049B),
+          //               fontWeight: FontWeight.bold))),
+          // ),
           Spacer(),
           Align(
             alignment: Alignment.center,
@@ -141,7 +141,7 @@ class ProductDetailPageState extends State<ProductDetailPage> {
               child: FlatButton(
                 disabledColor: Color(0x909B049B),
                 onPressed:
-                    chips.isEmpty || postRequestProvider.selecteService == null
+                 postRequestProvider.selecteService == null
                         ? null
                         : () {
                             widget.myPage.jumpToPage(1);
@@ -241,81 +241,81 @@ class ProductDetailPageState extends State<ProductDetailPage> {
     });
   }
 
-  dialogPageAdd(ctx) {
-    DataProvider data = Provider.of<DataProvider>(context, listen: false);
+  // dialogPageAdd(ctx) {
+  //   DataProvider data = Provider.of<DataProvider>(context, listen: false);
 
-    showDialog(
-        context: context,
-        builder: (ctx) {
-          return StatefulBuilder(
-            builder: (BuildContext context, StateSetter setStates) {
-              return AlertDialog(
-                title: TextFormField(
-                  onChanged: (value) {
-                    setStates(() {
-                      searchServices(value);
-                    });
-                  },
-                  style: TextStyle(color: Colors.black),
-                  decoration: InputDecoration(
-                    labelText: 'Search Services',
-                    disabledBorder: OutlineInputBorder(
-                        borderSide: const BorderSide(width: 0.0),
-                        borderRadius: BorderRadius.all(Radius.circular(12))),
-                    focusedBorder: OutlineInputBorder(
-                        borderSide: const BorderSide(width: 0.0),
-                        borderRadius: BorderRadius.all(Radius.circular(12))),
-                    border: OutlineInputBorder(
-                        borderSide: const BorderSide(width: 0.0),
-                        borderRadius: BorderRadius.all(Radius.circular(12))),
-                  ),
-                ),
-                content: Container(
-                  decoration: BoxDecoration(
-                    borderRadius: BorderRadius.all(new Radius.circular(50.0)),
-                  ),
-                  height: 500,
-                  child: SingleChildScrollView(
-                    child: Column(
-                      children: <Widget>[
-                        Container(
-                          width: 300,
-                          height: 500,
-                          child: ListView.builder(
-                            itemCount: result == null ? 0 : result.length,
-                            itemBuilder: (context, index) {
-                              return InkWell(
-                                onTap: () {
-                                  Navigator.pop(context);
-                                  data.setSubCat(result[index].service);
-                                  chips.add(
-                                    Padding(
-                                      padding:
-                                          const EdgeInsets.only(right: 8.0),
-                                      child: Chip(
-                                          label:
-                                              Text('${result[index].service}')),
-                                    ),
-                                  );
-                                },
-                                child: ListTile(
-                                  title: Text('${result[index].service}'),
-                                ),
-                              );
-                            },
-                          ),
-                        )
-                      ],
-                    ),
-                  ),
-                ),
-              );
-            },
-          );
-        }).then((v) {
-      setState(() {});
-    });
-  }
+  //   showDialog(
+  //       context: context,
+  //       builder: (ctx) {
+  //         return StatefulBuilder(
+  //           builder: (BuildContext context, StateSetter setStates) {
+  //             return AlertDialog(
+  //               title: TextFormField(
+  //                 onChanged: (value) {
+  //                   setStates(() {
+  //                     searchServices(value);
+  //                   });
+  //                 },
+  //                 style: TextStyle(color: Colors.black),
+  //                 decoration: InputDecoration(
+  //                   labelText: 'Search Services',
+  //                   disabledBorder: OutlineInputBorder(
+  //                       borderSide: const BorderSide(width: 0.0),
+  //                       borderRadius: BorderRadius.all(Radius.circular(12))),
+  //                   focusedBorder: OutlineInputBorder(
+  //                       borderSide: const BorderSide(width: 0.0),
+  //                       borderRadius: BorderRadius.all(Radius.circular(12))),
+  //                   border: OutlineInputBorder(
+  //                       borderSide: const BorderSide(width: 0.0),
+  //                       borderRadius: BorderRadius.all(Radius.circular(12))),
+  //                 ),
+  //               ),
+  //               content: Container(
+  //                 decoration: BoxDecoration(
+  //                   borderRadius: BorderRadius.all(new Radius.circular(50.0)),
+  //                 ),
+  //                 height: 500,
+  //                 child: SingleChildScrollView(
+  //                   child: Column(
+  //                     children: <Widget>[
+  //                       Container(
+  //                         width: 300,
+  //                         height: 500,
+  //                         child: ListView.builder(
+  //                           itemCount: result == null ? 0 : result.length,
+  //                           itemBuilder: (context, index) {
+  //                             return InkWell(
+  //                               onTap: () {
+  //                                 Navigator.pop(context);
+  //                                 data.setSubCat(result[index].service);
+  //                                 chips.add(
+  //                                   Padding(
+  //                                     padding:
+  //                                         const EdgeInsets.only(right: 8.0),
+  //                                     child: Chip(
+  //                                         label:
+  //                                             Text('${result[index].service}')),
+  //                                   ),
+  //                                 );
+  //                               },
+  //                               child: ListTile(
+  //                                 title: Text('${result[index].service}'),
+  //                               ),
+  //                             );
+  //                           },
+  //                         ),
+  //                       )
+  //                     ],
+  //                   ),
+  //                 ),
+  //               ),
+  //             );
+  //           },
+  //         );
+  //       }).then((v) {
+  //     setState(() {});
+  //   });
+  // }
 
   void searchServices(userInputValue) {
     PostRequestProvider postRequestProvider =

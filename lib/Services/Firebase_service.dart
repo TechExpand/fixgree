@@ -190,6 +190,8 @@ class FirebaseApi {
     urlAvatar2,
     userMobile,
     artisanMobile,
+    token,
+    token2,
   }) async {
     final refUsers =
     FirebaseFirestore.instance.collection('UserChat/$idArtisan/individual');
@@ -204,6 +206,7 @@ class FirebaseApi {
       'read': false,
       'idUser': idUser,
       'name': name,
+       'token': token,
       'block': false,
       'userMobile': userMobile,
       'lastMessage': 'No Message yet',
@@ -221,6 +224,7 @@ class FirebaseApi {
       'idUser': idArtisan,
       'lastMessage': 'No Message yet',
       'name': name2,
+       'token': token2,
       'userMobile': artisanMobile,
       'urlAvatar': urlAvatar2,
       'lastMessageTime': DateTime.now(),
@@ -231,6 +235,8 @@ class FirebaseApi {
 
 
   static Future addUserBidChat({
+    token,
+    token2,
     bidData,
     idUser,
     name,
@@ -255,6 +261,7 @@ class FirebaseApi {
       'read': false,
       'idUser': idUser,
       'name': name,
+      'token': token,
       'block': false,
       'userMobile': userMobile,
       'lastMessage': 'No Message yet',
@@ -268,6 +275,7 @@ class FirebaseApi {
       'service_id': bidData.service_id ?? '',
       'chatid': idUser,
       'read': false,
+       'token': token2,
       'block': false,
       'idUser': idArtisan,
       'lastMessage': 'No Message yet',

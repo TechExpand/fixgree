@@ -17,6 +17,9 @@ class ProductCatelogPage extends StatefulWidget {
 
 class ProductCatelogPageState extends State<ProductCatelogPage> {
   final GlobalKey<ScaffoldState> scaffoldKey = GlobalKey<ScaffoldState>();
+  TextEditingController controlDes = TextEditingController();
+   TextEditingController controlName = TextEditingController();
+    TextEditingController controlPrice = TextEditingController();
 
   @override
   Widget build(BuildContext context) {
@@ -37,101 +40,7 @@ class ProductCatelogPageState extends State<ProductCatelogPage> {
                 child: Text('Upload your product catalog',
                     style: TextStyle(fontWeight: FontWeight.w600)),
               ),
-              Container(
-                margin: EdgeInsets.only(bottom: 15),
-                width: MediaQuery.of(context).size.width / 0.2,
-                height: 55,
-                child: TextFormField(
-                  onChanged: (value) {
-                    setState(() {
-                      datas.setProductName(value);
-                    });
-
-                  },
-                  style: TextStyle(color: Colors.black),
-                  cursorColor: Colors.black,
-                  decoration: InputDecoration(
-                    labelStyle: TextStyle(color: Colors.black38),
-                    labelText: 'Product Name',
-                    enabledBorder: OutlineInputBorder(
-                        borderSide: const BorderSide(
-                            color: Color(0xFF9B049B), width: 0.0),
-                        borderRadius: BorderRadius.all(Radius.circular(12))),
-                    focusedBorder: OutlineInputBorder(
-                        borderSide: const BorderSide(
-                            color: Color(0xFF9B049B), width: 0.0),
-                        borderRadius: BorderRadius.all(Radius.circular(12))),
-                    border: OutlineInputBorder(
-                        borderSide: const BorderSide(
-                            color: Color(0xFF9B049B), width: 0.0),
-                        borderRadius: BorderRadius.all(Radius.circular(12))),
-                  ),
-                ),
-              ),
-              Container(
-                margin: EdgeInsets.only(bottom: 15),
-                width: MediaQuery.of(context).size.width / 0.2,
-                height: 55,
-                child: TextFormField(
-                  keyboardType: TextInputType.number,
-                  onChanged: (value) {
-                    setState(() {
-                      datas.setProductPrice(value);
-                    });
-
-                  },
-                  style: TextStyle(color: Colors.black),
-                  cursorColor: Colors.black,
-                  decoration: InputDecoration(
-                    labelStyle: TextStyle(color: Colors.black38),
-                    labelText: 'Product Price',
-                    enabledBorder: OutlineInputBorder(
-                        borderSide: const BorderSide(
-                            color: Color(0xFF9B049B), width: 0.0),
-                        borderRadius: BorderRadius.all(Radius.circular(12))),
-                    focusedBorder: OutlineInputBorder(
-                        borderSide: const BorderSide(
-                            color: Color(0xFF9B049B), width: 0.0),
-                        borderRadius: BorderRadius.all(Radius.circular(12))),
-                    border: OutlineInputBorder(
-                        borderSide: const BorderSide(
-                            color: Color(0xFF9B049B), width: 0.0),
-                        borderRadius: BorderRadius.all(Radius.circular(12))),
-                  ),
-                ),
-              ),
-              Container(
-                margin: EdgeInsets.only(bottom: 15),
-                width: MediaQuery.of(context).size.width / 0.2,
-                height: 55,
-                child: TextFormField(
-                  onChanged: (value) {
-                    setState(() {
-                      datas.setProductBio(value);
-                    });
-
-                  },
-                  style: TextStyle(color: Colors.black),
-                  cursorColor: Colors.black,
-                  decoration: InputDecoration(
-                    labelStyle: TextStyle(color: Colors.black38),
-                    labelText: 'Product Description',
-                    enabledBorder: OutlineInputBorder(
-                        borderSide: const BorderSide(
-                            color: Color(0xFF9B049B), width: 0.0),
-                        borderRadius: BorderRadius.all(Radius.circular(12))),
-                    focusedBorder: OutlineInputBorder(
-                        borderSide: const BorderSide(
-                            color: Color(0xFF9B049B), width: 0.0),
-                        borderRadius: BorderRadius.all(Radius.circular(12))),
-                    border: OutlineInputBorder(
-                        borderSide: const BorderSide(
-                            color: Color(0xFF9B049B), width: 0.0),
-                        borderRadius: BorderRadius.all(Radius.circular(12))),
-                  ),
-                ),
-              ),
-              Center(
+               Center(
                 child: SizedBox(
                   height: 100, // card height
                   child: data.selectedImage2 == null
@@ -177,7 +86,7 @@ class ProductCatelogPageState extends State<ProductCatelogPage> {
                               minHeight: 45.0),
                           alignment: Alignment.center,
                           child: Text(
-                            "Select Catalog Photo",
+                            "Select/Upload Product Photo",
                             textAlign: TextAlign.center,
                             style: TextStyle(fontSize: 17, color: Colors.black),
                           ),
@@ -187,6 +96,104 @@ class ProductCatelogPageState extends State<ProductCatelogPage> {
                   ),
                 ),
               ),
+              Container(
+                margin: EdgeInsets.only(bottom: 15, top: 28),
+                width: MediaQuery.of(context).size.width / 0.2,
+                height: 55,
+                child: TextFormField(
+                  controller: controlName,
+                  onChanged: (value) {
+                    setState(() {
+                      datas.setProductName(value);
+                    });
+
+                  },
+                  style: TextStyle(color: Colors.black),
+                  cursorColor: Colors.black,
+                  decoration: InputDecoration(
+                    labelStyle: TextStyle(color: Colors.black38),
+                    labelText: 'Product Name',
+                    enabledBorder: OutlineInputBorder(
+                        borderSide: const BorderSide(
+                            color: Color(0xFF9B049B), width: 0.0),
+                        borderRadius: BorderRadius.all(Radius.circular(12))),
+                    focusedBorder: OutlineInputBorder(
+                        borderSide: const BorderSide(
+                            color: Color(0xFF9B049B), width: 0.0),
+                        borderRadius: BorderRadius.all(Radius.circular(12))),
+                    border: OutlineInputBorder(
+                        borderSide: const BorderSide(
+                            color: Color(0xFF9B049B), width: 0.0),
+                        borderRadius: BorderRadius.all(Radius.circular(12))),
+                  ),
+                ),
+              ),
+              Container(
+                margin: EdgeInsets.only(bottom: 15),
+                width: MediaQuery.of(context).size.width / 0.2,
+                height: 55,
+                child: TextFormField(
+                  controller: controlPrice,
+                  keyboardType: TextInputType.number,
+                  onChanged: (value) {
+                    setState(() {
+                      datas.setProductPrice(value);
+                    });
+
+                  },
+                  style: TextStyle(color: Colors.black),
+                  cursorColor: Colors.black,
+                  decoration: InputDecoration(
+                    labelStyle: TextStyle(color: Colors.black38),
+                    labelText: 'Product Price',
+                    enabledBorder: OutlineInputBorder(
+                        borderSide: const BorderSide(
+                            color: Color(0xFF9B049B), width: 0.0),
+                        borderRadius: BorderRadius.all(Radius.circular(12))),
+                    focusedBorder: OutlineInputBorder(
+                        borderSide: const BorderSide(
+                            color: Color(0xFF9B049B), width: 0.0),
+                        borderRadius: BorderRadius.all(Radius.circular(12))),
+                    border: OutlineInputBorder(
+                        borderSide: const BorderSide(
+                            color: Color(0xFF9B049B), width: 0.0),
+                        borderRadius: BorderRadius.all(Radius.circular(12))),
+                  ),
+                ),
+              ),
+              Container(
+                margin: EdgeInsets.only(bottom: 15),
+                width: MediaQuery.of(context).size.width / 0.2,
+                height: 55,
+                child: TextFormField(
+                  controller: controlDes,
+                  onChanged: (value) {
+                    setState(() {
+                      datas.setProductBio(value);
+                    });
+
+                  },
+                  style: TextStyle(color: Colors.black),
+                  cursorColor: Colors.black,
+                  decoration: InputDecoration(
+                    labelStyle: TextStyle(color: Colors.black38),
+                    labelText: 'Product Description',
+                    enabledBorder: OutlineInputBorder(
+                        borderSide: const BorderSide(
+                            color: Color(0xFF9B049B), width: 0.0),
+                        borderRadius: BorderRadius.all(Radius.circular(12))),
+                    focusedBorder: OutlineInputBorder(
+                        borderSide: const BorderSide(
+                            color: Color(0xFF9B049B), width: 0.0),
+                        borderRadius: BorderRadius.all(Radius.circular(12))),
+                    border: OutlineInputBorder(
+                        borderSide: const BorderSide(
+                            color: Color(0xFF9B049B), width: 0.0),
+                        borderRadius: BorderRadius.all(Radius.circular(12))),
+                  ),
+                ),
+              ),
+             
               Spacer(),
     Consumer2<DataProvider,Utils >(
     builder: (context, conData,conData2 ,child) {
@@ -205,6 +212,7 @@ class ProductCatelogPageState extends State<ProductCatelogPage> {
                                     conData2.selectedImage2 == null
                                 ? () {}
                                 : () {
+                                
                                     network.loginSetState();
                                     network.uploadProductCatalog(
                                       scaffoldKey: scaffoldKey,
@@ -213,6 +221,10 @@ class ProductCatelogPageState extends State<ProductCatelogPage> {
                                       productName: datas.productName,
                                       price: datas.productPrice,
                                       path: data.selectedImage2.path,
+                                      controlDes: controlDes,
+                                      controlName: controlName,
+                                      controlPrice: controlPrice,
+                                  
                                     );
                                     FocusScopeNode currentFocus = FocusScope.of(context);
                                     if (!currentFocus.hasPrimaryFocus) {

@@ -200,7 +200,10 @@ class ArtisanPageState extends State<ArtisanPage> {
                           borderRadius: BorderRadius.circular(5)),
                       child: FlatButton(
                         onPressed: () {
+                           var data = Provider.of<Utils>(context, listen: false);
                           FirebaseApi.addUserChat(
+                            token2: data.fcmToken ,
+                            token: widget.userData.fcmToken,
                             urlAvatar2:
                             'https://uploads.fixme.ng/originals/${network.profilePicFileName}',
                             name2: network.firstName,

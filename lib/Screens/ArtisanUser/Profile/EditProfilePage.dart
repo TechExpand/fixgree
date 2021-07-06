@@ -705,7 +705,9 @@ class _EditProfilePageState extends State<EditProfilePage> {
                                                                   shape: BoxShape
                                                                       .circle),
                                                           child: IconButton(
-                                                              onPressed: () {},
+                                                              onPressed: () {
+//edit product for vendors
+                                                              },
                                                               icon: Icon(
                                                                 FeatherIcons
                                                                     .edit3,
@@ -1382,7 +1384,7 @@ class _EditProfilePageState extends State<EditProfilePage> {
                                     minHeight: 45.0),
                                 alignment: Alignment.center,
                                 child: Text(
-                                  "Select Catalog Photo",
+                                  "Select/Upload Product Photo",
                                   textAlign: TextAlign.center,
                                   style: TextStyle(
                                       fontSize: 17, color: Colors.white),
@@ -1554,7 +1556,7 @@ class _EditProfilePageState extends State<EditProfilePage> {
                                     minHeight: 45.0),
                                 alignment: Alignment.center,
                                 child: Text(
-                                  "Select Catalog Photo",
+                                  "Select/Upload Service Photo",
                                   textAlign: TextAlign.center,
                                   style: TextStyle(
                                       fontSize: 17, color: Colors.white),

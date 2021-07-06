@@ -112,7 +112,7 @@ class PhotoCatelogPageState extends State<PhotoCatelogPage> {
                               minHeight: 45.0),
                           alignment: Alignment.center,
                           child: Text(
-                            "Select Catalog Photo",
+                            "Select/Upload Service Photo",
                             textAlign: TextAlign.center,
                             style: TextStyle(fontSize: 17, color: Colors.black),
                           ),

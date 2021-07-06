@@ -431,6 +431,8 @@ class _ArtisanPageNewState extends State<ArtisanPageNew> {
                             child: FlatButton(
                               onPressed: () {
                                 FirebaseApi.addUserChat(
+                                  token2: data.fcmToken ,
+                            token: widget.userData.fcmToken,
                                   urlAvatar2:
                                       'https://uploads.fixme.ng/originals/${network.profilePicFileName}',
                                   name2: network.firstName,

@@ -22,7 +22,7 @@ class OverviewPageState extends State<OverviewPage> {
           children: [
             Padding(
               padding: const EdgeInsets.only(top: 15.0, bottom: 15),
-              child: Text('Proffessional Overview',
+              child: Text('${data.artisanVendorChoice == 'business'?"Enter your Business Description":"Proffessional Overview"}',
                   style: TextStyle(fontWeight: FontWeight.w600)),
             ),
             TextFormField(
@@ -72,7 +72,7 @@ class OverviewPageState extends State<OverviewPage> {
                     borderRadius: BorderRadius.circular(26)),
                 child: FlatButton(
                   disabledColor: Color(0x909B049B),
-                  onPressed: conData.overview.isEmpty
+                  onPressed: jobdescriptionController.text.isEmpty
                       ? null
                       : () {
                     FocusScopeNode currentFocus = FocusScope.of(context);

@@ -199,14 +199,14 @@ class PostScreenState extends State<PostScreen> {
               splashColor: Colors.transparent,
               highlightColor: Colors.transparent,
               onTap: ()async {
-                SharedPreferences prefs = await SharedPreferences.getInstance();
-                var card = prefs.getBool('card');
-                if(card == false || card == null){
-                  paymentMethod(context, 5000, network.email);
-                }else{
+                // SharedPreferences prefs = await SharedPreferences.getInstance();
+                // var card = prefs.getBool('card');
+                // if(card == false || card == null){
+                //   paymentMethod(context, 5000, network.email);
+                // }else{
                   result = postRequestProvider.allservicesList;
                   dialogPage(context);
-                }
+                // }
                 // result = postRequestProvider.allservicesList;
                 // dialogPage(context);
               },

@@ -26,6 +26,7 @@ class UserSearch {
   String serviceArea;
   int id;
   String status;
+  String fcmToken;
   var longitude;
   int userRating;
   var servicePictures;
@@ -39,6 +40,7 @@ class UserSearch {
       this.verification,
       this.idUser,
       this.locationTimeUpdated,
+        this.fcmToken,
       this.userRegDate,
       this.latitude,
       this.block,
@@ -77,6 +79,7 @@ class UserSearch {
         userAddress: json['user_address'],
         fullNumber: json['full_number'],
         idUser: json['firebase_id'],
+        fcmToken: json['mobile_device_token'],
         locationTimeUpdated: json['locationTimeUpdated'],
         userRole: json['user_role'],
         name: json['user_first_name'],
@@ -107,6 +110,7 @@ class UserSearch {
         'distance': distance,
         'user_last_name': userLastName,
         'user_reg_date': userRegDate,
+    'mobile_device_token':fcmToken,
         "latitude": latitude,
         "user_address": userAddress,
         'full_number': fullNumber,

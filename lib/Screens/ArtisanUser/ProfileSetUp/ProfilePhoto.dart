@@ -26,7 +26,7 @@ class ProfilePhotoPageState extends State<ProfilePhotoPage> {
           Padding(
             padding: const EdgeInsets.only(top: 13.0, bottom: 13),
             child: Text(
-                'Please upload a professional portrait that clearly shows your face.'),
+                'Please upload a professional portrait that clearly shows your face or upload your business logo.'),
           ),
           Center(
             child: Padding(

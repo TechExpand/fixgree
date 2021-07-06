@@ -13,6 +13,7 @@ class UserChat {
   final String job_id;
   final String service_id;
   final String docid;
+  final String token;
   var lastMessageTime;
   final String lastMessage;
   final String userMobile;
@@ -25,6 +26,7 @@ class UserChat {
     this.read,
     this.status,
     this.urlAvatar,
+    this.token,
     this.docid,
     this.lastMessage,
     this.bid_id,
@@ -42,6 +44,7 @@ class UserChat {
         job_id = snapshot['project_id'] ?? '',
         service_id = snapshot['service_id'] ?? '',
         read = snapshot['read'] ?? '',
+        token = snapshot['token']?? '',
         lastMessage = snapshot['lastMessage'] ?? '',
         lastMessageTime = Utils.toDateTime(snapshot['lastMessageTime']),
         block = snapshot['block'] ?? '',
@@ -57,6 +60,7 @@ class UserChat {
       "name": name,
       'project_owner_user_id': project_owner_user_id,
       "read": read,
+      'token':token,
       'bid_id': bid_id,
       'project_id': job_id,
       'service_bid': service_id,

@@ -1154,8 +1154,8 @@ class Home extends StatelessWidget {
                                       MediaQuery.of(context).size.width / 1.3,
                                   minHeight: 45.0),
                               alignment: Alignment.center,
-                              child: Text(
-                                'Change to Business Account',
+                              child: Text('${network.role == 'artisan' || network.role == 'business'
+                                  ? 'View Business Profile':'Change to Business Account'}',
                                 textAlign: TextAlign.center,
                                 style: TextStyle(
                                     color: Colors.white,

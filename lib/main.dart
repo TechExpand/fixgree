@@ -48,13 +48,13 @@ Future getCurrentLocation() async {
           'Authorization': 'Bearer $token',
         });
         var statusCode = response.statusCode;
-        print(statusCode);
-        print('startedd');
+        // print(statusCode);
+        // print('startedd');
         var body1 = json.decode(response.body);
-        print(body1);
+       // print(body1);
       } catch (e) {
         // Login_SetState();
-        print(e);
+     //   print(e);
         print('na error b tat');
       }
     }
@@ -71,13 +71,14 @@ void main() async {
       _serviceEnabled = await locationMet.serviceEnabled();
       if (!_serviceEnabled) {
         _serviceEnabled = await locationMet.requestService();
+        
       }
     } catch (e) {
-      print(e);
+    //  print(e);
     }
-    print('start sending initiasllll');
+   // print('start sending initiasllll');
     getCurrentLocation();
-    print('ebnd sending initiasllll');
+   // print('ebnd sending initiasllll');
     const oneSec = const Duration(minutes: 8);
     new Timer.periodic(oneSec, (Timer t) => getCurrentLocation());
   }

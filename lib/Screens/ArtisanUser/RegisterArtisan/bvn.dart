@@ -11,6 +11,7 @@ class SignUpBvn extends StatefulWidget {
 
 class SignUpBvnState extends State<SignUpBvn> {
   var password;
+  TextEditingController  bvn = TextEditingController();
 
   @override
   Widget build(BuildContext context) {
@@ -46,6 +47,7 @@ class SignUpBvnState extends State<SignUpBvn> {
               width: MediaQuery.of(context).size.width / 0.2,
               height: 55,
               child: TextFormField(
+                controller: bvn,
                 onChanged: (value) {
                   setState(() {
                     data.setBVN(value);
@@ -119,7 +121,7 @@ class SignUpBvnState extends State<SignUpBvn> {
                     borderRadius: BorderRadius.circular(26)),
                 child: FlatButton(
                   disabledColor: Color(0x909B049B),
-                  onPressed: conData.bvn.isEmpty
+                  onPressed: bvn.text.isEmpty
                       ? null
                       : () {
                     Navigator.push(

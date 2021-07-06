@@ -1,6 +1,7 @@
 import 'package:fixme/Services/Firebase_service.dart';
 import 'package:fixme/Services/location_service.dart';
 import 'package:fixme/Services/network_service.dart';
+import 'package:fixme/Utils/utils.dart';
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 
@@ -117,7 +118,11 @@ class SearchResultState extends State<SearchResult> {
                                 itemBuilder: (context, index) {
                                   return InkWell(
                                     onTap: () {
+                                      var data = Provider.of<Utils>(context, listen: false);
+
                                       FirebaseApi.addUserChat(
+                                          token2: data.fcmToken ,
+                            token: snapshot.data[index].fcmToken,
                                         urlAvatar2:
                                             'https://uploads.fixme.ng/originals/${network.profilePicFileName}',
                                         name2: network.firstName,

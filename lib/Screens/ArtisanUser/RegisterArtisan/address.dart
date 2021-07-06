@@ -11,7 +11,9 @@ class SignUpAddress extends StatefulWidget {
 
 class SignUpAddressState extends State<SignUpAddress> {
   var password;
-
+  TextEditingController  officeAddress = TextEditingController();
+  TextEditingController homeAddress = TextEditingController();
+TextEditingController businessName = TextEditingController();
   @override
   Widget build(BuildContext context) {
     var data =Provider.of<DataProvider>(context, listen: false);
@@ -47,6 +49,7 @@ class SignUpAddressState extends State<SignUpAddress> {
               width: MediaQuery.of(context).size.width / 0.2,
               height: 55,
               child: TextFormField(
+                controller: homeAddress,
                 onChanged: (value) {
                   setState(() {
                     data.sethomeAdress(value);
@@ -77,6 +80,7 @@ class SignUpAddressState extends State<SignUpAddress> {
               width: MediaQuery.of(context).size.width / 0.2,
               height: 55,
               child: TextFormField(
+                controller: officeAddress,
                 onChanged: (value) {
                   setState(() {
                     data.setofficeAddress(value);
@@ -119,6 +123,7 @@ class SignUpAddressState extends State<SignUpAddress> {
               width: MediaQuery.of(context).size.width / 0.2,
               height: 55,
               child: TextFormField(
+                controller: businessName,
                 onChanged: (value) {
                   data.setBusinessName(value);
                 },
@@ -157,7 +162,7 @@ class SignUpAddressState extends State<SignUpAddress> {
                 child: FlatButton(
                   disabledColor: Color(0x909B049B),
                   onPressed:
-                      conData.officeAddress.isEmpty || conData.homeAddress.isEmpty
+                      officeAddress.text.isEmpty || homeAddress.text.isEmpty|| businessName.text.isEmpty
                           ? null
                           : () {
                               Navigator.push(

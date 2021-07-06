@@ -44,8 +44,8 @@ class SignUpProfileSetupPageState extends State<SignUpProfileSetupPage> {
               padding: const EdgeInsets.only(bottom: 6.0, left: 15, right: 15),
               child: Row(
                 children: [
-                  InkWell(
-                      onTap: () {
+                  IconButton(
+                      onPressed: () {
                         print(network.bearer);
                         print(selected);
                         selected == 10
@@ -56,7 +56,7 @@ class SignUpProfileSetupPageState extends State<SignUpProfileSetupPage> {
                                     ? _myPage.jumpToPage(1)
                                     : _myPage.jumpToPage(2);
                       },
-                      child: Icon(Icons.arrow_back, color: Color(0xFF9B049B))),
+                      icon: Icon(Icons.arrow_back, color: Color(0xFF9B049B))),
                   Padding(
                     padding: const EdgeInsets.only(left: 15),
                     child: Column(
@@ -136,6 +136,7 @@ class SignUpProfileSetupPageState extends State<SignUpProfileSetupPage> {
             Container(
               height: MediaQuery.of(context).size.height * 0.80,
               child: PageView(
+                physics: NeverScrollableScrollPhysics(),
                 controller: _myPage,
                 onPageChanged: (value) {
                   if (value == 0) {

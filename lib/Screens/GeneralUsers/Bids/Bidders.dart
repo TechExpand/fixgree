@@ -3,6 +3,7 @@ import 'package:fixme/Services/Firebase_service.dart';
 import 'package:fixme/Screens/GeneralUsers/Chat/Chats.dart';
 import 'package:fixme/Screens/GeneralUsers/Home/HomePage.dart';
 import 'package:fixme/Services/location_service.dart';
+import 'package:fixme/Utils/utils.dart';
 import 'package:flutter_feather_icons/flutter_feather_icons.dart';
 import 'package:google_fonts/google_fonts.dart';
 import 'package:url_launcher/url_launcher.dart' as UrlLauncher;
@@ -28,22 +29,8 @@ class BidderPage extends StatefulWidget {
 class _BidderPageState extends State<BidderPage> {
   var first;
 
-  @override
-  void initState() {
-    super.initState();
-    address();
-  }
 
-  address() async {
-    var location = Provider.of<LocationService>(context);
-    final coordinates =
-        new Coordinates(location.locationLongitude, location.locationLatitude);
-    var addresses =
-        await Geocoder.local.findAddressesFromCoordinates(coordinates);
-    setState(() {
-      first = addresses.first;
-    });
-  }
+
 
   List<Services> result = [];
 
@@ -146,14 +133,34 @@ class _BidderPageState extends State<BidderPage> {
                                           children: [
                                             Icon(Icons.pin_drop,
                                                 color: Color(0xFF9B049B)),
-                                            Container(
-                                                width: 150,
-                                                child: Text(
-                                                  '${first == null ? 'Location' : first.addressLine}',
-                                                  style: TextStyle(
-                                                      fontWeight:
-                                                          FontWeight.w500),
-                                                )),
+                                            StatefulBuilder(
+                                              builder: (context, setState) {
+                                                var count =  0;
+                                                address() async {
+                                                  count++;
+                                                  //   var location = Provider.of<LocationService>(context);
+                                                  final coordinates =
+                                                  new Coordinates(snapshot.data['latitude'], snapshot.data['longitude']);
+                                                  var addresses =
+                                                  await Geocoder.local.findAddressesFromCoordinates(coordinates);
+                                                  setState(() {
+                                                    first = addresses.first;
+
+                                                  });
+                                                }
+
+                                                //
+                                                count>=1?null:address();
+                                                return Container(
+                                                    width: 150,
+                                                    child: Text(
+                                                      '${first == null ? 'Location' : first.addressLine}',
+                                                      style: TextStyle(
+                                                          fontWeight:
+                                                              FontWeight.w500),
+                                                    ));
+                                              }
+                                            ),
                                           ],
                                         ),
                                       ),
@@ -244,7 +251,10 @@ class _BidderPageState extends State<BidderPage> {
                                       borderRadius: BorderRadius.circular(5)),
                                   child: FlatButton(
                                     onPressed: (){
+                                       var data = Provider.of<Utils>(context, listen: false);
                                       FirebaseApi.addUserBidChat(
+                                        token2: data.fcmToken ,
+                            token:snapshot.data['mobile_device_token'],
                                         bidData: widget.data,
                                         urlAvatar2:
                                             'https://uploads.fixme.ng/originals/${network.profilePicFileName}',
