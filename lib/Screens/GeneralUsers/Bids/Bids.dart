@@ -40,7 +40,16 @@ class _BidPageState extends State<BidPage> {
 
                         switch (snapshot.connectionState) {
                           case ConnectionState.waiting:
-                            return Center(child: CircularProgressIndicator());
+      return Center(child: Theme(
+                                                    data: Theme.of(context)
+                                                        .copyWith(
+                                                            accentColor: Color(
+                                                                0xFF9B049B)),
+                                                    child:
+                                                    CircularProgressIndicator(valueColor: AlwaysStoppedAnimation<Color>(Color(0xFF9B049B)),
+                                                       strokeWidth: 2,
+                                              backgroundColor: Colors.white,
+                                                    )),);
                           default:
                             if (snapshot.hasError) {
                               return buildText(
@@ -221,7 +230,13 @@ class _BidPageState extends State<BidPage> {
                             }
                         }
                       } else {
-                        return Center(child: CircularProgressIndicator());
+                        return Center(child: Theme(
+                                  data: Theme.of(context)
+                                      .copyWith(accentColor: Color(0xFF9B049B)),
+                                  child: CircularProgressIndicator(valueColor: AlwaysStoppedAnimation<Color>(Color(0xFF9B049B)),
+                                     strokeWidth: 2,
+                                              backgroundColor: Colors.white,
+)),);
                       }
                     },
                   ),

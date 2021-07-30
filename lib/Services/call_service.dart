@@ -8,10 +8,9 @@ import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:fixme/Utils/utils.dart';
 
 class CallApi with ChangeNotifier {
-  static Stream<List<Call>> getCAll() => FirebaseFirestore.instance
+  static Stream getCAll() => FirebaseFirestore.instance
       .collection('call')
-      .snapshots()
-      .transform(Utils.transformer(Call.fromJson));
+      .snapshots();
 
   Future uploadMessage(
       {String idUser,
@@ -59,24 +58,22 @@ class CallApi with ChangeNotifier {
           );
   }
 
-  Stream<List<Message>> getCallLogs(String idUser) {
+  Stream<QuerySnapshot> getCallLogs(String idUser) {
     // SharedPreferences prefs = await SharedPreferences.getInstance();
     var data = FirebaseFirestore.instance
         .collection('call')
         .where('idUser', isEqualTo: idUser)
-        .snapshots()
-        .transform(Utils.transformer(Message.fromJson));
+        .snapshots();
     return data;
   }
 
-  Stream<List<Message>> getCallStatus(String idUser, idArtisan) {
+  Stream<QuerySnapshot> getCallStatus(String idUser, idArtisan) {
     // SharedPreferences prefs = await SharedPreferences.getInstance();
     var data = FirebaseFirestore.instance
         .collection('call')
         .where('idUser', isEqualTo: idUser)
         .where('callerId', isEqualTo: idArtisan)
-        .snapshots()
-        .transform(Utils.transformer(Message.fromJson));
+        .snapshots();
     print(data);
     return data;
   }

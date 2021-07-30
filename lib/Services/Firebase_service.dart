@@ -1,7 +1,7 @@
 import 'package:fixme/Services/network_service.dart';
 import 'package:flutter/material.dart';
 import 'package:path/path.dart' as Path;
-import 'package:cloud_firestore/cloud_firestore.dart';
+import 'package:cloud_firestore/cloud_firestore.dart' ;
 import 'package:firebase_storage/firebase_storage.dart';
 import 'package:fixme/Model/Message.dart';
 import 'package:fixme/Model/User.dart';
@@ -11,32 +11,35 @@ import 'dart:async';
 import 'dart:io';
 
 class FirebaseApi {
-  static Stream<List<User>> getUsers() => FirebaseFirestore.instance
+  static Stream getUsers() => FirebaseFirestore.instance
       .collection('users')
       .orderBy(UserField.lastMessageTime, descending: true)
-      .snapshots()
-      .transform(Utils.transformer(User.fromJson));
+      .snapshots();
 
   static Future uploadmessage(
-      String idUser, String idArtisan, String message, context, chatId) async {
+      String idUser, String idArtisan, String message, context, chatId,{productImage}) async {
     var network = Provider.of<WebServices>(context, listen: false);
     final refMessages =
-    FirebaseFirestore.instance.collection('chats/$idUser/messages');
+    FirebaseFirestore.instance.collection('chats/$idUser/messages').doc();
     final refMessages2 =
-    FirebaseFirestore.instance.collection('chats/$idArtisan/messages');
+    FirebaseFirestore.instance.collection('chats/$idArtisan/messages').doc();
 
-    final newMessage = Message(
-      chatId: chatId ?? '',
-      idUser: network.mobileDeviceToken ?? '',
-      urlAvatar:
-      'https://uploads.fixme.ng/originals/${network.profilePicFileName}' ??
-          '',
-      username: network.firstName ?? '',
-      message: message ?? '',
-      createdAt: DateTime.now(),
-    );
-    await refMessages.add(newMessage.toJson());
-    await refMessages2.add(newMessage.toJson());
+
+final newMessage = {
+  'productImage': productImage,
+  'chatId': chatId ?? '',
+  'idUser': network.mobileDeviceToken ?? '',
+  'urlAvatar':
+  'https://uploads.fixme.ng/originals/${network.profilePicFileName}' ??
+      '',
+  'username': network.firstName ?? '',
+  'message': message ?? '',
+  'createdAt': FieldValue.serverTimestamp()
+};
+
+    await refMessages.set(newMessage);
+
+    await refMessages2.set(newMessage);
 
     final refUsers =
     FirebaseFirestore.instance.collection('UserChat/$idUser/individual');
@@ -59,31 +62,31 @@ class FirebaseApi {
       String idUser, idArtisan, message, context, chatId) async {
     var network = Provider.of<WebServices>(context, listen: false);
     final refMessages =
-    FirebaseFirestore.instance.collection('chats/$idUser/messages');
+    FirebaseFirestore.instance.collection('chats/$idUser/messages').doc();
     final refMessages2 =
-    FirebaseFirestore.instance.collection('chats/$idArtisan/messages');
+    FirebaseFirestore.instance.collection('chats/$idArtisan/messages').doc();
 
     Reference storageReferenceImage = FirebaseStorage.instance
         .ref()
         .child('image/${Path.basename(message.path)}');
 
-    UploadTask uploadTask = storageReferenceImage.putFile(File(message.path));
-    uploadTask.then((res) {
-      storageReferenceImage.getDownloadURL().then((imageurl) async {
-        final newMessage = Message(
-          chatId: chatId ?? '',
-          idUser: network.mobileDeviceToken ?? '',
-          urlAvatar:'https://uploads.fixme.ng/originals/${network.profilePicFileName}' ?? '',
-          username: network.firstName ?? '',
-          message: imageurl ?? '',
-          createdAt: DateTime.now(),
-        );
+    UploadTask uploadtask =  storageReferenceImage.putFile(File(message.path));
+    uploadtask.then((res){
+     storageReferenceImage.getDownloadURL().then((imageurl) async {
+       final newMessage = {
+         'chatId': chatId ?? '',
+         'idUser': network.mobileDeviceToken ?? '',
+         'urlAvatar': 'https://uploads.fixme.ng/originals/${network
+             .profilePicFileName}' ?? '',
+         'username': network.firstName ?? '',
+         'message': imageurl ?? '',
+         'createdAt': FieldValue.serverTimestamp(),
+       };
 
-        refMessages.add(newMessage.toJson());
-        await refMessages2.add(newMessage.toJson());
-      });
-    });
-
+       refMessages.set(newMessage);
+       await refMessages2.set(newMessage);
+     });
+   });
 
 
     final refUsers =
@@ -107,30 +110,31 @@ class FirebaseApi {
       String idUser, idArtisan, message, context, chatId) async {
     var network = Provider.of<WebServices>(context, listen: false);
     final refMessages =
-    FirebaseFirestore.instance.collection('chats/$idUser/messages');
+    FirebaseFirestore.instance.collection('chats/$idUser/messages').doc();
     final refMessages2 =
-    FirebaseFirestore.instance.collection('chats/$idArtisan/messages');
+    FirebaseFirestore.instance.collection('chats/$idArtisan/messages').doc();
 
     Reference storageReferenceImage = FirebaseStorage.instance
         .ref()
         .child('image/${Path.basename(message.path)}');
 
-    UploadTask uploadTask = storageReferenceImage.putFile(File(message.path));
+    UploadTask uploadTask =  storageReferenceImage.putFile(File(message.path));
     uploadTask.then((res) {
       storageReferenceImage.getDownloadURL().then((imageurl) async {
-        final newMessage = Message(
-          chatId: chatId ?? '',
-          idUser: network.mobileDeviceToken ?? '',
-          urlAvatar:'https://uploads.fixme.ng/originals/${network.profilePicFileName}' ?? '',
-          username: network.firstName ?? '',
-          message: imageurl ?? '',
-          createdAt: DateTime.now(),
-        );
+        final newMessage = {
+          'chatId': chatId ?? '',
+          'idUser': network.mobileDeviceToken ?? '',
+          'urlAvatar':'https://uploads.fixme.ng/originals/${network.profilePicFileName}' ?? '',
+          'username': network.firstName ?? '',
+          'message': imageurl ?? '',
+          'createdAt': FieldValue.serverTimestamp(),
+        };
 
-        refMessages.add(newMessage.toJson());
-        await refMessages2.add(newMessage.toJson());
+        refMessages.set(newMessage);
+        await refMessages2.set(newMessage);
       });
     });
+
     final refUsers =
     FirebaseFirestore.instance.collection('UserChat/$idUser/individual');
     final refArtisan =
@@ -148,13 +152,13 @@ class FirebaseApi {
     });
   }
 
-  static Stream<List<Message>> getMessages(String idUser, chatId1, chatId2) =>
+  static Stream<QuerySnapshot> getMessages(String idUser, chatId1, chatId2) =>
       FirebaseFirestore.instance
           .collection('chats/$idUser/messages')
           .where('chatId', whereIn: [chatId1, chatId2])
-          .orderBy(MessageField.createdAt, descending: true)
-          .snapshots()
-          .transform(Utils.transformer(Message.fromJson));
+          .orderBy(MessageField.createdAt, descending: false)
+          .snapshots();
+          // .transform(Utils.transformer(Message.fromJson));
 
   static clearMessage(String idUser, chatId1, chatId2) {
     var documentReference = FirebaseFirestore.instance
@@ -189,6 +193,10 @@ class FirebaseApi {
     name2,
     urlAvatar2,
     userMobile,
+    serviceId,
+    serviceId2,
+    recieveruserId2,
+    recieveruserId,
     artisanMobile,
     token,
     token2,
@@ -207,6 +215,8 @@ class FirebaseApi {
       'idUser': idUser,
       'name': name,
        'token': token,
+       'serviceId': serviceId ?? '',
+       'recieveruserId': recieveruserId,
       'block': false,
       'userMobile': userMobile,
       'lastMessage': 'No Message yet',
@@ -222,8 +232,10 @@ class FirebaseApi {
       'read': false,
       'block': false,
       'idUser': idArtisan,
+      'serviceId': serviceId2 ?? '',
       'lastMessage': 'No Message yet',
       'name': name2,
+      'recieveruserId': recieveruserId2,
        'token': token2,
       'userMobile': artisanMobile,
       'urlAvatar': urlAvatar2,
@@ -242,6 +254,10 @@ class FirebaseApi {
     name,
     urlAvatar,
     docid,
+    recieveruserId2,
+    recieveruserId,
+    serviceId,
+    serviceId2,
     idArtisan,
     name2,
     urlAvatar2,
@@ -261,7 +277,9 @@ class FirebaseApi {
       'read': false,
       'idUser': idUser,
       'name': name,
+      'serviceId': serviceId ?? '',
       'token': token,
+      'recieveruserId':recieveruserId,
       'block': false,
       'userMobile': userMobile,
       'lastMessage': 'No Message yet',
@@ -276,7 +294,9 @@ class FirebaseApi {
       'chatid': idUser,
       'read': false,
        'token': token2,
+       'recieveruserId': recieveruserId2,
       'block': false,
+      'serviceId': serviceId ?? '',
       'idUser': idArtisan,
       'lastMessage': 'No Message yet',
       'name': name2,
@@ -382,7 +402,9 @@ class FirebaseApi {
 
 
   static Future uploadNotification(
-      String id, String message, type, name, jobId, bidId, bidderId, artisanId, budget) async {
+      String id, String message,
+      type, name, jobId, bidId,
+      bidderId, artisanId, budget,invoiceId, serviceId) async {
     final refMessages = FirebaseFirestore.instance.collection('Notification');
 
     await refMessages.doc().set({
@@ -395,6 +417,8 @@ class FirebaseApi {
       'bidded': 'bid',
       'bidderId': bidderId ?? '',
       'bidId': bidId ?? '',
+      'invoice_id': invoiceId??'',
+      'servicerequestId':serviceId??'',
       'budget': budget??'',
       'createdAt': DateTime.now(),
     });
@@ -438,6 +462,18 @@ class FirebaseApi {
     FirebaseFirestore.instance.collection('UserChat/$idArtisan/individual');
     await refUsers.doc(idUser).update({
       'read': true,
+    });
+  }
+
+  static updateUserFCMToken({
+    String idUser,
+    String idArtisan,
+    token
+  }) async {
+    final refUsers =
+    FirebaseFirestore.instance.collection('UserChat/$idUser/individual');
+    await refUsers.doc(idUser).update({
+      'token': token,
     });
   }
 

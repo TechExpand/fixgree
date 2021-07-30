@@ -7,18 +7,22 @@ class MessageField {
 }
 
 class Message {
+  final id;
   final String callerId;
   final String callStatus;
   final String idUser;
   final String urlAvatar;
   final String username;
   final String message;
+  final String productImage;
   final String calltype;
   final chatId;
   final DateTime createdAt;
 
   const Message({
+    this.id,
     this.callerId,
+    this.productImage,
     this.calltype,
     @required this.idUser,
     this.chatId,
@@ -29,17 +33,19 @@ class Message {
     @required this.createdAt,
   });
 
-  static Message fromJson(Map<String, dynamic> json) => Message(
-    chatId: json['chatId'],
-    calltype: json['calltype'],
-    callerId: json['callerId'],
-    idUser: json['idUser'],
-    urlAvatar: json['urlAvatar'],
-    callStatus: json['callStatus'],
-    username: json['username'],
-    message: json['message'],
-    createdAt: Utils.toDateTime(json['createdAt']),
-  );
+  Message.fromMap(Map snapshot,String id) :
+        id = id ?? '',
+        chatId = snapshot['chatId']??'',
+        message = snapshot['message'] ?? '',
+        calltype = snapshot['calltype']??'',
+        productImage = snapshot['productImage']??'',
+        callerId = snapshot['callerId']??'',
+        idUser = snapshot['idUser']??'',
+        urlAvatar = snapshot['urlAvatar']??'',
+        callStatus = snapshot['callStatus'] ?? '',
+        username = snapshot['username'] ?? '',
+        createdAt =  Utils.toDateTime(snapshot['createdAt']);
+
 
   Map<String, dynamic> toJson() => {
     'calltype': calltype,
@@ -47,6 +53,7 @@ class Message {
     'callerId': callerId,
     'chatId': chatId,
     'urlAvatar': urlAvatar,
+    'productImage':productImage,
     'callStatus': callStatus,
     'username': username,
     'message': message,

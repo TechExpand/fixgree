@@ -70,8 +70,17 @@ class DescribePageState extends State<DescribePage> {
             SizedBox(height: 15),
             Align(
               alignment: Alignment.center,
-              child: postRequestProvider.loading?CircularProgressIndicator(valueColor:  AlwaysStoppedAnimation<Color>(Color(0xFF9B049B)),):Container(
-
+              child: postRequestProvider.loading?Theme(
+                                                    data: Theme.of(context)
+                                                        .copyWith(
+                                                            accentColor: Color(
+                                                                0xFF9B049B)),
+                                                    child:
+                                                    CircularProgressIndicator(valueColor: AlwaysStoppedAnimation<Color>(Color(0xFF9B049B)),
+                                                       strokeWidth: 2,
+                                              backgroundColor: Colors.white,
+                                                    )):
+                Container(
                 decoration: BoxDecoration(
                     border: Border.all(color: Colors.white),
                     borderRadius: BorderRadius.circular(26)),

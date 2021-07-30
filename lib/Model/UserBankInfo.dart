@@ -5,10 +5,12 @@ class UserBankInfo {
   String accountName;
   String currencyCode;
   String customerEmail;
+
   String accountNumber;
   String bankName;
   DateTime dateCreated;
   var balance;
+  var transitIncome;
   var totalIncome;
   int totalWithdrawal;
 
@@ -19,6 +21,7 @@ class UserBankInfo {
       this.accountName,
       this.currencyCode,
       this.customerEmail,
+        this.transitIncome,
       this.accountNumber,
       this.bankName,
       this.dateCreated,
@@ -34,6 +37,7 @@ class UserBankInfo {
       "customer_email": customerEmail,
       "mobile": mobile,
       "account_ref": accountRef,
+      "transitIncome":transitIncome,
       "contract_code": contractCode,
       "currency_code": currencyCode,
       "accountNumber": accountNumber,
@@ -49,6 +53,7 @@ class UserBankInfo {
       dateCreated: DateTime.parse(jsonData["date_created"]),
       customerEmail: jsonData["customer_email"],
       mobile: jsonData["mobile"],
+      transitIncome:jsonData["transitIncome"],
       accountRef: jsonData["account_ref"],
       contractCode: jsonData["contract_code"],
       currencyCode: jsonData["currency_code"],

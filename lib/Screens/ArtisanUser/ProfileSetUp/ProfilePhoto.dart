@@ -127,10 +127,16 @@ class ProfilePhotoPageState extends State<ProfilePhotoPage> {
                     )
                   : Padding(
                       padding: const EdgeInsets.only(bottom: 50.0, top: 20),
-                      child: CircularProgressIndicator(
-                        valueColor:
-                            AlwaysStoppedAnimation<Color>(Color(0xFF9B049B)),
-                      ),
+                      child: Theme(
+                                                    data: Theme.of(context)
+                                                        .copyWith(
+                                                            accentColor: Color(
+                                                                0xFF9B049B)),
+                                                    child:
+                                                    CircularProgressIndicator(valueColor: AlwaysStoppedAnimation<Color>(Color(0xFF9B049B)),
+                                                       strokeWidth: 2,
+                                              backgroundColor: Colors.white,
+                                                    )),
                     )),
         ],
       ),

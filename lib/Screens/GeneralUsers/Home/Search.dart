@@ -1,7 +1,11 @@
+import 'package:autocomplete_textfield/autocomplete_textfield.dart';
+import 'package:fixme/Model/UserSearch.dart';
+import 'package:fixme/Model/service.dart';
 import 'package:fixme/Screens/ArtisanUser/Profile/ArtisanPageNew.dart';
 import 'package:fixme/Screens/GeneralUsers/Chat/callscreens/listen_incoming_call.dart';
 import 'package:fixme/Services/location_service.dart';
 import 'package:fixme/Services/network_service.dart';
+import 'package:fixme/Services/postrequest_service.dart';
 import 'package:fixme/Widgets/Rating.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_feather_icons/flutter_feather_icons.dart';
@@ -17,13 +21,24 @@ class SearchPage extends StatefulWidget {
 class _SearchState extends State<SearchPage> {
   var searchvalue;
 
+
+  GlobalKey<AutoCompleteTextFieldState<Services>> key = new GlobalKey();
+
+  AutoCompleteTextField searchTextField;
+
+  TextEditingController controller = new TextEditingController();
+
+
+
   @override
   Widget build(BuildContext context) {
+    PostRequestProvider postRequestProvider =
+    Provider.of<PostRequestProvider>(context);
     var widget = Scaffold(
       appBar: AppBar(
         backgroundColor: Colors.white,
         title: Text('Search for a service',
-            style: GoogleFonts.openSans(
+            style: GoogleFonts.poppins(
                 color: Color(0xFF9B049B),
                 fontSize: 18,
                 height: 1.4,
@@ -42,59 +57,75 @@ class _SearchState extends State<SearchPage> {
             tag: 'searchButton',
             child: AnimatedContainer(
               duration: Duration(milliseconds: 500),
-              height: 50,
-              alignment: Alignment.center,
-              padding: const EdgeInsets.only(left: 12),
-              margin: const EdgeInsets.only(
-                  bottom: 15, left: 12, right: 12, top: 15),
-              decoration: BoxDecoration(
-                  color: Color(0xFFFFFFFF),
-                  border: Border.all(color: Color(0xFFF1F1FD)),
-                  boxShadow: [
-                    BoxShadow(
-                        color: Color(0xFFF1F1FD).withOpacity(0.5),
-                        blurRadius: 15.0,
-                        offset: Offset(0.3, 1.0))
+                  height: 50,
+                  alignment: Alignment.center,
+                  padding: const EdgeInsets.only(left: 12),
+                  margin: const EdgeInsets.only(
+                      bottom: 15, left: 12, right: 12, top: 15),
+                  decoration: BoxDecoration(
+                      color: Color(0xFFFFFFFF),
+                      border: Border.all(color: Color(0xFFF1F1FD)),
+                      boxShadow: [
+                        BoxShadow(
+                            color: Color(0xFFF1F1FD).withOpacity(0.5),
+                            blurRadius: 15.0,
+                            offset: Offset(0.3, 1.0))
+                      ],
+                      borderRadius: BorderRadius.all(Radius.circular(35))),
+              child:searchTextField = AutoCompleteTextField<Services>(
+                textSubmitted: (e){
+                  setState(() {
+                    searchvalue = e;
+                    SearchResult(searchvalue.toString());
+                  });
+                },
+                textInputAction: TextInputAction.search,
+                style: TextStyle(
+                                  fontSize: 16,
+                                  color: Color(0xFF270F33),
+                                  fontWeight: FontWeight.w600),
+
+                decoration: InputDecoration.collapsed(
+                                hintText: 'What are you looking for?',
+                                hintStyle: TextStyle(
+                                    fontSize: 16, fontWeight: FontWeight.w600),
+                                focusColor: Color(0xFF2B1137),
+                                fillColor: Color(0xFF2B1137),
+                                hoverColor: Color(0xFF2B1137),
+                              ),
+              itemSubmitted: (item) {
+                              setState(() {
+                                searchvalue = item.service;
+                                SearchResult(searchvalue.toString());
+                              });
+
+              },
+              clearOnSubmit: true,
+              key: key,
+              suggestions: postRequestProvider.servicesList,
+              itemBuilder: (context, item) {
+                return Row(
+                  mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                  children: <Widget>[
+                    Padding(
+                      padding: const EdgeInsets.all(15.0),
+                      child: Text(item.service,
+                        style: TextStyle(
+                            fontSize: 16.0
+                        ),),
+                    ),
                   ],
-                  borderRadius: BorderRadius.all(Radius.circular(35))),
-              child: Row(
-                mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                children: [
-                  Padding(
-                    padding: const EdgeInsets.only(right: 10),
-                    child: Icon(
-                      FeatherIcons.search,
-                      color: Color(0xFF555555),
-                      size: 20,
-                    ),
-                  ),
-                  Expanded(
-                    child: TextFormField(
-                      style: TextStyle(
-                          fontSize: 16,
-                          color: Color(0xFF270F33),
-                          fontWeight: FontWeight.w600),
-                      autofocus: true,
-                      onChanged: (value) {
-                        setState(() {
-                          searchvalue = value;
-                          SearchResult(searchvalue);
-                        });
-                      },
-                      decoration: InputDecoration.collapsed(
-                        hintText: 'Type in a service name',
-                        hintStyle: TextStyle(
-                            fontSize: 16, fontWeight: FontWeight.w600),
-                        focusColor: Color(0xFF2B1137),
-                        fillColor: Color(0xFF2B1137),
-                        hoverColor: Color(0xFF2B1137),
-                      ),
-                    ),
-                  ),
-                ],
-              ),
-            ),
-          ),
+                );
+              },
+              itemSorter: (a, b) {
+                return a.service.compareTo(b.service);
+              },
+              itemFilter: (item, query) {
+                return item.service
+                    .toLowerCase()
+                    .startsWith(query.toLowerCase());
+              }),
+          )),
           SearchResult(searchvalue),
         ],
       ),
@@ -144,10 +175,19 @@ class SearchResultState extends State<SearchResult> {
                             fontWeight: FontWeight.w600))))
             : widget.searchValue == '' || widget.searchValue == null
                 ? Expanded(
-                    child: Center(child: Text('Search for Artisans/Services')))
+                    child: Center(child: Text('Search for any service or item you want.',  style: TextStyle(
+                        color: Color(0xFF333333),
+                        fontSize: 18,
+                        fontWeight: FontWeight.w600))))
                 : !snapshot.hasData
                     ? Expanded(
-                        child: Center(child: CircularProgressIndicator()))
+                        child: Center(child: Theme(
+                                  data: Theme.of(context)
+                                      .copyWith(accentColor: Color(0xFF9B049B)),
+                                  child: CircularProgressIndicator(valueColor: AlwaysStoppedAnimation<Color>(Color(0xFF9B049B)),
+                                     strokeWidth: 2,
+                                              backgroundColor: Colors.white,
+)),))
                     : snapshot.hasData && snapshot.data.length != 0
                         ? Expanded(
                             child: ListView.separated(
@@ -207,7 +247,8 @@ class SearchResultState extends State<SearchResult> {
                                       title: Padding(
                                         padding: const EdgeInsets.only(top: 10),
                                         child: Text(
-                                          '${snapshot.data[index].name} ${snapshot.data[index].userLastName}'
+                                          snapshot.data[index].businessName.toString().isEmpty|| snapshot.data[index].businessName==null?
+                                          '${snapshot.data[index].name} ${snapshot.data[index].userLastName}'.capitalizeFirstOfEach:'${snapshot.data[index].businessName}'
                                               .capitalizeFirstOfEach,
                                           style: TextStyle(
                                               color: Color(0xFF333333),
@@ -250,8 +291,8 @@ class SearchResultState extends State<SearchResult> {
                                             MainAxisAlignment.center,
                                         children: [
                                           Icon(
-                                            Icons.location_on_outlined,
-                                            color: Colors.amber,
+                                            Icons.location_on,
+                                            color: Color(0xFF9B049B),
                                             size: 23,
                                           ),
                                           Text(
@@ -270,7 +311,10 @@ class SearchResultState extends State<SearchResult> {
                         : snapshot.data.length == 0
                             ? Expanded(
                                 child: Center(
-                                    child: Text('Artisans/Service Not Found')))
+                                    child: Text('Artisans/Service Not Found', style: TextStyle(
+                                        color: Color(0xFF333333),
+                                        fontSize: 18,
+                                        fontWeight: FontWeight.w600))))
                             : Expanded(child: Center(child: Text('')));
       },
     );

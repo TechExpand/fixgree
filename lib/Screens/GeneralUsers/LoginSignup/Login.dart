@@ -1,5 +1,6 @@
 import 'package:fixme/Services/network_service.dart';
 import 'package:fixme/Utils/Provider.dart';
+import 'package:fl_toast/fl_toast.dart';
 import 'package:flutter/material.dart';
 import 'package:intl_phone_number_input/intl_phone_number_input.dart';
 import 'package:provider/provider.dart';
@@ -38,10 +39,13 @@ class LoginState extends State<Login> {
             mainCredential = credential;
             await network.login(context: context, scaffoldKey: scaffoldKey);
           },
-          verificationFailed: (FirebaseAuthException e) {
+          verificationFailed: (FirebaseAuthException e)async {
             network.loginSetState();
-            scaffoldKey.currentState
-                .showSnackBar(SnackBar(content: Text(e.message)));
+             await showTextToast(
+                                                                            text: e.message,
+                                                                              context: context,
+                                                                                             );
+          
           },
           timeout: Duration(seconds: 120),
           codeSent: (String verificationId, int resendToken) {
@@ -71,8 +75,12 @@ class LoginState extends State<Login> {
         );
       } catch (e) {
         network.loginSetState();
-        scaffoldKey.currentState
-            .showSnackBar(SnackBar(content: Text(e.message)));
+         await showTextToast(
+                                                                            text: e.message,
+                                                                              context: context,
+                                                                                             );
+        
+       
       }
     }
 
@@ -156,12 +164,12 @@ class LoginState extends State<Login> {
                               text: TextSpan(children: <TextSpan>[
                                 TextSpan(
                                   text: 'Don\'t have an account? ',
-                                  style: GoogleFonts.openSans(
+                                  style: GoogleFonts.poppins(
                                       color: Color(0xFF777777), fontSize: 16),
                                 ),
                                 TextSpan(
                                   text: 'Sign up',
-                                  style: GoogleFonts.openSans(
+                                  style: GoogleFonts.poppins(
                                       color: Color(0xFF9B049B), fontSize: 16),
                                 )
                               ]))))),
@@ -176,11 +184,8 @@ class LoginState extends State<Login> {
                   bottom: 50,
                   top: 50,
                 ),
-                child: FlatButton(
-                  onPressed:
-                  conData.number.toString() == conData.number.dialCode
-                      ? null
-                      : () {
+                child:FlatButton(
+                  onPressed:controller.text.isEmpty?null: () {
                     network.loginSetState();
                     FocusScopeNode currentFocus = FocusScope.of(context);
                     if (!currentFocus.hasPrimaryFocus) {
@@ -222,7 +227,7 @@ class LoginState extends State<Login> {
                 child: Theme(
                   data: Theme.of(context)
                       .copyWith(accentColor: Color(0xFF9B049B)),
-                  child: CircularProgressIndicator(
+                  child: CircularProgressIndicator(valueColor: AlwaysStoppedAnimation<Color>(Color(0xFF9B049B)),
                     strokeWidth: 2,
                     backgroundColor: Colors.white,
                   ),

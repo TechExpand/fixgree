@@ -47,6 +47,14 @@
           }
         },
         {
+          "client_id": "937645709717-vq6apjj6fe6rruiu4c74c5n501da2jfo.apps.googleusercontent.com",
+          "client_type": 1,
+          "android_info": {
+            "package_name": "com.fixme",
+            "certificate_hash": "a65685563ddc1f2e30dc6a95c450c86fd31a4091"
+          }
+        },
+        {
           "client_id": "937645709717-17b5j79lved0vt1erictiofil880g8m8.apps.googleusercontent.com",
           "client_type": 3
         }

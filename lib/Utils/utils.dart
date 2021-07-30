@@ -1,4 +1,5 @@
 import 'dart:async';
+import 'dart:io';
 import 'dart:math';
 import 'package:image_picker/image_picker.dart';
 import 'package:intl/intl.dart';
@@ -13,15 +14,15 @@ class Utils with ChangeNotifier {
   String fcmToken = '';
   bool isExpanded1 = true;
 
-  static StreamTransformer transformer<T>(
-          T Function(Map<String, dynamic> json) fromJson) =>
-      StreamTransformer<QuerySnapshot, List<T>>.fromHandlers(
-        handleData: (QuerySnapshot data, EventSink<List<T>> sink) {
-          final snaps = data.docs.map((doc) => doc.data()).toList();
-          final users = snaps.map((json) => fromJson(json)).toList();
-          sink.add(users);
-        },
-      );
+  // static StreamTransformer transformer<T>(
+  //         T Function(Map<String, dynamic> json) fromJson) =>
+  //     StreamTransformer<QuerySnapshot, List<T>>.fromHandlers(
+  //       handleData: (QuerySnapshot data, EventSink<List<T>> sink) {
+  //         final snaps = data.docs.map((doc) => doc.data()).toList();
+  //         final users = snaps.map((json) => fromJson(json)).toList();
+  //         sink.add(users);
+  //       },
+  //     );
 
   static DateTime toDateTime(Timestamp value) {
     if (value == null) return null;
@@ -50,7 +51,10 @@ class Utils with ChangeNotifier {
   }
 
   compareDate(DateTime date) {
-    if (date.difference(DateTime.now()).inHours.abs() <= 24) {
+    if(date == null){
+      return '...';
+    }
+    else if (date.difference(DateTime.now()).inHours.abs() <= 24) {
       var value = formatTime(date);
       return value;
     } else if (date.difference(DateTime.now()).inHours.abs() >= 24 &&
@@ -77,7 +81,7 @@ class Utils with ChangeNotifier {
 
   formatYear(DateTime now) {
     final DateFormat formatter = DateFormat('yyyy/MMMM/dd');
-    final String formatted = formatter.format(now);
+    final String formatted = formatter.format(now==null?DateTime.now():now);
     return formatted;
   }
 
@@ -98,21 +102,41 @@ class Utils with ChangeNotifier {
     }
   }
 
-  PickedFile selectedImage;
+  File selectedImage;
   final picker = ImagePicker();
   Future selectimage({@required ImageSource source, context}) async {
-    var image = await picker.getImage(source: source);
+    var image = await ImagePicker.pickImage(source: source);
     selectedImage = image;
 
     notifyListeners();
   }
 
-  PickedFile selectedImage2;
-  final picker2 = ImagePicker();
+
+
+
+
+  File selectedImage2;
+
   Future selectimage2({@required ImageSource source, context}) async {
-    var images = await picker.getImage(source: source);
+    var images = await ImagePicker.pickImage(source: source);
     selectedImage2 = images;
 
+    notifyListeners();
+  }
+
+
+
+  File ediproductImage;
+  final picker3 = ImagePicker();
+  Future selectProductImage({@required ImageSource source, context}) async {
+    var images = await ImagePicker.pickImage(source: source);
+    ediproductImage = images;
+    notifyListeners();
+  }
+
+
+  selectProductImagetoNull(){
+    ediproductImage = null;
     notifyListeners();
   }
 
@@ -139,9 +163,14 @@ notifyListeners();
     print(val);
   }
 
-  Future storeData(String name, String data) async {
+  Future storeData(String name, data) async {
     SharedPreferences prefs = await SharedPreferences.getInstance();
     prefs.setString(name, data);
+  }
+
+  Future storeDataInt(String name, data) async {
+    SharedPreferences prefs = await SharedPreferences.getInstance();
+    prefs.setInt(name, data);
   }
 
   Future getData(String name) async {

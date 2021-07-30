@@ -260,7 +260,9 @@ class _WalletWithdrawCompleteWithdrawalState
                                   child: Text(
                                     '\₦',
                                     style: TextStyle(
-                                        color: Color(0xFF555555), fontSize: 20),
+                                        color: Color(0xFF555555),
+                                        fontFamily: 'Roboto',
+                                        fontSize: 20),
                                   ),
                                 ),
                                 Expanded(
@@ -441,7 +443,7 @@ class _WalletWithdrawCompleteWithdrawalState
                             child: Theme(
                               data: Theme.of(context)
                                   .copyWith(accentColor: Color(0xFF9B049B)),
-                              child: CircularProgressIndicator(
+                              child: CircularProgressIndicator(valueColor: AlwaysStoppedAnimation<Color>(Color(0xFF9B049B)),
                                 strokeWidth: 2,
                                 backgroundColor: Colors.white,
                               ),

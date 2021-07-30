@@ -30,11 +30,12 @@ class PopUpMenu extends StatelessWidget {
           size: 28,
         ),
         itemBuilder: (context) => [
-              user.project_owner_user_id.toString() ==
-                          network.userId.toString() ||
-                      user.project_owner_user_id == null
-                  ? null
-                  : PopupMenuItem(
+
+            //
+            // user.project_owner_user_id == null || user.project_owner_user_id.toString() !=
+            //               network.userId.toString()
+          network.role == 'artisan' || network.role == 'business'
+              ?  PopupMenuItem(
                       value: 1,
                       child: InkWell(
                         onTap: () {
@@ -44,15 +45,15 @@ class PopUpMenu extends StatelessWidget {
                           padding: const EdgeInsets.all(8),
                           child: Text('Initiate Project'),
                         ),
-                      )),
+                      )):null,
               PopupMenuItem(
                   value: 2,
                   child: InkWell(
                     onTap: () {
                       FirebaseApi.clearMessage(
                           idUser,
-                          '${network.firstName}-${user.name}',
-                          '${user.name}-${network.firstName}');
+                          '${network.userId}-${user.id}',
+                          '${user.id}-${network.userId}');
                     },
                     child: Padding(
                       padding: const EdgeInsets.all(8),
@@ -140,9 +141,11 @@ class PopUpMenu extends StatelessWidget {
                             setStates(() {});
 //                   network.initiateProject(pop_data.project_owner_user_id, pop_data.bid_id,
 //                       pop_data.project_id, pop_data.service_id, _controller.text, context);
+
                             network
                                 .initiateProject(
-                                    user.project_owner_user_id,
+                                user.serviceId,
+                                    user.id,
                                     user.bid_id,
                                     user.job_id,
                                     user.service_id,

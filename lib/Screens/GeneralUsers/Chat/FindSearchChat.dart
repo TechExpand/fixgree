@@ -2,6 +2,7 @@ import 'package:fixme/Services/Firebase_service.dart';
 import 'package:fixme/Services/location_service.dart';
 import 'package:fixme/Services/network_service.dart';
 import 'package:fixme/Utils/utils.dart';
+import 'package:fixme/Widgets/Rating.dart';
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 
@@ -45,24 +46,26 @@ class _SearchChatState extends State<SearchChatPage> {
                             style: TextStyle(
                                 fontSize: 16, fontWeight: FontWeight.bold)),
                       ),
-                      Container(
-                        margin: EdgeInsets.only(top: 20),
-                        width: MediaQuery.of(context).size.width / 1.15,
-                        child: TextFormField(
-                          cursorColor: Colors.black87,
-                          decoration: InputDecoration(
-                            hintText: 'Type a name or multiple names',
-                            border: OutlineInputBorder(
-                              borderSide: BorderSide.none,
-                            ),
+                      Center(
+                        child: Container(
+                          margin: EdgeInsets.only(top: 20),
+                          width: MediaQuery.of(context).size.width / 1.15,
+                          child: TextFormField(
+                            cursorColor: Colors.black87,
+                            decoration: InputDecoration(
+                              hintText: 'Type a name or multiple names',
+                              border: OutlineInputBorder(
+                                borderSide: BorderSide.none,
+                              ),
 //                            border: InputBorder.none, counterText: ''
+                            ),
+                            onChanged: (value) {
+                              setState(() {
+                                searchvalue = value;
+                                SearchResult(searchvalue);
+                              });
+                            },
                           ),
-                          onChanged: (value) {
-                            setState(() {
-                              searchvalue = value;
-                              SearchResult(searchvalue);
-                            });
-                          },
                         ),
                       ),
                     ],
@@ -91,6 +94,12 @@ class SearchResult extends StatefulWidget {
 }
 
 class SearchResultState extends State<SearchResult> {
+  String getDistance({String rawDistance}) {
+    String distance;
+    distance = '$rawDistance' + 'km';
+    return distance;
+  }
+
   @override
   Widget build(BuildContext context) {
     var network = Provider.of<WebServices>(context, listen: false);
@@ -104,21 +113,42 @@ class SearchResultState extends State<SearchResult> {
       ),
       builder: (context, snapshot) {
         return snapshot.connectionState == ConnectionState.waiting
-            ? Expanded(child: Center(child: Text('Loading')))
+            ? Expanded(child: Center(child: Text('Loading...', style: TextStyle(fontSize: 17,fontWeight: FontWeight.bold),)))
             : widget.searchValue == '' || widget.searchValue == null
                 ? Expanded(
-                    child: Center(child: Text('Search for Artisans/Services')))
+                    child: Center(child: Text('Search for Artisans/Services',
+                      style: TextStyle(fontSize: 17,fontWeight: FontWeight.bold),)))
                 : !snapshot.hasData
                     ? Expanded(
-                        child: Center(child: CircularProgressIndicator()))
-                    : snapshot.hasData && snapshot.data.length != 0
+                        child: Center(child: Theme(
+                                  data: Theme.of(context)
+                                      .copyWith(accentColor: Color(0xFF9B049B)),
+                                  child: CircularProgressIndicator(valueColor: AlwaysStoppedAnimation<Color>(Color(0xFF9B049B)),
+                                     strokeWidth: 2,
+                                              backgroundColor: Colors.white,
+)),))
+                    :
+
+        snapshot.hasData && snapshot.data.length != 0
                         ? Expanded(
                             child: ListView.builder(
                                 itemCount: snapshot.data.length,
                                 itemBuilder: (context, index) {
-                                  return InkWell(
-                                    onTap: () {
-                                      var data = Provider.of<Utils>(context, listen: false);
+                                  String distance = getDistance(
+                                      rawDistance:
+                                      '${snapshot.data[index].distance}');
+
+                                  return
+
+
+                                    Container(
+                                      alignment: Alignment.center,
+                                      height: 90,
+                                      margin: const EdgeInsets.only(
+                                          bottom: 5, top: 5),
+                                      child: ListTile(
+                                        onTap: () {
+                         var data = Provider.of<Utils>(context, listen: false);
 
                                       FirebaseApi.addUserChat(
                                           token2: data.fcmToken ,
@@ -126,6 +156,10 @@ class SearchResultState extends State<SearchResult> {
                                         urlAvatar2:
                                             'https://uploads.fixme.ng/originals/${network.profilePicFileName}',
                                         name2: network.firstName,
+                                        serviceId: snapshot.data[index].serviceId,
+                            serviceId2: network.serviceId,
+                                        recieveruserId2: network.userId,
+                                         recieveruserId:  snapshot.data[index].id,
                                         idArtisan: network.mobileDeviceToken,
                                         artisanMobile: network.phoneNum,
                                         userMobile:
@@ -157,22 +191,11 @@ class SearchResultState extends State<SearchResult> {
                                           },
                                         ),
                                       );
-                                    },
-                                    child: Container(
-                                      child: Row(
-                                          crossAxisAlignment:
-                                              CrossAxisAlignment.start,
-                                          mainAxisAlignment:
-                                              MainAxisAlignment.start,
-                                          children: [
-                                            Padding(
-                                              padding: const EdgeInsets.only(
-                                                  top: 8.0, left: 8, right: 8),
-                                              child: CircleAvatar(
-                                                  backgroundColor:
-                                                      Colors.white70,
-                                                  radius: 18,
-                                                  backgroundImage: NetworkImage(snapshot
+                                        },
+                                        leading: CircleAvatar(
+                                          child: Text(''),
+                                          radius: 35,
+                                          backgroundImage: NetworkImage(snapshot
                                                                   .data[index]
                                                                   .urlAvatar ==
                                                               'no_picture_upload' ||
@@ -180,103 +203,92 @@ class SearchResultState extends State<SearchResult> {
                                                                   .urlAvatar ==
                                                               null
                                                       ? 'https://uploads.fixme.ng/originals/no_picture_upload'
-                                                      : 'https://uploads.fixme.ng/originals/${snapshot.data[index].urlAvatar}')),
-                                            ),
-                                            Column(
-                                                crossAxisAlignment:
-                                                    CrossAxisAlignment.start,
-                                                mainAxisAlignment:
-                                                    MainAxisAlignment.start,
-                                                children: [
-                                                  Container(
-                                                    width:
-                                                        MediaQuery.of(context)
-                                                                .size
-                                                                .width /
-                                                            1.2,
-                                                    child: Padding(
-                                                      padding:
-                                                          const EdgeInsets.only(
-                                                              top: 8.0,
-                                                              left: 5,
-                                                              right: 5,
-                                                              bottom: 3),
-                                                      child: Text(
-                                                        snapshot.data[index]
+                                                      : 'https://uploads.fixme.ng/originals/${snapshot.data[index].urlAvatar}'),
+                                          foregroundColor: Colors.white,
+                                          backgroundColor: Colors.white,
+                                        ),
+                                        title: Padding(
+                                          padding:
+                                          const EdgeInsets.only(top: 10),
+                                          child: Text(
+                                            snapshot.data[index]
                                                                 .userLastName
                                                                 .toString() +
                                                             ' ' +
                                                             snapshot.data[index]
                                                                 .name
-                                                                .toString(),
-                                                        maxLines: 1,
-                                                        softWrap: true,
-                                                        overflow: TextOverflow
-                                                            .ellipsis,
-                                                        style: TextStyle(
-                                                            fontWeight:
-                                                                FontWeight
-                                                                    .bold),
-                                                      ),
-                                                    ),
-                                                  ),
-                                                  Container(
-                                                    width:
-                                                        MediaQuery.of(context)
-                                                                .size
-                                                                .width /
-                                                            1.2,
-                                                    child: Padding(
-                                                      padding:
-                                                          const EdgeInsets.only(
-                                                              bottom: 8.0,
-                                                              left: 5,
-                                                              right: 5),
-                                                      child: Text(
-                                                        snapshot.data[index]
+                                                                .toString()
+                                                .capitalizeFirstOfEach,
+                                            style: TextStyle(
+                                                color: Color(0xFF333333),
+                                                fontSize: 16,
+                                                fontWeight: FontWeight.w600),
+                                          ),
+                                        ),
+                                        subtitle: Column(
+                                          children: [
+                                            Wrap(
+                                              children: [
+                                                Align(
+                                                  alignment:
+                                                  Alignment.centerLeft,
+                                                  child: Text(
+                                                    snapshot.data[index]
                                                             .serviceArea
-                                                            .toString(),
-                                                        maxLines: 1,
-                                                        softWrap: true,
-                                                        overflow: TextOverflow
-                                                            .ellipsis,
-                                                      ),
-                                                    ),
+                                                            .toString()
+                                                        .capitalizeFirstOfEach,
+                                                    style: TextStyle(
+                                                        color:
+                                                        Color(0xFF333333),
+                                                        fontSize: 15,
+                                                        fontWeight:
+                                                        FontWeight.w500),
                                                   ),
-//                                                  Container(
-//                                                    width:
-//                                                        MediaQuery.of(context)
-//                                                                .size
-//                                                                .width /
-//                                                            1.2,
-//                                                    child: Text(
-//                                                        snapshot.data[index]
-//                                                            ['user_address']
-//                                                            .toString(),
-//                                                        maxLines: 1,
-//                                                        softWrap: true,
-//                                                        overflow: TextOverflow
-//                                                            .ellipsis),
-//                                                  ),
-                                                  Container(
-                                                    height: 1,
-                                                    color: Colors.black12,
-                                                    width:
-                                                        MediaQuery.of(context)
-                                                                .size
-                                                                .width /
-                                                            1.14,
-                                                  )
-                                                ])
-                                          ]),
-                                    ),
-                                  );
+                                                ),
+                                              ],
+                                            ),
+                                            Padding(
+                                              padding:
+                                              const EdgeInsets.only(top: 8),
+                                              child: StarRating(
+                                                  rating: double.parse(
+                                                      snapshot.data[index].userRating
+                                                          .toString())),
+                                            )
+                                          ],
+                                        ),
+                                        trailing: Column(
+                                          crossAxisAlignment:
+                                          CrossAxisAlignment.center,
+                                          mainAxisAlignment:
+                                          MainAxisAlignment.center,
+                                          children: [
+                                            Icon(
+                                              Icons.location_on,
+                                              color: Color(0xFFA40C85),
+                                              size: 23,
+                                            ),
+                                            Text(
+                                              '$distance',
+                                              style: TextStyle(
+                                                  color: Color(0xFF333333),
+                                                  fontSize: 15,
+                                                  fontWeight: FontWeight.w600),
+                                            ),
+                                          ],
+                                        ),
+                                      ),
+                                    );
+
+
+
+
                                 }),
                           )
                         : snapshot.data.length == 0
                             ? Expanded(
                                 child: Center(
-                                    child: Text('Artisans/Service Not Found')))
+                                    child: Text('Artisans/Service Not Found',style: TextStyle(fontSize: 17,fontWeight: FontWeight.bold),)))
                             : Expanded(child: Center(child: Text('')));
       },
     );

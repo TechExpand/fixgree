@@ -4,6 +4,7 @@ import 'package:fixme/Screens/GeneralUsers/Chat/Chats.dart';
 import 'package:fixme/Screens/GeneralUsers/Home/Search.dart';
 import 'package:fixme/Services/Firebase_service.dart';
 import 'package:fixme/Services/network_service.dart';
+import 'package:fixme/Utils/icons.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_feather_icons/flutter_feather_icons.dart';
 import 'package:intl/intl.dart';
@@ -42,45 +43,19 @@ class _PendingScreenState extends State<PendingScreen> {
                 child: Row(
                     mainAxisAlignment: MainAxisAlignment.spaceBetween,
                     children: [
-                      InkWell(
-                        onTap: () {
-                          widget.scafoldKey.currentState.openDrawer();
-                        },
-                        child: Padding(
-                          padding: const EdgeInsets.all(4.0),
-                          child: Stack(children: <Widget>[
-                            CircleAvatar(
-                              child: Text(''),
-                              radius: 19,
-                              backgroundImage: NetworkImage(
-                                network.profilePicFileName ==
-                                            'no_picture_upload' ||
-                                        network.profilePicFileName == null
-                                    ? 'https://uploads.fixme.ng/originals/no_picture_upload'
-                                    : 'https://uploads.fixme.ng/originals/${network.profilePicFileName}',
-                              ),
-                              foregroundColor: Colors.white,
-                              backgroundColor: Colors.white,
-                            ),
-                            Positioned(
-                              left: 25,
-                              top: 24,
-                              child: Container(
-                                decoration: BoxDecoration(
-                                    color: Color(0xFFDB5B04),
-                                    shape: BoxShape.circle),
-                                child: Icon(
-                                  Icons.menu,
-                                  color: Colors.white,
-                                  size: 13,
-                                ),
-                              ),
-                            ),
-                          ]),
+                       Padding(
+                          padding: const EdgeInsets.only(top:4.0, bottom: 4, left:0),
+                          child: IconButton(
+                            onPressed: (){
+                              widget.scafoldKey.currentState.openDrawer();
+                            },
+                            icon: Icon(MyFlutterApp.hamburger,
+                                size: 17, color: Colors.black),
+                          ),
                         ),
-                      ),
+
                       Container(
-                        margin: EdgeInsets.only(top: 9, left: 1),
+                        margin: EdgeInsets.only(top: 4, left: 1),
                         width: MediaQuery.of(context).size.width / 1.5,
                         height: 35,
                         child: InkWell(
@@ -142,8 +117,8 @@ class _PendingScreenState extends State<PendingScreen> {
                                   (context, animation, secondaryAnimation) {
                                 return ListenIncoming();
                               },
-                              transitionsBuilder: (context, animation,
-                                  secondaryAnimation, child) {
+                              transitionsBuilder:
+                                  (context, animation, secondaryAnimation, child) {
                                 return FadeTransition(
                                   opacity: animation,
                                   child: child,
@@ -178,10 +153,13 @@ class _PendingScreenState extends State<PendingScreen> {
                             padding: const EdgeInsets.all(8.0),
                             child: Stack(
                               children: [
-                                Icon(
-                                  Icons.chat,
-                                  color: Color(0xFF9B049B),
-                                  size: 25,
+                                Stack(
+                                  children: [
+                                    Icon(
+                                        MyFlutterApp.fill_1,
+                                        size: 23, color: Color(0xF0A40C85)),
+                                    Icon(Icons.more_horiz, size: 23, color: Colors.white,),
+                                  ],
                                 ),
                                 StreamBuilder(
                                     stream: FirebaseApi.userCheckChatStream(
@@ -190,8 +168,8 @@ class _PendingScreenState extends State<PendingScreen> {
                                         AsyncSnapshot<QuerySnapshot> snapshot) {
                                       if (snapshot.hasData) {
                                         notify = snapshot.data.docs
-                                            .map((doc) => Notify.fromMap(
-                                                doc.data(), doc.id))
+                                            .map((doc) =>
+                                            Notify.fromMap(doc.data(), doc.id))
                                             .toList();
 
                                         switch (snapshot.connectionState) {
@@ -204,11 +182,9 @@ class _PendingScreenState extends State<PendingScreen> {
                                                   left: 12, child: Container());
                                             } else {
                                               final users = notify;
-                                              if (users.isEmpty ||
-                                                  users == null) {
+                                              if (users.isEmpty || users == null) {
                                                 return Positioned(
-                                                    left: 12,
-                                                    child: Container());
+                                                    left: 12, child: Container());
                                               } else {
                                                 return Positioned(
                                                     right: 14.4,
@@ -240,15 +216,15 @@ class _PendingScreenState extends State<PendingScreen> {
               tabs: [
                 Tab(
                     child: Text('Pending',
-                        style: GoogleFonts.openSans(
+                        style: GoogleFonts.poppins(
                             fontSize: 15, fontWeight: FontWeight.w600))),
                 Tab(
                     child: Text('Started',
-                        style: GoogleFonts.openSans(
+                        style: GoogleFonts.poppins(
                             fontSize: 15, fontWeight: FontWeight.w600))),
                 Tab(
                     child: Text('Completed',
-                        style: GoogleFonts.openSans(
+                        style: GoogleFonts.poppins(
                             fontSize: 15, fontWeight: FontWeight.w600))),
               ],
             ),
@@ -290,7 +266,7 @@ class _PendingScreenState extends State<PendingScreen> {
                                                               color: Colors
                                                                   .white)),
                                                       TextSpan(
-                                                          text: '₦0',
+                                                          text: '₦0.00',
                                                           style: TextStyle(
                                                               fontWeight:
                                                                   FontWeight
@@ -312,7 +288,7 @@ class _PendingScreenState extends State<PendingScreen> {
                                                                   .white)),
                                                       TextSpan(
                                                           text:
-                                                              '₦${snapshot.data['balance']}',
+                                                              '₦${double.parse(snapshot.data['balance'].toString()).toStringAsFixed(2)}',
                                                           style: TextStyle(
                                                               fontWeight:
                                                                   FontWeight
@@ -481,7 +457,7 @@ class _PendingScreenState extends State<PendingScreen> {
                                   Theme(
                                       data: Theme.of(context).copyWith(
                                           accentColor: Color(0xFF9B049B)),
-                                      child: CircularProgressIndicator(
+                                      child: CircularProgressIndicator(valueColor: AlwaysStoppedAnimation<Color>(Color(0xFF9B049B)),
                                         strokeWidth: 2,
                                         backgroundColor: Colors.white,
                                       )),
@@ -504,13 +480,13 @@ class _PendingScreenState extends State<PendingScreen> {
                           indicatorColor: Color(0xFF9B049B),
                           tabs: [
                             Tab(
-                                child: Text('Ongoing posted job',
-                                    style: GoogleFonts.openSans(
+                                child: Text('Ongoing Posted Job',
+                                    style: GoogleFonts.poppins(
                                         fontSize: 14,
                                         fontWeight: FontWeight.w600))),
                             Tab(
-                                child: Text('Ongoing bidded job',
-                                    style: GoogleFonts.openSans(
+                                child: Text('Ongoing Received Job',
+                                    style: GoogleFonts.poppins(
                                         fontSize: 14,
                                         fontWeight: FontWeight.w600))),
                           ],
@@ -557,7 +533,7 @@ class _PendingScreenState extends State<PendingScreen> {
                                                                             color: Colors.white)),
                                                                     TextSpan(
                                                                         text:
-                                                                            '₦0',
+                                                                            '₦0.00',
                                                                         style: TextStyle(
                                                                             fontWeight: FontWeight
                                                                                 .bold,
@@ -578,7 +554,7 @@ class _PendingScreenState extends State<PendingScreen> {
                                                                             color: Colors.white)),
                                                                     TextSpan(
                                                                         text:
-                                                                            '₦${snapshot.data['balance']}',
+                                                                        '₦${double.parse(snapshot.data['balance'].toString()).toStringAsFixed(2)}',
                                                                         style: TextStyle(
                                                                             fontWeight: FontWeight
                                                                                 .bold,
@@ -719,7 +695,7 @@ class _PendingScreenState extends State<PendingScreen> {
                                                         accentColor:
                                                             Color(0xFF9B049B)),
                                                 child:
-                                                    CircularProgressIndicator(
+                                                    CircularProgressIndicator(valueColor: AlwaysStoppedAnimation<Color>(Color(0xFF9B049B)),
                                                   strokeWidth: 2,
                                                   backgroundColor: Colors.white,
                                                 )),
@@ -773,7 +749,7 @@ class _PendingScreenState extends State<PendingScreen> {
                                                                             color: Colors.white)),
                                                                     TextSpan(
                                                                         text:
-                                                                            '₦0',
+                                                                            '₦0.00',
                                                                         style: TextStyle(
                                                                             fontWeight: FontWeight
                                                                                 .bold,
@@ -794,7 +770,7 @@ class _PendingScreenState extends State<PendingScreen> {
                                                                             color: Colors.white)),
                                                                     TextSpan(
                                                                         text:
-                                                                            '₦${snapshot.data['balance']}',
+                                                                        '₦${double.parse(snapshot.data['balance'].toString()).toStringAsFixed(2)}',
                                                                         style: TextStyle(
                                                                             fontWeight: FontWeight
                                                                                 .bold,
@@ -865,25 +841,29 @@ class _PendingScreenState extends State<PendingScreen> {
                                                                       left:
                                                                           10.0),
                                                                   child: Column(
-                                                                    crossAxisAlignment:
-                                                                        CrossAxisAlignment
-                                                                            .start,
                                                                     children: [
-                                                                      Padding(
-                                                                        padding:
-                                                                            const EdgeInsets.only(bottom: 4.0),
-                                                                        child: Text(
-                                                                            '${snapshot.data[index].jobDescription}'.isEmpty
-                                                                                ? 'No Desription'
-                                                                                : '${snapshot.data[index].jobDescription}',
-                                                                            style:
-                                                                                TextStyle(color: Colors.black)),
+                                                                      Column(
+                                                                        crossAxisAlignment:
+                                                                            CrossAxisAlignment
+                                                                                .start,
+                                                                        children: [
+                                                                          Padding(
+                                                                            padding:
+                                                                                const EdgeInsets.only(bottom: 4.0),
+                                                                            child: Text(
+                                                                                '${snapshot.data[index].jobDescription}'.isEmpty
+                                                                                    ? 'No Desription'
+                                                                                    : '${snapshot.data[index].jobDescription}',
+                                                                                style:
+                                                                                    TextStyle(color: Colors.black)),
+                                                                          ),
+                                                                          Text(
+                                                                              '${snapshot.data[index].status}',
+                                                                              style: TextStyle(
+                                                                                  color: Colors.black,
+                                                                                  fontSize: 13)),
+                                                                        ],
                                                                       ),
-                                                                      Text(
-                                                                          '${snapshot.data[index].status}',
-                                                                          style: TextStyle(
-                                                                              color: Colors.black,
-                                                                              fontSize: 13)),
                                                                     ],
                                                                   ),
                                                                 ),
@@ -905,8 +885,14 @@ class _PendingScreenState extends State<PendingScreen> {
                                                                                       value: 1,
                                                                                       child: InkWell(
                                                                                         onTap: () {
-                                                                                          network.requestPayment(network.userId, snapshot.data[index].sn.toString()).then((value) {
-                                                                                            setState(() {});
+                                                                                          network.requestPayment(
+                                                                                              snapshot.data[index].sn.toString(),
+                                                                                              snapshot.data[index].projectBid.toString()
+
+                                                                                          ).then((value) {
+                                                                                            setState(() {
+                                                                                              print('done');
+                                                                                            });
                                                                                           });
                                                                                           Navigator.pop(context);
                                                                                         },
@@ -942,7 +928,7 @@ class _PendingScreenState extends State<PendingScreen> {
                                                         accentColor:
                                                             Color(0xFF9B049B)),
                                                 child:
-                                                    CircularProgressIndicator(
+                                                    CircularProgressIndicator(valueColor: AlwaysStoppedAnimation<Color>(Color(0xFF9B049B)),
                                                   strokeWidth: 2,
                                                   backgroundColor: Colors.white,
                                                 )),
@@ -967,13 +953,13 @@ class _PendingScreenState extends State<PendingScreen> {
                           indicatorColor: Color(0xFF9B049B),
                           tabs: [
                             Tab(
-                                child: Text('Completed posted job',
-                                    style: GoogleFonts.openSans(
+                                child: Text('Completed Posted Job',
+                                    style: GoogleFonts.poppins(
                                         fontSize: 14,
                                         fontWeight: FontWeight.w600))),
                             Tab(
-                                child: Text('Completed bidded job',
-                                    style: GoogleFonts.openSans(
+                                child: Text('Completed Received Job',
+                                    style: GoogleFonts.poppins(
                                         fontSize: 14,
                                         fontWeight: FontWeight.w600))),
                           ],
@@ -1187,7 +1173,7 @@ class _PendingScreenState extends State<PendingScreen> {
                                                         accentColor:
                                                             Color(0xFF9B049B)),
                                                 child:
-                                                    CircularProgressIndicator(
+                                                    CircularProgressIndicator(valueColor: AlwaysStoppedAnimation<Color>(Color(0xFF9B049B)),
                                                   strokeWidth: 2,
                                                   backgroundColor: Colors.white,
                                                 )),
@@ -1403,7 +1389,7 @@ class _PendingScreenState extends State<PendingScreen> {
                                                         accentColor:
                                                             Color(0xFF9B049B)),
                                                 child:
-                                                    CircularProgressIndicator(
+                                                    CircularProgressIndicator(valueColor: AlwaysStoppedAnimation<Color>(Color(0xFF9B049B)),
                                                   strokeWidth: 2,
                                                   backgroundColor: Colors.white,
                                                 )),

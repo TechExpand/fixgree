@@ -22,13 +22,13 @@ class StarRating extends StatelessWidget {
     else if (index > rating - 1 && index < rating) {
       icon = new Icon(
         Icons.star_half,
-        color: color ?? Color(0xFFFFC850),
+        color: color ?? Color(0xFFFC5302),
         size: 16,
       );
     } else {
       icon = new Icon(
         Icons.star,
-        color: color ?? Color(0xFFFFC850),
+        color: color ?? Color(0xFFFC5302),
         size: 16,
       );
     }
@@ -40,6 +40,7 @@ class StarRating extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return new Row(children: new List.generate(starCount, (index) => buildStar(context, index)));
+    return new Row(
+        children: new List.generate(starCount, (index) => buildStar(context, index)));
   }
 }

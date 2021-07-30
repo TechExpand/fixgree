@@ -1,6 +1,7 @@
 import 'dart:async';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:fixme/Utils/Provider.dart';
+import 'package:fl_toast/fl_toast.dart';
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 import 'SignupPassword.dart';
@@ -87,7 +88,15 @@ class OTPState extends State<OTPPAGE> {
 
         final User user =
             (await FirebaseAuth.instance.signInWithCredential(authcred)).user;
-        data.setUserID(user.uid);
+        if (user != null) {
+          data.setUserID(user.uid);
+          print(user.uid);
+          print(user.uid);
+          print(user.uid);
+          print(user.uid);
+          print(user.uid);
+          print(user.uid);
+        }
         //otpTimer.cancel();
         widget.page == "SignUp"
             ? Navigator.pushReplacement(
@@ -108,9 +117,13 @@ class OTPState extends State<OTPPAGE> {
         )
             : network.login(context: context, scaffoldKey: scaffoldKey);
       } catch (e) {
+  
         network.loginSetState();
-        scaffoldKey.currentState
-            .showSnackBar(SnackBar(content: Text(e.message)));
+         await showTextToast(
+                                                                            text: e.message,
+                                                                              context: context,
+                                                                                             );
+       
       }
     }
 
@@ -584,16 +597,22 @@ class OTPState extends State<OTPPAGE> {
                           });
 
                         },
-                        verificationFailed: (FirebaseAuthException e) {
-                          scaffoldKey.currentState.showSnackBar(
-                              SnackBar(content: Text(e.message)));
+                        verificationFailed: (FirebaseAuthException e) async{
+                           await showTextToast(
+                                                                            text: e.message,
+                                                                              context: context,
+                                                                                             );
+                         
                         },
                         timeout: Duration(seconds: 120),
                         codeSent:
-                            (String verificationId, int resendToken) {
+                            (String verificationId, int resendToken) async{
                           widget.verificationID = verificationId;
-                          scaffoldKey.currentState.showSnackBar(
-                              SnackBar(content: Text('Code Sent')));
+                            await showTextToast(
+                                                                            text: 'Code Sent',
+                                                                              context: context,
+                                                                                             );
+                         
                         },
                         codeAutoRetrievalTimeout:
                             (String verificationId) {},
@@ -656,10 +675,16 @@ class OTPState extends State<OTPPAGE> {
                   )
                       : Padding(
                     padding: const EdgeInsets.only(bottom: 50.0),
-                    child: CircularProgressIndicator(
-                      valueColor: AlwaysStoppedAnimation<Color>(
-                          Color(0xFF9B049B)),
-                    ),
+                    child: Theme(
+                                                    data: Theme.of(context)
+                                                        .copyWith(
+                                                            accentColor: Color(
+                                                                0xFF9B049B)),
+                                                    child:
+                                                    CircularProgressIndicator(valueColor: AlwaysStoppedAnimation<Color>(Color(0xFF9B049B)),
+                                                       strokeWidth: 2,
+                                              backgroundColor: Colors.white,
+                                                    )),
                   )),
             ],
           ),

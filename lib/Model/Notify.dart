@@ -10,6 +10,8 @@ class Notify {
   final String id;
   final userid;
   final budget;
+  final invoice_id;
+  final servicerequestId;
   final String message;
   final String bidderId;
   final String bidId;
@@ -26,10 +28,12 @@ class Notify {
     this.message,
     this.jobid,
     this.userid,
+    this.servicerequestId,
     this.artisanId,
     this.bidded,
     this.bidderId,
     this.bidId,
+    this.invoice_id,
     this.name,
     @required this.type,
     @required this.createdAt,
@@ -39,6 +43,7 @@ class Notify {
         id = id ?? '',
         bidded = snapshot['bidded']??'',
         jobid = snapshot['jobId']??'',
+        servicerequestId = snapshot['servicerequestId']??'',
         bidderId = snapshot['bidderId']??'',
         bidId = snapshot['bidId']??'',
         budget = snapshot['budget']??'',
@@ -47,6 +52,7 @@ class Notify {
         userid = snapshot['userid'] ?? '',
         artisanId = snapshot['artisanId'] ?? '',
         type = snapshot['type'] ?? '',
+        invoice_id = snapshot['invoice_id']?? '',
         createdAt =  Utils.toDateTime(snapshot['createdAt']);
 
   Map<String, dynamic> toJson() => {
@@ -55,6 +61,8 @@ class Notify {
     'message': message,
     'name': name,
     'bidded': bidded,
+    'invoice_id': invoice_id,
+    'servicerequestId': servicerequestId,
     'bidderId': bidderId,
     'artisanId': artisanId,
     'bidId': bidId,

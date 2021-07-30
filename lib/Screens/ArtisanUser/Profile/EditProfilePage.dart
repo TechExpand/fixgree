@@ -21,8 +21,8 @@ class EditProfilePage extends StatefulWidget {
 class _EditProfilePageState extends State<EditProfilePage> {
   List<Services> result = [];
   Future<dynamic> userInfo;
-  PickedFile selectedImage;
-  final picker = ImagePicker();
+  File selectedImage;
+
   Future<dynamic> cataloguePhotos;
   Future<dynamic> products;
 
@@ -48,6 +48,13 @@ class _EditProfilePageState extends State<EditProfilePage> {
     });
   }
 
+  updateProduct(BuildContext context)async{
+    var network = Provider.of<WebServices>(context, listen: false);
+    setState(() {
+      products = network.getProductImage(network.userId, network.userId);
+    });
+  }
+
   update(BuildContext context) async {
     var network = Provider.of<WebServices>(context, listen: false);
     setState(() {
@@ -58,7 +65,7 @@ class _EditProfilePageState extends State<EditProfilePage> {
   void pickImage({@required ImageSource source, context}) async {
     var network = Provider.of<WebServices>(context, listen: false);
     var data = Provider.of<Utils>(context, listen: false);
-    var image = await picker.getImage(source: source);
+    var image = await ImagePicker.pickImage(source: source);
     setState(() => selectedImage = image);
 
     String imageName = await network.uploadProfilePhoto(
@@ -86,26 +93,28 @@ class _EditProfilePageState extends State<EditProfilePage> {
     var network = Provider.of<WebServices>(context, listen: false);
     return Scaffold(
       appBar: AppBar(
-        backgroundColor: Colors.white,
+        backgroundColor: Color(0xFF9B049B),
         leading: IconButton(
           onPressed: () {
             Navigator.of(context).pop(() {
               setState(() {});
             });
           },
-          icon: Icon(FeatherIcons.arrowLeft, color: Color(0xFF9B049B)),
+          icon: Icon(FeatherIcons.arrowLeft, color: Colors.white),
         ),
         title: Text('Edit profile',
-            style: GoogleFonts.openSans(
-                color: Colors.black87,
+            style: GoogleFonts.poppins(
+                color: Colors.white,
                 fontSize: 18,
                 height: 1.4,
                 fontWeight: FontWeight.w600)),
-        elevation: 0,
+        elevation: 3,
       ),
       body: FutureBuilder(
           future: userInfo,
           builder: (context, snapshot) {
+            print(network.userId);
+            print(network.bearer);
             return snapshot.hasData
                 ? ListView(children: [
                     Padding(
@@ -221,6 +230,64 @@ class _EditProfilePageState extends State<EditProfilePage> {
                               ),
                             ],
                           ),
+                          Column(
+                            children: [
+                              Divider(),
+                              Row(
+                                children: [
+                                  Text(
+                                    'Business Name',
+                                    style: TextStyle(
+                                        color: Color(0xFF333333),
+                                        fontSize: 16,
+                                        fontWeight: FontWeight.w600),
+                                  ),
+                                ],
+                              ),
+                              Row(
+                                children: [
+                                  SizedBox(
+                                    width:
+                                    MediaQuery.of(context).size.width / 1.5,
+                                    child: Align(
+                                      alignment: Alignment.centerLeft,
+                                      child: Padding(
+                                        padding: const EdgeInsets.only(top: 10),
+                                        child: Text(
+                                          '${snapshot.data['businessName']}',
+                                          style: TextStyle(
+                                              color: Color(0xFF333333),
+                                              fontSize: 16,
+                                              fontWeight: FontWeight.w400),
+                                        ),
+                                      ),
+                                    ),
+                                  ),
+                                  Spacer(),
+                                  InkWell(
+                                    onTap: () {
+                                      _businessName(snapshot.data['businessName']);
+                                    },
+                                    child: Container(
+                                      height: 25,
+                                      width: 25,
+                                      decoration: BoxDecoration(
+                                          border: Border.all(
+                                            width: 1,
+                                            color: Color(0xFFA40C85),
+                                          ),
+                                          shape: BoxShape.circle),
+                                      child: Icon(
+                                        FeatherIcons.edit3,
+                                        size: 14,
+                                        color: Color(0xFFA40C85),
+                                      ),
+                                    ),
+                                  ),
+                                ],
+                              ),
+                            ],
+                          ),
                           Padding(
                             padding: const EdgeInsets.only(top: 20),
                             child: Column(
@@ -315,7 +382,11 @@ class _EditProfilePageState extends State<EditProfilePage> {
                                             FeatherIcons.x,
                                             size: 15,
                                           ),
-                                          onDeleted: () {},
+                                          onDeleted: () {
+                                            network.deleteSubService(subService['id']);
+                                            update(context);
+                                            update(context);
+                                          },
                                           deleteIconColor: Colors.white,
                                           label: Text(
                                             subService['subservice'].toString(),
@@ -333,11 +404,13 @@ class _EditProfilePageState extends State<EditProfilePage> {
                                               color: Color(0xFFA40C85),
                                             ),
                                             shape: BoxShape.circle),
-                                        child: Icon(
-                                          FeatherIcons.plus,
+                                        child: IconButton(
+                                        icon:Icon(  FeatherIcons.plus,
                                           size: 16,
                                           color: Color(0xFFA40C85),
-                                        ),
+                                        ),onPressed: (){
+                                          _addSubService();
+                                        },),
                                       ),
                                     ],
                                   ),
@@ -480,11 +553,11 @@ class _EditProfilePageState extends State<EditProfilePage> {
                             children: [
                               snapshot.data['role'] == 'artisan'
                                   ? Text('Catalogues',
-                                      style: GoogleFonts.openSans(
+                                      style: GoogleFonts.poppins(
                                           fontSize: 16,
                                           fontWeight: FontWeight.w600))
                                   : Text('Products',
-                                      style: GoogleFonts.openSans(
+                                      style: GoogleFonts.poppins(
                                           fontSize: 16,
                                           fontWeight: FontWeight.w600)),
                               InkWell(
@@ -623,7 +696,11 @@ class _EditProfilePageState extends State<EditProfilePage> {
                                                           accentColor: Color(
                                                               0xFF9B049B)),
                                                   child:
-                                                      CircularProgressIndicator()),
+                                                      CircularProgressIndicator(valueColor: AlwaysStoppedAnimation<Color>(Color(0xFF9B049B)),
+
+ strokeWidth: 2,
+                                              backgroundColor: Colors.white,
+)),
                                               SizedBox(
                                                 height: 10,
                                               ),
@@ -640,170 +717,7 @@ class _EditProfilePageState extends State<EditProfilePage> {
                                       }
                                       return mainWidget;
                                     })
-                                : FutureBuilder(
-                                    future: products,
-                                    builder: (context, snapshot) {
-                                      Widget mainWidget;
-                                      if (snapshot.connectionState ==
-                                          ConnectionState.done) {
-                                        if (snapshot.data == null ||
-                                            snapshot.data.length == 0) {
-                                          mainWidget = Center(
-                                            child: Column(
-                                              mainAxisAlignment:
-                                                  MainAxisAlignment.center,
-                                              crossAxisAlignment:
-                                                  CrossAxisAlignment.center,
-                                              children: [
-                                                Text('No products',
-                                                    style: TextStyle(
-                                                        // letterSpacing: 4,
-                                                        color:
-                                                            Color(0xFF333333),
-                                                        fontSize: 18,
-                                                        fontWeight:
-                                                            FontWeight.w600)),
-                                              ],
-                                            ),
-                                          );
-                                        } else {
-                                          mainWidget = Container(
-                                              margin: const EdgeInsets.only(
-                                                  bottom: 30.0,
-                                                  left: 8,
-                                                  right: 8),
-                                              child: ListView.builder(
-                                                shrinkWrap: true,
-                                                physics: ScrollPhysics(),
-                                                itemCount: snapshot.data == null
-                                                    ? 0
-                                                    : snapshot.data.length,
-                                                itemBuilder:
-                                                    (BuildContext context,
-                                                        int index) {
-                                                  return ClipRRect(
-                                                    borderRadius:
-                                                        BorderRadius.circular(
-                                                            10),
-                                                    child: Container(
-                                                      child: ListTile(
-                                                        trailing: Container(
-                                                          height: 32,
-                                                          width: 32,
-                                                          margin:
-                                                              const EdgeInsets
-                                                                      .only(
-                                                                  top: 10),
-                                                          decoration:
-                                                              BoxDecoration(
-                                                                  border: Border
-                                                                      .all(
-                                                                    width: 1,
-                                                                    color: Color(
-                                                                        0xFFA40C85),
-                                                                  ),
-                                                                  shape: BoxShape
-                                                                      .circle),
-                                                          child: IconButton(
-                                                              onPressed: () {
-//edit product for vendors
-                                                              },
-                                                              icon: Icon(
-                                                                FeatherIcons
-                                                                    .edit3,
-                                                                size: 14,
-                                                                color: Color(
-                                                                    0xFFA40C85),
-                                                              )),
-                                                        ),
-                                                        onTap: () {
-                                                          _viewProduct(
-                                                              data: snapshot
-                                                                  .data[index]);
-                                                        },
-                                                        contentPadding:
-                                                            const EdgeInsets
-                                                                .only(left: 0),
-                                                        leading: CircleAvatar(
-                                                          child: Text(''),
-                                                          radius: 40,
-                                                          backgroundImage:
-                                                              NetworkImage(
-                                                            'https://uploads.fixme.ng/originals/${snapshot.data[index]['productImages'][0]['imageFileName']}',
-                                                          ),
-                                                          foregroundColor:
-                                                              Colors.white,
-                                                          backgroundColor:
-                                                              Colors.white,
-                                                        ),
-                                                        title: Text(
-                                                            "${snapshot.data[index]['product_name']}"
-                                                                .capitalizeFirstOfEach,
-                                                            style: TextStyle(
-                                                                color: Colors
-                                                                    .black)),
-                                                        subtitle: RichText(
-                                                          text: TextSpan(
-                                                            text: '\u{20A6} ',
-                                                            style: TextStyle(
-                                                                fontFamily:
-                                                                    'Roboto',
-                                                                color: Colors
-                                                                    .green,
-                                                                fontWeight:
-                                                                    FontWeight
-                                                                        .bold),
-                                                            children: <
-                                                                TextSpan>[
-                                                              TextSpan(
-                                                                  text:
-                                                                      "${snapshot.data[index]['price']}",
-                                                                  style: GoogleFonts.openSans(
-                                                                      color: Colors
-                                                                          .green,
-                                                                      fontWeight:
-                                                                          FontWeight
-                                                                              .bold)),
-                                                            ],
-                                                          ),
-                                                        ),
-                                                      ),
-                                                    ),
-                                                  );
-                                                },
-                                              ));
-                                        }
-                                      } else {
-                                        mainWidget = Center(
-                                          child: Column(
-                                            mainAxisAlignment:
-                                                MainAxisAlignment.center,
-                                            crossAxisAlignment:
-                                                CrossAxisAlignment.center,
-                                            children: [
-                                              Theme(
-                                                  data: Theme.of(context)
-                                                      .copyWith(
-                                                          accentColor: Color(
-                                                              0xFF9B049B)),
-                                                  child:
-                                                      CircularProgressIndicator()),
-                                              SizedBox(
-                                                height: 10,
-                                              ),
-                                              Text('Loading',
-                                                  style: TextStyle(
-                                                      // letterSpacing: 4,
-                                                      color: Color(0xFF333333),
-                                                      fontSize: 18,
-                                                      fontWeight:
-                                                          FontWeight.w600)),
-                                            ],
-                                          ),
-                                        );
-                                      }
-                                      return mainWidget;
-                                    }),
+                                : futureProduct()
                           ),
                         ],
                       ),
@@ -817,7 +731,11 @@ class _EditProfilePageState extends State<EditProfilePage> {
                         Theme(
                             data: Theme.of(context)
                                 .copyWith(accentColor: Color(0xFF9B049B)),
-                            child: CircularProgressIndicator()),
+                            child: CircularProgressIndicator(valueColor: AlwaysStoppedAnimation<Color>(Color(0xFF9B049B)),
+                               strokeWidth: 2,
+                                              backgroundColor: Colors.white,
+
+)),
                         SizedBox(
                           height: 10,
                         ),
@@ -844,135 +762,454 @@ class _EditProfilePageState extends State<EditProfilePage> {
         context: context,
         isScrollControlled: true,
         builder: (builder) {
-          return Container(
-                  height: 220.0,
-                  padding: EdgeInsets.symmetric(vertical: 20, horizontal: 20),
-                  color: Colors.transparent,
-                  child: ListView(
-                    children: [
-                      Text(
-                        "Edit fullname",
-                        style: TextStyle(
-                            fontWeight: FontWeight.w600, fontSize: 18),
-                      ),
-                      SizedBox(
-                        height: 7,
-                      ),
-                      Container(
-                        height: 50,
-                        alignment: Alignment.center,
-                        padding: const EdgeInsets.only(left: 12),
-                        decoration: BoxDecoration(
-                            color: Color(0xFFFFFFFF),
-                            border: Border.all(color: Color(0xFFF1F1FD)),
-                            borderRadius: BorderRadius.all(Radius.circular(7))),
-                        child: TextField(
-                          controller: _controller,
-                          decoration: InputDecoration.collapsed(
-                            hintText: 'First Name',
-                            hintStyle:
-                                TextStyle(fontSize: 16, color: Colors.black38),
-                          ),
+          return AnimatedPadding(
+              padding: MediaQuery.of(context).viewInsets,
+          duration: const Duration(milliseconds: 100),
+          curve: Curves.decelerate,
+          child: Container(
+                    height: 220.0,
+                    padding: EdgeInsets.symmetric(vertical: 20, horizontal: 20),
+                    color: Colors.transparent,
+                    child: ListView(
+                      children: [
+                        Text(
+                          "Edit fullname",
+                          style: TextStyle(
+                              fontWeight: FontWeight.w600, fontSize: 18),
                         ),
-                      ),
-                      SizedBox(height: 5),
-                      Container(
-                        height: 50,
-                        alignment: Alignment.center,
-                        padding: const EdgeInsets.only(left: 12),
-                        decoration: BoxDecoration(
-                            color: Color(0xFFFFFFFF),
-                            border: Border.all(color: Color(0xFFF1F1FD)),
-                            borderRadius: BorderRadius.all(Radius.circular(7))),
-                        child: TextField(
-                          controller: _controller2,
-                          decoration: InputDecoration.collapsed(
-                            hintText: 'Last Name',
-                            hintStyle:
-                                TextStyle(fontSize: 16, color: Colors.black38),
-                          ),
+                        SizedBox(
+                          height: 7,
                         ),
-                      ),
-                      SizedBox(
-                        height: 10,
-                      ),
-                      Row(mainAxisAlignment: MainAxisAlignment.end, children: [
                         Container(
-                          height: 34,
+                          height: 50,
+                          alignment: Alignment.center,
+                          padding: const EdgeInsets.only(left: 12),
                           decoration: BoxDecoration(
-                              border: Border.all(
-                                  color: Color(0xFFE9E9E9), width: 1),
-                              borderRadius: BorderRadius.circular(5)),
-                          child: FlatButton(
-                            disabledColor: Color(0x909B049B),
-                            onPressed: () => Navigator.pop(context),
-                            color: Colors.transparent,
-                            shape: RoundedRectangleBorder(
-                                borderRadius: BorderRadius.circular(5)),
-                            padding: EdgeInsets.all(0.0),
-                            child: Ink(
-                              decoration: BoxDecoration(
-                                  borderRadius: BorderRadius.circular(5)),
-                              child: Container(
-                                constraints: BoxConstraints(
-                                    maxWidth: 100, minHeight: 34.0),
-                                alignment: Alignment.center,
-                                child: Text(
-                                  "Cancel",
-                                  textAlign: TextAlign.center,
-                                  style: TextStyle(
-                                      color: Colors.black87,
-                                      fontWeight: FontWeight.w600),
-                                ),
-                              ),
+                              color: Color(0xFFFFFFFF),
+                              border: Border.all(color: Color(0xFFF1F1FD)),
+                              borderRadius: BorderRadius.all(Radius.circular(7))),
+                          child: TextField(
+                            controller: _controller,
+                            decoration: InputDecoration.collapsed(
+                              hintText: 'First Name',
+                              hintStyle:
+                                  TextStyle(fontSize: 16, color: Colors.black38),
+                            ),
+                          ),
+                        ),
+                        SizedBox(height: 5),
+                        Container(
+                          height: 50,
+                          alignment: Alignment.center,
+                          padding: const EdgeInsets.only(left: 12),
+                          decoration: BoxDecoration(
+                              color: Color(0xFFFFFFFF),
+                              border: Border.all(color: Color(0xFFF1F1FD)),
+                              borderRadius: BorderRadius.all(Radius.circular(7))),
+                          child: TextField(
+                            controller: _controller2,
+                            decoration: InputDecoration.collapsed(
+                              hintText: 'Last Name',
+                              hintStyle:
+                                  TextStyle(fontSize: 16, color: Colors.black38),
                             ),
                           ),
                         ),
                         SizedBox(
-                          width: 20,
+                          height: 10,
                         ),
-                        Container(
-                          height: 34,
-                          decoration: BoxDecoration(
-                              border: Border.all(
-                                  color: Color(0xFFE9E9E9), width: 1),
-                              borderRadius: BorderRadius.circular(5)),
-                          child: FlatButton(
-                            disabledColor: Color(0x909B049B),
-                            onPressed: () async {
-                              await network.updateFullName(
-                                  _controller.text, _controller2.text);
-                              update(context);
-                              // setState(() {});
-                              Navigator.pop(context);
-                            },
-                            color: Colors.transparent,
-                            shape: RoundedRectangleBorder(
+                        Row(mainAxisAlignment: MainAxisAlignment.end, children: [
+                          Container(
+                            height: 34,
+                            decoration: BoxDecoration(
+                                border: Border.all(
+                                    color: Color(0xFFE9E9E9), width: 1),
                                 borderRadius: BorderRadius.circular(5)),
-                            padding: EdgeInsets.all(0.0),
-                            child: Ink(
-                              decoration: BoxDecoration(
+                            child: FlatButton(
+                              disabledColor: Color(0x909B049B),
+                              onPressed: () => Navigator.pop(context),
+                              color: Colors.transparent,
+                              shape: RoundedRectangleBorder(
                                   borderRadius: BorderRadius.circular(5)),
-                              child: Container(
-                                constraints: BoxConstraints(
-                                    maxWidth: 100, minHeight: 34.0),
-                                alignment: Alignment.center,
-                                child: Text(
-                                  "Save",
-                                  textAlign: TextAlign.center,
-                                  style: TextStyle(
-                                      color: Colors.black87,
-                                      fontWeight: FontWeight.w600),
+                              padding: EdgeInsets.all(0.0),
+                              child: Ink(
+                                decoration: BoxDecoration(
+                                    borderRadius: BorderRadius.circular(5)),
+                                child: Container(
+                                  constraints: BoxConstraints(
+                                      maxWidth: 100, minHeight: 34.0),
+                                  alignment: Alignment.center,
+                                  child: Text(
+                                    "Cancel",
+                                    textAlign: TextAlign.center,
+                                    style: TextStyle(
+                                        color: Colors.black87,
+                                        fontWeight: FontWeight.w600),
+                                  ),
                                 ),
                               ),
                             ),
                           ),
-                        ),
-                      ])
-                    ],
-                  ));
+                          SizedBox(
+                            width: 20,
+                          ),
+                          Container(
+                            height: 34,
+                            decoration: BoxDecoration(
+                                border: Border.all(
+                                    color: Color(0xFFE9E9E9), width: 1),
+                                borderRadius: BorderRadius.circular(5)),
+                            child: FlatButton(
+                              disabledColor: Color(0x909B049B),
+                              onPressed: () async {
+                                await network.updateFullName(
+                                    _controller.text, _controller2.text);
+                                update(context);
+                                // setState(() {});
+                                Navigator.pop(context);
+                              },
+                              color: Colors.transparent,
+                              shape: RoundedRectangleBorder(
+                                  borderRadius: BorderRadius.circular(5)),
+                              padding: EdgeInsets.all(0.0),
+                              child: Ink(
+                                decoration: BoxDecoration(
+                                    borderRadius: BorderRadius.circular(5)),
+                                child: Container(
+                                  constraints: BoxConstraints(
+                                      maxWidth: 100, minHeight: 34.0),
+                                  alignment: Alignment.center,
+                                  child: Text(
+                                    "Save",
+                                    textAlign: TextAlign.center,
+                                    style: TextStyle(
+                                        color: Colors.black87,
+                                        fontWeight: FontWeight.w600),
+                                  ),
+                                ),
+                              ),
+                            ),
+                          ),
+                        ])
+                      ],
+                    )),
+          );
         });
   }
+
+
+
+  futureProduct(){
+   return FutureBuilder(
+        future: products,
+        builder: (context, snapshot) {
+          Widget mainWidget;
+          if (snapshot.connectionState ==
+              ConnectionState.done) {
+            if (snapshot.data == null ||
+                snapshot.data.length == 0) {
+              mainWidget = Center(
+                child: Column(
+                  mainAxisAlignment:
+                  MainAxisAlignment.center,
+                  crossAxisAlignment:
+                  CrossAxisAlignment.center,
+                  children: [
+                    Text('No products',
+                        style: TextStyle(
+                          // letterSpacing: 4,
+                            color:
+                            Color(0xFF333333),
+                            fontSize: 18,
+                            fontWeight:
+                            FontWeight.w600)),
+                  ],
+                ),
+              );
+            } else {
+              mainWidget = Container(
+                  margin: const EdgeInsets.only(
+                      bottom: 30.0,
+                      left: 8,
+                      right: 8),
+                  child: ListView.builder(
+                    shrinkWrap: true,
+                    physics: ScrollPhysics(),
+                    itemCount: snapshot.data == null
+                        ? 0
+                        : snapshot.data.length,
+                    itemBuilder:
+                        (BuildContext context,
+                        int index) {
+                      return ClipRRect(
+                        borderRadius:
+                        BorderRadius.circular(
+                            10),
+                        child: Container(
+                          child: ListTile(
+                            trailing: Container(
+                              height: 32,
+                              width: 32,
+                              margin:
+                              const EdgeInsets
+                                  .only(
+                                  top: 10),
+                              decoration:
+                              BoxDecoration(
+                                  border: Border
+                                      .all(
+                                    width: 1,
+                                    color: Color(
+                                        0xFFA40C85),
+                                  ),
+                                  shape: BoxShape
+                                      .circle),
+                              child: IconButton(
+                                  onPressed: () {
+                                    Utils data = Provider.of<Utils>(context, listen: false);
+                                    data
+                                        .selectProductImagetoNull();
+                                    _editProduct(
+                                        snapshot.data[index]['product_name'],
+                                        snapshot.data[index]['price'].toString(),
+                                        snapshot.data[index]['description'],
+                                      snapshot.data[index]['productImages'][0]['productId'],
+                                        snapshot.data[index]['productImages'][0]['imageFileName']
+                                    );
+                                  },
+                                  icon: Icon(
+                                    FeatherIcons
+                                        .edit3,
+                                    size: 14,
+                                    color: Color(
+                                        0xFFA40C85),
+                                  )),
+                            ),
+                            onTap: () {
+                              _viewProduct(
+                                  data: snapshot
+                                      .data[index]);
+                            },
+                            contentPadding:
+                            const EdgeInsets
+                                .only(left: 0),
+                            leading: CircleAvatar(
+                              child: Text(''),
+                              radius: 40,
+                              backgroundImage:
+                              NetworkImage(snapshot.data[index]['productImages'].isNotEmpty?
+                              "https://uploads.fixme.ng/originals/${snapshot.data[index]['productImages'][0]['imageFileName']}":'',
+                              ),
+                              foregroundColor:
+                              Colors.white,
+                              backgroundColor:
+                              Colors.white,
+                            ),
+                            title: Text(
+                                "${snapshot.data[index]['product_name']}"
+                                    .capitalizeFirstOfEach,
+                                style: TextStyle(
+                                    color: Colors
+                                        .black)),
+                            subtitle: RichText(
+                              text: TextSpan(
+                                text: '\u{20A6} ',
+                                style: TextStyle(
+                                    fontFamily:
+                                    'Roboto',
+                                    color: Colors
+                                        .green,
+                                    fontWeight:
+                                    FontWeight
+                                        .bold),
+                                children: <
+                                    TextSpan>[
+                                  TextSpan(
+                                      text:
+                                      "${snapshot.data[index]['price']}",
+                                      style: GoogleFonts.poppins(
+                                          color: Colors
+                                              .green,
+                                          fontWeight:
+                                          FontWeight
+                                              .bold)),
+                                ],
+                              ),
+                            ),
+                          ),
+                        ),
+                      );
+                    },
+                  ));
+            }
+          } else {
+            mainWidget = Center(
+              child: Column(
+                mainAxisAlignment:
+                MainAxisAlignment.center,
+                crossAxisAlignment:
+                CrossAxisAlignment.center,
+                children: [
+                  Theme(
+                      data: Theme.of(context)
+                          .copyWith(
+                          accentColor: Color(
+                              0xFF9B049B)),
+                      child:
+                      CircularProgressIndicator(valueColor: AlwaysStoppedAnimation<Color>(Color(0xFF9B049B)),
+                         strokeWidth: 2,
+                                              backgroundColor: Colors.white,
+
+)),
+                  SizedBox(
+                    height: 10,
+                  ),
+                  Text('Loading',
+                      style: TextStyle(
+                        // letterSpacing: 4,
+                          color: Color(0xFF333333),
+                          fontSize: 18,
+                          fontWeight:
+                          FontWeight.w600)),
+                ],
+              ),
+            );
+          }
+          return mainWidget;
+        });
+  }
+
+
+  void _businessName(businessName) {
+    final _controller = TextEditingController();
+    _controller.text = businessName;
+    var network = Provider.of<WebServices>(context, listen: false);
+    showModalBottomSheet(
+        context: context,
+        isScrollControlled: true,
+        builder: (builder) {
+          return AnimatedPadding(
+            padding: MediaQuery.of(context).viewInsets,
+            duration: const Duration(milliseconds: 100),
+            curve: Curves.decelerate,
+            child: Container(
+                height: 160.0,
+                padding: EdgeInsets.symmetric(vertical: 20, horizontal: 20),
+                color: Colors.transparent,
+                child: ListView(
+                  children: [
+                    Text(
+                      "Edit Business Name",
+                      style: TextStyle(
+                          fontWeight: FontWeight.w600, fontSize: 18),
+                    ),
+                    SizedBox(
+                      height: 7,
+                    ),
+                    Container(
+                      height: 50,
+                      alignment: Alignment.center,
+                      padding: const EdgeInsets.only(left: 12),
+                      decoration: BoxDecoration(
+                          color: Color(0xFFFFFFFF),
+                          border: Border.all(color: Color(0xFFF1F1FD)),
+                          borderRadius: BorderRadius.all(Radius.circular(7))),
+                      child: TextField(
+                        controller: _controller,
+                        decoration: InputDecoration.collapsed(
+                          hintText: 'Business Name',
+                          hintStyle:
+                          TextStyle(fontSize: 16, color: Colors.black38),
+                        ),
+                      ),
+                    ),
+
+                    SizedBox(
+                      height: 10,
+                    ),
+                    Row(mainAxisAlignment: MainAxisAlignment.end, children: [
+                      Container(
+                        height: 34,
+                        decoration: BoxDecoration(
+                            border: Border.all(
+                                color: Color(0xFFE9E9E9), width: 1),
+                            borderRadius: BorderRadius.circular(5)),
+                        child: FlatButton(
+                          disabledColor: Color(0x909B049B),
+                          onPressed: () => Navigator.pop(context),
+                          color: Colors.transparent,
+                          shape: RoundedRectangleBorder(
+                              borderRadius: BorderRadius.circular(5)),
+                          padding: EdgeInsets.all(0.0),
+                          child: Ink(
+                            decoration: BoxDecoration(
+                                borderRadius: BorderRadius.circular(5)),
+                            child: Container(
+                              constraints: BoxConstraints(
+                                  maxWidth: 100, minHeight: 34.0),
+                              alignment: Alignment.center,
+                              child: Text(
+                                "Cancel",
+                                textAlign: TextAlign.center,
+                                style: TextStyle(
+                                    color: Colors.black87,
+                                    fontWeight: FontWeight.w600),
+                              ),
+                            ),
+                          ),
+                        ),
+                      ),
+                      SizedBox(
+                        width: 20,
+                      ),
+                      Container(
+                        height: 34,
+                        decoration: BoxDecoration(
+                            border: Border.all(
+                                color: Color(0xFFE9E9E9), width: 1),
+                            borderRadius: BorderRadius.circular(5)),
+                        child: FlatButton(
+                          disabledColor: Color(0x909B049B),
+                          onPressed: () async {
+                            await network.updateBizName(
+                                _controller.text);
+                            update(context);
+                            // setState(() {});
+                            Navigator.pop(context);
+                          },
+                          color: Colors.transparent,
+                          shape: RoundedRectangleBorder(
+                              borderRadius: BorderRadius.circular(5)),
+                          padding: EdgeInsets.all(0.0),
+                          child: Ink(
+                            decoration: BoxDecoration(
+                                borderRadius: BorderRadius.circular(5)),
+                            child: Container(
+                              constraints: BoxConstraints(
+                                  maxWidth: 100, minHeight: 34.0),
+                              alignment: Alignment.center,
+                              child: Text(
+                                "Save",
+                                textAlign: TextAlign.center,
+                                style: TextStyle(
+                                    color: Colors.black87,
+                                    fontWeight: FontWeight.w600),
+                              ),
+                            ),
+                          ),
+                        ),
+                      ),
+                    ])
+                  ],
+                )),
+          );
+        });
+  }
+
+
+
+
+
 
   _editService() {
     PostRequestProvider postRequestProvider =
@@ -983,134 +1220,309 @@ class _EditProfilePageState extends State<EditProfilePage> {
         context: context,
         isScrollControlled: true,
         builder: (builder) {
-          return new Padding(
-              padding: MediaQuery.of(context).viewInsets,
-              child: Container(
-                  height: 190.0,
-                  padding: EdgeInsets.symmetric(vertical: 20, horizontal: 20),
-                  color: Colors.transparent,
-                  child: ListView(
-                    children: [
-                      Text(
-                        "Edit service area",
-                        style: TextStyle(
-                            fontWeight: FontWeight.w600, fontSize: 18),
-                      ),
-                      SizedBox(
-                        height: 10,
-                      ),
-                      Container(
-                        height: 50,
-                        alignment: Alignment.center,
-                        padding: const EdgeInsets.only(left: 12),
-                        decoration: BoxDecoration(
-                            color: Color(0xFFFFFFFF),
-                            border: Border.all(color: Color(0xFFF1F1FD)),
-                            borderRadius: BorderRadius.all(Radius.circular(7))),
-                        child: InkWell(
-                          splashColor: Colors.transparent,
-                          highlightColor: Colors.transparent,
-                          onTap: () {
-                            result = postRequestProvider.allservicesList;
-                            dialogPage(context);
-                          },
-                          child: TextFormField(
-                            keyboardType: TextInputType.multiline,
-                            enabled: false,
-                            style: TextStyle(color: Colors.black),
-                            cursorColor: Colors.black,
-                            decoration: InputDecoration.collapsed(
-                              hintText: postRequestProvider.selecteService ==
-                                      null
-                                  ? 'Select Service'
-                                  : postRequestProvider.selecteService.service,
-                              hintStyle: TextStyle(
-                                  fontSize: 16,
-                                  fontWeight: FontWeight.w600,
-                                  color: Colors.black38),
+          return AnimatedPadding(
+            padding: MediaQuery.of(context).viewInsets,
+            duration: const Duration(milliseconds: 100),
+            curve: Curves.decelerate,
+            child: StatefulBuilder(
+              builder: (context, setState) {
+                return new Padding(
+                    padding: MediaQuery.of(context).viewInsets,
+                    child: Container(
+                        height: 190.0,
+                        padding: EdgeInsets.symmetric(vertical: 20, horizontal: 20),
+                        color: Colors.transparent,
+                        child: ListView(
+                          children: [
+                            Text(
+                              "Edit service area",
+                              style: TextStyle(
+                                  fontWeight: FontWeight.w600, fontSize: 18),
                             ),
-                          ),
-                        ),
-                      ),
-                      SizedBox(
-                        height: 10,
-                      ),
-                      Row(mainAxisAlignment: MainAxisAlignment.end, children: [
-                        Container(
-                          height: 34,
-                          decoration: BoxDecoration(
-                              border: Border.all(
-                                  color: Color(0xFFE9E9E9), width: 1),
-                              borderRadius: BorderRadius.circular(5)),
-                          child: FlatButton(
-                            disabledColor: Color(0x909B049B),
-                            onPressed: () => Navigator.pop(context),
-                            color: Colors.transparent,
-                            shape: RoundedRectangleBorder(
-                                borderRadius: BorderRadius.circular(5)),
-                            padding: EdgeInsets.all(0.0),
-                            child: Ink(
+                            SizedBox(
+                              height: 10,
+                            ),
+                            Container(
+                              height: 50,
+                              alignment: Alignment.center,
+                              padding: const EdgeInsets.only(left: 12),
                               decoration: BoxDecoration(
-                                  borderRadius: BorderRadius.circular(5)),
-                              child: Container(
-                                constraints: BoxConstraints(
-                                    maxWidth: 100, minHeight: 34.0),
-                                alignment: Alignment.center,
-                                child: Text(
-                                  "Cancel",
-                                  textAlign: TextAlign.center,
-                                  style: TextStyle(
-                                      color: Colors.black87,
-                                      fontWeight: FontWeight.w600),
+                                  color: Color(0xFFFFFFFF),
+                                  border: Border.all(color: Color(0xFFF1F1FD)),
+                                  borderRadius: BorderRadius.all(Radius.circular(7))),
+                              child: InkWell(
+                                splashColor: Colors.transparent,
+                                highlightColor: Colors.transparent,
+                                onTap: () {
+                                  result = postRequestProvider.allservicesList;
+                                  dialogPage(context).then((v) {
+                                    setState(() {
+                                      print('done');
+                                    });
+                                  });
+                                },
+                                child: TextFormField(
+                                  keyboardType: TextInputType.multiline,
+                                  enabled: false,
+                                  style: TextStyle(color: Colors.black),
+                                  cursorColor: Colors.black,
+                                  decoration: InputDecoration.collapsed(
+                                    hintText: postRequestProvider.selecteService ==
+                                            null
+                                        ? 'Select Service'
+                                        : postRequestProvider.selecteService.service,
+                                    hintStyle: TextStyle(
+                                        fontSize: 16,
+                                        fontWeight: FontWeight.w600,
+                                        color: Colors.black38),
+                                  ),
                                 ),
+                              ),
+                            ),
+                            SizedBox(
+                              height: 10,
+                            ),
+                            Row(mainAxisAlignment: MainAxisAlignment.end, children: [
+                              Container(
+                                height: 34,
+                                decoration: BoxDecoration(
+                                    border: Border.all(
+                                        color: Color(0xFFE9E9E9), width: 1),
+                                    borderRadius: BorderRadius.circular(5)),
+                                child: FlatButton(
+                                  disabledColor: Color(0x909B049B),
+                                  onPressed: () => Navigator.pop(context),
+                                  color: Colors.transparent,
+                                  shape: RoundedRectangleBorder(
+                                      borderRadius: BorderRadius.circular(5)),
+                                  padding: EdgeInsets.all(0.0),
+                                  child: Ink(
+                                    decoration: BoxDecoration(
+                                        borderRadius: BorderRadius.circular(5)),
+                                    child: Container(
+                                      constraints: BoxConstraints(
+                                          maxWidth: 100, minHeight: 34.0),
+                                      alignment: Alignment.center,
+                                      child: Text(
+                                        "Cancel",
+                                        textAlign: TextAlign.center,
+                                        style: TextStyle(
+                                            color: Colors.black87,
+                                            fontWeight: FontWeight.w600),
+                                      ),
+                                    ),
+                                  ),
+                                ),
+                              ),
+                              SizedBox(
+                                width: 20,
+                              ),
+                              Container(
+                                height: 34,
+                                decoration: BoxDecoration(
+                                    border: Border.all(
+                                        color: Color(0xFFE9E9E9), width: 1),
+                                    borderRadius: BorderRadius.circular(5)),
+                                child: FlatButton(
+                                  disabledColor: Color(0x909B049B),
+                                  onPressed: () async {
+                                    network.updateService(
+                                        postRequestProvider.selecteService.sn);
+                                    update(context);
+                                    Navigator.pop(context);
+                                  },
+                                  color: Colors.transparent,
+                                  shape: RoundedRectangleBorder(
+                                      borderRadius: BorderRadius.circular(5)),
+                                  padding: EdgeInsets.all(0.0),
+                                  child: Ink(
+                                    decoration: BoxDecoration(
+                                        borderRadius: BorderRadius.circular(5)),
+                                    child: Container(
+                                      constraints: BoxConstraints(
+                                          maxWidth: 100, minHeight: 34.0),
+                                      alignment: Alignment.center,
+                                      child: Text(
+                                        "Save",
+                                        textAlign: TextAlign.center,
+                                        style: TextStyle(
+                                            color: Colors.black87,
+                                            fontWeight: FontWeight.w600),
+                                      ),
+                                    ),
+                                  ),
+                                ),
+                              ),
+                            ])
+                          ],
+                        )));
+              }
+            ),
+          );
+        });
+  }
+
+
+
+
+
+
+
+  _addSubService() {
+    PostRequestProvider postRequestProvider =
+    Provider.of<PostRequestProvider>(context, listen: false);
+    var network = Provider.of<WebServices>(context, listen: false);
+    showModalBottomSheet(
+        context: context,
+        isScrollControlled: true,
+        builder: (builder) {
+          return AnimatedPadding(
+            padding: MediaQuery.of(context).viewInsets,
+            duration: const Duration(milliseconds: 100),
+            curve: Curves.decelerate,
+            child: new StatefulBuilder(
+                builder: (context, setState) {
+                  return new Padding(
+                padding: MediaQuery.of(context).viewInsets,
+                child: Container(
+                    height: 190.0,
+                    padding: EdgeInsets.symmetric(vertical: 20, horizontal: 20),
+                    color: Colors.transparent,
+                    child: ListView(
+                      children: [
+                        Text(
+                          "Add Subservice area",
+                          style: TextStyle(
+                              fontWeight: FontWeight.w600, fontSize: 18),
+                        ),
+                        SizedBox(
+                          height: 10,
+                        ),
+                        Container(
+                          height: 50,
+                          alignment: Alignment.center,
+                          padding: const EdgeInsets.only(left: 12),
+                          decoration: BoxDecoration(
+                              color: Color(0xFFFFFFFF),
+                              border: Border.all(color: Color(0xFFF1F1FD)),
+                              borderRadius: BorderRadius.all(Radius.circular(7))),
+                          child: InkWell(
+                            splashColor: Colors.transparent,
+                            highlightColor: Colors.transparent,
+                            onTap: () {
+                              result = postRequestProvider.allservicesList;
+                              dialogPage(context).then((v) {
+                                setState(() {
+                                  print('done');
+                                });
+                              });
+                            },
+                            child: TextFormField(
+                              keyboardType: TextInputType.multiline,
+                              enabled: false,
+                              style: TextStyle(color: Colors.black),
+                              cursorColor: Colors.black,
+                              decoration: InputDecoration.collapsed(
+                                hintText: postRequestProvider.selecteService ==
+                                    null
+                                    ? 'Select Service'
+                                    : postRequestProvider.selecteService.service,
+                                hintStyle: TextStyle(
+                                    fontSize: 16,
+                                    fontWeight: FontWeight.w600,
+                                    color: Colors.black38),
                               ),
                             ),
                           ),
                         ),
                         SizedBox(
-                          width: 20,
+                          height: 10,
                         ),
-                        Container(
-                          height: 34,
-                          decoration: BoxDecoration(
-                              border: Border.all(
-                                  color: Color(0xFFE9E9E9), width: 1),
-                              borderRadius: BorderRadius.circular(5)),
-                          child: FlatButton(
-                            disabledColor: Color(0x909B049B),
-                            onPressed: () async {
-                              network.updateService(
-                                  postRequestProvider.selecteService.sn);
-                              update(context);
-                              Navigator.pop(context);
-                            },
-                            color: Colors.transparent,
-                            shape: RoundedRectangleBorder(
+                        Row(mainAxisAlignment: MainAxisAlignment.end, children: [
+                          Container(
+                            height: 34,
+                            decoration: BoxDecoration(
+                                border: Border.all(
+                                    color: Color(0xFFE9E9E9), width: 1),
                                 borderRadius: BorderRadius.circular(5)),
-                            padding: EdgeInsets.all(0.0),
-                            child: Ink(
-                              decoration: BoxDecoration(
+                            child: FlatButton(
+                              disabledColor: Color(0x909B049B),
+                              onPressed: () => Navigator.pop(context),
+                              color: Colors.transparent,
+                              shape: RoundedRectangleBorder(
                                   borderRadius: BorderRadius.circular(5)),
-                              child: Container(
-                                constraints: BoxConstraints(
-                                    maxWidth: 100, minHeight: 34.0),
-                                alignment: Alignment.center,
-                                child: Text(
-                                  "Save",
-                                  textAlign: TextAlign.center,
-                                  style: TextStyle(
-                                      color: Colors.black87,
-                                      fontWeight: FontWeight.w600),
+                              padding: EdgeInsets.all(0.0),
+                              child: Ink(
+                                decoration: BoxDecoration(
+                                    borderRadius: BorderRadius.circular(5)),
+                                child: Container(
+                                  constraints: BoxConstraints(
+                                      maxWidth: 100, minHeight: 34.0),
+                                  alignment: Alignment.center,
+                                  child: Text(
+                                    "Cancel",
+                                    textAlign: TextAlign.center,
+                                    style: TextStyle(
+                                        color: Colors.black87,
+                                        fontWeight: FontWeight.w600),
+                                  ),
                                 ),
                               ),
                             ),
                           ),
-                        ),
-                      ])
-                    ],
-                  )));
+                          SizedBox(
+                            width: 20,
+                          ),
+                          Container(
+                            height: 34,
+                            decoration: BoxDecoration(
+                                border: Border.all(
+                                    color: Color(0xFFE9E9E9), width: 1),
+                                borderRadius: BorderRadius.circular(5)),
+                            child: FlatButton(
+                              disabledColor: Color(0x909B049B),
+                              onPressed: () async {
+                                network.addSubService(
+                                    postRequestProvider.selecteService.service);
+                                Navigator.pop(context);
+                                setState((){
+                                  update(context);
+                                });
+                              },
+                              color: Colors.transparent,
+                              shape: RoundedRectangleBorder(
+                                  borderRadius: BorderRadius.circular(5)),
+                              padding: EdgeInsets.all(0.0),
+                              child: Ink(
+                                decoration: BoxDecoration(
+                                    borderRadius: BorderRadius.circular(5)),
+                                child: Container(
+                                  constraints: BoxConstraints(
+                                      maxWidth: 100, minHeight: 34.0),
+                                  alignment: Alignment.center,
+                                  child: Text(
+                                    "Save",
+                                    textAlign: TextAlign.center,
+                                    style: TextStyle(
+                                        color: Colors.black87,
+                                        fontWeight: FontWeight.w600),
+                                  ),
+                                ),
+                              ),
+                            ),
+                          ),
+                        ])
+                      ],
+                    )));}),
+          );
         });
   }
+
+
+
+
+
+
 
   _editAbout(bio) {
     final _controller = TextEditingController();
@@ -1119,113 +1531,118 @@ class _EditProfilePageState extends State<EditProfilePage> {
     showModalBottomSheet(
         context: context,
         builder: (builder) {
-          return  Container(
-                  height: 180.0,
-                  padding: EdgeInsets.symmetric(vertical: 20, horizontal: 20),
-                  color: Colors.transparent,
-                  child: ListView(
-                    children: [
-                      Text(
-                        "Edit about",
-                        style: TextStyle(
-                            fontWeight: FontWeight.w600, fontSize: 18),
-                      ),
-                      SizedBox(
-                        height: 10,
-                      ),
-                      Container(
-                        height: 50,
-                        alignment: Alignment.center,
-                        padding: const EdgeInsets.only(left: 12),
-                        decoration: BoxDecoration(
-                            color: Color(0xFFFFFFFF),
-                            border: Border.all(color: Color(0xFFF1F1FD)),
-                            borderRadius: BorderRadius.all(Radius.circular(7))),
-                        child: TextField(
-                          controller: _controller,
-                          decoration: InputDecoration.collapsed(
-                            hintText: 'About',
-                            hintStyle:
-                                TextStyle(fontSize: 16, color: Colors.black38),
-                          ),
+          return AnimatedPadding(
+            padding: MediaQuery.of(context).viewInsets,
+            duration: const Duration(milliseconds: 100),
+            curve: Curves.decelerate,
+            child: Container(
+                    height: 180.0,
+                    padding: EdgeInsets.symmetric(vertical: 20, horizontal: 20),
+                    color: Colors.transparent,
+                    child: ListView(
+                      children: [
+                        Text(
+                          "Edit about",
+                          style: TextStyle(
+                              fontWeight: FontWeight.w600, fontSize: 18),
                         ),
-                      ),
-                      SizedBox(
-                        height: 10,
-                      ),
-                      Row(mainAxisAlignment: MainAxisAlignment.end, children: [
+                        SizedBox(
+                          height: 10,
+                        ),
                         Container(
-                          height: 34,
+                          height: 50,
+                          alignment: Alignment.center,
+                          padding: const EdgeInsets.only(left: 12),
                           decoration: BoxDecoration(
-                              border: Border.all(
-                                  color: Color(0xFFE9E9E9), width: 1),
-                              borderRadius: BorderRadius.circular(5)),
-                          child: FlatButton(
-                            disabledColor: Color(0x909B049B),
-                            onPressed: () => Navigator.pop(context),
-                            color: Colors.transparent,
-                            shape: RoundedRectangleBorder(
-                                borderRadius: BorderRadius.circular(5)),
-                            padding: EdgeInsets.all(0.0),
-                            child: Ink(
-                              decoration: BoxDecoration(
-                                  borderRadius: BorderRadius.circular(5)),
-                              child: Container(
-                                constraints: BoxConstraints(
-                                    maxWidth: 100, minHeight: 34.0),
-                                alignment: Alignment.center,
-                                child: Text(
-                                  "Cancel",
-                                  textAlign: TextAlign.center,
-                                  style: TextStyle(
-                                      color: Colors.black87,
-                                      fontWeight: FontWeight.w600),
-                                ),
-                              ),
+                              color: Color(0xFFFFFFFF),
+                              border: Border.all(color: Color(0xFFF1F1FD)),
+                              borderRadius: BorderRadius.all(Radius.circular(7))),
+                          child: TextField(
+                            controller: _controller,
+                            decoration: InputDecoration.collapsed(
+                              hintText: 'About',
+                              hintStyle:
+                                  TextStyle(fontSize: 16, color: Colors.black38),
                             ),
                           ),
                         ),
                         SizedBox(
-                          width: 20,
+                          height: 10,
                         ),
-                        Container(
-                          height: 34,
-                          decoration: BoxDecoration(
-                              border: Border.all(
-                                  color: Color(0xFFE9E9E9), width: 1),
-                              borderRadius: BorderRadius.circular(5)),
-                          child: FlatButton(
-                            disabledColor: Color(0x909B049B),
-                            onPressed: () async {
-                              network.updateBio(_controller.text);
-                              update(context);
-                              Navigator.pop(context);
-                            },
-                            color: Colors.transparent,
-                            shape: RoundedRectangleBorder(
+                        Row(mainAxisAlignment: MainAxisAlignment.end, children: [
+                          Container(
+                            height: 34,
+                            decoration: BoxDecoration(
+                                border: Border.all(
+                                    color: Color(0xFFE9E9E9), width: 1),
                                 borderRadius: BorderRadius.circular(5)),
-                            padding: EdgeInsets.all(0.0),
-                            child: Ink(
-                              decoration: BoxDecoration(
+                            child: FlatButton(
+                              disabledColor: Color(0x909B049B),
+                              onPressed: () => Navigator.pop(context),
+                              color: Colors.transparent,
+                              shape: RoundedRectangleBorder(
                                   borderRadius: BorderRadius.circular(5)),
-                              child: Container(
-                                constraints: BoxConstraints(
-                                    maxWidth: 100, minHeight: 34.0),
-                                alignment: Alignment.center,
-                                child: Text(
-                                  "Save",
-                                  textAlign: TextAlign.center,
-                                  style: TextStyle(
-                                      color: Colors.black87,
-                                      fontWeight: FontWeight.w600),
+                              padding: EdgeInsets.all(0.0),
+                              child: Ink(
+                                decoration: BoxDecoration(
+                                    borderRadius: BorderRadius.circular(5)),
+                                child: Container(
+                                  constraints: BoxConstraints(
+                                      maxWidth: 100, minHeight: 34.0),
+                                  alignment: Alignment.center,
+                                  child: Text(
+                                    "Cancel",
+                                    textAlign: TextAlign.center,
+                                    style: TextStyle(
+                                        color: Colors.black87,
+                                        fontWeight: FontWeight.w600),
+                                  ),
                                 ),
                               ),
                             ),
                           ),
-                        ),
-                      ])
-                    ],
-                  ));
+                          SizedBox(
+                            width: 20,
+                          ),
+                          Container(
+                            height: 34,
+                            decoration: BoxDecoration(
+                                border: Border.all(
+                                    color: Color(0xFFE9E9E9), width: 1),
+                                borderRadius: BorderRadius.circular(5)),
+                            child: FlatButton(
+                              disabledColor: Color(0x909B049B),
+                              onPressed: () async {
+                                network.updateBio(_controller.text);
+                                update(context);
+                                Navigator.pop(context);
+                              },
+                              color: Colors.transparent,
+                              shape: RoundedRectangleBorder(
+                                  borderRadius: BorderRadius.circular(5)),
+                              padding: EdgeInsets.all(0.0),
+                              child: Ink(
+                                decoration: BoxDecoration(
+                                    borderRadius: BorderRadius.circular(5)),
+                                child: Container(
+                                  constraints: BoxConstraints(
+                                      maxWidth: 100, minHeight: 34.0),
+                                  alignment: Alignment.center,
+                                  child: Text(
+                                    "Save",
+                                    textAlign: TextAlign.center,
+                                    style: TextStyle(
+                                        color: Colors.black87,
+                                        fontWeight: FontWeight.w600),
+                                  ),
+                                ),
+                              ),
+                            ),
+                          ),
+                        ])
+                      ],
+                    )),
+          );
         });
   }
 
@@ -1240,437 +1657,21 @@ class _EditProfilePageState extends State<EditProfilePage> {
         context: context,
         isScrollControlled: true,
         builder: (builder) {
-          return new StatefulBuilder(builder: (context, setStat) {
-            return Container(
-                padding: EdgeInsets.symmetric(vertical: 20, horizontal: 20),
-                color: Colors.transparent,
-                child: ListView(
-                  children: [
-                    SizedBox(height: MediaQuery.of(context).size.height * 0.19),
-                    Text(
-                      "Product Name",
-                      style:
-                          TextStyle(fontWeight: FontWeight.w500, fontSize: 18),
-                    ),
-                    SizedBox(
-                      height: 10,
-                    ),
-                    Container(
-                      height: 50,
-                      alignment: Alignment.center,
-                      padding: const EdgeInsets.only(left: 12),
-                      decoration: BoxDecoration(
-                          color: Color(0xFFFFFFFF),
-                          border: Border.all(color: Color(0xFFF1F1FD)),
-                          borderRadius: BorderRadius.all(Radius.circular(7))),
-                      child: TextField(
-                        controller: _controller,
-                        decoration: InputDecoration.collapsed(
-                          hintText: 'Product Name',
-                          hintStyle:
-                              TextStyle(fontSize: 16, color: Colors.black38),
-                        ),
-                      ),
-                    ),
-                    SizedBox(
-                      height: 10,
-                    ),
-                    Text(
-                      "Product Price",
-                      style:
-                          TextStyle(fontWeight: FontWeight.w500, fontSize: 18),
-                    ),
-                    SizedBox(
-                      height: 10,
-                    ),
-                    Container(
-                      height: 50,
-                      alignment: Alignment.center,
-                      padding: const EdgeInsets.only(left: 12),
-                      decoration: BoxDecoration(
-                          color: Color(0xFFFFFFFF),
-                          border: Border.all(color: Color(0xFFF1F1FD)),
-                          borderRadius: BorderRadius.all(Radius.circular(7))),
-                      child: TextField(
-                        controller: _controller1,
-                        keyboardType: TextInputType.number,
-                        decoration: InputDecoration.collapsed(
-                          hintText: 'Product Price',
-                          hintStyle:
-                              TextStyle(fontSize: 16, color: Colors.black38),
-                        ),
-                      ),
-                    ),
-                    SizedBox(
-                      height: 10,
-                    ),
-                    Text(
-                      "Product Description",
-                      style:
-                          TextStyle(fontWeight: FontWeight.w500, fontSize: 18),
-                    ),
-                    SizedBox(
-                      height: 10,
-                    ),
-                    Container(
-                      height: 50,
-                      alignment: Alignment.center,
-                      padding: const EdgeInsets.only(left: 12),
-                      decoration: BoxDecoration(
-                          color: Color(0xFFFFFFFF),
-                          border: Border.all(color: Color(0xFFF1F1FD)),
-                          borderRadius: BorderRadius.all(Radius.circular(7))),
-                      child: TextField(
-                        controller: _controller2,
-                        decoration: InputDecoration.collapsed(
-                          hintText: 'Product Description',
-                          hintStyle:
-                              TextStyle(fontSize: 16, color: Colors.black38),
-                        ),
-                      ),
-                    ),
-                    SizedBox(
-                      height: 10,
-                    ),
-                    Center(
-                      child: SizedBox(
-                        height: 100, // card height
-                        child: data.selectedImage2 == null
-                            ? Text('No Image Selected')
-                            : Container(
-                                width: 100,
-                                child: Card(
-                                    elevation: 2,
-                                    shape: RoundedRectangleBorder(
-                                        borderRadius:
-                                            BorderRadius.circular(20)),
-                                    child: Image.file(
-                                      File(
-                                        data.selectedImage2.path,
-                                      ),
-                                      fit: BoxFit.cover,
-                                    )),
-                              ),
-                      ),
-                    ),
-                    Padding(
-                      padding: const EdgeInsets.all(8.0),
-                      child: ClipRRect(
-                        borderRadius: BorderRadius.circular(26),
-                        child: Container(
-                          decoration: BoxDecoration(
-                              border: Border.all(color: Colors.white),
-                              borderRadius: BorderRadius.circular(26)),
-                          child: FlatButton(
-                            disabledColor: Color(0xFF9B049B),
-                            onPressed: () {
-                              data
-                                  .selectimage2(source: ImageSource.gallery)
-                                  .then((value) {
-                                setStat(() {});
-                              });
-                            },
-                            color: Color(0xFF9B049B),
-                            shape: RoundedRectangleBorder(
-                                borderRadius: BorderRadius.circular(26)),
-                            padding: EdgeInsets.all(0.0),
-                            child: Ink(
-                              decoration: BoxDecoration(
-                                  borderRadius: BorderRadius.circular(26)),
-                              child: Container(
-                                constraints: BoxConstraints(
-                                    maxWidth:
-                                        MediaQuery.of(context).size.width / 1.3,
-                                    minHeight: 45.0),
-                                alignment: Alignment.center,
-                                child: Text(
-                                  "Select/Upload Product Photo",
-                                  textAlign: TextAlign.center,
-                                  style: TextStyle(
-                                      fontSize: 17, color: Colors.white),
-                                ),
-                              ),
-                            ),
-                          ),
-                        ),
-                      ),
-                    ),
-                    SizedBox(
-                      height: 30,
-                    ),
-                    Row(mainAxisAlignment: MainAxisAlignment.end, children: [
-                      Container(
-                        height: 34,
-                        decoration: BoxDecoration(
-                            border:
-                                Border.all(color: Color(0xFFE9E9E9), width: 1),
-                            borderRadius: BorderRadius.circular(5)),
-                        child: FlatButton(
-                          disabledColor: Color(0x909B049B),
-                          onPressed: () => Navigator.pop(context),
-                          color: Colors.transparent,
-                          shape: RoundedRectangleBorder(
-                              borderRadius: BorderRadius.circular(5)),
-                          padding: EdgeInsets.all(0.0),
-                          child: Ink(
-                            decoration: BoxDecoration(
-                                borderRadius: BorderRadius.circular(5)),
-                            child: Container(
-                              constraints: BoxConstraints(
-                                  maxWidth: 100, minHeight: 34.0),
-                              alignment: Alignment.center,
-                              child: Text(
-                                "Cancel",
-                                textAlign: TextAlign.center,
-                                style: TextStyle(
-                                    color: Colors.black87,
-                                    fontWeight: FontWeight.w600),
-                              ),
-                            ),
-                          ),
-                        ),
-                      ),
-                      SizedBox(
-                        width: 20,
-                      ),
-                      Container(
-                        height: 34,
-                        decoration: BoxDecoration(
-                            border:
-                                Border.all(color: Color(0xFFE9E9E9), width: 1),
-                            borderRadius: BorderRadius.circular(5)),
-                        child: FlatButton(
-                          disabledColor: Color(0x909B049B),
-                          onPressed: () {
-                            Navigator.pop(context);
-                            network
-                                .addProductCatalog(
-                              context: context,
-                              bio: _controller2.text.toString(),
-                              productName: _controller.text.toString(),
-                              price: _controller1.text.toString(),
-                              path: data.selectedImage2.path,
-                            )
-                                .then((value) {
-                              setState(() {
-                                print('k');
-                              });
-                            });
-                          },
-                          color: Colors.transparent,
-                          shape: RoundedRectangleBorder(
-                              borderRadius: BorderRadius.circular(5)),
-                          padding: EdgeInsets.all(0.0),
-                          child: Ink(
-                            decoration: BoxDecoration(
-                                borderRadius: BorderRadius.circular(5)),
-                            child: Container(
-                              constraints: BoxConstraints(
-                                  maxWidth: 100, minHeight: 34.0),
-                              alignment: Alignment.center,
-                              child: Text(
-                                "Save",
-                                textAlign: TextAlign.center,
-                                style: TextStyle(
-                                    color: Colors.black87,
-                                    fontWeight: FontWeight.w600),
-                              ),
-                            ),
-                          ),
-                        ),
-                      ),
-                    ])
-                  ],
-                ));
-          });
-        });
-  }
-
-  void _AddCatalogue() {
-    DataProvider datas = Provider.of<DataProvider>(context, listen: false);
-    Utils data = Provider.of<Utils>(context, listen: false);
-    var network = Provider.of<WebServices>(context, listen: false);
-    showModalBottomSheet(
-        context: context,
-        isScrollControlled: true,
-        builder: (builder) {
-          return new StatefulBuilder(builder: (context, setStat) {
-            return Container(
-              height: 300,
-                padding: EdgeInsets.symmetric(vertical: 20, horizontal: 20),
-                color: Colors.transparent,
-                child: ListView(
-                  children: [
-                    SizedBox(
-                      height: 10,
-                    ),
-                    Center(
-                      child: SizedBox(
-                        height: 100, // card height
-                        child: data.selectedImage2 == null
-                            ? Text('No Image Selected')
-                            : Container(
-                                width: 100,
-                                child: Card(
-                                    elevation: 2,
-                                    shape: RoundedRectangleBorder(
-                                        borderRadius:
-                                            BorderRadius.circular(20)),
-                                    child: Image.file(
-                                      File(
-                                        data.selectedImage2.path,
-                                      ),
-                                      fit: BoxFit.cover,
-                                    )),
-                              ),
-                      ),
-                    ),
-                    Padding(
-                      padding: const EdgeInsets.all(8.0),
-                      child: ClipRRect(
-                        borderRadius: BorderRadius.circular(26),
-                        child: Container(
-                          decoration: BoxDecoration(
-                              border: Border.all(color: Colors.white),
-                              borderRadius: BorderRadius.circular(26)),
-                          child: FlatButton(
-                            disabledColor: Color(0xFF9B049B),
-                            onPressed: () {
-                              data
-                                  .selectimage2(source: ImageSource.gallery)
-                                  .then((value) {
-                                setStat(() {});
-                              });
-                            },
-                            color: Color(0xFF9B049B),
-                            shape: RoundedRectangleBorder(
-                                borderRadius: BorderRadius.circular(26)),
-                            padding: EdgeInsets.all(0.0),
-                            child: Ink(
-                              decoration: BoxDecoration(
-                                  borderRadius: BorderRadius.circular(26)),
-                              child: Container(
-                                constraints: BoxConstraints(
-                                    maxWidth:
-                                        MediaQuery.of(context).size.width / 1.3,
-                                    minHeight: 45.0),
-                                alignment: Alignment.center,
-                                child: Text(
-                                  "Select/Upload Service Photo",
-                                  textAlign: TextAlign.center,
-                                  style: TextStyle(
-                                      fontSize: 17, color: Colors.white),
-                                ),
-                              ),
-                            ),
-                          ),
-                        ),
-                      ),
-                    ),
-                    SizedBox(
-                      height: 30,
-                    ),
-                    Row(mainAxisAlignment: MainAxisAlignment.end, children: [
-                      Container(
-                        height: 34,
-                        decoration: BoxDecoration(
-                            border:
-                                Border.all(color: Color(0xFFE9E9E9), width: 1),
-                            borderRadius: BorderRadius.circular(5)),
-                        child: FlatButton(
-                          disabledColor: Color(0x909B049B),
-                          onPressed: () => Navigator.pop(context),
-                          color: Colors.transparent,
-                          shape: RoundedRectangleBorder(
-                              borderRadius: BorderRadius.circular(5)),
-                          padding: EdgeInsets.all(0.0),
-                          child: Ink(
-                            decoration: BoxDecoration(
-                                borderRadius: BorderRadius.circular(5)),
-                            child: Container(
-                              constraints: BoxConstraints(
-                                  maxWidth: 100, minHeight: 34.0),
-                              alignment: Alignment.center,
-                              child: Text(
-                                "Cancel",
-                                textAlign: TextAlign.center,
-                                style: TextStyle(
-                                    color: Colors.black87,
-                                    fontWeight: FontWeight.w600),
-                              ),
-                            ),
-                          ),
-                        ),
-                      ),
-                      SizedBox(
-                        width: 20,
-                      ),
-                      Container(
-                        height: 34,
-                        decoration: BoxDecoration(
-                            border:
-                                Border.all(color: Color(0xFFE9E9E9), width: 1),
-                            borderRadius: BorderRadius.circular(5)),
-                        child: FlatButton(
-                          disabledColor: Color(0x909B049B),
-                          onPressed: () {
-                            Navigator.pop(context);
-                            network.addCatalog(
-                              path: data.selectedImage2.path,
-                              uploadType: 'servicePicture',
-                            ).then((value) {
-                              setState(() {
-                                print(value);
-                              });
-                            });
-                          },
-                          color: Colors.transparent,
-                          shape: RoundedRectangleBorder(
-                              borderRadius: BorderRadius.circular(5)),
-                          padding: EdgeInsets.all(0.0),
-                          child: Ink(
-                            decoration: BoxDecoration(
-                                borderRadius: BorderRadius.circular(5)),
-                            child: Container(
-                              constraints: BoxConstraints(
-                                  maxWidth: 100, minHeight: 34.0),
-                              alignment: Alignment.center,
-                              child: Text(
-                                "Save",
-                                textAlign: TextAlign.center,
-                                style: TextStyle(
-                                    color: Colors.black87,
-                                    fontWeight: FontWeight.w600),
-                              ),
-                            ),
-                          ),
-                        ),
-                      ),
-                    ])
-                  ],
-                ));
-          });
-        });
-  }
-
-  _editAddress(address) {
-    final _controller = TextEditingController();
-    _controller.text = address;
-    var network = Provider.of<WebServices>(context, listen: false);
-    showModalBottomSheet(
-        context: context,
-        isScrollControlled: true,
-        builder: (builder) {
-          return  Container(
-                  height: 180.0,
+          return AnimatedPadding(
+            padding: MediaQuery.of(context).viewInsets,
+            duration: const Duration(milliseconds: 100),
+            curve: Curves.decelerate,
+            child: new StatefulBuilder(builder: (context, setStat) {
+              return Container(
                   padding: EdgeInsets.symmetric(vertical: 20, horizontal: 20),
                   color: Colors.transparent,
                   child: ListView(
                     children: [
+                      SizedBox(height: MediaQuery.of(context).size.height * 0.19),
                       Text(
-                        "Edit address",
-                        style: TextStyle(
-                            fontWeight: FontWeight.w500, fontSize: 18),
+                        "Product Name",
+                        style:
+                            TextStyle(fontWeight: FontWeight.w500, fontSize: 18),
                       ),
                       SizedBox(
                         height: 10,
@@ -1686,7 +1687,7 @@ class _EditProfilePageState extends State<EditProfilePage> {
                         child: TextField(
                           controller: _controller,
                           decoration: InputDecoration.collapsed(
-                            hintText: 'address',
+                            hintText: 'Product Name',
                             hintStyle:
                                 TextStyle(fontSize: 16, color: Colors.black38),
                           ),
@@ -1695,12 +1696,138 @@ class _EditProfilePageState extends State<EditProfilePage> {
                       SizedBox(
                         height: 10,
                       ),
+                      Text(
+                        "Product Price",
+                        style:
+                            TextStyle(fontWeight: FontWeight.w500, fontSize: 18),
+                      ),
+                      SizedBox(
+                        height: 10,
+                      ),
+                      Container(
+                        height: 50,
+                        alignment: Alignment.center,
+                        padding: const EdgeInsets.only(left: 12),
+                        decoration: BoxDecoration(
+                            color: Color(0xFFFFFFFF),
+                            border: Border.all(color: Color(0xFFF1F1FD)),
+                            borderRadius: BorderRadius.all(Radius.circular(7))),
+                        child: TextField(
+                          controller: _controller1,
+                          keyboardType: TextInputType.number,
+                          decoration: InputDecoration.collapsed(
+                            hintText: 'Product Price',
+                            hintStyle:
+                                TextStyle(fontSize: 16, color: Colors.black38),
+                          ),
+                        ),
+                      ),
+                      SizedBox(
+                        height: 10,
+                      ),
+                      Text(
+                        "Product Description",
+                        style:
+                            TextStyle(fontWeight: FontWeight.w500, fontSize: 18),
+                      ),
+                      SizedBox(
+                        height: 10,
+                      ),
+                      Container(
+                        height: 50,
+                        alignment: Alignment.center,
+                        padding: const EdgeInsets.only(left: 12),
+                        decoration: BoxDecoration(
+                            color: Color(0xFFFFFFFF),
+                            border: Border.all(color: Color(0xFFF1F1FD)),
+                            borderRadius: BorderRadius.all(Radius.circular(7))),
+                        child: TextField(
+                          controller: _controller2,
+                          decoration: InputDecoration.collapsed(
+                            hintText: 'Product Description',
+                            hintStyle:
+                                TextStyle(fontSize: 16, color: Colors.black38),
+                          ),
+                        ),
+                      ),
+                      SizedBox(
+                        height: 10,
+                      ),
+                      Center(
+                        child: SizedBox(
+                          height: 100, // card height
+                          child: data.selectedImage2 == null
+                              ? Text('No Image Selected')
+                              : Container(
+                                  width: 100,
+                                  child: Card(
+                                      elevation: 2,
+                                      shape: RoundedRectangleBorder(
+                                          borderRadius:
+                                              BorderRadius.circular(20)),
+                                      child: Image.file(
+                                        File(
+                                          data.selectedImage2.path,
+                                        ),
+                                        fit: BoxFit.cover,
+                                      )),
+                                ),
+                        ),
+                      ),
+                      Padding(
+                        padding: const EdgeInsets.all(8.0),
+                        child: ClipRRect(
+                          borderRadius: BorderRadius.circular(26),
+                          child: Container(
+                            decoration: BoxDecoration(
+                                border: Border.all(color: Colors.white),
+                                borderRadius: BorderRadius.circular(26)),
+                            child: FlatButton(
+                              disabledColor: Color(0xFF9B049B),
+                              onPressed: () {
+                                data
+                                    .selectimage2(source: ImageSource.gallery)
+                                    .then((value) {
+                                  setStat(() {
+                                    print('done');
+                                  }
+                                  );
+                                });
+                              },
+                              color: Color(0xFF9B049B),
+                              shape: RoundedRectangleBorder(
+                                  borderRadius: BorderRadius.circular(26)),
+                              padding: EdgeInsets.all(0.0),
+                              child: Ink(
+                                decoration: BoxDecoration(
+                                    borderRadius: BorderRadius.circular(26)),
+                                child: Container(
+                                  constraints: BoxConstraints(
+                                      maxWidth:
+                                          MediaQuery.of(context).size.width / 1.3,
+                                      minHeight: 45.0),
+                                  alignment: Alignment.center,
+                                  child: Text(
+                                    "Select/Upload Product Photo",
+                                    textAlign: TextAlign.center,
+                                    style: TextStyle(
+                                        fontSize: 17, color: Colors.white),
+                                  ),
+                                ),
+                              ),
+                            ),
+                          ),
+                        ),
+                      ),
+                      SizedBox(
+                        height: 30,
+                      ),
                       Row(mainAxisAlignment: MainAxisAlignment.end, children: [
                         Container(
                           height: 34,
                           decoration: BoxDecoration(
-                              border: Border.all(
-                                  color: Color(0xFFE9E9E9), width: 1),
+                              border:
+                                  Border.all(color: Color(0xFFE9E9E9), width: 1),
                               borderRadius: BorderRadius.circular(5)),
                           child: FlatButton(
                             disabledColor: Color(0x909B049B),
@@ -1733,12 +1860,24 @@ class _EditProfilePageState extends State<EditProfilePage> {
                         Container(
                           height: 34,
                           decoration: BoxDecoration(
-                              border: Border.all(
-                                  color: Color(0xFFE9E9E9), width: 1),
+                              border:
+                                  Border.all(color: Color(0xFFE9E9E9), width: 1),
                               borderRadius: BorderRadius.circular(5)),
                           child: FlatButton(
                             disabledColor: Color(0x909B049B),
-                            onPressed: () {},
+                            onPressed: () {
+
+                              network
+                                  .addProductCatalog(
+                                context: context,
+                                bio: _controller2.text.toString(),
+                                productName: _controller.text.toString(),
+                                price: _controller1.text.toString(),
+                                path: data.selectedImage2.path,
+                              );
+                              updateProduct(context);
+                              Navigator.pop(context);
+                            },
                             color: Colors.transparent,
                             shape: RoundedRectangleBorder(
                                 borderRadius: BorderRadius.circular(5)),
@@ -1764,13 +1903,642 @@ class _EditProfilePageState extends State<EditProfilePage> {
                       ])
                     ],
                   ));
+            }),
+          );
+        });
+  }
+
+
+
+
+  void _editProduct(name, price, description, productID, productImage) {
+    DataProvider datas = Provider.of<DataProvider>(context, listen: false);
+    Utils data = Provider.of<Utils>(context, listen: false);
+    final _controller = TextEditingController();
+    final _controller1 = TextEditingController();
+    final _controller2 = TextEditingController();
+      _controller.text = name;
+    _controller1.text = price;
+    _controller2.text = description;
+    var network = Provider.of<WebServices>(context, listen: false);
+
+
+    showModalBottomSheet(
+        context: context,
+        isScrollControlled: true,
+        builder: (builder) {
+          return AnimatedPadding(
+            padding: MediaQuery.of(context).viewInsets,
+            duration: const Duration(milliseconds: 100),
+            curve: Curves.decelerate,
+            child: new StatefulBuilder(builder: (context, setStat) {
+              return Container(
+                  padding: EdgeInsets.symmetric(vertical: 20, horizontal: 20),
+                  color: Colors.transparent,
+                  child: ListView(
+                    children: [
+                      SizedBox(height: MediaQuery.of(context).size.height * 0.19),
+                      Text(
+                        "Product Name",
+                        style:
+                        TextStyle(fontWeight: FontWeight.w500, fontSize: 18),
+                      ),
+                      SizedBox(
+                        height: 10,
+                      ),
+                      Container(
+                        height: 50,
+                        alignment: Alignment.center,
+                        padding: const EdgeInsets.only(left: 12),
+                        decoration: BoxDecoration(
+                            color: Color(0xFFFFFFFF),
+                            border: Border.all(color: Color(0xFFF1F1FD)),
+                            borderRadius: BorderRadius.all(Radius.circular(7))),
+                        child: TextField(
+                          controller: _controller,
+                          decoration: InputDecoration.collapsed(
+                            hintText: 'Product Name',
+                            hintStyle:
+                            TextStyle(fontSize: 16, color: Colors.black38),
+                          ),
+                        ),
+                      ),
+                      SizedBox(
+                        height: 10,
+                      ),
+                      Text(
+                        "Product Price",
+                        style:
+                        TextStyle(fontWeight: FontWeight.w500, fontSize: 18),
+                      ),
+                      SizedBox(
+                        height: 10,
+                      ),
+                      Container(
+                        height: 50,
+                        alignment: Alignment.center,
+                        padding: const EdgeInsets.only(left: 12),
+                        decoration: BoxDecoration(
+                            color: Color(0xFFFFFFFF),
+                            border: Border.all(color: Color(0xFFF1F1FD)),
+                            borderRadius: BorderRadius.all(Radius.circular(7))),
+                        child: TextField(
+                          controller: _controller1,
+                          keyboardType: TextInputType.number,
+                          decoration: InputDecoration.collapsed(
+                            hintText: 'Product Price',
+                            hintStyle:
+                            TextStyle(fontSize: 16, color: Colors.black38),
+                          ),
+                        ),
+                      ),
+                      SizedBox(
+                        height: 10,
+                      ),
+                      Text(
+                        "Product Description",
+                        style:
+                        TextStyle(fontWeight: FontWeight.w500, fontSize: 18),
+                      ),
+                      SizedBox(
+                        height: 10,
+                      ),
+                      Container(
+                        height: 50,
+                        alignment: Alignment.center,
+                        padding: const EdgeInsets.only(left: 12),
+                        decoration: BoxDecoration(
+                            color: Color(0xFFFFFFFF),
+                            border: Border.all(color: Color(0xFFF1F1FD)),
+                            borderRadius: BorderRadius.all(Radius.circular(7))),
+                        child: TextField(
+                          controller: _controller2,
+                          decoration: InputDecoration.collapsed(
+                            hintText: 'Product Description',
+                            hintStyle:
+                            TextStyle(fontSize: 16, color: Colors.black38),
+                          ),
+                        ),
+                      ),
+                      SizedBox(
+                        height: 10,
+                      ),
+                      Center(
+                        child: SizedBox(
+                          height: 100, // card height
+                          child: data.ediproductImage == null
+                              ? Container(
+                            width: 100,
+                            child: Card(
+                                elevation: 2,
+                                shape: RoundedRectangleBorder(
+                                    borderRadius:
+                                    BorderRadius.circular(20)),
+                                child: Image.network(
+                                  'https://uploads.fixme.ng/originals/${productImage}',
+                                  fit: BoxFit.cover,
+                                )),
+                          )
+                              : Container(
+                            width: 100,
+                            child: Card(
+                                elevation: 2,
+                                shape: RoundedRectangleBorder(
+                                    borderRadius:
+                                    BorderRadius.circular(20)),
+                                child: Image.file(
+                                  File(
+                                    data.ediproductImage.path,
+                                  ),
+                                  fit: BoxFit.cover,
+                                )),
+                          ),
+                        ),
+                      ),
+
+                      Padding(
+                        padding: const EdgeInsets.all(8.0),
+                        child: ClipRRect(
+                          borderRadius: BorderRadius.circular(26),
+                          child: Container(
+                            decoration: BoxDecoration(
+                                border: Border.all(color: Colors.white),
+                                borderRadius: BorderRadius.circular(26)),
+                            child: FlatButton(
+                              disabledColor:Colors.black54,
+                              onPressed: () {
+                                data
+                                    .selectProductImagetoNull();
+                                setStat(() {});
+                              },
+                              color: Colors.black54,
+                              shape: RoundedRectangleBorder(
+                                  borderRadius: BorderRadius.circular(26)),
+                              padding: EdgeInsets.all(0.0),
+                              child: Ink(
+                                decoration: BoxDecoration(
+                                    borderRadius: BorderRadius.circular(26)),
+                                child: Container(
+                                  constraints: BoxConstraints(
+                                      maxWidth:
+                                      MediaQuery.of(context).size.width / 1.3,
+                                      minHeight: 45.0),
+                                  alignment: Alignment.center,
+                                  child: Text(
+                                    "Back to previous image",
+                                    textAlign: TextAlign.center,
+                                    style: TextStyle(
+                                        fontSize: 17, color: Colors.white),
+                                  ),
+                                ),
+                              ),
+                            ),
+                          ),
+                        ),
+                      ),
+                      Padding(
+                        padding: const EdgeInsets.all(8.0),
+                        child: ClipRRect(
+                          borderRadius: BorderRadius.circular(26),
+                          child: Container(
+                            decoration: BoxDecoration(
+                                border: Border.all(color: Colors.white),
+                                borderRadius: BorderRadius.circular(26)),
+                            child: FlatButton(
+                              disabledColor: Colors.black54,
+                              onPressed: () {
+                                data
+                                    .selectProductImage(source: ImageSource.gallery)
+                                    .then((value) {
+                                  setStat(() {});
+                                });
+                              },
+                              color: Color(0xFF9B049B),
+                              shape: RoundedRectangleBorder(
+                                  borderRadius: BorderRadius.circular(26)),
+                              padding: EdgeInsets.all(0.0),
+                              child: Ink(
+                                decoration: BoxDecoration(
+                                    borderRadius: BorderRadius.circular(26)),
+                                child: Container(
+                                  constraints: BoxConstraints(
+                                      maxWidth:
+                                      MediaQuery.of(context).size.width / 1.3,
+                                      minHeight: 45.0),
+                                  alignment: Alignment.center,
+                                  child: Text(
+                                    "Select/Upload Product Photo",
+                                    textAlign: TextAlign.center,
+                                    style: TextStyle(
+                                        fontSize: 17, color: Colors.white),
+                                  ),
+                                ),
+                              ),
+                            ),
+                          ),
+                        ),
+                      ),
+                      SizedBox(
+                        height: 30,
+                      ),
+                      Row(mainAxisAlignment: MainAxisAlignment.end, children: [
+                        Container(
+                          height: 34,
+                          decoration: BoxDecoration(
+                              border:
+                              Border.all(color: Color(0xFFE9E9E9), width: 1),
+                              borderRadius: BorderRadius.circular(5)),
+                          child: FlatButton(
+                            disabledColor: Color(0x909B049B),
+                            onPressed: () => Navigator.pop(context),
+                            color: Colors.transparent,
+                            shape: RoundedRectangleBorder(
+                                borderRadius: BorderRadius.circular(5)),
+                            padding: EdgeInsets.all(0.0),
+                            child: Ink(
+                              decoration: BoxDecoration(
+                                  borderRadius: BorderRadius.circular(5)),
+                              child: Container(
+                                constraints: BoxConstraints(
+                                    maxWidth: 100, minHeight: 34.0),
+                                alignment: Alignment.center,
+                                child: Text(
+                                  "Cancel",
+                                  textAlign: TextAlign.center,
+                                  style: TextStyle(
+                                      color: Colors.black87,
+                                      fontWeight: FontWeight.w600),
+                                ),
+                              ),
+                            ),
+                          ),
+                        ),
+                        SizedBox(
+                          width: 20,
+                        ),
+                        Container(
+                          height: 34,
+                          decoration: BoxDecoration(
+                              border:
+                              Border.all(color: Color(0xFFE9E9E9), width: 1),
+                              borderRadius: BorderRadius.circular(5)),
+                          child: FlatButton(
+                            disabledColor: Color(0x909B049B),
+                            onPressed: () {
+                              network
+                                  .editProduct(
+                                productID: productID,
+                                description: _controller2.text.toString(),
+                                name: _controller.text.toString(),
+                                price: _controller1.text.toString(),
+                              ).then((value) {
+                                data.ediproductImage ==null?null:network
+                                    .editProductPic(
+                                    name: _controller.text.toString(),
+                                  path: data.ediproductImage.path ,
+                                  productID: productID,
+                                ).then((value){
+                                  updateProduct(context);
+                                  Navigator.pop(context);
+                                });
+                              });
+                              data.ediproductImage ==null?updateProduct(context):null;
+                              data.ediproductImage ==null? Navigator.pop(context):null;
+                            },
+                            color: Colors.transparent,
+                            shape: RoundedRectangleBorder(
+                                borderRadius: BorderRadius.circular(5)),
+                            padding: EdgeInsets.all(0.0),
+                            child: Ink(
+                              decoration: BoxDecoration(
+                                  borderRadius: BorderRadius.circular(5)),
+                              child: Container(
+                                constraints: BoxConstraints(
+                                    maxWidth: 100, minHeight: 34.0),
+                                alignment: Alignment.center,
+                                child: Text(
+                                  "Save",
+                                  textAlign: TextAlign.center,
+                                  style: TextStyle(
+                                      color: Colors.black87,
+                                      fontWeight: FontWeight.w600),
+                                ),
+                              ),
+                            ),
+                          ),
+                        ),
+                      ])
+                    ],
+                  ));
+            }),
+          );
+        });
+  }
+
+
+
+
+
+  void _AddCatalogue() {
+    DataProvider datas = Provider.of<DataProvider>(context, listen: false);
+    Utils data = Provider.of<Utils>(context, listen: false);
+    var network = Provider.of<WebServices>(context, listen: false);
+    showModalBottomSheet(
+        context: context,
+        isScrollControlled: true,
+        builder: (builder) {
+          return AnimatedPadding(
+            padding: MediaQuery.of(context).viewInsets,
+            duration: const Duration(milliseconds: 100),
+            curve: Curves.decelerate,
+            child: new StatefulBuilder(builder: (context, setStat) {
+              return Container(
+                height: 300,
+                  padding: EdgeInsets.symmetric(vertical: 20, horizontal: 20),
+                  color: Colors.transparent,
+                  child: ListView(
+                    children: [
+                      SizedBox(
+                        height: 10,
+                      ),
+                      Center(
+                        child: SizedBox(
+                          height: 100, // card height
+                          child: data.selectedImage2 == null
+                              ? Text('No Image Selected')
+                              : Container(
+                                  width: 100,
+                                  child: Card(
+                                      elevation: 2,
+                                      shape: RoundedRectangleBorder(
+                                          borderRadius:
+                                              BorderRadius.circular(20)),
+                                      child: Image.file(
+                                        File(
+                                          data.selectedImage2.path,
+                                        ),
+                                        fit: BoxFit.cover,
+                                      )),
+                                ),
+                        ),
+                      ),
+                      Padding(
+                        padding: const EdgeInsets.all(8.0),
+                        child: ClipRRect(
+                          borderRadius: BorderRadius.circular(26),
+                          child: Container(
+                            decoration: BoxDecoration(
+                                border: Border.all(color: Colors.white),
+                                borderRadius: BorderRadius.circular(26)),
+                            child: FlatButton(
+                              disabledColor: Color(0xFF9B049B),
+                              onPressed: () {
+                                data
+                                    .selectimage2(source: ImageSource.gallery)
+                                    .then((value) {
+                                  setStat(() {});
+                                });
+                              },
+                              color: Color(0xFF9B049B),
+                              shape: RoundedRectangleBorder(
+                                  borderRadius: BorderRadius.circular(26)),
+                              padding: EdgeInsets.all(0.0),
+                              child: Ink(
+                                decoration: BoxDecoration(
+                                    borderRadius: BorderRadius.circular(26)),
+                                child: Container(
+                                  constraints: BoxConstraints(
+                                      maxWidth:
+                                          MediaQuery.of(context).size.width / 1.3,
+                                      minHeight: 45.0),
+                                  alignment: Alignment.center,
+                                  child: Text(
+                                    "Select/Upload Service Photo",
+                                    textAlign: TextAlign.center,
+                                    style: TextStyle(
+                                        fontSize: 17, color: Colors.white),
+                                  ),
+                                ),
+                              ),
+                            ),
+                          ),
+                        ),
+                      ),
+                      SizedBox(
+                        height: 30,
+                      ),
+                      Row(mainAxisAlignment: MainAxisAlignment.end, children: [
+                        Container(
+                          height: 34,
+                          decoration: BoxDecoration(
+                              border:
+                                  Border.all(color: Color(0xFFE9E9E9), width: 1),
+                              borderRadius: BorderRadius.circular(5)),
+                          child: FlatButton(
+                            disabledColor: Color(0x909B049B),
+                            onPressed: () => Navigator.pop(context),
+                            color: Colors.transparent,
+                            shape: RoundedRectangleBorder(
+                                borderRadius: BorderRadius.circular(5)),
+                            padding: EdgeInsets.all(0.0),
+                            child: Ink(
+                              decoration: BoxDecoration(
+                                  borderRadius: BorderRadius.circular(5)),
+                              child: Container(
+                                constraints: BoxConstraints(
+                                    maxWidth: 100, minHeight: 34.0),
+                                alignment: Alignment.center,
+                                child: Text(
+                                  "Cancel",
+                                  textAlign: TextAlign.center,
+                                  style: TextStyle(
+                                      color: Colors.black87,
+                                      fontWeight: FontWeight.w600),
+                                ),
+                              ),
+                            ),
+                          ),
+                        ),
+                        SizedBox(
+                          width: 20,
+                        ),
+                        Container(
+                          height: 34,
+                          decoration: BoxDecoration(
+                              border:
+                                  Border.all(color: Color(0xFFE9E9E9), width: 1),
+                              borderRadius: BorderRadius.circular(5)),
+                          child: FlatButton(
+                            disabledColor: Color(0x909B049B),
+                            onPressed: () {
+                              Navigator.pop(context);
+                              network.addCatalog(
+                                context,
+                                path: data.selectedImage2.path,
+                                uploadType: 'servicePicture',
+                              ).then((value) {
+                                setState(() {
+                                  print(value);
+                                });
+                              });
+                            },
+                            color: Colors.transparent,
+                            shape: RoundedRectangleBorder(
+                                borderRadius: BorderRadius.circular(5)),
+                            padding: EdgeInsets.all(0.0),
+                            child: Ink(
+                              decoration: BoxDecoration(
+                                  borderRadius: BorderRadius.circular(5)),
+                              child: Container(
+                                constraints: BoxConstraints(
+                                    maxWidth: 100, minHeight: 34.0),
+                                alignment: Alignment.center,
+                                child: Text(
+                                  "Save",
+                                  textAlign: TextAlign.center,
+                                  style: TextStyle(
+                                      color: Colors.black87,
+                                      fontWeight: FontWeight.w600),
+                                ),
+                              ),
+                            ),
+                          ),
+                        ),
+                      ])
+                    ],
+                  ));
+            }),
+          );
+        });
+  }
+
+  _editAddress(address) {
+    final _controller = TextEditingController();
+    _controller.text = address;
+    var network = Provider.of<WebServices>(context, listen: false);
+    showModalBottomSheet(
+        context: context,
+        isScrollControlled: true,
+        builder: (builder) {
+          return AnimatedPadding(
+            padding: MediaQuery.of(context).viewInsets,
+            duration: const Duration(milliseconds: 100),
+            curve: Curves.decelerate,
+            child: Container(
+                    height: 180.0,
+                    padding: EdgeInsets.symmetric(vertical: 20, horizontal: 20),
+                    color: Colors.transparent,
+                    child: ListView(
+                      children: [
+                        Text(
+                          "Edit address",
+                          style: TextStyle(
+                              fontWeight: FontWeight.w500, fontSize: 18),
+                        ),
+                        SizedBox(
+                          height: 10,
+                        ),
+                        Container(
+                          height: 50,
+                          alignment: Alignment.center,
+                          padding: const EdgeInsets.only(left: 12),
+                          decoration: BoxDecoration(
+                              color: Color(0xFFFFFFFF),
+                              border: Border.all(color: Color(0xFFF1F1FD)),
+                              borderRadius: BorderRadius.all(Radius.circular(7))),
+                          child: TextField(
+                            controller: _controller,
+                            decoration: InputDecoration.collapsed(
+                              hintText: 'address',
+                              hintStyle:
+                                  TextStyle(fontSize: 16, color: Colors.black38),
+                            ),
+                          ),
+                        ),
+                        SizedBox(
+                          height: 10,
+                        ),
+                        Row(mainAxisAlignment: MainAxisAlignment.end, children: [
+                          Container(
+                            height: 34,
+                            decoration: BoxDecoration(
+                                border: Border.all(
+                                    color: Color(0xFFE9E9E9), width: 1),
+                                borderRadius: BorderRadius.circular(5)),
+                            child: FlatButton(
+                              disabledColor: Color(0x909B049B),
+                              onPressed: () => Navigator.pop(context),
+                              color: Colors.transparent,
+                              shape: RoundedRectangleBorder(
+                                  borderRadius: BorderRadius.circular(5)),
+                              padding: EdgeInsets.all(0.0),
+                              child: Ink(
+                                decoration: BoxDecoration(
+                                    borderRadius: BorderRadius.circular(5)),
+                                child: Container(
+                                  constraints: BoxConstraints(
+                                      maxWidth: 100, minHeight: 34.0),
+                                  alignment: Alignment.center,
+                                  child: Text(
+                                    "Cancel",
+                                    textAlign: TextAlign.center,
+                                    style: TextStyle(
+                                        color: Colors.black87,
+                                        fontWeight: FontWeight.w600),
+                                  ),
+                                ),
+                              ),
+                            ),
+                          ),
+                          SizedBox(
+                            width: 20,
+                          ),
+                          Container(
+                            height: 34,
+                            decoration: BoxDecoration(
+                                border: Border.all(
+                                    color: Color(0xFFE9E9E9), width: 1),
+                                borderRadius: BorderRadius.circular(5)),
+                            child: FlatButton(
+                              disabledColor: Color(0x909B049B),
+                              onPressed: () async {
+                                network.updateAddress(_controller.text);
+                                update(context);
+                                Navigator.pop(context);
+                              },
+                              color: Colors.transparent,
+                              shape: RoundedRectangleBorder(
+                                  borderRadius: BorderRadius.circular(5)),
+                              padding: EdgeInsets.all(0.0),
+                              child: Ink(
+                                decoration: BoxDecoration(
+                                    borderRadius: BorderRadius.circular(5)),
+                                child: Container(
+                                  constraints: BoxConstraints(
+                                      maxWidth: 100, minHeight: 34.0),
+                                  alignment: Alignment.center,
+                                  child: Text(
+                                    "Save",
+                                    textAlign: TextAlign.center,
+                                    style: TextStyle(
+                                        color: Colors.black87,
+                                        fontWeight: FontWeight.w600),
+                                  ),
+                                ),
+                              ),
+                            ),
+                          ),
+                        ])
+                      ],
+                    )),
+          );
         });
   }
 
   dialogPage(ctx) {
     PostRequestProvider postRequestProvider =
         Provider.of<PostRequestProvider>(context, listen: false);
-    showDialog(
+   return showDialog(
         context: context,
         builder: (ctx) {
           return StatefulBuilder(
@@ -1830,9 +2598,7 @@ class _EditProfilePageState extends State<EditProfilePage> {
               );
             },
           );
-        }).then((v) {
-      setState(() {});
-    });
+        });
   }
 
   _viewProduct({data}) {
@@ -1841,124 +2607,135 @@ class _EditProfilePageState extends State<EditProfilePage> {
         context: context,
         isScrollControlled: true,
         builder: (builder) {
-          return Container(
-            height: 335.0,
-            padding: EdgeInsets.only(
-              top: 10,
-            ),
-            decoration: BoxDecoration(
-                color: Colors.white,
-                borderRadius: BorderRadius.only(
-                  topLeft: Radius.circular(15.0),
-                  topRight: Radius.circular(15.0),
-                )),
-            child: Column(
-              children: [
-                Row(
-                  mainAxisAlignment: MainAxisAlignment.center,
-                  children: <Widget>[
-                    Container(
-                      width: 70,
-                      height: 4,
-                      margin: const EdgeInsets.only(bottom: 10),
-                      decoration: BoxDecoration(
-                          color: Colors.grey[300],
-                          borderRadius:
-                              BorderRadius.all(Radius.circular(12.0))),
-                    ),
-                  ],
-                ),
-                Container(
-                  color: Color(0xFFF0F0F0),
-                  child: Row(
-                    children: [
-                      for (dynamic item in data['productImages'])
-                        Container(
-                          width: 100,
-                          height: 100,
-                          margin: const EdgeInsets.all(8),
-                          child: Stack(
-                            children: [
-                              ClipRRect(
-                                borderRadius: BorderRadius.circular(10),
-                                child: Container(
-                                  width: 100,
-                                  height: 100,
-                                  child: Image.network(
-                                    'https://uploads.fixme.ng/originals/${item['imageFileName']}',
-                                    fit: BoxFit.cover,
-                                  ),
-                                ),
-                              ),
-                            ],
-                          ),
-                        ),
+          return AnimatedPadding(
+            padding: MediaQuery.of(context).viewInsets,
+            duration: const Duration(milliseconds: 100),
+            curve: Curves.decelerate,
+            child: Container(
+              height: 335.0,
+              padding: EdgeInsets.only(
+                top: 10,
+              ),
+              decoration: BoxDecoration(
+                  color: Colors.white,
+                  borderRadius: BorderRadius.only(
+                    topLeft: Radius.circular(15.0),
+                    topRight: Radius.circular(15.0),
+                  )),
+              child: Column(
+                children: [
+                  Row(
+                    mainAxisAlignment: MainAxisAlignment.center,
+                    children: <Widget>[
+                      Container(
+                        width: 70,
+                        height: 4,
+                        margin: const EdgeInsets.only(bottom: 10),
+                        decoration: BoxDecoration(
+                            color: Colors.grey[300],
+                            borderRadius:
+                                BorderRadius.all(Radius.circular(12.0))),
+                      ),
                     ],
                   ),
-                ),
-                SizedBox(
-                  height: 7,
-                ),
-                Row(
-                  children: [
-                    SizedBox(
-                      width: 8,
+                  Container(
+                    color: Color(0xFFF0F0F0),
+                    child: Row(
+                      children: [
+                        for (dynamic item in data['productImages'])
+                          Container(
+                            width: 100,
+                            height: 100,
+                            margin: const EdgeInsets.all(8),
+                            child: Stack(
+                              children: [
+                                ClipRRect(
+                                  borderRadius: BorderRadius.circular(10),
+                                  child: Container(
+                                    width: 100,
+                                    height: 100,
+                                    child: Image.network(
+                                      'https://uploads.fixme.ng/originals/${item['imageFileName']}',
+                                      fit: BoxFit.cover,
+                                    ),
+                                  ),
+                                ),
+                              ],
+                            ),
+                          ),
+                        Align(
+                          alignment: Alignment.topLeft,
+                          child: Text("${data['description']}", style:
+                          TextStyle(fontWeight: FontWeight.w600, fontSize: 16),),
+                        ),
+                      ],
                     ),
-                    Text(
-                      "Product name",
-                      style:
-                          TextStyle(fontWeight: FontWeight.w600, fontSize: 16),
-                    ),
-                  ],
-                ),
-                Row(
-                  children: [
-                    SizedBox(
-                      width: 8,
-                    ),
-                    Text(
-                      "${data['product_name']}",
-                      style: TextStyle(fontSize: 18),
-                    ),
-                  ],
-                ),
-                Divider(),
-                Row(
-                  children: [
-                    SizedBox(
-                      width: 8,
-                    ),
-                    Text(
-                      "Product amount",
-                      style:
-                          TextStyle(fontWeight: FontWeight.w600, fontSize: 16),
-                    ),
-                  ],
-                ),
-                Row(
-                  children: [
-                    SizedBox(
-                      width: 8,
-                    ),
-                    RichText(
-                      text: TextSpan(
-                        text: '\u{20A6} ',
-                        style: TextStyle(
-                            fontFamily: 'Roboto',
-                            color: Colors.green,
-                            fontWeight: FontWeight.bold),
-                        children: <TextSpan>[
-                          TextSpan(
-                              text: "${data['price']}",
-                              style: GoogleFonts.openSans(
-                                  color: Colors.green,
-                                  fontWeight: FontWeight.bold)),
-                        ],
+                  ),
+
+                  SizedBox(
+                    height: 7,
+                  ),
+                  Row(
+                    children: [
+                      SizedBox(
+                        width: 8,
                       ),
-                    ),
-                  ],
-                ),
-              ],
+                      Text(
+                        "Product name",
+                        style:
+                            TextStyle(fontWeight: FontWeight.w600, fontSize: 16),
+                      ),
+                    ],
+                  ),
+                  Row(
+                    children: [
+                      SizedBox(
+                        width: 8,
+                      ),
+                      Text(
+                        "${data['product_name']}",
+                        style: TextStyle(fontSize: 18),
+                      ),
+                    ],
+                  ),
+                  Divider(),
+                  Row(
+                    children: [
+                      SizedBox(
+                        width: 8,
+                      ),
+                      Text(
+                        "Product amount",
+                        style:
+                            TextStyle(fontWeight: FontWeight.w600, fontSize: 16),
+                      ),
+                    ],
+                  ),
+                  Row(
+                    children: [
+                      SizedBox(
+                        width: 8,
+                      ),
+                      RichText(
+                        text: TextSpan(
+                          text: '\u{20A6} ',
+                          style: TextStyle(
+                              fontFamily: 'Roboto',
+                              color: Colors.green,
+                              fontWeight: FontWeight.bold),
+                          children: <TextSpan>[
+                            TextSpan(
+                                text: "${data['price']}",
+                                style: GoogleFonts.poppins(
+                                    color: Colors.green,
+                                    fontWeight: FontWeight.bold)),
+                          ],
+                        ),
+                      ),
+                    ],
+                  ),
+                ],
+              ),
             ),
           );
         });

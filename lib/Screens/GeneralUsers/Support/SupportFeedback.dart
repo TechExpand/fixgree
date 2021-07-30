@@ -3,6 +3,7 @@ import 'package:fixme/Screens/GeneralUsers/Support/SupportChat.dart';
 import 'package:fixme/Screens/GeneralUsers/Support/SupportFeedbackSent.dart';
 import 'package:fixme/Services/network_service.dart';
 import 'package:fixme/Utils/utils.dart';
+import 'package:fl_toast/fl_toast.dart';
 import 'package:flutter/material.dart';
 import "package:flutter_feather_icons/flutter_feather_icons.dart";
 import 'package:fixme/Widgets/customdropdownbutton.dart';
@@ -272,10 +273,11 @@ class _SupportFeedbackState extends State<SupportFeedback> {
                                         ),
                                       );
                                     } else {
-                                      scaffoldKey.currentState.showSnackBar(
-                                          SnackBar(
-                                              content:
-                                                  Text('Some error occured')));
+                                        await showTextToast(
+                                                                            text: 'Some error occured',
+                                                                              context: context,
+                                                                                             );
+                                      
                                     }
                                   } else {}
                                 },
@@ -311,7 +313,7 @@ class _SupportFeedbackState extends State<SupportFeedback> {
                                     child: Theme(
                                       data: Theme.of(context).copyWith(
                                           accentColor: Color(0xFF9B049B)),
-                                      child: CircularProgressIndicator(
+                                      child: CircularProgressIndicator(valueColor: AlwaysStoppedAnimation<Color>(Color(0xFF9B049B)),
                                         strokeWidth: 2,
                                         backgroundColor: Colors.white,
                                       ),

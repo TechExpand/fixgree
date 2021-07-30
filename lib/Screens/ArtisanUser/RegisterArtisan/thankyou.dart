@@ -63,7 +63,7 @@ class SignThankyouState extends State<SignThankyou> {
                    text : TextSpan(
                      children:[
                        TextSpan(
-                       text: """Fixme helps connects businesses and service providers to customers. By switching to a business account you are choosing allow Fixme direct customers to your business or service. To get started, you need to fill out your business details. Select""",
+                       text: """Fixme helps connects businesses and service providers to customers. By switching to a business account you are choosing to allow Fixme direct customers to your business or service. To get started, you need to fill out your business details. Select""",
                            style: TextStyle(  height: 1.6,color: Colors.black )
                        ),
                        TextSpan(

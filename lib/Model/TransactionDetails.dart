@@ -5,8 +5,8 @@ class TransactionDetails {
   String mobile;
   String paymentDescription;
   String transactionType;
-  int amountPaid;
-  int totalPayable;
+  var amountPaid;
+  var totalPayable;
   String paymentMethod;
   String currency;
   int id;

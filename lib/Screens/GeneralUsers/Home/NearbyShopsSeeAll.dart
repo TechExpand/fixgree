@@ -1,8 +1,7 @@
 import 'dart:convert';
-
 import 'package:fixme/Model/UserSearch.dart';
-import 'package:fixme/Screens/ArtisanUser/Profile/ArtisanPage.dart';
 import 'package:fixme/Screens/ArtisanUser/Profile/ArtisanPageNew.dart';
+import 'package:fixme/Screens/GeneralUsers/Home/Search.dart';
 import 'package:fixme/Services/location_service.dart';
 import 'package:fixme/Services/network_service.dart';
 import 'package:fixme/Utils/Provider.dart';
@@ -127,7 +126,7 @@ class _NearbyShopsSeeAllState extends State<NearbyShopsSeeAll> {
       appBar: AppBar(
         backgroundColor: Colors.white,
         title: Text('Nearby shops',
-            style: GoogleFonts.openSans(
+            style: GoogleFonts.poppins(
                 color: Color(0xFF9B049B),
                 fontSize: 18,
                 height: 1.4,
@@ -170,22 +169,44 @@ class _NearbyShopsSeeAllState extends State<NearbyShopsSeeAll> {
                 ),
               ),
               Expanded(
-                child: TextFormField(
-                  style: TextStyle(
-                      fontSize: 16,
-                      color: Color(0xFF270F33),
-                      fontWeight: FontWeight.w600),
-                  controller: searchController,
-                  onChanged: (value) {
-                    filterSearchResults(value);
+                child: InkWell(
+                  onTap: () {
+                    Navigator.push(
+                      context,
+                      PageRouteBuilder(
+                        pageBuilder:
+                            (context, animation, secondaryAnimation) {
+                          return SearchPage();
+                        },
+                        transitionsBuilder: (context, animation,
+                            secondaryAnimation, child) {
+                          return FadeTransition(
+                            opacity: animation,
+                            child: child,
+                          );
+                        },
+                      ),
+                    );
                   },
-                  decoration: InputDecoration.collapsed(
-                    hintText: 'Search shops',
-                    hintStyle:
-                        TextStyle(fontSize: 16, fontWeight: FontWeight.w600),
-                    focusColor: Color(0xFF2B1137),
-                    fillColor: Color(0xFF2B1137),
-                    hoverColor: Color(0xFF2B1137),
+                  child: TextFormField(
+                    style: TextStyle(
+                        fontSize: 16,
+                        color: Color(0xFF270F33),
+                        fontWeight: FontWeight.w600),
+                    controller: searchController,
+                    enabled: false,
+
+                    // onChanged: (value) {
+                    //   filterSearchResults(value);
+                    // },
+                    decoration: InputDecoration.collapsed(
+                      hintText: 'What are you looking for?',
+                      hintStyle:
+                          TextStyle(fontSize: 16, fontWeight: FontWeight.w600),
+                      focusColor: Color(0xFF2B1137),
+                      fillColor: Color(0xFF2B1137),
+                      hoverColor: Color(0xFF2B1137),
+                    ),
                   ),
                 ),
               ),
@@ -206,7 +227,10 @@ class _NearbyShopsSeeAllState extends State<NearbyShopsSeeAll> {
                               Theme(
                                   data: Theme.of(context)
                                       .copyWith(accentColor: Color(0xFF9B049B)),
-                                  child: CircularProgressIndicator()),
+                                  child: CircularProgressIndicator(valueColor: AlwaysStoppedAnimation<Color>(Color(0xFF9B049B)),
+                                     strokeWidth: 2,
+                                              backgroundColor: Colors.white,
+)),
                               SizedBox(
                                 height: 10,
                               ),
@@ -344,8 +368,8 @@ class _NearbyShopsSeeAllState extends State<NearbyShopsSeeAll> {
                                               MainAxisAlignment.center,
                                           children: [
                                             Icon(
-                                              Icons.location_on_outlined,
-                                              color: Colors.amber,
+                                              Icons.location_on,
+                                              color: Color(0xFFA40C85),
                                               size: 23,
                                             ),
                                             Text(
@@ -379,7 +403,7 @@ class _NearbyShopsSeeAllState extends State<NearbyShopsSeeAll> {
                                       child: Theme(
                                           data: Theme.of(context).copyWith(
                                               accentColor: Color(0xFF9B049B)),
-                                          child: CircularProgressIndicator(
+                                          child: CircularProgressIndicator(valueColor: AlwaysStoppedAnimation<Color>(Color(0xFF9B049B)),
                                             strokeWidth: 2,
                                             backgroundColor: Colors.white,
                                           )),
@@ -476,8 +500,8 @@ class _NearbyShopsSeeAllState extends State<NearbyShopsSeeAll> {
                                               MainAxisAlignment.center,
                                           children: [
                                             Icon(
-                                              Icons.location_on_outlined,
-                                              color: Colors.amber,
+                                              Icons.location_on,
+                                              color: Color(0xFFA40C85),
                                               size: 23,
                                             ),
                                             Text(

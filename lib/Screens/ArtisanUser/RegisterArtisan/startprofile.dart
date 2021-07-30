@@ -36,7 +36,8 @@ class SignStartProfileState extends State<SignStartProfile> {
             backgroundColor: Colors.transparent,
             title: Text('Getting Started',
                 style: TextStyle(color: Colors.black, fontSize: 16))),
-        body: Column(
+        body: ListView(
+          physics: BouncingScrollPhysics(),
           children: <Widget>[
             Padding(
                 padding: EdgeInsets.only(top: 25, left: 15),

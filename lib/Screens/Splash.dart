@@ -1,4 +1,8 @@
+import 'package:firebase_core/firebase_core.dart';
+import 'package:fixme/Screens/GeneralUsers/IntroPages/intro.dart';
+import 'package:fixme/Services/Firebase_service.dart';
 import 'package:fixme/Utils/Provider.dart';
+import 'package:fixme/Utils/service_locator.dart';
 import 'package:flutter/material.dart';
 import 'package:in_app_update/in_app_update.dart';
 import 'GeneralUsers/Home/HomePage.dart';
@@ -10,6 +14,7 @@ import 'package:provider/provider.dart';
 import 'package:fixme/Services/network_service.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 
+
 class SplashScreen extends StatefulWidget {
   @override
   State<StatefulWidget> createState() {
@@ -19,6 +24,10 @@ class SplashScreen extends StatefulWidget {
 }
 
 class SPLASHSTATE extends State<SplashScreen> {
+
+
+
+
   @override
   void initState() {
     super.initState();
@@ -35,15 +44,15 @@ class SPLASHSTATE extends State<SplashScreen> {
   }
 
 // Replace with server token from firebase console settings.
-  final String serverToken =
-      'AAAA2lAKGZU:APA91bFmok2miRE6jWBUgfmu5jhvxQGJ5ITwrcwrHMghkPOZCIYYxLu-rIs-ub6HQ5YdiEGx3jG2tMvmiEjq-KW4rEgGrckHNkGdFrO2iUDoidvmh867VQj0FKx-_cxbi8AQpR1S3cCu';
-  final FirebaseMessaging firebaseMessaging = FirebaseMessaging();
+    FirebaseMessaging firebaseMessaging = FirebaseMessaging.instance;
 
   getit() async {
+    var network = Provider.of<WebServices>(context, listen: false);
     var data = Provider.of<Utils>(context, listen: false);
     await firebaseMessaging.getToken().then((value) {
       data.setFCMToken(value);
     });
+    network.updateFCMToken(network.userId, data.fcmToken);
   }
 
   Future<void> checkForUpdate() async {
@@ -74,7 +83,7 @@ class SPLASHSTATE extends State<SplashScreen> {
         context,
         PageRouteBuilder(
           pageBuilder: (context, animation, secondaryAnimation) {
-            return Login();
+            return IntroPage();
           },
           transitionsBuilder: (context, animation, secondaryAnimation, child) {
             return FadeTransition(

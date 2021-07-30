@@ -2,7 +2,7 @@ import 'package:flutter/material.dart';
 
 
 class Project {
-  final String projectBid;
+  final int projectBid;
   final String jobDescription;
   final String serviceId;
   final String jobTitle;
@@ -26,7 +26,7 @@ class Project {
 
   static Project fromJson(Map<String, dynamic> json) => Project(
     jobId : json['job_id'],
-    projectBid: json['projectBid'],
+    projectBid: json['projectBid_id'],
     jobTitle: json['job_title'],
     dateOpen: json['date_oppened'],
     dateApprove: json['date_approved'],

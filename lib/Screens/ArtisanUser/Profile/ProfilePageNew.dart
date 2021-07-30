@@ -7,6 +7,7 @@ import 'package:fixme/Services/network_service.dart';
 import 'package:fixme/Utils/utils.dart';
 import 'package:fixme/Widgets/Rating.dart';
 import 'package:fixme/Widgets/photoView.dart';
+import 'package:fl_toast/fl_toast.dart';
 import 'package:flutter/material.dart';
 import 'package:image_picker/image_picker.dart';
 import 'package:intl/intl.dart';
@@ -75,7 +76,7 @@ class _ProfilePageNewState extends State<ProfilePageNew> {
           getProducts(context);
           return Scaffold(
               appBar: AppBar(
-                backgroundColor: Colors.white,
+                backgroundColor: Color(0xFF9B049B),
                 leading: IconButton(
                   onPressed: () {
                     return Navigator.push(
@@ -94,16 +95,16 @@ class _ProfilePageNewState extends State<ProfilePageNew> {
                       ),
                     );
                   },
-                  icon: Icon(FeatherIcons.arrowLeft, color: Color(0xFF9B049B)),
+                  icon: Icon(FeatherIcons.arrowLeft, color: Colors.white),
                 ),
                 actions: [
                   IconButton(
                     onPressed: () {},
                     icon: Icon(FeatherIcons.moreHorizontal,
-                        color: Color(0xFF9B049B)),
+                        color: Colors.white),
                   ),
                 ],
-                elevation: 0,
+                elevation: 3,
               ),
               body: WillPopScope(
                 onWillPop: (){
@@ -137,7 +138,11 @@ class _ProfilePageNewState extends State<ProfilePageNew> {
                                 Theme(
                                     data: Theme.of(context)
                                         .copyWith(accentColor: Color(0xFF9B049B)),
-                                    child: CircularProgressIndicator()),
+                                    child: CircularProgressIndicator(valueColor: AlwaysStoppedAnimation<Color>(Color(0xFF9B049B)),
+                                       strokeWidth: 2,
+                                              backgroundColor: Colors.white,
+     //valueColor: new AlwaysStoppedAnimation<Color>(color: Color(0xFF9B049B)),
+)),
                                 SizedBox(
                                   height: 10,
                                 ),
@@ -184,7 +189,7 @@ class _ProfilePageNewState extends State<ProfilePageNew> {
                                                 height: 17,
                                                 width: 17,
                                                 decoration: BoxDecoration(
-                                                    color: Color(0xFFFB8333),
+                                                    color: Colors.green,
                                                     shape: BoxShape.circle),
                                                 child: snapshot.data[
                                                             'identificationStatus'] ==
@@ -198,6 +203,7 @@ class _ProfilePageNewState extends State<ProfilePageNew> {
                                               ),
                                             ),
                                           ]),
+
                                           Padding(
                                             padding:
                                                 const EdgeInsets.only(left: 12),
@@ -309,6 +315,7 @@ class _ProfilePageNewState extends State<ProfilePageNew> {
                                         child: Column(children: [
                                           Wrap(
                                             children: [
+                                            //  Text('${snapshot.data}'),
                                               Align(
                                                 alignment: Alignment.centerLeft,
                                                 child: Text(
@@ -407,7 +414,47 @@ class _ProfilePageNewState extends State<ProfilePageNew> {
                                                     ),
                                                   ],
                                                 ),
-                                          snapshot.data['subServices'][0]
+                                          snapshot.data['bio'] == null ||
+                                              snapshot.data['bio'] == ''
+                                              ? SizedBox()
+                                              : Column(
+                                            children: [
+                                              Divider(),
+                                              Row(
+                                                children: [
+                                                  Text(
+                                                    'Business Name',
+                                                    style: TextStyle(
+                                                        color: Color(
+                                                            0xFF333333),
+                                                        fontSize: 16,
+                                                        fontWeight:
+                                                        FontWeight
+                                                            .w600),
+                                                  ),
+                                                ],
+                                              ),
+                                              Wrap(
+                                                children: [
+                                                  Align(
+                                                    alignment: Alignment
+                                                        .centerLeft,
+                                                    child: Text(
+                                                      '${snapshot.data['businessName']}',
+                                                      style: TextStyle(
+                                                          color: Color(
+                                                              0xFF333333),
+                                                          fontSize: 16,
+                                                          fontWeight:
+                                                          FontWeight
+                                                              .w400),
+                                                    ),
+                                                  ),
+                                                ],
+                                              ),
+                                            ],
+                                          ),
+                                          snapshot.data['subServices'].isEmpty|| snapshot.data['subServices'][0]
                                                           ['subservice'] ==
                                                       null ||
                                                   snapshot.data['subServices'][0]
@@ -512,6 +559,16 @@ class _ProfilePageNewState extends State<ProfilePageNew> {
                                     SizedBox(
                                       height: 10,
                                     ),
+
+
+
+
+
+
+
+
+
+
                                     Container(
                                       decoration: BoxDecoration(
                                         border: Border(
@@ -535,14 +592,14 @@ class _ProfilePageNewState extends State<ProfilePageNew> {
                                                           'artisan'
                                                       ? 'Catalogue(${model.getCatalogueCount == 0 ? 0 : model.getCatalogueCount})'
                                                       : 'Products(${model.getProductCount == 0 ? 0 : model.getProductCount})',
-                                                  style: GoogleFonts.openSans(
+                                                  style: GoogleFonts.poppins(
                                                       fontSize: 16,
                                                       fontWeight:
                                                           FontWeight.w600))),
                                           Tab(
                                               child: Text(
                                                   'Reviews(${snapshot.data['reviews']})',
-                                                  style: GoogleFonts.openSans(
+                                                  style: GoogleFonts.poppins(
                                                       fontSize: 16,
                                                       fontWeight:
                                                           FontWeight.w600))),
@@ -670,10 +727,19 @@ class _ProfilePageNewState extends State<ProfilePageNew> {
                                                                                 onTap: () async {
                                                                                   bool deleteStatus = await network.deleteServiceCatalogueImage(imageFileName: snapshot.data[index]['id']);
                                                                                   if (deleteStatus) {
-                                                                                    ScaffoldMessenger.of(context).showSnackBar(SnackBar(content: Text('Photo deleted successful.')));
+                                                                                     await showTextToast(
+                                                                            text: 'Photo deleted successful.',
+                                                                              context: context,
+                                                                                             );
+                                                                                
                                                                                     setState(() {});
-                                                                                  } else
-                                                                                    ScaffoldMessenger.of(context).showSnackBar(SnackBar(content: Text('Photo delete failed.')));
+                                                                                  } else{
+                                                                                     await showTextToast(
+                                                                            text: 'Photo delete failed.',
+                                                                              context: context,
+                                                                                             );
+                                                                                  
+                                                                                  }
                                                                                 },
                                                                                 child: Container(
                                                                                   padding: const EdgeInsets.all(6),
@@ -709,7 +775,11 @@ class _ProfilePageNewState extends State<ProfilePageNew> {
                                                                             accentColor: Color(
                                                                                 0xFF9B049B)),
                                                                     child:
-                                                                        CircularProgressIndicator()),
+                                                                        CircularProgressIndicator(valueColor: AlwaysStoppedAnimation<Color>(Color(0xFF9B049B)),
+                                                                           strokeWidth: 2,
+                                              backgroundColor: Colors.white,
+    // valueColor: new AlwaysStoppedAnimation<Color>(color: Color(0xFF9B049B)),
+)),
                                                                 SizedBox(
                                                                   height: 10,
                                                                 ),
@@ -799,7 +869,7 @@ class _ProfilePageNewState extends State<ProfilePageNew> {
                                                                                   child: Text(''),
                                                                                   radius: 40,
                                                                                   backgroundImage: NetworkImage(
-                                                                                    'https://uploads.fixme.ng/originals/${snapshot.data[index]['productImages'][0]['imageFileName']}',
+                                                                                    snapshot.data[index]['productImages'].isNotEmpty?'https://uploads.fixme.ng/originals/${snapshot.data[index]['productImages'][0]['imageFileName']}':"",
                                                                                   ),
                                                                                   foregroundColor: Colors.white,
                                                                                   backgroundColor: Colors.white,
@@ -808,9 +878,9 @@ class _ProfilePageNewState extends State<ProfilePageNew> {
                                                                                 subtitle: RichText(
                                                                                   text: TextSpan(
                                                                                     text: '\u{20A6} ',
-                                                                                    style: TextStyle(fontFamily: 'Roboto', color: Colors.green, fontWeight: FontWeight.bold),
+                                                                                    style: TextStyle(fontFamily: 'Roboto', color: Colors.black, fontWeight: FontWeight.bold),
                                                                                     children: <TextSpan>[
-                                                                                      TextSpan(text: "${snapshot.data[index]['price']}", style: GoogleFonts.openSans(color: Colors.green, fontWeight: FontWeight.bold)),
+                                                                                      TextSpan(text: "${snapshot.data[index]['price']}", style: GoogleFonts.poppins(color: Colors.black, fontWeight: FontWeight.bold)),
                                                                                     ],
                                                                                   ),
                                                                                 ),
@@ -818,10 +888,19 @@ class _ProfilePageNewState extends State<ProfilePageNew> {
                                                                                   onPressed: () async {
                                                                                     bool deleteStatus = await network.deleteCatalogueProducts(productId: snapshot.data[index]['sn']);
                                                                                     if (deleteStatus) {
-                                                                                      ScaffoldMessenger.of(context).showSnackBar(SnackBar(content: Text('Product deleted successful.')));
+                                                                                       await showTextToast(
+                                                                            text: 'Product deleted successful.',
+                                                                              context: context,
+                                                                                             );
+                                                                                    
                                                                                       setState(() {});
-                                                                                    } else
-                                                                                      ScaffoldMessenger.of(context).showSnackBar(SnackBar(content: Text('Product delete failed.')));
+                                                                                    } else{
+                                                                                       await showTextToast(
+                                                                            text: 'Product delete failed.',
+                                                                              context: context,
+                                                                                             );
+                                                                                    
+                                                                                    }
                                                                                   },
                                                                                   icon: Icon(FeatherIcons.trash2),
                                                                                 )),
@@ -849,7 +928,11 @@ class _ProfilePageNewState extends State<ProfilePageNew> {
                                                                             accentColor: Color(
                                                                                 0xFF9B049B)),
                                                                     child:
-                                                                        CircularProgressIndicator()),
+                                                                        CircularProgressIndicator(valueColor: AlwaysStoppedAnimation<Color>(Color(0xFF9B049B)),
+                                                                           strokeWidth: 2,
+                                              backgroundColor: Colors.white,
+  //   valueColor: new AlwaysStoppedAnimation<Color>(color: Color(0xFF9B049B)),
+)),
                                                                 SizedBox(
                                                                   height: 10,
                                                                 ),
@@ -896,7 +979,11 @@ class _ProfilePageNewState extends State<ProfilePageNew> {
                                                                           Color(
                                                                               0xFF9B049B)),
                                                               child:
-                                                                  CircularProgressIndicator()),
+                                                                  CircularProgressIndicator(valueColor: AlwaysStoppedAnimation<Color>(Color(0xFF9B049B)),
+                                                                     strokeWidth: 2,
+                                              backgroundColor: Colors.white,
+   //  valueColor: new AlwaysStoppedAnimation<Color>(color: Color(0xFF9B049B)),
+)),
                                                           SizedBox(
                                                             height: 10,
                                                           ),
@@ -956,7 +1043,7 @@ class _ProfilePageNewState extends State<ProfilePageNew> {
                                                                                 .centerLeft,
                                                                         child: Text(
                                                                             '${snapshot.data[index]['reviewer']['user_first_name'].toString()} ${snapshot.data[index]['reviewer']['user_last_name'].toString()}',
-                                                                            style: GoogleFonts.openSans(
+                                                                            style: GoogleFonts.poppins(
                                                                                 fontSize: 17,
                                                                                 fontWeight: FontWeight.w600)),
                                                                       ),
@@ -966,7 +1053,7 @@ class _ProfilePageNewState extends State<ProfilePageNew> {
                                                                                 .centerLeft,
                                                                         child: Text(
                                                                             '${snapshot.data[index]['review'].toString()}',
-                                                                            style: GoogleFonts.openSans(
+                                                                            style: GoogleFonts.poppins(
                                                                                 fontSize: 16,
                                                                                 fontWeight: FontWeight.w500)),
                                                                       )
@@ -997,7 +1084,7 @@ class _ProfilePageNewState extends State<ProfilePageNew> {
                                                                   ),
                                                                   title: Text(
                                                                       '${DateFormat('MMM dd, y').format(dateOfReview)}',
-                                                                      style: GoogleFonts.openSans(
+                                                                      style: GoogleFonts.poppins(
                                                                           fontSize:
                                                                               17,
                                                                           fontWeight:
@@ -1041,7 +1128,11 @@ class _ProfilePageNewState extends State<ProfilePageNew> {
                                                                         Color(
                                                                             0xFF9B049B)),
                                                             child:
-                                                                CircularProgressIndicator()),
+                                                                CircularProgressIndicator(valueColor: AlwaysStoppedAnimation<Color>(Color(0xFF9B049B)),
+                                                                   strokeWidth: 2,
+                                              backgroundColor: Colors.white,
+    // valueColor: new AlwaysStoppedAnimation<Color>(color: Color(0xFF9B049B)),
+)),
                                                         SizedBox(
                                                           height: 10,
                                                         ),
@@ -1130,7 +1221,8 @@ class _ProfilePageNewState extends State<ProfilePageNew> {
                                 width: 100,
                                 height: 100,
                                 child: Image.network(
-                                  'https://uploads.fixme.ng/originals/${item['imageFileName']}',
+                                  data['productImages'].isNotEmpty?
+                                  'https://uploads.fixme.ng/originals/${item['imageFileName']}':'',
                                   fit: BoxFit.cover,
                                 ),
                               ),
@@ -1143,16 +1235,19 @@ class _ProfilePageNewState extends State<ProfilePageNew> {
                                         .deleteCatalogueProductImage(
                                             productImageId: data['id']);
                                     if (deleteStatus) {
-                                      ScaffoldMessenger.of(context)
-                                          .showSnackBar(SnackBar(
-                                              content: Text(
-                                                  'Photo deleted successful.')));
+                                       await showTextToast(
+                                                                            text: 'Photo deleted successful.',
+                                                                              context: context,
+                                                                                             );
+                                     
                                       setState(() {});
-                                    } else
-                                      ScaffoldMessenger.of(context)
-                                          .showSnackBar(SnackBar(
-                                              content: Text(
-                                                  'Photo delete failed.')));
+                                    } else{
+                                       await showTextToast(
+                                                                            text: 'Photo delete failed.',
+                                                                              context: context,
+                                                                                             );
+                                     
+                                    }
                                   },
                                   child: Container(
                                     padding: const EdgeInsets.all(6),
@@ -1224,7 +1319,7 @@ class _ProfilePageNewState extends State<ProfilePageNew> {
                         children: <TextSpan>[
                           TextSpan(
                               text: "${data['price']}",
-                              style: GoogleFonts.openSans(
+                              style: GoogleFonts.poppins(
                                   color: Colors.green,
                                   fontWeight: FontWeight.bold)),
                         ],

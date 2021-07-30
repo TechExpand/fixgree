@@ -13,6 +13,7 @@ class PickupLayout extends StatelessWidget {
   final Widget scaffold;
   final CallApi callApi = CallApi();
   List<Bidify> bidify;
+  List<Message> messageData;
   PickupLayout({
     @required this.scaffold,
   });
@@ -23,25 +24,60 @@ class PickupLayout extends StatelessWidget {
     return StreamBuilder(
         stream: FirebaseApi.userBidStream(network.userId.toString()),
         builder: (context, AsyncSnapshot<QuerySnapshot> snapshot2) {
-          return snapshot2.hasData
-              ? StreamBuilder<List<Message>>(
-                  stream: callApi.getCallLogs(network.mobileDeviceToken),
-                  builder: (context, snapshot) {
-                    bidify = snapshot2.data.docs
-                        .map((doc) => Bidify.fromMap(doc.data(), doc.id))
-                        .toList();
 
-                    final bid = bidify;
-                    return snapshot.hasData || snapshot2.hasData
-                        ? !snapshot.data.isEmpty
-                            ? PickupScreen(message: snapshot.data[0])
-                            : !bid.isEmpty
-                                ? BidPage()
-                                : scaffold
-                        : scaffold;
+          return  snapshot2.hasData
+              ? StreamBuilder(
+                  stream: callApi.getCallLogs(network.mobileDeviceToken),
+                  builder: (context, AsyncSnapshot<QuerySnapshot> snapshot) {
+                    return snapshot.hasData
+                    ?Builder(builder: (context){
+                      bidify = snapshot2.data.docs
+                          .map((doc) => Bidify.fromMap(doc.data(), doc.id))
+                          .toList();
+
+                      messageData = snapshot.data.docs
+                          .map((doc) => Message.fromMap(doc.data(), doc.id))
+                          .toList();
+
+
+
+                      final message = messageData;
+                      final bid = bidify;
+                      return snapshot.hasData && snapshot2.hasData
+                          ? !message.isEmpty
+                          ? PickupScreen(message: message[0])
+                          : !bid.isEmpty
+                          ? BidPage()
+                          : scaffold
+                          : scaffold;
+                    }):Material(
+                      color: Colors.white,
+                      child: Center(
+                      child: Container(
+                        height: 80,
+                        child:   Image.asset(
+                          'assets/images/loader.gif',
+                          height: 100,
+                          width: 100,
+                          fit: BoxFit.cover,
+                        ),
+                      ),
+                    ),);
                   },
                 )
-              : Material(child: Container());
+              : Material(
+            color: Colors.white,
+            child: Center(
+              child: Container(
+                height: 80,
+                child:   Image.asset(
+                  'assets/images/loader.gif',
+                  height: 100,
+                  width: 100,
+                  fit: BoxFit.cover,
+                ),
+              ),
+            ),);
         });
   } //BidPage
 }

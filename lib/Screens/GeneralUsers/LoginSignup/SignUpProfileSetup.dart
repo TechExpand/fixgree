@@ -29,13 +29,6 @@ class SignUpProfileSetupState extends State<SignUpProfileSetup> {
         child: Column(
           crossAxisAlignment: CrossAxisAlignment.start,
           children: <Widget>[
-            Padding(
-                padding: const EdgeInsets.only(bottom: 12.0),
-                child: IconButton(
-                    onPressed: (){
-                      Navigator.pop(context);
-                    },
-                    icon: Icon(Icons.keyboard_backspace))),
             Container(
               alignment: Alignment.center,
               margin: EdgeInsets.only(

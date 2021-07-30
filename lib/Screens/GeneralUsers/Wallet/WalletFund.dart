@@ -1,4 +1,5 @@
 import 'package:clipboard/clipboard.dart';
+import 'package:fl_toast/fl_toast.dart';
 import 'package:flutter/material.dart';
 import "package:flutter_feather_icons/flutter_feather_icons.dart";
 import 'package:fixme/Model/UserBankInfo.dart';
@@ -196,9 +197,12 @@ class _WalletFundState extends State<WalletFund> {
                             onPressed: () async {
                               FlutterClipboard.copy(
                                       '${widget.userBankInfo.accountNumber}')
-                                  .then((value) {
-                                scaffoldKey.currentState.showSnackBar(SnackBar(
-                                    content: Text('Account number copied.')));
+                                  .then((value) async{
+                                    await  showTextToast(
+                                                                            text: "Account number copied",
+                                                                              context: context,
+                                                                                             );
+                               
                               });
                             },
                           )

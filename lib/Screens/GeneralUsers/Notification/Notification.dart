@@ -6,7 +6,12 @@ import 'package:fixme/Screens/GeneralUsers/Wallet/WalletPay.dart';
 import 'package:fixme/Screens/GeneralUsers/Notification/Pay.dart';
 import 'package:fixme/Services/Firebase_service.dart';
 import 'package:fixme/Services/network_service.dart';
+import 'package:fixme/Utils/icons.dart';
 import 'package:fixme/Utils/utils.dart';
+import 'package:flutter/cupertino.dart';
+import 'package:flutter/widgets.dart';
+import 'package:flutter_feather_icons/flutter_feather_icons.dart';
+import 'package:flutter_paystack/flutter_paystack.dart';
 import 'package:intl/intl.dart';
 import 'dart:io';
 import 'package:flutter/material.dart';
@@ -14,6 +19,7 @@ import 'package:flutter/services.dart';
 import 'package:google_fonts/google_fonts.dart';
 import 'package:provider/provider.dart';
 import 'package:rating_dialog/rating_dialog.dart';
+import 'package:shared_preferences/shared_preferences.dart';
 
 class NotificationPage extends StatefulWidget {
   final scafoldKey;
@@ -26,10 +32,13 @@ class NotificationPage extends StatefulWidget {
 }
 
 class _NotificationState extends State<NotificationPage> {
+  var publicKey = 'pk_live_624bc595811d2051eead2a9baae6fe3f77f7746f';
+  final plugin = PaystackPlugin();
   initState() {
     super.initState();
     WebServices network = Provider.of<WebServices>(context, listen: false);
     FirebaseApi.clearCheckNotify(network.userId.toString());
+    plugin.initialize(publicKey: publicKey);
   }
 
   var search;
@@ -39,6 +48,41 @@ class _NotificationState extends State<NotificationPage> {
   Widget build(BuildContext context) {
     Utils data = Provider.of<Utils>(context, listen: false);
     WebServices network = Provider.of<WebServices>(context, listen: false);
+    String _getReference() {
+      String platform;
+      if (Platform.isIOS) {
+        platform = 'iOS';
+      } else {
+        platform = 'Android';
+      }
+      return 'ChargedFrom${platform}_${DateTime.now().millisecondsSinceEpoch}';
+    }
+
+    paymentMethod(context, amount, email) async {
+      Charge charge = Charge()
+        ..amount = amount
+//        ..putMetaData('is_refund', is_refund)
+//        ..putMetaData('artisan_id', signController.currentUser.user.id)
+//        ..putMetaData('start_date', DateTime.now().toString())
+        ..reference = _getReference()
+        // or ..accessCode = _getAccessCodeFrmInitialization()
+        ..email = email;
+      CheckoutResponse response = await plugin.checkout(
+        context,
+        logo: Image.asset(
+          'assets/images/fixme.png',
+          scale: 5,
+        ),
+        method: CheckoutMethod.card, // Defaults to CheckoutMethod.selectable
+        charge: charge,
+      );
+      if (response.status) {
+        network.validatePayment(response.reference);
+        Utils().storeData('paymentToken', 'active');
+        print(response.reference);
+      }
+    }
+
     return CustomScrollView(physics: NeverScrollableScrollPhysics(), slivers: [
       SliverAppBar(
         automaticallyImplyLeading: false,
@@ -50,44 +94,20 @@ class _NotificationState extends State<NotificationPage> {
             child: Row(
                 mainAxisAlignment: MainAxisAlignment.spaceBetween,
                 children: [
-                  InkWell(
-                    onTap: () {
-                      widget.scafoldKey.currentState.openDrawer();
-                    },
-                    child: Padding(
-                      padding: const EdgeInsets.all(4.0),
-                      child: Stack(children: <Widget>[
-                        CircleAvatar(
-                          child: Text(''),
-                          radius: 19,
-                          backgroundImage: NetworkImage(
-                            network.profilePicFileName == 'no_picture_upload' ||
-                                    network.profilePicFileName == null
-                                ? 'https://uploads.fixme.ng/originals/no_picture_upload'
-                                : 'https://uploads.fixme.ng/originals/${network.profilePicFileName}',
-                          ),
-                          foregroundColor: Colors.white,
-                          backgroundColor: Colors.white,
-                        ),
-                        Positioned(
-                          left: 25,
-                          top: 24,
-                          child: Container(
-                            decoration: BoxDecoration(
-                                color: Color(0xFFDB5B04),
-                                shape: BoxShape.circle),
-                            child: Icon(
-                              Icons.menu,
-                              color: Colors.white,
-                              size: 13,
-                            ),
-                          ),
-                        ),
-                      ]),
+                  Padding(
+                      padding:
+                          const EdgeInsets.only(top: 4.0, bottom: 4, left: 0),
+                      child: IconButton(
+                        onPressed: (){
+                          widget.scafoldKey.currentState.openDrawer();
+                        },
+                        icon: Icon(MyFlutterApp.hamburger,
+                            size: 17, color: Colors.black),
+                      ),
                     ),
-                  ),
+
                   Container(
-                    margin: EdgeInsets.only(top: 9, left: 1),
+                    margin: EdgeInsets.only(top: 5, left: 1),
                     width: MediaQuery.of(context).size.width / 1.5,
                     height: 35,
                     child: InkWell(
@@ -185,10 +205,16 @@ class _NotificationState extends State<NotificationPage> {
                         padding: const EdgeInsets.all(8.0),
                         child: Stack(
                           children: [
-                            Icon(
-                              Icons.chat,
-                              color: Color(0xFF9B049B),
-                              size: 25,
+                            Stack(
+                              children: [
+                                Icon(MyFlutterApp.fill_1,
+                                    size: 23, color: Color(0xF0A40C85)),
+                                Icon(
+                                  Icons.more_horiz,
+                                  size: 23,
+                                  color: Colors.white,
+                                ),
+                              ],
                             ),
                             StreamBuilder(
                                 stream: FirebaseApi.userCheckChatStream(
@@ -250,7 +276,17 @@ class _NotificationState extends State<NotificationPage> {
 
               switch (snapshot.connectionState) {
                 case ConnectionState.waiting:
-                  return Center(child: CircularProgressIndicator());
+                  return Center(
+                    child: Theme(
+                        data: Theme.of(context)
+                            .copyWith(accentColor: Color(0xFF9B049B)),
+                        child: CircularProgressIndicator(
+                          valueColor:
+                              AlwaysStoppedAnimation<Color>(Color(0xFF9B049B)),
+                          strokeWidth: 2,
+                          backgroundColor: Colors.white,
+                        )),
+                  );
                 default:
                   if (snapshot.hasError) {
                     return buildText('Something Went Wrong Try later');
@@ -288,14 +324,14 @@ class _NotificationState extends State<NotificationPage> {
                                                 text: TextSpan(children: [
                                                   TextSpan(
                                                     text: users[index].message,
-                                                    style: GoogleFonts.openSans(
+                                                    style: GoogleFonts.poppins(
                                                         color: Colors.black),
                                                   ),
                                                   TextSpan(
                                                       text:
                                                           ' ${users[index].name.toString() == 'null null' ? '' : 'by ${users[index].name}'} ',
                                                       style:
-                                                          GoogleFonts.openSans(
+                                                          GoogleFonts.poppins(
                                                               fontWeight:
                                                                   FontWeight
                                                                       .bold,
@@ -313,6 +349,7 @@ class _NotificationState extends State<NotificationPage> {
                                                                     'bided')
                                                             .then((value) {
                                                           network.bidProject(
+                                                              context,
                                                               network.userId,
                                                               users[index]
                                                                   .jobid,
@@ -328,7 +365,7 @@ class _NotificationState extends State<NotificationPage> {
                                                         child: Center(
                                                             child: Text(
                                                                 'GET THIS JOB',
-                                                                style: GoogleFonts.openSans(
+                                                                style: GoogleFonts.poppins(
                                                                     fontSize:
                                                                         13,
                                                                     color: Color(
@@ -443,60 +480,47 @@ class _NotificationState extends State<NotificationPage> {
                                                                               .type ==
                                                                           'bid_approval'
                                                                       ? Text('')
-                                                                      : Column(
-                                                                          crossAxisAlignment:
-                                                                              CrossAxisAlignment.start,
-                                                                          children: [
-                                                                            users[index].budget.toString().isEmpty
-                                                                                ? Container()
-                                                                                : Padding(
-                                                                                    padding: const EdgeInsets.only(top: 6.0),
-                                                                                    child: Row(
-                                                                                      children: [
-                                                                                        Text(
-                                                                                          '₦' + '${users[index].budget}',
-                                                                                          style: TextStyle(
-                                                                                              fontFamily: 'Roboto',
-                                                                                              fontWeight: FontWeight.bold, fontSize: 15),
+                                                                      : users[index].type ==
+                                                                              'initiate_bid'
+                                                                          ? Column(
+                                                                              crossAxisAlignment: CrossAxisAlignment.start,
+                                                                              children: [
+                                                                                users[index].budget.toString().isEmpty
+                                                                                    ? Container()
+                                                                                    : Padding(
+                                                                                        padding: const EdgeInsets.only(top: 6.0),
+                                                                                        child: Row(
+                                                                                          children: [
+                                                                                            Text(
+                                                                                              'Budget amount is: ' '₦' + '${users[index].budget}',
+                                                                                              style: TextStyle(fontFamily: 'Roboto', fontWeight: FontWeight.bold, fontSize: 15),
+                                                                                            ),
+                                                                                          ],
                                                                                         ),
-                                                                                      ],
-                                                                                    ),
+                                                                                      ),
+                                                                                InkWell(
+                                                                                  onTap: () async {
+                                                                                    print('kkkkkkkk');
+
+                                                                                    SharedPreferences prefs = await SharedPreferences.getInstance();
+                                                                                    var status = prefs.getString('paymentToken');
+                                                                                    if (status == null || status == 'null' || status == '' || status == 'in_active') {
+                                                                                      paymentMethod(context, 5000, network.email);
+                                                                                    } else {
+                                                                                      dialogConfirm(users[index]);
+                                                                                    }
+                                                                                  },
+                                                                                  child: Container(
+                                                                                    margin: EdgeInsets.only(top: 15, bottom: 5),
+                                                                                    width: 105,
+                                                                                    height: 28,
+                                                                                    child: Center(child: Text('CONFIRM', style: TextStyle(fontSize: 13, color: Color(0xFFA40C85), fontWeight: FontWeight.w500))),
+                                                                                    decoration: BoxDecoration(border: Border.all(color: Color(0xFFA40C85)), borderRadius: BorderRadius.circular(4)),
                                                                                   ),
-                                                                            InkWell(
-                                                                              onTap: () {
-                                                                                FirebaseApi.updateNotification(users[index].id, 'confirm').then((value) {
-                                                                                  network.confirmBudget(users[index].bidderId, users[index].bidId, widget.scafoldKey);
-                                                                                });
-                                                                                Navigator.push(
-                                                                                  context,
-                                                                                  PageRouteBuilder(
-                                                                                    pageBuilder: (context, animation, secondaryAnimation) {
-                                                                                      return Pay(
-                                                                                        controller: widget.myPage,
-                                                                                        data: users[index],
-                                                                                      );
-                                                                                      //   userBankInfo: users[index]// ignUpAddress();
-                                                                                    },
-                                                                                    transitionsBuilder: (context, animation, secondaryAnimation, child) {
-                                                                                      return FadeTransition(
-                                                                                        opacity: animation,
-                                                                                        child: child,
-                                                                                      );
-                                                                                    },
-                                                                                  ),
-                                                                                );
-//
-                                                                              },
-                                                                              child: Container(
-                                                                                margin: EdgeInsets.only(top: 15, bottom: 5),
-                                                                                width: 105,
-                                                                                height: 28,
-                                                                                child: Center(child: Text('CONFIRM', style: TextStyle(fontSize: 13, color: Color(0xFFA40C85), fontWeight: FontWeight.w500))),
-                                                                                decoration: BoxDecoration(border: Border.all(color: Color(0xFFA40C85)), borderRadius: BorderRadius.circular(4)),
-                                                                              ),
-                                                                            ),
-                                                                          ],
-                                                                        ),
+                                                                                ),
+                                                                              ],
+                                                                            )
+                                                                          : Container(),
                                               Text(
                                                 '$date',
                                                 style: TextStyle(
@@ -556,7 +580,17 @@ class _NotificationState extends State<NotificationPage> {
                   }
               }
             } else {
-              return Center(child: CircularProgressIndicator());
+              return Center(
+                child: Theme(
+                    data: Theme.of(context)
+                        .copyWith(accentColor: Color(0xFF9B049B)),
+                    child: CircularProgressIndicator(
+                      valueColor:
+                          AlwaysStoppedAnimation<Color>(Color(0xFF9B049B)),
+                      strokeWidth: 2,
+                      backgroundColor: Colors.white,
+                    )),
+              );
             }
           },
         ),
@@ -578,17 +612,102 @@ class _NotificationState extends State<NotificationPage> {
       onSubmitted: (response) {
         FirebaseApi.updateNotification(index.id, 'confirm').then((value) {
           network.confirmPaymentAndReview(
-              response.rating,
-              index.jobid,
-              response.comment,
-              widget.scafoldKey,
-              index.artisanId,
-              network.userId,
-              context,
+            response.rating,
+            index.jobid,
+            response.comment,
+            widget.scafoldKey,
+            index.artisanId,
+            network.userId,
+            index.bidId,
+            index.servicerequestId,
+            context,
           );
         });
       },
     );
+  }
+
+  dialogConfirm(data) {
+    WebServices network = Provider.of<WebServices>(context, listen: false);
+    return showDialog(
+        barrierDismissible: true,
+        context: context,
+        builder: (context) =>  AlertDialog(
+                title: Text('Choose Payment Method'),
+                content: Row(
+                  mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+                  children: [
+                    InkWell(
+                      onTap: () {
+                        showDialog(
+                            barrierDismissible: false,
+                            context: context,
+                            builder: (context) {
+                              return WillPopScope(
+                                onWillPop: () {},
+                                child: Dialog(
+                                  elevation: 0,
+                                  child: CupertinoActivityIndicator(
+                                    radius: 15,
+                                  ),
+                                  backgroundColor: Colors.transparent,
+                                ),
+                              );
+                            });
+
+                        network.confirmBudget(
+                            context: context,
+                            bidderUserId: data.bidderId,
+                            bidId: data.bidId,
+                            invoceId: data.invoice_id,
+                            paymentMethod: 'wallet',
+                            data: data,
+                            myPage: widget.myPage);
+                      },
+                      child: Tab(
+                        child: Text('Wallet'),
+                        icon: Icon(Icons.account_balance_wallet_outlined),
+                      ),
+                    ),
+                    SizedBox(
+                      width: 10,
+                    ),
+                    InkWell(
+                      onTap: () {
+                        showDialog(
+                            barrierDismissible: false,
+                            context: context,
+                            builder: (context) {
+                              return WillPopScope(
+                                onWillPop: () {},
+                                child: Dialog(
+                                  elevation: 0,
+                                  child: CupertinoActivityIndicator(
+                                    radius: 15,
+                                  ),
+                                  backgroundColor: Colors.transparent,
+                                ),
+                              );
+                            });
+
+                        network.confirmBudget(
+                            context: context,
+                            bidderUserId: data.bidderId,
+                            bidId: data.bidId,
+                            invoceId: data.invoice_id,
+                            paymentMethod: 'card',
+                            data: data,
+                            myPage: widget.myPage);
+                      },
+                      child: Tab(
+                        child: Text('Card'),
+                        icon: Icon(Icons.credit_card),
+                      ),
+                    )
+                  ],
+                ),
+              ),
+            );
   }
 
   Widget buildText(String text) => Padding(

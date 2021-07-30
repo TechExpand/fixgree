@@ -108,6 +108,46 @@ class SignUpSetProfileState extends State<SignUpSetProfile> {
                   ),
                 ],
               ),
+              Padding(
+                padding: const EdgeInsets.only(bottom: 12.0, top:10),
+                child: Text(
+                  'Enter Referral ID (optional field)',
+                  style: TextStyle(
+                    fontSize: 15,
+                    fontWeight: FontWeight.w500,
+                    letterSpacing: 0.5,
+                  ),
+                ),
+              ),
+              Container(
+                width: MediaQuery.of(context).size.width / 2.6,
+                height: 40,
+                child: TextFormField(
+                    onChanged: (value) {
+                    data.setreferalId(value);
+                    },
+                    style: TextStyle(color: Colors.black),
+                    cursorColor: Colors.black,
+                    decoration: InputDecoration(
+                      labelStyle: TextStyle(color: Colors.black38),
+                      labelText: 'e.g 225',
+                      enabledBorder: OutlineInputBorder(
+                          borderSide: const BorderSide(
+                              color: Color(0xFF9B049B), width: 0.0),
+                          borderRadius:
+                          BorderRadius.all(Radius.circular(12))),
+                      focusedBorder: OutlineInputBorder(
+                          borderSide: const BorderSide(
+                              color: Color(0xFF9B049B), width: 0.0),
+                          borderRadius:
+                          BorderRadius.all(Radius.circular(12))),
+                      border: OutlineInputBorder(
+                          borderSide: const BorderSide(
+                              color: Color(0xFF9B049B), width: 0.0),
+                          borderRadius:
+                          BorderRadius.all(Radius.circular(12))),
+                    )),
+              ),
               Spacer(),
     Consumer<DataProvider>(
     builder: (context, conData, child) {
@@ -155,9 +195,16 @@ class SignUpSetProfileState extends State<SignUpSetProfile> {
                               ),
                             ),
                           )
-                        : CircularProgressIndicator(
-                            valueColor: AlwaysStoppedAnimation<Color>(
-                                Color(0xFF9B049B)))),
+                        : Theme(
+                                                    data: Theme.of(context)
+                                                        .copyWith(
+                                                            accentColor: Color(
+                                                                0xFF9B049B)),
+                                                    child:
+                                                    CircularProgressIndicator(valueColor: AlwaysStoppedAnimation<Color>(Color(0xFF9B049B)),
+                                                       strokeWidth: 2,
+                                              backgroundColor: Colors.white,
+                                                    )),),
               );})
             ],
           ),

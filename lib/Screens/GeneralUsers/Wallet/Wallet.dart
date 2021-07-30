@@ -75,7 +75,11 @@ class _WalletState extends State<Wallet> {
                                         Theme(
                                             data: Theme.of(context).copyWith(
                                                 accentColor: Color(0xFF9B049B)),
-                                            child: CircularProgressIndicator()),
+                                            child: CircularProgressIndicator(valueColor: AlwaysStoppedAnimation<Color>(Color(0xFF9B049B)),
+                                               strokeWidth: 2,
+                                              backgroundColor: Colors.white,
+  //   valueColor: new AlwaysStoppedAnimation<Color>(color: Color(0xFF9B049B)),
+)),
                                         SizedBox(
                                           height: 10,
                                         ),
@@ -137,7 +141,7 @@ class _WalletState extends State<Wallet> {
                                                       text:
                                                           '${userBankInfo.balance}',
                                                       style:
-                                                          GoogleFonts.openSans(
+                                                          GoogleFonts.poppins(
                                                               color:
                                                                   Colors.white,
                                                               fontSize: 24,
@@ -150,6 +154,21 @@ class _WalletState extends State<Wallet> {
                                             ),
                                           ),
                                         ],
+                                      ),
+
+                                      Align(
+                                        alignment: Alignment.centerLeft,
+                                        child: Text('\u{20A6}'+'${userBankInfo.transitIncome}',
+                                            style: TextStyle(
+                                                color:
+                                                Colors.white,
+                                                fontSize: 17,
+                                                fontFamily: 'Roboto',
+                                                height: 1.5,
+                                                fontWeight:
+                                                FontWeight
+                                                    .w500
+                                            )),
                                       ),
                                       Spacer(),
                                       Row(
@@ -183,7 +202,11 @@ class _WalletState extends State<Wallet> {
                                       Theme(
                                           data: Theme.of(context).copyWith(
                                               accentColor: Color(0xFF9B049B)),
-                                          child: CircularProgressIndicator()),
+                                          child: CircularProgressIndicator(valueColor: AlwaysStoppedAnimation<Color>(Color(0xFF9B049B)),
+                                             strokeWidth: 2,
+                                              backgroundColor: Colors.white,
+     //valueColor: new AlwaysStoppedAnimation<Color>(color: Color(0xFF9B049B)),
+)),
                                       SizedBox(
                                         height: 10,
                                       ),
@@ -447,7 +470,11 @@ class _WalletState extends State<Wallet> {
                                 Theme(
                                     data: Theme.of(context).copyWith(
                                         accentColor: Color(0xFF9B049B)),
-                                    child: CircularProgressIndicator()),
+                                    child: CircularProgressIndicator(valueColor: AlwaysStoppedAnimation<Color>(Color(0xFF9B049B)),
+                                       strokeWidth: 2,
+                                              backgroundColor: Colors.white,
+    // valueColor: new AlwaysStoppedAnimation<Color>(color: Color(0xFF9B049B)),
+)),
                                 SizedBox(
                                   height: 10,
                                 ),
@@ -549,7 +576,7 @@ class _WalletState extends State<Wallet> {
             children: <TextSpan>[
               TextSpan(
                   text: '$amount',
-                  style: GoogleFonts.openSans(
+                  style: GoogleFonts.poppins(
                       fontSize: 16,
                       color: Color(0xFF02FF1B),
                       fontWeight: FontWeight.w600)),
@@ -570,7 +597,7 @@ class _WalletState extends State<Wallet> {
             children: <TextSpan>[
               TextSpan(
                   text: '$amount',
-                  style: GoogleFonts.openSans(
+                  style: GoogleFonts.poppins(
                       fontSize: 16,
                       color: Color(0xFFFF0202),
                       fontWeight: FontWeight.w600)),

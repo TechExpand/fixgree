@@ -1,3 +1,5 @@
+import 'dart:io';
+
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:image_picker/image_picker.dart';
@@ -16,8 +18,8 @@ class _ProfileState extends State<Profile> {
   final _statusController = TextEditingController();
   final _formKey1 = GlobalKey<FormState>();
   final _formKey2 = GlobalKey<FormState>();
-  PickedFile selectedImage;
-  final picker = ImagePicker();
+  File selectedImage;
+
   String firstname1;
   String lastname1;
   String bio1;
@@ -27,7 +29,7 @@ class _ProfileState extends State<Profile> {
   void pickImage({@required ImageSource source, context}) async {
     var network = Provider.of<WebServices>(context, listen: false);
     var data = Provider.of<Utils>(context, listen: false);
-    var image = await picker.getImage(source: source);
+    var image = await ImagePicker.pickImage(source: source);
     setState(() => selectedImage = image);
 
     String imageName = await network.uploadProfilePhoto(
@@ -103,7 +105,11 @@ class _ProfileState extends State<Profile> {
                       Theme(
                           data: Theme.of(context)
                               .copyWith(accentColor: Color(0xFF9B049B)),
-                          child: CircularProgressIndicator()),
+                          child: CircularProgressIndicator(valueColor: AlwaysStoppedAnimation<Color>(Color(0xFF9B049B)),
+                             strokeWidth: 2,
+                                              backgroundColor: Colors.white,
+     //valueColor: new AlwaysStoppedAnimation<Color>(color: Color(0xFF9B049B)),
+)),
                       SizedBox(
                         height: 10,
                       ),
@@ -342,7 +348,11 @@ class _ProfileState extends State<Profile> {
                     Theme(
                         data: Theme.of(context)
                             .copyWith(accentColor: Color(0xFF9B049B)),
-                        child: CircularProgressIndicator()),
+                        child: CircularProgressIndicator(valueColor: AlwaysStoppedAnimation<Color>(Color(0xFF9B049B)),
+                           strokeWidth: 2,
+                                              backgroundColor: Colors.white,
+     //valueColor: new AlwaysStoppedAnimation<Color>(color: Color(0xFF9B049B)),
+)),
                     SizedBox(
                       height: 10,
                     ),

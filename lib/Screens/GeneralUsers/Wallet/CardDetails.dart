@@ -17,11 +17,12 @@ class _WalletAddCardState extends State<CardDetails> {
   TextEditingController expiryDate = new TextEditingController();
   TextEditingController cvvCode = new TextEditingController();
   var publicKey = 'pk_live_624bc595811d2051eead2a9baae6fe3f77f7746f';
+  final plugin = PaystackPlugin();
 
   @override
   void initState(){
     super.initState();
-    PaystackPlugin.initialize(publicKey: publicKey);
+    plugin.initialize(publicKey: publicKey);
   }
 
   @override
@@ -50,8 +51,12 @@ class _WalletAddCardState extends State<CardDetails> {
         ..reference = _getReference()
       // or ..accessCode = _getAccessCodeFrmInitialization()
         ..email = email;
-      CheckoutResponse response = await PaystackPlugin.checkout(
+      CheckoutResponse response = await plugin.checkout(
         context,
+        logo: Image.asset(
+          'assets/images/fixme.png',
+          scale: 5,
+        ),
         method: CheckoutMethod.card, // Defaults to CheckoutMethod.selectable
         charge: charge,
       );
@@ -166,7 +171,11 @@ class _WalletAddCardState extends State<CardDetails> {
                 Theme(
                     data: Theme.of(context).copyWith(
                         accentColor: Color(0xFF9B049B)),
-                    child: CircularProgressIndicator()),
+                    child: CircularProgressIndicator(valueColor: AlwaysStoppedAnimation<Color>(Color(0xFF9B049B)),
+                       strokeWidth: 2,
+                                              backgroundColor: Colors.white,
+   //  valueColor: new AlwaysStoppedAnimation<Color>(color: Color(0xFF9B049B)),
+)),
                 SizedBox(
                   height: 10,
                 ),

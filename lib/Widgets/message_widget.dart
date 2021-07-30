@@ -1,3 +1,4 @@
+import 'package:bubble/bubble.dart';
 import 'package:fixme/Model/Message.dart';
 import 'package:fixme/Utils/Provider.dart';
 import 'package:fixme/Utils/utils.dart';
@@ -21,6 +22,7 @@ class MessageWidget extends StatelessWidget {
     return Padding(
         padding: const EdgeInsets.only(top: 8.0),
         child: Row(
+          crossAxisAlignment: CrossAxisAlignment.start,
             mainAxisAlignment: isMe ? MainAxisAlignment.end : MainAxisAlignment
                 .start,
             children: <Widget>[
@@ -37,8 +39,20 @@ class MessageWidget extends StatelessWidget {
     ),
     !isMe
     ?
-    buildMessageReceiver(context):
-    buildMessageSender(context)
+    Container(
+      width: MediaQuery.of(context).size.width*0.7,
+      child: Bubble(
+          nip: BubbleNip.leftTop,
+          color: Color(0xFF9B049B),
+          child: buildMessageReceiver(context)),
+    ):
+    Container(
+      width: MediaQuery.of(context).size.width*0.7,
+      child: Bubble(
+          nip: BubbleNip.rightTop,
+          color: Color(0xFFEBEBEB),
+          child: buildMessageSender(context)),
+    )
     ,
     if(isMe)
     Padding(
@@ -105,7 +119,7 @@ class MessageWidget extends StatelessWidget {
               },
               child:Container(
                 height: 170,
-                width: 170,
+                width: 250,
                 child: Card(
                   child: Padding(
                     padding: const EdgeInsets.all(3.0),
@@ -142,22 +156,22 @@ class MessageWidget extends StatelessWidget {
             children: [
               Hero(
                   tag: message.message,
-                  child: Icon(Icons.play_circle_filled, size: 35,)),
+                  child: Icon(Icons.play_circle_filled, size: 35, color: Colors.white,)),
               SliderTheme(
                 data: SliderTheme.of(context).copyWith(
-                  activeTrackColor: Color(0xFF9B049B),
-                  inactiveTrackColor: Color(0xFF9B049B),
+                  activeTrackColor: Colors.white,
+                  inactiveTrackColor: Colors.white,
                   trackShape: RoundedRectSliderTrackShape(),
                   trackHeight: 5.0,
                   thumbShape:
                   RoundSliderThumbShape(enabledThumbRadius: 12.0),
                   thumbColor: Color(0xFFEBCDEB),
-                  overlayColor: Color(0xFF9B049B),
+                  overlayColor: Colors.white,
                   overlayShape:
                   RoundSliderOverlayShape(overlayRadius: 15.0),
                   tickMarkShape: RoundSliderTickMarkShape(),
-                  activeTickMarkColor: Color(0xFF9B049B),
-                  inactiveTickMarkColor: Color(0xFF9B049B),
+                  activeTickMarkColor: Colors.white,
+                  inactiveTickMarkColor: Colors.white,
                   valueIndicatorShape: PaddleSliderValueIndicatorShape(),
                   valueIndicatorColor: Color(0xFFEBCDEB),
                   valueIndicatorTextStyle: TextStyle(
@@ -190,26 +204,78 @@ class MessageWidget extends StatelessWidget {
           width: MediaQuery
               .of(context)
               .size
-              .width / 1.2,
+              .width / 1.3,
           child: InkWell(
              onTap: () {
                 data.opeLink(message.message);
                           },
                       child: Text(
               message.message,
-              style: TextStyle(color: isMe ? Colors.blue : Colors.blue),
+              style: TextStyle(
+                  fontSize: 16,
+                  color: isMe ? Colors.blue : Colors.blue),
               textAlign: isMe ? TextAlign.end : TextAlign.start,
             ),
           ),
-        ) :Container(): Container(
+        ) :Container():
+        Container(
           width: MediaQuery
               .of(context)
               .size
-              .width / 1.2,
-          child: Text(
-            message.message,
-            style: TextStyle(color: isMe ? Colors.black : Colors.black),
-            textAlign: isMe ? TextAlign.end : TextAlign.start,
+              .width / 1.3,
+          child: Column(
+            crossAxisAlignment: CrossAxisAlignment.start,
+            children: [
+              message.productImage==null|| message.productImage.isEmpty?Container():Padding(
+                padding: const EdgeInsets.only(top: 4.0),
+                child: Hero(
+                  tag: message.message,
+                  child: GestureDetector(
+                    onTap: () {
+                      return Navigator.push(
+                        context,
+                        PageRouteBuilder(
+                          pageBuilder: (context, animation, secondaryAnimation) {
+                            return PhotoView(
+                              message.productImage,
+                              message.productImage,
+                            );
+                          },
+                          transitionsBuilder: (context, animation, secondaryAnimation,
+                              child) {
+                            return FadeTransition(
+                              opacity: animation,
+                              child: child,
+                            );
+                          },
+                        ),
+                      );
+                    },
+                    child:Container(
+                      height: 170,
+                      width: 170,
+                      child: Card(
+                        child: Padding(
+                          padding: const EdgeInsets.all(3.0),
+                          child: Image.network(
+                            message.productImage,
+                            fit: BoxFit.cover,
+                          ),
+                        ),
+                      ),
+                    ),
+                  ),
+                ),
+              ),
+              Text(
+                message.message,
+                style: TextStyle(
+                    fontSize: 16,
+                    fontFamily: 'Roboto',
+                    color: isMe ? Colors.white : Colors.white),
+                textAlign: isMe ? TextAlign.end : TextAlign.start,
+              ),
+            ],
           ),
         ),
 
@@ -220,12 +286,12 @@ class MessageWidget extends StatelessWidget {
               height: 3,
               width: 3,
               decoration: BoxDecoration(
-                  color: Colors.black38,
+                  color: Colors.white,
                   shape: BoxShape.circle
               ),
             ),
             // Text(message.username),
-            Text(date),
+            Text(date,style: TextStyle(color: Colors.white),),
           ],
         ),
       ],
@@ -274,7 +340,7 @@ class MessageWidget extends StatelessWidget {
               },
               child: Container(
                 height: 170,
-                width: 170,
+                width: 250,
                 child: Card(
                   child: Padding(
                     padding: const EdgeInsets.all(3.0),
@@ -358,14 +424,16 @@ class MessageWidget extends StatelessWidget {
           width: MediaQuery
               .of(context)
               .size
-              .width / 1.2,
+              .width / 1.3,
           child: InkWell(
              onTap: () {
                 data.opeLink(message.message);
                           },
                       child: Text(
               message.message,
-              style: TextStyle(color: isMe ? Colors.blue : Colors.blue),
+              style: TextStyle(
+                  fontSize: 16,
+                  color: isMe ? Colors.blue : Colors.blue),
               textAlign: isMe ? TextAlign.end : TextAlign.start,
             ),
           ),
@@ -373,15 +441,65 @@ class MessageWidget extends StatelessWidget {
           width: MediaQuery
               .of(context)
               .size
-              .width / 1.2,
-          child: Text(
-            message.message,
-            style: TextStyle(color: isMe ? Colors.black : Colors.black),
-            textAlign: isMe ? TextAlign.end : TextAlign.start,
+              .width / 1.3,
+          child: Column(
+             crossAxisAlignment: CrossAxisAlignment.end,
+            children: [
+              message.productImage==null|| message.productImage.isEmpty?Container():Padding(
+                padding: const EdgeInsets.only(top: 4.0),
+                child: Hero(
+                  tag: message.message,
+                  child: GestureDetector(
+                    onTap: () {
+                      return Navigator.push(
+                        context,
+                        PageRouteBuilder(
+                          pageBuilder: (context, animation, secondaryAnimation) {
+                            return PhotoView(
+                              message.productImage,
+                              message.productImage,
+                            );
+                          },
+                          transitionsBuilder: (context, animation, secondaryAnimation,
+                              child) {
+                            return FadeTransition(
+                              opacity: animation,
+                              child: child,
+                            );
+                          },
+                        ),
+                      );
+                    },
+                    child:Container(
+                      height: 170,
+                      width: 170,
+                      child: Card(
+                        child: Padding(
+                          padding: const EdgeInsets.all(3.0),
+                          child: Image.network(
+                            message.productImage,
+                            fit: BoxFit.cover,
+                          ),
+                        ),
+                      ),
+                    ),
+                  ),
+                ),
+              ),
+              Text(
+                message.message,
+                style: TextStyle(
+                  fontSize: 16,
+                    fontFamily: 'Roboto',
+                    color: isMe ? Colors.black87 : Colors.black87),
+                textAlign: isMe ? TextAlign.end : TextAlign.start,
+              ),
+            ],
           ),
         ),
 
         Row(
+          mainAxisAlignment: MainAxisAlignment.end,
           children: [
             Container(
               margin: EdgeInsets.only(left: 5, right: 5),
@@ -393,7 +511,7 @@ class MessageWidget extends StatelessWidget {
               ),
             ),
             // Text(message.username),
-            Text(date),
+            Text(date,style: TextStyle(color: Colors.black87), textAlign: TextAlign.end,),
           ],
         ),
       ],

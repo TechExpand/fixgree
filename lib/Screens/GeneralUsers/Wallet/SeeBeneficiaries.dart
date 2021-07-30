@@ -30,7 +30,7 @@ class _SeeBeneficiariesState extends State<SeeBeneficiaries> {
       appBar: AppBar(
         backgroundColor: Colors.white,
         title: Text('Select beneficiary',
-            style: GoogleFonts.openSans(
+            style: GoogleFonts.poppins(
                 color: Color(0xFF333333),
                 fontSize: 21,
                 height: 1.4,
@@ -115,7 +115,11 @@ class _SeeBeneficiariesState extends State<SeeBeneficiaries> {
                               Theme(
                                   data: Theme.of(context)
                                       .copyWith(accentColor: Color(0xFF9B049B)),
-                                  child: CircularProgressIndicator()),
+                                  child: CircularProgressIndicator(valueColor: AlwaysStoppedAnimation<Color>(Color(0xFF9B049B)),
+                                     strokeWidth: 2,
+                                              backgroundColor: Colors.white,
+   //  valueColor: new AlwaysStoppedAnimation<Color>(color: Color(0xFF9B049B)),
+)),
                               SizedBox(
                                 height: 10,
                               ),
@@ -271,7 +275,11 @@ class _SeeBeneficiariesState extends State<SeeBeneficiaries> {
                             Theme(
                                 data: Theme.of(context)
                                     .copyWith(accentColor: Color(0xFF9B049B)),
-                                child: CircularProgressIndicator()),
+                                child: CircularProgressIndicator(valueColor: AlwaysStoppedAnimation<Color>(Color(0xFF9B049B)),
+                                   strokeWidth: 2,
+                                              backgroundColor: Colors.white,
+    // valueColor: new AlwaysStoppedAnimation<Color>(color: Color(0xFF9B049B)),
+)),
                             SizedBox(
                               height: 10,
                             ),

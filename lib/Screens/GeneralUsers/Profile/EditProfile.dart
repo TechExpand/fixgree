@@ -1,3 +1,5 @@
+import 'dart:io';
+
 import 'package:fixme/Services/network_service.dart';
 import 'package:fixme/Services/network_service.dart';
 import 'package:fixme/Utils/utils.dart';
@@ -18,15 +20,15 @@ class _EditProfileState extends State<EditProfile> {
   final _lastnameController = TextEditingController();
   final _statusController = TextEditingController();
   final _formKey1 = GlobalKey<FormState>();
-  PickedFile selectedImage;
-  final picker = ImagePicker();
+  File selectedImage;
+
 
   Future<Map> user;
 
   void pickImage({@required ImageSource source, context}) async {
     var network = Provider.of<WebServices>(context, listen: false);
     var data = Provider.of<Utils>(context, listen: false);
-    var image = await picker.getImage(source: source);
+    var image = await ImagePicker.pickImage(source: source);
     setState(() => selectedImage = image);
 
     String imageName = await network.uploadProfilePhoto(
@@ -84,7 +86,7 @@ class _EditProfileState extends State<EditProfile> {
           icon: Icon(FeatherIcons.arrowLeft, color: Color(0xFF9B049B)),
         ),
         title: Text('Edit profile',
-            style: GoogleFonts.openSans(
+            style: GoogleFonts.poppins(
                 color: Colors.black87,
                 fontSize: 18,
                 height: 1.4,
@@ -106,7 +108,11 @@ class _EditProfileState extends State<EditProfile> {
                       Theme(
                           data: Theme.of(context)
                               .copyWith(accentColor: Color(0xFF9B049B)),
-                          child: CircularProgressIndicator()),
+                          child: CircularProgressIndicator(valueColor: AlwaysStoppedAnimation<Color>(Color(0xFF9B049B)),
+                             strokeWidth: 2,
+                                              backgroundColor: Colors.white,
+   //  valueColor: new AlwaysStoppedAnimation<Color>(color: Color(0xFF9B049B)),
+)),
                       SizedBox(
                         height: 10,
                       ),
@@ -310,7 +316,11 @@ class _EditProfileState extends State<EditProfile> {
                     Theme(
                         data: Theme.of(context)
                             .copyWith(accentColor: Color(0xFF9B049B)),
-                        child: CircularProgressIndicator()),
+                        child: CircularProgressIndicator(valueColor: AlwaysStoppedAnimation<Color>(Color(0xFF9B049B)),
+                           strokeWidth: 2,
+                                              backgroundColor: Colors.white,
+  //   valueColor: new AlwaysStoppedAnimation<Color>(color: Color(0xFF9B049B)),
+)),
                     SizedBox(
                       height: 10,
                     ),

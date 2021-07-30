@@ -1,9 +1,8 @@
 import 'dart:ui';
-
-import 'package:fixme/Screens/ArtisanUser/Profile/ProfilePage.dart';
 import 'package:fixme/Screens/ArtisanUser/Profile/ProfilePageNew.dart';
 import 'package:fixme/Screens/GeneralUsers/Profile/ProfileNew.dart';
 import 'package:fixme/Services/Firebase_service.dart';
+import 'package:fixme/Utils/icons.dart';
 import 'package:share/share.dart';
 import 'package:fixme/Screens/ArtisanUser/RegisterArtisan/thankyou.dart';
 import 'package:fixme/Screens/GeneralUsers/Chat/Chats.dart';
@@ -12,7 +11,6 @@ import 'package:fixme/Screens/GeneralUsers/Profile/Profile.dart';
 import 'package:fixme/Screens/GeneralUsers/Support/SupportFeedback.dart';
 import 'package:fixme/Services/network_service.dart';
 import 'package:flutter/material.dart';
-import 'package:font_awesome_flutter/font_awesome_flutter.dart';
 import 'package:provider/provider.dart';
 import 'package:fixme/Utils/Provider.dart';
 import 'package:shared_preferences/shared_preferences.dart';
@@ -41,8 +39,9 @@ class _DrawerState extends State<DrawerWidget> {
           Container(
             color: Color(0xFF9B049B),
             height: 100,
-            child: Align(
-              alignment: Alignment.bottomLeft,
+            child: Container(
+              margin: EdgeInsets.only(top: 18),
+              //alignment: Alignment.bottomLeft,
               child: ListTile(
                 leading: CircleAvatar(
                   child: Text(''),
@@ -60,9 +59,19 @@ class _DrawerState extends State<DrawerWidget> {
                   '${network.firstName} ${network.lastName}',
                   style: TextStyle(color: Colors.white),
                 ),
-                subtitle: Text(
-                  network.phoneNum,
-                  style: TextStyle(color: Colors.white),
+                subtitle: Column(
+                  crossAxisAlignment: CrossAxisAlignment.start,
+                  mainAxisAlignment: MainAxisAlignment.start,
+                  children: [
+                    Text(
+                      network.phoneNum,
+                      style: TextStyle(color: Colors.white),
+                    ),
+                    Text(
+                      network.email,
+                      style: TextStyle(color: Colors.white),
+                    ),
+                  ],
                 ),
               ),
             ),
@@ -117,14 +126,18 @@ class _DrawerState extends State<DrawerWidget> {
               child: SizedBox(
                 height: 40,
                 child: ListTile(
-                  leading: Icon(Icons.person_outline, color: Color(0xF0A40C85)),
+                  leading: Icon(MyFlutterApp.profile,
+                      size: 18, color: Color(0xF0A40C85)),
                   contentPadding: const EdgeInsets.only(
                     left: 10,
                   ),
                   minLeadingWidth: 10,
-                  title: Text(
-                    'Profile',
-                    style: TextStyle(fontSize: 15, fontWeight: FontWeight.w400),
+                  title: Padding(
+                    padding: const EdgeInsets.only(bottom: 5.0),
+                    child: Text(
+                      'Profile',
+                      style: TextStyle(fontSize: 15, fontWeight: FontWeight.w400),
+                    ),
                   ),
                 ),
               )),
@@ -152,14 +165,24 @@ class _DrawerState extends State<DrawerWidget> {
               child: SizedBox(
                 height: 45,
                 child: ListTile(
-                  leading: Icon(Icons.chat, color: Color(0xF0A40C85)),
+                  leading: Stack(
+                    children: [
+                      Icon(
+                          MyFlutterApp.fill_1,
+                          size: 19, color: Color(0xF0A40C85)),
+                      Icon(Icons.more_horiz, size: 19, color: Colors.white,),
+                    ],
+                  ),
                   contentPadding: const EdgeInsets.only(
                     left: 10,
                   ),
                   minLeadingWidth: 10,
-                  title: Text(
-                    'My Chats',
-                    style: TextStyle(fontSize: 15, fontWeight: FontWeight.w400),
+                  title: Padding(
+                    padding: const EdgeInsets.only(bottom: 5.0),
+                    child: Text(
+                      'My Chats',
+                      style: TextStyle(fontSize: 15, fontWeight: FontWeight.w400),
+                    ),
                   ),
                 ),
               )),
@@ -172,26 +195,10 @@ class _DrawerState extends State<DrawerWidget> {
                     style:
                         TextStyle(fontSize: 16, fontWeight: FontWeight.w600)),
               )),
-          InkWell(
+          network.role == 'artisan' || network.role == 'business'
+              ?Container():InkWell(
               onTap: () {
-                network.role == 'artisan' || network.role == 'business'
-                    ? Navigator.push(
-                        context,
-                        PageRouteBuilder(
-                          pageBuilder:
-                              (context, animation, secondaryAnimation) {
-                            return ProfilePageNew();
-                          },
-                          transitionsBuilder:
-                              (context, animation, secondaryAnimation, child) {
-                            return FadeTransition(
-                              opacity: animation,
-                              child: child,
-                            );
-                          },
-                        ),
-                      )
-                    : Navigator.push(
+                  Navigator.push(
                         context,
                         PageRouteBuilder(
                           pageBuilder:
@@ -208,18 +215,23 @@ class _DrawerState extends State<DrawerWidget> {
                         ),
                       );
               },
-              child: SizedBox(
-                height: 40,
+              child: Container(
+                margin: EdgeInsets.only(bottom: 5),
+                height: 45,
                 child: ListTile(
                   leading:
-                      Icon(Icons.assignment_return, color: Color(0xF0A40C85)),
+                      Icon( MyFlutterApp.switch_icon,
+                          size: 24, color: Color(0xF0A40C85)),
                   contentPadding: const EdgeInsets.only(
                     left: 10,
                   ),
                   minLeadingWidth: 10,
-                  title: Text(
-                    'Change to Business Account',
-                    style: TextStyle(fontSize: 15, fontWeight: FontWeight.w400),
+                  title: Padding(
+                    padding: const EdgeInsets.only(bottom: 5.0),
+                    child: Text(
+                      'Change to Business Account',
+                      style: TextStyle(fontSize: 15, fontWeight: FontWeight.w400),
+                    ),
                   ),
                 ),
               )),
@@ -234,14 +246,18 @@ class _DrawerState extends State<DrawerWidget> {
               height: 45,
               child: ListTile(
                 leading:
-                    Icon(FontAwesomeIcons.penSquare, color: Color(0xF0A40C85)),
+                    Icon(MyFlutterApp.postarequest,
+                        size: 20, color: Color(0xF0A40C85)),
                 contentPadding: const EdgeInsets.only(
                   left: 10,
                 ),
                 minLeadingWidth: 10,
-                title: Text(
-                  'Post a request',
-                  style: TextStyle(fontSize: 15, fontWeight: FontWeight.w400),
+                title: Padding(
+                  padding: const EdgeInsets.only(bottom: 5.0),
+                  child: Text(
+                    'Post a request',
+                    style: TextStyle(fontSize: 15, fontWeight: FontWeight.w400),
+                  ),
                 ),
               ),
             ),
@@ -265,22 +281,26 @@ class _DrawerState extends State<DrawerWidget> {
             child: SizedBox(
               height: 40,
               child: ListTile(
-                leading: Icon(Icons.account_balance_wallet,
+                leading: Icon(MyFlutterApp.wallet__2_,
+                    size: 18,
                     color: Color(0xF0A40C85)),
                 contentPadding: const EdgeInsets.only(
                   left: 10,
                 ),
                 minLeadingWidth: 10,
-                title: Text(
-                  'Payments',
-                  style: TextStyle(fontSize: 15, fontWeight: FontWeight.w400),
+                title: Padding(
+                  padding: const EdgeInsets.only(bottom: 5.0),
+                  child: Text(
+                    'Payments',
+                    style: TextStyle(fontSize: 15, fontWeight: FontWeight.w400),
+                  ),
                 ),
               ),
             ),
           ),
           InkWell(
             onTap: () {
-              Share.share('Check out this website https://example.com',
+              Share.share('Hey\n\n I use Fixme to find Service Providers or Businesses around me. Fixme is safe and would help you gain customers as a busness. \n\n Get Fixme for free at: https://fixme.com.ng/\n\n My Referral Code is: Fixme-${network.userId}',
                   subject: 'Share Fixme');
             },
             child: SizedBox(
@@ -486,14 +506,18 @@ class _DrawerState extends State<DrawerWidget> {
             child: SizedBox(
               height: 45,
               child: ListTile(
-                leading: Icon(Icons.logout, color: Color(0xF0A40C85)),
+                leading: Icon(MyFlutterApp.vector__2_,
+                    size: 20, color: Color(0xF0A40C85)),
                 contentPadding: const EdgeInsets.only(
                   left: 10,
                 ),
                 minLeadingWidth: 10,
-                title: Text(
-                  'Logout',
-                  style: TextStyle(fontSize: 15, fontWeight: FontWeight.w400),
+                title: Padding(
+                  padding: const EdgeInsets.only(bottom: 5.0),
+                  child: Text(
+                    'Logout',
+                    style: TextStyle(fontSize: 15, fontWeight: FontWeight.w400),
+                  ),
                 ),
               ),
             ),

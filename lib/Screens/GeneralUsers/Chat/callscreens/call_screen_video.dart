@@ -2,6 +2,7 @@ import 'dart:async';
 import 'package:agora_rtc_engine/rtc_engine.dart';
 import 'package:agora_rtc_engine/rtc_local_view.dart' as RtcLocalView;
 import 'package:agora_rtc_engine/rtc_remote_view.dart' as RtcRemoteView;
+import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:fixme/Services/call_service.dart';
 import 'package:fixme/strings.dart';
 import 'package:flutter/material.dart';
@@ -311,30 +312,41 @@ class _CallVideoPageState extends State<CallVideoPage> {
                   height: 50,
                   alignment: Alignment.bottomCenter,
                   padding: const EdgeInsets.symmetric(vertical: 0),
-                  child: StreamBuilder<List<Message>>(
+                  child:
+                  StreamBuilder(
                       stream: data.getCallStatus(
                           widget.idUser, network.mobileDeviceToken),
-                      builder: (context, snapshot) {
-                        switch (snapshot.connectionState) {
-                          case ConnectionState.waiting:
-                            return buildText("...");
+                      builder: (context, AsyncSnapshot<QuerySnapshot> snapshot){
+                        if (snapshot.hasData) {
+                          List<Message> call;
+                          call = snapshot.data.docs
+                              .map((doc) => Message.fromMap(doc.data(), doc.id))
+                              .toList();
 
-                          default:
-                            if (snapshot.hasError) {
-                              return buildText(
-                                  'Something Went Wrong Try later');
-                            } else if (snapshot.data.isEmpty) {
-                              return buildText('');
-                            } else if (snapshot.hasData) {
-                              final messages = snapshot.data;
-                              return messages[0].callStatus == 'Connected'
-                                  ? buildText('Connected...')
-                                  : messages[0].callStatus == 'Connecting'
+
+                          switch (snapshot.connectionState) {
+                            case ConnectionState.waiting:
+                              return buildText('Loading...');
+                            default:
+                              if (snapshot.hasError) {
+                                return buildText('Something Went Wrong Try later');
+                              } else {
+                                final users = call;
+                                if (users.isEmpty) {
+                                  return buildText('');
+                                } else{
+                                  return   users[0].callStatus == 'Connected'
+                                      ? buildText('Connected...')
+                                      : users[0].callStatus == 'Connecting'
                                       ? buildText('Connecting...')
                                       : buildText('Some');
-                            }
+                                }}
+                          }
+                        } else {
+                          return buildText('Loading...');
                         }
-                      })),
+                      })
+              ),
             )
           ],
         ),

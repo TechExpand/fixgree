@@ -1,5 +1,6 @@
-import 'package:fixme/Screens/ArtisanUser/Profile/ArtisanPage.dart';
+
 import 'package:fixme/Screens/ArtisanUser/Profile/ArtisanPageNew.dart';
+import 'package:fixme/Screens/GeneralUsers/Home/Search.dart';
 import 'package:fixme/Services/network_service.dart';
 import 'package:fixme/Widgets/Rating.dart';
 import 'package:flutter/material.dart';
@@ -46,7 +47,7 @@ class _PopularServicesState extends State<PopularServices> {
         backgroundColor: Colors.white,
         title: Text(
           'Nearby ${widget.serviceName}s',
-          style: GoogleFonts.openSans(
+          style: GoogleFonts.poppins(
             fontWeight: FontWeight.w600,
             fontSize: 19,
             color: Color(0xFF9B049B),
@@ -90,22 +91,43 @@ class _PopularServicesState extends State<PopularServices> {
                   ),
                 ),
                 Expanded(
-                  child: TextFormField(
-                    style: TextStyle(
-                        fontSize: 16,
-                        color: Color(0xFF270F33),
-                        fontWeight: FontWeight.w600),
-                    controller: searchController,
-                    onChanged: (value) {
-                      filterSearchResults(value);
+                  child: InkWell(
+                    onTap: () {
+                      Navigator.push(
+                        context,
+                        PageRouteBuilder(
+                          pageBuilder:
+                              (context, animation, secondaryAnimation) {
+                            return SearchPage();
+                          },
+                          transitionsBuilder: (context, animation,
+                              secondaryAnimation, child) {
+                            return FadeTransition(
+                              opacity: animation,
+                              child: child,
+                            );
+                          },
+                        ),
+                      );
                     },
-                    decoration: InputDecoration.collapsed(
-                      hintText: 'Search ${widget.serviceName}s',
-                      hintStyle:
-                          TextStyle(fontSize: 16, fontWeight: FontWeight.w600),
-                      focusColor: Color(0xFF2B1137),
-                      fillColor: Color(0xFF2B1137),
-                      hoverColor: Color(0xFF2B1137),
+                    child: TextFormField(
+                      enabled: false,
+                      style: TextStyle(
+                          fontSize: 16,
+                          color: Color(0xFF270F33),
+                          fontWeight: FontWeight.w600),
+                      controller: searchController,
+                      onChanged: (value) {
+                        filterSearchResults(value);
+                      },
+                      decoration: InputDecoration.collapsed(
+                        hintText: 'Search ${widget.serviceName}s',
+                        hintStyle:
+                            TextStyle(fontSize: 16, fontWeight: FontWeight.w600),
+                        focusColor: Color(0xFF2B1137),
+                        fillColor: Color(0xFF2B1137),
+                        hoverColor: Color(0xFF2B1137),
+                      ),
                     ),
                   ),
                 ),
@@ -131,7 +153,11 @@ class _PopularServicesState extends State<PopularServices> {
                             Theme(
                                 data: Theme.of(context)
                                     .copyWith(accentColor: Color(0xFF9B049B)),
-                                child: CircularProgressIndicator()),
+                                child: CircularProgressIndicator(valueColor: AlwaysStoppedAnimation<Color>(Color(0xFF9B049B)),
+                                   strokeWidth: 2,
+                                              backgroundColor: Colors.white,
+
+)),
                             SizedBox(
                               height: 10,
                             ),
@@ -406,7 +432,11 @@ class _PopularServicesState extends State<PopularServices> {
                           Theme(
                               data: Theme.of(context)
                                   .copyWith(accentColor: Color(0xFF9B049B)),
-                              child: CircularProgressIndicator()),
+                              child: CircularProgressIndicator(valueColor: AlwaysStoppedAnimation<Color>(Color(0xFF9B049B)),
+                                 strokeWidth: 2,
+                                              backgroundColor: Colors.white,
+
+)),
                           SizedBox(
                             height: 10,
                           ),

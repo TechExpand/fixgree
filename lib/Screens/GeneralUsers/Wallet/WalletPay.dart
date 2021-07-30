@@ -1,3 +1,4 @@
+import 'package:fl_toast/fl_toast.dart';
 import 'package:flutter/material.dart';
 import 'package:fixme/Model/UserBankInfo.dart';
 import 'package:fixme/Screens/GeneralUsers/Wallet/CardPayment.dart';
@@ -210,6 +211,7 @@ class _WalletPayState extends State<WalletPay> {
                                   style: TextStyle(
                                       color: Color(0xFF333333),
                                       fontSize: 24,
+                                      fontFamily: 'Roboto',
                                       height: 1.5,
                                       fontWeight: FontWeight.w500)),
                             ],
@@ -483,10 +485,11 @@ class _WalletPayState extends State<WalletPay> {
                                   if (model.getAccountName.isNotEmpty) {
                                     if (model.getAccountName ==
                                         'Invalid Bank Info!') {
-                                      Scaffold.of(context)
-                                          .showSnackBar(SnackBar(
-                                        content: Text("Invalid Bank Info!"),
-                                      ));
+                                            await showTextToast(
+                                                                            text: "Invalid Bank Info",
+                                                                              context: context,
+                                                                                             );
+                                    
                                     } else {
                                       Navigator.of(context).push(
                                         PageRouteBuilder(
@@ -543,7 +546,7 @@ class _WalletPayState extends State<WalletPay> {
                                   child: Theme(
                                     data: Theme.of(context).copyWith(
                                         accentColor: Color(0xFF9B049B)),
-                                    child: CircularProgressIndicator(
+                                    child: CircularProgressIndicator(valueColor: AlwaysStoppedAnimation<Color>(Color(0xFF9B049B)),
                                       strokeWidth: 2,
                                       backgroundColor: Colors.white,
                                     ),

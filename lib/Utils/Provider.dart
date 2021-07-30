@@ -18,6 +18,7 @@ class DataProvider extends ChangeNotifier {
   bool splash = false;
   String productName = '';
   String productBio = '';
+  String referalId = '';
   String productPrice = '';
   List<Services> servicesList = [];
   List subcat = [];
@@ -46,6 +47,12 @@ class DataProvider extends ChangeNotifier {
 
   setDescription(value) {
     description = value;
+    notifyListeners();
+  }
+
+
+  setreferalId(value){
+    referalId =  value;
     notifyListeners();
   }
 

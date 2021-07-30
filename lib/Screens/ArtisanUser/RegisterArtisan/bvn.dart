@@ -57,7 +57,9 @@ class SignUpBvnState extends State<SignUpBvn> {
                 style: TextStyle(color: Colors.black),
                 cursorColor: Colors.black,
                 keyboardType: TextInputType.number,
+                maxLines: null,
                 decoration: InputDecoration(
+                  isDense: true,
                   labelStyle: TextStyle(color: Colors.black38),
                   labelText: 'BVN number',
                   enabledBorder: OutlineInputBorder(

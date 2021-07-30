@@ -8,7 +8,7 @@ class LocationService with ChangeNotifier {
   Future getCurrentLocation() async {
     try {
       Position position =
-          await getCurrentPosition(desiredAccuracy: LocationAccuracy.best);
+          await Geolocator.getCurrentPosition(desiredAccuracy: LocationAccuracy.best);
       locationLatitude = position.latitude;
       locationLongitude = position.longitude;
       notifyListeners();

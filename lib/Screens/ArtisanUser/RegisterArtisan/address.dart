@@ -49,6 +49,11 @@ TextEditingController businessName = TextEditingController();
               width: MediaQuery.of(context).size.width / 0.2,
               height: 55,
               child: TextFormField(
+                textCapitalization:
+                TextCapitalization.sentences,
+                autocorrect: true,
+                enableSuggestions: true,
+                maxLines: null,
                 controller: homeAddress,
                 onChanged: (value) {
                   setState(() {
@@ -59,6 +64,7 @@ TextEditingController businessName = TextEditingController();
                 style: TextStyle(color: Colors.black),
                 cursorColor: Colors.black,
                 decoration: InputDecoration(
+                  isDense: true,
                   labelStyle: TextStyle(color: Colors.black38),
                   labelText: 'Home Address',
                   enabledBorder: OutlineInputBorder(
@@ -80,6 +86,11 @@ TextEditingController businessName = TextEditingController();
               width: MediaQuery.of(context).size.width / 0.2,
               height: 55,
               child: TextFormField(
+                textCapitalization:
+                TextCapitalization.sentences,
+                autocorrect: true,
+                enableSuggestions: true,
+                maxLines: null,
                 controller: officeAddress,
                 onChanged: (value) {
                   setState(() {
@@ -90,6 +101,7 @@ TextEditingController businessName = TextEditingController();
                 style: TextStyle(color: Colors.black),
                 cursorColor: Colors.black,
                 decoration: InputDecoration(
+                  isDense: true,
                   labelStyle: TextStyle(color: Colors.black38),
                   labelText: 'Office Address',
                   enabledBorder: OutlineInputBorder(
@@ -123,6 +135,11 @@ TextEditingController businessName = TextEditingController();
               width: MediaQuery.of(context).size.width / 0.2,
               height: 55,
               child: TextFormField(
+                textCapitalization:
+                TextCapitalization.sentences,
+                autocorrect: true,
+                enableSuggestions: true,
+                maxLines: null,
                 controller: businessName,
                 onChanged: (value) {
                   data.setBusinessName(value);
@@ -130,6 +147,7 @@ TextEditingController businessName = TextEditingController();
                 style: TextStyle(color: Colors.black),
                 cursorColor: Colors.black,
                 decoration: InputDecoration(
+                  isDense: true,
                   labelStyle: TextStyle(color: Colors.black38),
                   labelText: 'Business Name',
                   enabledBorder: OutlineInputBorder(

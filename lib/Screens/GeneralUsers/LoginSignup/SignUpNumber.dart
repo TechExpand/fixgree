@@ -1,5 +1,6 @@
 import 'package:fixme/Services/network_service.dart';
 import 'package:fixme/Utils/Provider.dart';
+import 'package:fl_toast/fl_toast.dart';
 import 'package:flutter/material.dart';
 import 'package:intl_phone_number_input/intl_phone_number_input.dart';
 import 'package:provider/provider.dart';
@@ -51,10 +52,12 @@ class SignUpState extends State<SignUp> {
               ),
             );
           },
-          verificationFailed: (FirebaseAuthException e) {
+          verificationFailed: (FirebaseAuthException e)async {
             network.loginSetState();
-            scaffoldKey.currentState
-                .showSnackBar(SnackBar(content: Text(e.message)));
+            await showTextToast(
+                                                                            text: e.message,
+                                                                              context: context,
+                                                                                             );
           },
           timeout: Duration(seconds: 120),
           codeSent: (String verificationId, int resendToken) {
@@ -83,8 +86,10 @@ class SignUpState extends State<SignUp> {
           codeAutoRetrievalTimeout: (String verificationId) {},
         );
       } catch (e) {
-        scaffoldKey.currentState
-            .showSnackBar(SnackBar(content: Text(e.message)));
+         await showTextToast(
+                                                                            text: e.message,
+                                                                              context: context,
+                                                                                             );
       }
     }
 
@@ -167,7 +172,7 @@ class SignUpState extends State<SignUp> {
                               borderRadius: BorderRadius.circular(26)),
                           child: FlatButton(
                             onPressed:
-                                conData.number.toString() == conData.number.dialCode
+                            controller.text.isEmpty
                                     ? null
                                     : () {
 //                        network.Login();
@@ -206,10 +211,16 @@ class SignUpState extends State<SignUp> {
                         )
                       : Padding(
                           padding: const EdgeInsets.only(bottom: 50.0),
-                          child: CircularProgressIndicator(
-                            valueColor: AlwaysStoppedAnimation<Color>(
-                                Color(0xFF9B049B)),
-                          ),
+                          child: Theme(
+                                                    data: Theme.of(context)
+                                                        .copyWith(
+                                                            accentColor: Color(
+                                                                0xFF9B049B)),
+                                                    child:
+                                                    CircularProgressIndicator(valueColor: AlwaysStoppedAnimation<Color>(Color(0xFF9B049B)),
+                                                       strokeWidth: 2,
+                                              backgroundColor: Colors.white,
+                                                    )),
                         ));})
             ],
           ),

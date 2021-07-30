@@ -4,19 +4,21 @@ import 'dart:io';
 import 'package:fixme/Model/UserSearch.dart';
 import 'package:device_info/device_info.dart';
 import 'package:fixme/Model/Project.dart';
-import 'package:fixme/Model/info.dart';
-import 'package:fixme/Screens/ArtisanUser/Profile/ProfilePage.dart';
 import 'package:fixme/Screens/ArtisanUser/Profile/ProfilePageNew.dart';
 import 'package:fixme/Screens/GeneralUsers/Home/HomePage.dart';
+import 'package:fixme/Screens/GeneralUsers/Notification/Pay.dart';
 import 'package:fixme/Services/postrequest_service.dart';
 import 'package:fixme/Utils/Provider.dart';
 import 'package:fixme/Utils/utils.dart';
+import 'package:fl_toast/fl_toast.dart';
 import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 import 'package:http/http.dart' as http;
 import 'package:provider/provider.dart';
 import 'package:shared_preferences/shared_preferences.dart';
+
+import 'Firebase_service.dart';
 
 class WebServices extends ChangeNotifier {
   var loginState = false;
@@ -27,13 +29,17 @@ class WebServices extends ChangeNotifier {
   var role = '';
   var phoneNum = '';
   var mobileDeviceToken = '';
+  var paymentToken = '';
   var profilePicFileName = '';
   var firstName = '';
+  var newid = 0;
+  var serviceId = 0;
   var lastName = '';
   var bio = '';
   var email = '';
   String mainUrl = 'https://manager.fixme.ng';
-  String mainBearer = 'FIXME_1nsjui2SHDS9823HBCDHN2389HDNSJH23NDI3N132n9jc92h3nj_FIXME_APP_23nujujNHU3JNUN42NJK2N39mjni2jn3nk3n8JNN2NJ9jnkjnjkn23jmIOJ23NJ';
+  String mainBearer =
+      'FIXME_1nsjui2SHDS9823HBCDHN2389HDNSJH23NDI3N132n9jc92h3nj_FIXME_APP_23nujujNHU3JNUN42NJK2N39mjni2jn3nk3n8JNN2NJ9jnkjnjkn23jmIOJ23NJ';
 
   void loginSetState() {
     if (loginState == false) {
@@ -62,43 +68,40 @@ class WebServices extends ChangeNotifier {
     notifyListeners();
   }
 
-
   String os = '';
- String info = '';
-  checkDevice()async{
+  String info = '';
+
+  checkDevice() async {
     DeviceInfoPlugin deviceInfo = DeviceInfoPlugin();
-    if(Platform.isAndroid) {
+    if (Platform.isAndroid) {
       AndroidDeviceInfo androidInfo = await deviceInfo.androidInfo;
-      info = androidInfo.id;
+      info = androidInfo.model;
       os = 'Android';
       print('Running on ${androidInfo.device}'); //
 
-    }else {
+    } else {
       IosDeviceInfo iosInfo = await deviceInfo.iosInfo;
-      info = iosInfo.name;
+      info = iosInfo.model;
       os = 'IOS';
       print('Running on ${iosInfo.utsname.machine}');
     }
     notifyListeners();
   }
 
-
-
-
-
   Future<dynamic> register({context, scaffoldKey}) async {
     var data = Provider.of<DataProvider>(context, listen: false);
     var datas = Provider.of<Utils>(context, listen: false);
     try {
-      var response = await http
-          .post(Uri.parse('$mainUrl/create-user'), body: {
+      var response = await http.post(Uri.parse('$mainUrl/create-user'), body: {
         'mobile': data.number.toString().substring(
             data.number.dialCode.length, data.number.toString().length),
         'firstName': data.firstName.toString(),
         'lastName': data.lastName.toString(),
-        'device_token': data.firebaseUserId.toString() ?? '',
-        'device_os': os,
-        'device_type': info,
+        'referral_Id': data.referalId.isEmpty ? '0' : data.referalId,
+        'device_token': datas.fcmToken.toString() ?? '',
+        'device_os': os.toString(),
+        'device_type': info.toString(),
+        'password': data.password.toString(),
         'firebaseId': data.firebaseUserId.toString(),
         'email':
             data.emails.toString() == null || data.emails.toString().isEmpty
@@ -106,8 +109,7 @@ class WebServices extends ChangeNotifier {
                 : data.emails.toString(),
       }, headers: {
         "Content-type": "application/x-www-form-urlencoded",
-        'Authorization':
-            'Bearer $mainBearer',
+        'Authorization': 'Bearer $mainBearer',
       });
       var body = json.decode(response.body);
       userId = body['user_id'];
@@ -116,14 +118,19 @@ class WebServices extends ChangeNotifier {
       firstName = body['firstName'];
       lastName = body['lastName'];
       phoneNum = body['fullNumber'];
+      paymentToken = body['payment_token'];
       role = body['user_role'];
+      serviceId = body['service_id'];
       bearer = response.headers['bearer'];
       if (body['reqRes'] == 'true') {
         datas.storeData('Bearer', bearer);
+        datas.storeData('paymentToken', paymentToken);
         datas.storeData('mobile_device_token', mobileDeviceToken);
         datas.storeData('user_id', userId.toString());
         datas.storeData('profile_pic_file_name', profilePicFileName);
         datas.storeData('firstName', firstName);
+        datas.storeData('lastName', lastName);
+        datas.storeData('service_id', serviceId.toString());
         datas.storeData('phoneNum', phoneNum);
         datas.storeData('role', role);
         loginSetState();
@@ -144,13 +151,18 @@ class WebServices extends ChangeNotifier {
         );
       } else if (body['reqRes'] == 'false') {
         loginSetState();
-        scaffoldKey.currentState
-            .showSnackBar(SnackBar(content: Text(body['message'])));
+        await showTextToast(
+          text: body['message'],
+          context: context,
+        );
       }
       notifyListeners();
     } catch (e) {
       loginSetState();
-      scaffoldKey.currentState.showSnackBar(SnackBar(content: Text(e)));
+      await showTextToast(
+        text: e,
+        context: context,
+      );
     }
   }
 
@@ -158,18 +170,15 @@ class WebServices extends ChangeNotifier {
     var data = Provider.of<DataProvider>(context, listen: false);
     var datas = Provider.of<Utils>(context, listen: false);
     try {
-      var response = await http
-          .post(Uri.parse('$mainUrl/user-auth'), body: {
+      var response = await http.post(Uri.parse('$mainUrl/user-auth'), body: {
         'phoneNumber': data.number.toString().substring(
             data.number.dialCode.length, data.number.toString().length),
       }, headers: {
         "Content-type": "application/x-www-form-urlencoded",
-        'Authorization':
-            'Bearer $mainBearer',
+        'Authorization': 'Bearer $mainBearer',
       });
       var body = json.decode(response.body);
       bearer = response.headers['bearer'];
-
       userId = body['id'];
       profilePicFileName = body['profile_pic_file_name'];
       firstName = body['firstName'];
@@ -177,15 +186,17 @@ class WebServices extends ChangeNotifier {
       role = body['role'];
       phoneNum = body['fullNumber'];
       email = body['email'];
+      serviceId = body['service_id'];
+      paymentToken = body['payment_token'];
 
-
+      print(body.toString());
+      print(body.toString());
       if (body['reqRes'] == 'true') {
-        var response2 = await http.post(
-            Uri.parse('$mainUrl/user-info?user_id=$userId'),
-            headers: {
-              "Content-type": "application/json",
-              'Authorization': 'Bearer $bearer',
-            });
+        var response2 = await http
+            .post(Uri.parse('$mainUrl/user-info?user_id=$userId'), headers: {
+          "Content-type": "application/json",
+          'Authorization': 'Bearer $bearer',
+        });
         var body2 = json.decode(response2.body);
         bio = body2['bio'];
         mobileDeviceToken = body['firebase_id'];
@@ -197,8 +208,10 @@ class WebServices extends ChangeNotifier {
         datas.storeData('firstName', firstName);
         datas.storeData('lastName', lastName);
         datas.storeData('phoneNum', phoneNum);
+        datas.storeData('paymentToken', paymentToken);
         datas.storeData('email', email);
         datas.storeData('role', role);
+        datas.storeData('service_id', serviceId.toString());
         datas.storeData('about', bio);
         loginSetState();
         return Navigator.push(
@@ -217,12 +230,18 @@ class WebServices extends ChangeNotifier {
           ),
         );
       } else if (body['message'].toString() == "Invalid Credentials!") {
-        scaffoldKey.currentState
-            .showSnackBar(SnackBar(content: Text('User Does Not Exist')));
+        await showTextToast(
+          text: 'User Does Not Exist',
+          context: context,
+        );
+
         loginSetState();
       } else if (body['reqRes'].toString() == 'false') {
-        scaffoldKey.currentState
-            .showSnackBar(SnackBar(content: Text(body['message'])));
+        await showTextToast(
+          text: body['message'],
+          context: context,
+        );
+
         loginSetState();
       }
       notifyListeners();
@@ -235,6 +254,7 @@ class WebServices extends ChangeNotifier {
   initializeValues() async {
     SharedPreferences prefs = await SharedPreferences.getInstance();
     userId = int.parse(prefs.getString('user_id'));
+    serviceId = int.parse(prefs.getString('service_id'));
     bearer = prefs.getString('Bearer');
     mobileDeviceToken = prefs.getString('mobile_device_token');
     profilePicFileName = prefs.getString('profile_pic_file_name');
@@ -247,43 +267,63 @@ class WebServices extends ChangeNotifier {
     notifyListeners();
   }
 
-  Future<dynamic> initiateProject(projectOwnerUserId, bidId, projectId,
-      serviceId, budget, context, setStates) async {
+  Future<dynamic> initiateProject(mainserviceId, projectOwnerUserId, bidId,
+      projectId, serviceId, budget, context, setStates) async {
+    print("userid $userId");
+    print('proid $projectOwnerUserId');
+    print('bidid $bidId');
+    print('project $projectId');
+    print('service $mainserviceId');
+    print('budget $budget');
+
     try {
-      var response = await http
-          .post(Uri.parse('$mainUrl/save-send-budget'), body: {
+      var response =
+          await http.post(Uri.parse('$mainUrl/save-send-budget'), body: {
         'user_id': userId.toString(),
-        'project_owner_user_id': '$projectOwnerUserId',
-        'bid_id': '$bidId',
-        'project_id': '$projectId',
-        'service_id': '$serviceId',
-        'budget': '$budget',
+        'project_owner_user_id': projectOwnerUserId.toString(),
+        bidId == null ? null : 'bid_id': bidId,
+        projectId == null ? null : 'project_id': projectId,
+        'service_id': mainserviceId.toString(),
+        'budget': budget,
       }, headers: {
         "Content-type": "application/x-www-form-urlencoded",
         'Authorization': 'Bearer $bearer',
       });
       var body = json.decode(response.body);
+
       notifyListeners();
       if (body['reqRes'] == 'true') {
         setStates(() {});
         loginPopSetState();
         Navigator.pop(context);
-        ScaffoldMessenger.of(context)
-            .showSnackBar(SnackBar(content: new Text("JOB INITIATED")));
+        await showTextToast(
+          text: 'JOB INITIATED',
+          context: context,
+        );
+        // ScaffoldMessenger.of(context)
+        //     .showSnackBar(SnackBar(content: new Text("JOB INITIATED")));
 
         return body;
       } else if (body['reqRes'] == 'false') {
         setStates(() {});
         loginPopSetState();
         Navigator.pop(context);
+        await showTextToast(
+          text: "JOB INITIATION FAILED",
+          context: context,
+        );
 //      scaffoldKey.showSnackBar(
 //          new SnackBar(content: new Text("JOB INITIATION FAILED")));
-        print(body);
+
       }
     } catch (e) {
       setStates(() {});
       loginPopSetState();
-      print(e);
+      Navigator.pop(context);
+      await showTextToast(
+        text: "JOB INITIATION FAILED",
+        context: context,
+      );
 //      scaffoldKey.showSnackBar(
 //          new SnackBar(content: new Text("Failed")));
     }
@@ -297,8 +337,8 @@ class WebServices extends ChangeNotifier {
     SharedPreferences prefs = await SharedPreferences.getInstance();
 
     try {
-      var response = await http
-          .post(Uri.parse('$mainUrl/business-account'), body: {
+      var response =
+          await http.post(Uri.parse('$mainUrl/business-account'), body: {
         'identification_number': data.bvn ?? '',
         'business_address': data.officeAddress ?? '',
         'house_address': data.homeAddress ?? '',
@@ -337,19 +377,27 @@ class WebServices extends ChangeNotifier {
         );
       } else if (body['message'] == 'Duplicate Sub-Service Entry' &&
           body['reqRes'] == 'false') {
-        scaffoldKey.currentState.showSnackBar(
-            SnackBar(content: Text('Duplicate Sub-Service Entry')));
+        await showTextToast(
+          text: "Duplicate Sub-Service Entry.",
+          context: context,
+        );
+
         loginSetState();
       } else if (body['reqRes'] == 'false') {
-        scaffoldKey.currentState.showSnackBar(
-            SnackBar(content: Text('There was a Problem. Working on it.')));
+        await showTextToast(
+          text: "There was a Problem. Working on it.",
+          context: context,
+        );
+
         loginSetState();
       }
       notifyListeners();
     } catch (e) {
       loginSetState();
-      scaffoldKey.currentState.showSnackBar(
-          SnackBar(content: Text('There was a Problem. Working on it.')));
+      await showTextToast(
+        text: "There was a Problem. Working on it.",
+        context: context,
+      );
     }
   }
 
@@ -375,8 +423,7 @@ class WebServices extends ChangeNotifier {
   }
 
   Future<dynamic> getArtisanReviews([userId]) async {
-    var response = await http
-        .post(Uri.parse('$mainUrl/get-reviews'), body: {
+    var response = await http.post(Uri.parse('$mainUrl/get-reviews'), body: {
       'user_id': this.userId.toString(),
       'artisan_id': userId.toString(),
     }, headers: {
@@ -394,40 +441,97 @@ class WebServices extends ChangeNotifier {
     }
   }
 
-  Future<dynamic> confirmBudget([bidderUserId, bidId, scaffoldKey]) async {
+  Future<dynamic> confirmBudget({context,
+  bidderUserId, bidId, invoceId,paymentMethod, data, myPage}) async {
+    try{
     var response = await http.post(
         Uri.parse('$mainUrl/approve-bid'
             ''),
         body: {
           'user_id': userId.toString(),
           'bidder_user_id': bidderUserId.toString(),
-          'bid_id': bidId.toString(),
+          bidId==null?null:'bid_id': bidId.toString(),
+          'payment_method': paymentMethod,
+          'invoice_id': invoceId.toString(),
         },
         headers: {
           "Content-type": "application/x-www-form-urlencoded",
           'Authorization': 'Bearer $bearer',
         });
     var body = json.decode(response.body);
+    print(response.body);
+    print(response.body);
     notifyListeners();
+
     if (body['reqRes'] == 'true') {
-      print(body['reqRes']);
-      scaffoldKey.currentState.showSnackBar(
-          SnackBar(content: Text('Project Confirmed Successfully')));
+      Navigator.pop(context);
+      Navigator.pop(context);
+       FirebaseApi.updateNotification(data.id, 'confirm');
+      Navigator.push(
+        context,
+        PageRouteBuilder(
+          pageBuilder: (context, animation, secondaryAnimation) {
+            return Pay(
+              controller: myPage,
+              data: data,
+            );
+            //   userBankInfo: users[index]// ignUpAddress();
+          },
+          transitionsBuilder: (context, animation, secondaryAnimation, child) {
+            return FadeTransition(
+              opacity: animation,
+              child: child,
+            );
+          },
+        ),
+      );
       return body['reviews'];
     } else if (body['reqRes'] == 'false') {
-      print(body['message']);
+
+         if(body['message'] == "Invalid Payment Details"){
+           Navigator.pop(context);
+           Navigator.pop(context);
+           await showTextToast(
+             text: "Invalid Payment Details",
+             context: context,
+           );
+         }else if(body['message'] == "Insufficient Wallet Balance"){
+           Navigator.pop(context);
+           Navigator.pop(context);
+           await showTextToast(
+             text: "Insufficient Wallet Balance. Kindly top up your wallet or change payment method.",
+             context: context,
+           );
+         }else if(body['message'] == "Card Payment Failed"){
+           Navigator.pop(context);
+           Navigator.pop(context);
+           await showTextToast(
+             text: "Card Payment Failed. Kindly check that you have sufficient funds in your account and try again.",
+             context: context,
+           );
+         }
     }
-  }
+  }catch(e){
+      Navigator.pop(context);
+      Navigator.pop(context);
+      await showTextToast(
+        text: "There was a Problem Encountered.",
+        context: context,
+      );
+    }
+    }
 
   Future<dynamic> confirmPaymentAndReview(
-      [rating, jobid, comment, scafoldKey, artisanId, userId, context]) async {
+      [rating, jobid,bidid,serviceId, comment, scafoldKey, artisanId, userId, context]) async {
     var response = await http.post(
         Uri.parse('$mainUrl/confirm-project-completion-rating'
             ''),
         body: {
           'reviewing_user_id': userId.toString(),
           'reviewed_user_id': artisanId.toString(),
-          'job_id': jobid.toString(),
+          'bid_id': bidid.toString(),
+          'jobId': jobid.toString(),
+          serviceId==null?null:'service_request_id': serviceId,
           'rating': rating.toString(),
           'review': comment.toString(),
         },
@@ -439,17 +543,19 @@ class WebServices extends ChangeNotifier {
     notifyListeners();
     if (body['reqRes'] == 'true') {
       print(body);
-      ScaffoldMessenger.of(context).showSnackBar(
-          SnackBar(content: new Text("Review Successfully Submited")));
+      await showTextToast(
+        text: "Review Successfully Submited.",
+        context: context,
+      );
+
       return body;
     } else if (body['reqRes'] == 'false') {
       print(body);
     }
   }
 
-  Future<dynamic> bidProject([userId, jobId, scaffoldKey]) async {
-    var response = await http
-        .post(Uri.parse('$mainUrl/bid-project'), body: {
+  Future<dynamic> bidProject(context, [userId, jobId, scaffoldKey]) async {
+    var response = await http.post(Uri.parse('$mainUrl/bid-project'), body: {
       'user_id': userId.toString(),
       'job_id': jobId.toString(),
     }, headers: {
@@ -459,8 +565,11 @@ class WebServices extends ChangeNotifier {
     var body = json.decode(response.body);
     notifyListeners();
     if (body['reqRes'] == 'true') {
-      scaffoldKey.currentState
-          .showSnackBar(SnackBar(content: Text('Project Bid Successfully')));
+      await showTextToast(
+        text: "Project Bid Successful.",
+        context: context,
+      );
+
       return body['reviews'];
     } else if (body['reqRes'] == 'false') {
       print(body['message']);
@@ -468,8 +577,7 @@ class WebServices extends ChangeNotifier {
   }
 
   Future<dynamic> getUserInfo([userId]) async {
-    var response =
-        await http.post(Uri.parse('$mainUrl/user-info'), body: {
+    var response = await http.post(Uri.parse('$mainUrl/user-info'), body: {
       'user_id': userId.toString(),
     }, headers: {
       "Content-type": "application/x-www-form-urlencoded",
@@ -487,33 +595,30 @@ class WebServices extends ChangeNotifier {
   // getUserJobInfo
 
   Future<dynamic> getUserJobInfo([userId, artisanId]) async {
-    var response = await http.post(
-        Uri.parse('$mainUrl/get-artisan-business-profile'),
-        body: {
-          'requesting_user_id': userId.toString(),
-          'artisan_user_id': artisanId.toString(),
-        },
-        headers: {
-          "Content-type": "application/x-www-form-urlencoded",
-          'Authorization': 'Bearer $bearer',
-        });
+    var response = await http
+        .post(Uri.parse('$mainUrl/get-artisan-business-profile'), body: {
+      'requesting_user_id': userId.toString(),
+      'artisan_user_id': artisanId.toString(),
+    }, headers: {
+      "Content-type": "application/x-www-form-urlencoded",
+      'Authorization': 'Bearer $bearer',
+    });
     var body = json.decode(response.body);
     // Map map = json.decode(response.body.toString());
-  // Info info = Info.fromJson(body);
+    // Info info = Info.fromJson(body);
 //print(info.fullNumber);
     print(bearer);
     notifyListeners();
     if (body['reqRes'] == 'true') {
       return body;
     } else if (body['reqRes'] == 'false') {
-   //   print(body['message']);
+      //   print(body['message']);
     }
   }
 
   Future<dynamic> getServiceImage([userId, requestedId]) async {
     print(userId);
-    var response = await http
-        .post(Uri.parse('$mainUrl/service-images'), body: {
+    var response = await http.post(Uri.parse('$mainUrl/service-images'), body: {
       'user_id': userId.toString(),
       'requested_user_id': requestedId.toString()
     }, headers: {
@@ -531,16 +636,14 @@ class WebServices extends ChangeNotifier {
 
   Future<dynamic> getProductImage([userId, requestedId]) async {
     print(userId);
-    var response = await http.post(
-        Uri.parse('$mainUrl/get-catalog-products'),
-        body: {
-          'user_id': userId.toString(),
-          'requested_user_id': requestedId.toString(),
-        },
-        headers: {
-          "Content-type": "application/x-www-form-urlencoded",
-          'Authorization': 'Bearer $bearer',
-        });
+    var response =
+        await http.post(Uri.parse('$mainUrl/get-catalog-products'), body: {
+      'user_id': userId.toString(),
+      'requested_user_id': requestedId.toString(),
+    }, headers: {
+      "Content-type": "application/x-www-form-urlencoded",
+      'Authorization': 'Bearer $bearer',
+    });
     var body = json.decode(response.body);
     notifyListeners();
     if (body['reqRes'] == 'true') {
@@ -551,20 +654,26 @@ class WebServices extends ChangeNotifier {
   }
 
   Future uploadProductCatalog(
-      {bio, productName, price, scaffoldKey, path, context,controlDes,controlName,controlPrice}) async {
+      {bio,
+      productName,
+      price,
+      scaffoldKey,
+      path,
+      context,
+      controlDes,
+      controlName,
+      controlPrice}) async {
     try {
-      var res = await http.post(
-          Uri.parse('$mainUrl/save-catlog-product'),
-          body: {
-            'product_name': productName.toString() ?? '',
-            'price': price.toString() ?? '',
-            'bio': bio.toString() ?? '',
-            'user_id': '$userId',
-          },
-          headers: {
-            "Content-type": "application/x-www-form-urlencoded",
-            'Authorization': 'Bearer $bearer',
-          });
+      var res =
+          await http.post(Uri.parse('$mainUrl/save-catlog-product'), body: {
+        'product_name': controlName.text.toString() ?? '',
+        'price': controlPrice.text.toString() ?? '',
+        'product_description': controlDes.text.toString() ?? '',
+        'user_id': '$userId',
+      }, headers: {
+        "Content-type": "application/x-www-form-urlencoded",
+        'Authorization': 'Bearer $bearer',
+      });
 
       var body = jsonDecode(res.body);
       notifyListeners();
@@ -663,9 +772,16 @@ class WebServices extends ChangeNotifier {
                                         ),
                                       ),
                                     )
-                                  : CircularProgressIndicator(
-                                      valueColor: AlwaysStoppedAnimation<Color>(
-                                          Color(0xFF9B049B))),
+                                  : Theme(
+                                      data: Theme.of(context).copyWith(
+                                          accentColor: Color(0xFF9B049B)),
+                                      child: CircularProgressIndicator(
+                                        valueColor:
+                                            AlwaysStoppedAnimation<Color>(
+                                                Color(0xFF9B049B)),
+                                        strokeWidth: 2,
+                                        backgroundColor: Colors.white,
+                                      )),
                               SizedBox(width: 5),
                               Material(
                                 borderRadius: BorderRadius.circular(26),
@@ -678,7 +794,8 @@ class WebServices extends ChangeNotifier {
                                       borderRadius: BorderRadius.circular(26)),
                                   child: FlatButton(
                                     onPressed: () {
-                                      Utils data = Provider.of<Utils>(context, listen: false);
+                                      Utils data = Provider.of<Utils>(context,
+                                          listen: false);
                                       data.selectedImage2toNull();
                                       Navigator.pop(context);
                                       controlDes.clear();
@@ -774,13 +891,59 @@ class WebServices extends ChangeNotifier {
     return body['message'];
   }
 
+  Future<dynamic> editProductPic({name, path, productID}) async {
+    try {
+      var upload = http.MultipartRequest(
+          'POST', Uri.parse('https://uploads.fixme.ng/change-product-image'));
+      var file = await http.MultipartFile.fromPath('file', path);
+      upload.files.add(file);
+      upload.fields['product_id'] = '$productID';
+      upload.fields['product_name'] = name.toString();
+      upload.fields['user_id'] = userId.toString();
+      upload.headers['authorization'] = 'Bearer $bearer';
+
+      final stream = await upload.send();
+      var response = await http.Response.fromStream(stream);
+      var body = json.decode(response.body);
+      print(response.body.toString() + 'kkkkkkkkkkkkkkk');
+      notifyListeners();
+      if (body['upldRes'] == 'true') {
+        return body;
+      } else if (body['upldRes'] == 'false') {
+        print(body);
+      }
+    } catch (e) {
+      print(e);
+    }
+  }
+
+  Future<dynamic> editProduct({name, price, description, productID}) async {
+    var response = await http.post(Uri.parse('$mainUrl/edit-prod-dtls'), body: {
+      'user_id': userId.toString(),
+      'product_id': '$productID',
+      'price': price,
+      'product_name': name,
+      'product_description': description,
+    }, headers: {
+      "Content-type": "application/x-www-form-urlencoded",
+      'Authorization': 'Bearer $bearer',
+    });
+    var body = json.decode(response.body);
+    print(body.toString() + 'lllllllllllllllllllll');
+    notifyListeners();
+    if (body['reqRes'] == 'true') {
+      return body;
+    } else if (body['reqRes'] == 'false') {
+      print(body);
+    }
+  }
+
   Future addProductCatalog(
       {bio, productName, price, scaffoldKey, path, context}) async {
-    var res = await http
-        .post(Uri.parse('$mainUrl/save-catlog-product'), body: {
+    var res = await http.post(Uri.parse('$mainUrl/save-catlog-product'), body: {
       'product_name': productName.toString() ?? '',
       'price': price.toString() ?? '',
-      'bio': bio.toString() ?? '',
+      'product_description': bio.toString() ?? '',
       'user_id': '$userId',
     }, headers: {
       "Content-type": "application/x-www-form-urlencoded",
@@ -805,21 +968,22 @@ class WebServices extends ChangeNotifier {
       var bodys = jsonDecode(resp.body);
 
       if (bodys['upldRes'] == 'true') {
-        SnackBar(
-          content:
-              Text(bodys.toString(), style: TextStyle(color: Colors.white)),
+        await showTextToast(
+          text: bodys.toString(),
+          context: context,
         );
+
         return 'success';
       } else if (bodys['upldRes'] == 'false') {
-        SnackBar(
-          content: Text('There was a Problem Working on it!',
-              style: TextStyle(color: Colors.white)),
+        await showTextToast(
+          text: "RThere was a Problem Working on it.",
+          context: context,
         );
       }
     } else if (body['reqRes'] == 'false') {
-      SnackBar(
-        content: Text('There was a Problem Working on it!',
-            style: TextStyle(color: Colors.white)),
+      await showTextToast(
+        text: "There was a Problem Working on it.",
+        context: context,
       );
     }
   }
@@ -966,9 +1130,15 @@ class WebServices extends ChangeNotifier {
                                       ),
                                     ),
                                   )
-                                : CircularProgressIndicator(
-                                    valueColor: AlwaysStoppedAnimation<Color>(
-                                        Color(0xFF9B049B))),
+                                : Theme(
+                                    data: Theme.of(context).copyWith(
+                                        accentColor: Color(0xFF9B049B)),
+                                    child: CircularProgressIndicator(
+                                      valueColor: AlwaysStoppedAnimation<Color>(
+                                          Color(0xFF9B049B)),
+                                      strokeWidth: 2,
+                                      backgroundColor: Colors.white,
+                                    )),
                             SizedBox(width: 5),
                             Material(
                               borderRadius: BorderRadius.circular(26),
@@ -981,6 +1151,7 @@ class WebServices extends ChangeNotifier {
                                     borderRadius: BorderRadius.circular(26)),
                                 child: FlatButton(
                                   onPressed: () {
+
                                     Navigator.pop(context);
                                   },
                                   color: Colors.green,
@@ -1084,8 +1255,7 @@ class WebServices extends ChangeNotifier {
 
   Future<bool> editUserBio({status}) async {
     var response = await http.post(
-        Uri.parse(
-            '$mainUrl/update-bio?user_id=$userId&bio=$status'),
+        Uri.parse('$mainUrl/update-bio?user_id=$userId&bio=$status'),
         headers: {
           "Content-type": "application/json",
           'Authorization': 'Bearer $bearer',
@@ -1152,12 +1322,12 @@ class WebServices extends ChangeNotifier {
   }
 
   Future<dynamic> updateFCMToken(userId, fcmToken) async {
-    var response = await http
-        .post(Uri.parse('$mainUrl/mtk-details-update'), body: {
+    var response =
+        await http.post(Uri.parse('$mainUrl/mtk-details-update'), body: {
       'user_id': userId.toString(),
       'device_token': fcmToken.toString(),
-      'device_os': 'andriod',
-      'device_type': 'techno',
+      'device_os': os,
+      'device_type': info,
     }, headers: {
       "Content-type": "application/x-www-form-urlencoded",
       'Authorization': 'Bearer $bearer',
@@ -1172,8 +1342,7 @@ class WebServices extends ChangeNotifier {
   }
 
   Future<dynamic> updateBio(bio) async {
-    var response = await http
-        .post(Uri.parse('$mainUrl/update-bio'), body: {
+    var response = await http.post(Uri.parse('$mainUrl/update-bio'), body: {
       'user_id': userId.toString(),
       'bio': '$bio',
     }, headers: {
@@ -1190,9 +1359,48 @@ class WebServices extends ChangeNotifier {
     }
   }
 
+  Future<dynamic> deleteSubService(subserviceID) async {
+    var response =
+        await http.post(Uri.parse('$mainUrl/delete-sub-service'), body: {
+      'user_id': userId.toString(),
+      'subService_Id': '$subserviceID',
+    }, headers: {
+      "Content-type": "application/x-www-form-urlencoded",
+      'Authorization': 'Bearer $bearer',
+    });
+    var body = json.decode(response.body);
+    notifyListeners();
+    if (body['reqRes'] == 'true') {
+      print(body);
+      print(body);
+      print(body);
+      return body;
+    } else if (body['reqRes'] == 'false') {
+      print(body);
+    }
+  }
+
+  Future<dynamic> updateAddress(address) async {
+    var response =
+        await http.post(Uri.parse('$mainUrl/edit-biz-address'), body: {
+      'user_id': userId.toString(),
+      'business_address': '$address',
+    }, headers: {
+      "Content-type": "application/x-www-form-urlencoded",
+      'Authorization': 'Bearer $bearer',
+    });
+    var body = json.decode(response.body);
+    notifyListeners();
+    if (body['reqRes'] == 'true') {
+      print(body['reqRes']);
+      return body;
+    } else if (body['reqRes'] == 'false') {
+      print(body);
+    }
+  }
+
   Future<dynamic> updateService(sn) async {
-    var response = await http
-        .post(Uri.parse('$mainUrl/change-service'), body: {
+    var response = await http.post(Uri.parse('$mainUrl/change-service'), body: {
       'user_id': userId.toString(),
       'service_id': '$sn',
     }, headers: {
@@ -1209,9 +1417,27 @@ class WebServices extends ChangeNotifier {
     }
   }
 
-  Future<dynamic> updateFullName(firstName, lastName) async {
+  Future<dynamic> addSubService(sn) async {
     var response =
-        await http.post(Uri.parse('$mainUrl/e-f-n'), body: {
+        await http.post(Uri.parse('$mainUrl/add-sub-service'), body: {
+      'user_id': userId.toString(),
+      'subservice': '$sn',
+    }, headers: {
+      "Content-type": "application/x-www-form-urlencoded",
+      'Authorization': 'Bearer $bearer',
+    });
+    var body = json.decode(response.body);
+    notifyListeners();
+    if (body['reqRes'] == 'true') {
+      print(body['reqRes']);
+      //return body;
+    } else if (body['reqRes'] == 'false') {
+      print(body);
+    }
+  }
+
+  Future<dynamic> updateFullName(firstName, lastName) async {
+    var response = await http.post(Uri.parse('$mainUrl/e-f-n'), body: {
       'user_id': userId.toString(),
       'firstName': '$firstName',
       'lastName': '$lastName',
@@ -1229,17 +1455,34 @@ class WebServices extends ChangeNotifier {
     }
   }
 
-  Future<dynamic> requestPayment(project_owner_user_id, bid_id) async {
-    var response = await http.post(
-        Uri.parse('$mainUrl/completed-project-and-payment'),
-        body: {
-          'bidder_user_id': userId.toString(),
-          'project_id': bid_id.toString(),
-        },
-        headers: {
-          "Content-type": "application/x-www-form-urlencoded",
-          'Authorization': 'Bearer $bearer',
-        });
+  Future<dynamic> updateBizName(businessName) async {
+    var response = await http.post(Uri.parse('$mainUrl/edit-biz-name'), body: {
+      'user_id': userId.toString(),
+      'business_name': '$businessName',
+    }, headers: {
+      "Content-type": "application/x-www-form-urlencoded",
+      'Authorization': 'Bearer $bearer',
+    });
+    var body = json.decode(response.body);
+    notifyListeners();
+    if (body['reqRes'] == 'true') {
+      print(body['reqRes']);
+      return body;
+    } else if (body['reqRes'] == 'false') {
+      print(body);
+    }
+  }
+
+  Future<dynamic> requestPayment(projectid,bid_id) async {
+    var response = await http
+        .post(Uri.parse('$mainUrl/completed-project-and-payment'), body: {
+      'user_id': userId.toString(),
+      'project_id': projectid.toString()  ,
+      'bid_id': bid_id.toString(),
+    }, headers: {
+      "Content-type": "application/x-www-form-urlencoded",
+      'Authorization': 'Bearer $bearer',
+    });
     var body = json.decode(response.body);
     notifyListeners();
     if (body['reqRes'] == 'true') {
@@ -1251,8 +1494,7 @@ class WebServices extends ChangeNotifier {
   }
 
   Future<dynamic> getUndoneProject(context) async {
-    var response = await http
-        .post(Uri.parse('$mainUrl/user-projects'), body: {
+    var response = await http.post(Uri.parse('$mainUrl/user-projects'), body: {
       'user_id': userId.toString(),
     }, headers: {
       "Content-type": "application/x-www-form-urlencoded",
@@ -1287,19 +1529,19 @@ class WebServices extends ChangeNotifier {
   Future<dynamic> getBiddedJobs(context) async {
     print(userId);
     print(bearer);
-    var response = await http.post(
-        Uri.parse('$mainUrl/all-my-bids-projects'),
-        body: {
-          'user_id': userId.toString(),
-        },
-        headers: {
-          "Content-type": "application/x-www-form-urlencoded",
-          'Authorization': 'Bearer $bearer',
-        });
+    var response =
+        await http.post(Uri.parse('$mainUrl/all-my-bids-projects'), body: {
+      'user_id': userId.toString(),
+    }, headers: {
+      "Content-type": "application/x-www-form-urlencoded",
+      'Authorization': 'Bearer $bearer',
+    });
+
     if (response.statusCode == 500) {
     } else {
       var body1 = json.decode(response.body);
       List body = body1['projects'];
+      print(body);
       List<Project> projects = body
           .map((data) {
             return Project.fromJson(data);
@@ -1317,25 +1559,24 @@ class WebServices extends ChangeNotifier {
 
   Future postViewed(artisanId) async {
     var response = await http.post(
-        Uri.parse('$mainUrl/profile-views-update?viewing_user_id=$userId&viewed_user_id=$artisanId'),
+        Uri.parse(
+            '$mainUrl/profile-views-update?viewing_user_id=$userId&viewed_user_id=$artisanId'),
         headers: {
           "Content-type": "application/json",
           'Authorization': 'Bearer $bearer',
         });
     var body = json.decode(response.body);
-    print( body['reqRes']+'ree');
+    print(body['reqRes'] + 'ree');
     return body['reqRes'];
   }
 
-
-
   Future<dynamic> nearbyArtisans({longitude, latitude, context}) async {
     try {
-      var response = await http
-          .post(Uri.parse('$mainUrl/near-artisans'), body: {
+      var response =
+          await http.post(Uri.parse('$mainUrl/near-artisans'), body: {
         'user_id': userId.toString(),
-   // 'latitude':  '5.001190',
-   // 'longitude' :'8.334840'
+        // 'latitude':  '5.001190',
+        // 'longitude' :'8.334840'
 
         'longitude': longitude.toString(),
         'latitude': latitude.toString(),
@@ -1367,18 +1608,17 @@ class WebServices extends ChangeNotifier {
     } on TimeoutException catch (err) {
       print('nnnnnn');
       // artisanRegStatus = Status.timeOut;
-      Get.snackbar('nnncc', 'jjdjjd');
 
       return err.message;
     }
   }
 
   Future<dynamic> nearbyShop({longitude, latitude, context}) async {
-    var response = await http
-        .post(Uri.parse('$mainUrl/near-shops-business'), body: {
+    var response =
+        await http.post(Uri.parse('$mainUrl/near-shops-business'), body: {
       'user_id': userId.toString(),
-     // 'latitude':  '5.001190',
-     // 'longitude' :'8.334840',
+      // 'latitude':  '5.001190',
+      // 'longitude' :'8.334840',
       'longitude': longitude.toString(),
       'latitude': latitude.toString(),
     }, headers: {
@@ -1430,8 +1670,8 @@ class WebServices extends ChangeNotifier {
 
   Future search({longitude, latitude, searchquery}) async {
     try {
-      var response = await http
-          .post(Uri.parse('$mainUrl/search-artisans'), body: {
+      var response =
+          await http.post(Uri.parse('$mainUrl/search-artisans'), body: {
         'user_id': userId.toString(),
         'longitude': longitude.toString(),
         'latitude': latitude.toString(),
@@ -1455,20 +1695,18 @@ class WebServices extends ChangeNotifier {
   }
 
   Future<List> getAvailableBanks() async {
-    var response = await http.post(
-        Uri.parse('$mainUrl/g-b-info?user_id=$userId'),
-        headers: {
-          "Content-type": "application/json",
-          'Authorization': 'Bearer $bearer',
-        });
+    var response = await http
+        .post(Uri.parse('$mainUrl/g-b-info?user_id=$userId'), headers: {
+      "Content-type": "application/json",
+      'Authorization': 'Bearer $bearer',
+    });
     var body = json.decode(response.body);
     return body['bankInfo'];
   }
 
   Future<Map> getUserWalletInfo(context) async {
     var response = await http.post(
-        Uri.parse(
-            '$mainUrl/get-user-bank-info?user_id=$userId'),
+        Uri.parse('$mainUrl/get-user-bank-info?user_id=$userId'),
         headers: {
           "Content-type": "application/json",
           'Authorization': 'Bearer $bearer',
@@ -1509,8 +1747,7 @@ class WebServices extends ChangeNotifier {
 
   Future<Map> getUserBankInfo(userId) async {
     var response = await http.post(
-        Uri.parse(
-            '$mainUrl/get-user-bank-info?user_id=$userId'),
+        Uri.parse('$mainUrl/get-user-bank-info?user_id=$userId'),
         headers: {
           "Content-type": "application/json",
           'Authorization': 'Bearer $bearer',
@@ -1520,12 +1757,11 @@ class WebServices extends ChangeNotifier {
   }
 
   Future<List> getUserTransactions() async {
-    var response = await http.post(
-        Uri.parse('$mainUrl/my-transactions?user_id=$userId'),
-        headers: {
-          "Content-type": "application/json",
-          'Authorization': 'Bearer $bearer',
-        });
+    var response = await http
+        .post(Uri.parse('$mainUrl/my-transactions?user_id=$userId'), headers: {
+      "Content-type": "application/json",
+      'Authorization': 'Bearer $bearer',
+    });
     var body = json.decode(response.body);
     return body['transactionDetails'];
   }
@@ -1548,8 +1784,7 @@ class WebServices extends ChangeNotifier {
 
   Future getCardDetails() async {
     var response = await http.post(
-        Uri.parse(
-            '$mainUrl/get-payment-details?user_id=$userId'),
+        Uri.parse('$mainUrl/get-payment-details?user_id=$userId'),
         headers: {
           "Content-type": "application/json",
           'Authorization': 'Bearer $bearer',
@@ -1567,12 +1802,11 @@ class WebServices extends ChangeNotifier {
   }
 
   Future<dynamic> checkSecurePin() async {
-    var response = await http.post(
-        Uri.parse('$mainUrl/has-security-pin?user_id=$userId'),
-        headers: {
-          "Content-type": "application/json",
-          'Authorization': 'Bearer $bearer',
-        });
+    var response = await http
+        .post(Uri.parse('$mainUrl/has-security-pin?user_id=$userId'), headers: {
+      "Content-type": "application/json",
+      'Authorization': 'Bearer $bearer',
+    });
     var body = json.decode(response.body);
     return body['reqRes'];
   }
@@ -1610,7 +1844,7 @@ class WebServices extends ChangeNotifier {
     // }
   }
 
-  Future addCatalog({path, uploadType}) async {
+  Future addCatalog(context, {path, uploadType}) async {
     try {
       var upload = http.MultipartRequest(
           'POST', Uri.parse('https://uploads.fixme.ng/uploads-processing'));
@@ -1627,14 +1861,25 @@ class WebServices extends ChangeNotifier {
       var body = jsonDecode(res.body);
       notifyListeners();
       if (body['upldRes'] == 'true') {
-        SnackBar(content: Text('Image uploaded succesfully'));
+        await showTextToast(
+          text: "Image upload was succesful .",
+          context: context,
+        );
+
         return 'succesful';
       } else if (body['upldRes'] == 'false') {
-        SnackBar(content: Text('Image upload was unsuccesful'));
+        await showTextToast(
+          text: "Image upload was unsuccesful.",
+          context: context,
+        );
+
         return 'failed';
       }
     } catch (e) {
-      SnackBar(content: Text(e.toString()));
+      await showTextToast(
+        text: e.toString(),
+        context: context,
+      );
     }
   }
 

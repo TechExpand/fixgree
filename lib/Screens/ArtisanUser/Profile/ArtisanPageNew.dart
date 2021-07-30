@@ -21,8 +21,14 @@ class ArtisanPageNew extends StatefulWidget {
   _ArtisanPageNewState createState() => _ArtisanPageNewState();
 }
 
-class _ArtisanPageNewState extends State<ArtisanPageNew> {
+class _ArtisanPageNewState extends State<ArtisanPageNew> with SingleTickerProviderStateMixin{
   var first;
+  int index = 0 ;
+
+
+
+
+
   @override
   void initState() {
     super.initState();
@@ -83,18 +89,19 @@ class _ArtisanPageNewState extends State<ArtisanPageNew> {
           getCataloguePhotos(context);
           getProducts(context);
           return Scaffold(
+            backgroundColor: Colors.white,
               appBar: AppBar(
-                backgroundColor: Colors.white,
+                backgroundColor: Color(0xFF9B049B),
                 leading: IconButton(
                   onPressed: () {
                     Navigator.of(context).pop();
                   },
-                  icon: Icon(FeatherIcons.arrowLeft, color: Color(0xFF9B049B)),
+                  icon: Icon(FeatherIcons.arrowLeft, color: Colors.white),
                 ),
                 actions: [
                   PopupMenuButton(
                     icon: Icon(FeatherIcons.moreHorizontal,
-                        color: Color(0xFF9B049B)),
+                        color: Colors.white),
                     onSelected: (value) {
                       data.makeOpenUrl(
                           'https://www.google.com/maps?saddr=${location.locationLatitude},${location.locationLongitude}&daddr= ${widget.userData.latitude}, ${widget.userData.longitude}');
@@ -111,7 +118,7 @@ class _ArtisanPageNewState extends State<ArtisanPageNew> {
                           mainAxisAlignment: MainAxisAlignment.spaceBetween,
                           children: [
                             Text("Get direction",
-                                style: GoogleFonts.openSans(
+                                style: GoogleFonts.poppins(
                                     color: Colors.black87,
                                     fontSize: 16,
                                     height: 1.4,
@@ -127,321 +134,1262 @@ class _ArtisanPageNewState extends State<ArtisanPageNew> {
                     ],
                   )
                 ],
-                elevation: 0,
+                elevation: 3,
               ),
               body: Consumer<ArtisanProvider>(builder: (context, model, _) {
-                return Column(
-                  children: [
-                    Padding(
-                      padding:
-                          const EdgeInsets.only(left: 18, right: 18, top: 18),
-                      child: Row(
-                        children: [
-                          Stack(children: <Widget>[
-                            CircleAvatar(
-                              child: Text(''),
-                              radius: 40,
-                              backgroundImage: NetworkImage(
-                                widget.userData == 'no_picture_upload' ||
-                                        widget.userData == null
-                                    ? 'https://uploads.fixme.ng/originals/no_picture_upload'
-                                    : 'https://uploads.fixme.ng/originals/${widget.userData.urlAvatar}',
-                              ),
-                              foregroundColor: Colors.white,
-                              backgroundColor: Colors.white,
-                            ),
-                            Positioned(
-                              left: 63,
-                              top: 55,
-                              child: Container(
-                                height: 17,
-                                width: 17,
-                                decoration: BoxDecoration(
-                                    color: Color(0xFFFB8333),
-                                    shape: BoxShape.circle),
-                                child: widget.userData.verification ==
-                                        'un-verified'
-                                    ? SizedBox()
-                                    : Icon(
-                                        Icons.check,
-                                        size: 11,
-                                        color: Colors.white,
-                                      ),
-                              ),
-                            ),
-                          ]),
-                          Padding(
-                            padding: const EdgeInsets.only(left: 12),
-                            child: Column(
-                              mainAxisAlignment: MainAxisAlignment.start,
-                              crossAxisAlignment: CrossAxisAlignment.start,
-                              children: [
-                                Row(
-                                  children: [
-                                    Padding(
-                                      padding: const EdgeInsets.only(left: 4),
-                                      child: Text(
-                                        '${widget.userData.name} ${widget.userData.userLastName}'
-                                            .capitalizeFirstOfEach,
-                                        style: TextStyle(
-                                            color: Color(0xFF333333),
-                                            fontSize: 18,
-                                            fontWeight: FontWeight.w600),
-                                      ),
-                                    ),
-                                  ],
+                return DefaultTabController(
+                  length: 2,
+                  initialIndex: 0,
+                  child: ListView(
+                    shrinkWrap: true,
+                    physics: ScrollPhysics(),
+                    children: [
+                      Padding(
+                        padding:
+                            const EdgeInsets.only(left: 18, right: 18, top: 18),
+                        child: Row(
+                          children: [
+                            Stack(children: <Widget>[
+                              CircleAvatar(
+                                child: Text(''),
+                                radius: 50,
+                                backgroundImage: NetworkImage(
+                                  widget.userData == 'no_picture_upload' ||
+                                          widget.userData == null
+                                      ? 'https://uploads.fixme.ng/originals/no_picture_upload'
+                                      : 'https://uploads.fixme.ng/originals/${widget.userData.urlAvatar}',
                                 ),
-                                SizedBox(height: 2),
-                                Row(
-                                  children: [
-                                    Padding(
-                                      padding: const EdgeInsets.only(top: 4),
-                                      child: Icon(
-                                        Icons.location_on_outlined,
-                                        color: Colors.amber,
-                                        size: 20,
-                                      ),
-                                    ),
-                                    SizedBox(
-                                      width: 4,
-                                    ),
-                                    SizedBox(
-                                      width: 200,
-                                      child: Text(
-                                        '${first == null ? '${widget.userData.userAddress}' : first.addressLine}',
-                                        softWrap: true,
-                                        maxLines: 2,
-                                        style: TextStyle(
-                                            fontWeight: FontWeight.w500,
-                                            fontSize: 15),
-                                      ),
-                                    )
-                                  ],
-                                ),
-                              ],
-                            ),
-                          )
-                        ],
-                      ),
-                    ),
-                    Padding(
-                      padding:
-                          const EdgeInsets.only(left: 18, right: 18, top: 18),
-                      child: Column(
-                        children: [
-                          Wrap(
-                            children: [
-                              Align(
-                                alignment: Alignment.centerLeft,
-                                child: Text(
-                                  '${widget.userData.serviceArea}'
-                                      .toUpperCase(),
-                                  style: TextStyle(
-                                      fontWeight: FontWeight.bold,
-                                      fontSize: 19.5,
-                                      color: Color(0xFFBCBCBC)),
+                                foregroundColor: Colors.white,
+                                backgroundColor: Colors.white,
+                              ),
+                              Positioned(
+                                left: 78,
+                                top: 10,
+                                child: Container(
+                                  height: 17,
+                                  width: 17,
+                                  decoration: BoxDecoration(
+                                      color: Color(0xFF0FB800),
+                                      shape: BoxShape.circle),
+                                  child: widget.userData.verification ==
+                                          'un-verified'
+                                      ? SizedBox()
+                                      : Icon(
+                                          Icons.check,
+                                          size: 11,
+                                          color: Colors.white,
+                                        ),
                                 ),
                               ),
-                            ],
-                          ),
-                          SizedBox(
-                            height: 5,
-                          ),
-                          Row(
-                            children: [
-                              // Text(
-                              //   widget.userData.userRole == 'artisan'
-                              //       ? 'Expertise Level: '
-                              //       : 'Store Rating: ',
-                              //   style: TextStyle(
-                              //       color: Color(0xFF333333),
-                              //       fontSize: 16,
-                              //       fontWeight: FontWeight.w600),
-                              // ),
-                              Text(
-                                '${double.parse(widget.userData.userRating.toString())}',
-                                style: TextStyle(
-                                    color: Color(0xFF333333),
-                                    fontSize: 16,
-                                    fontWeight: FontWeight.w600),
-                              ),
-                              SizedBox(
-                                width: 3,
-                              ),
-                              Icon(
-                                Icons.star,
-                                color: Colors.amber,
-                                size: 18,
-                              ),
-                              SizedBox(
-                                width: 3,
-                              ),
-                              Text(
-                                '(${this.widget.userData.reviews} reviews)',
-                                style: TextStyle(
-                                    color: Color(0xFF333333),
-                                    fontSize: 16,
-                                    fontWeight: FontWeight.w600),
-                              ),
-                              // StarRating(
-                              //   rating: double.parse(
-                              //       widget.userData.userRating.toString()),
-                              // ),
-                            ],
-                          ),
-                          widget.userData.bio == null ||
-                                  widget.userData.bio == ''
-                              ? SizedBox()
-                              : Column(
-                                  children: [
-                                    Divider(),
-                                    Row(
-                                      children: [
-                                        Text(
-                                          'ABOUT',
+                            ]),
+                            Padding(
+                              padding: const EdgeInsets.only(left: 12),
+                              child: Column(
+                                mainAxisAlignment: MainAxisAlignment.start,
+                                crossAxisAlignment: CrossAxisAlignment.start,
+                                children: [
+                                  Row(
+                                    children: [
+                                      Padding(
+                                        padding: const EdgeInsets.only(left: 0),
+                                        child: Text(
+                                          '${widget.userData.name} ${widget.userData.userLastName}'
+                                              .capitalizeFirstOfEach,
                                           style: TextStyle(
                                               color: Color(0xFF333333),
-                                              fontSize: 16,
+                                              fontSize: 18,
                                               fontWeight: FontWeight.w600),
                                         ),
-                                      ],
-                                    ),
-                                    Wrap(
-                                      children: [
-                                        Align(
-                                          alignment: Alignment.centerLeft,
-                                          child: Text(
-                                            '${widget.userData.bio == null ? '' : widget.userData.bio}',
-                                            style: TextStyle(
-                                                color: Color(0xFF333333),
-                                                fontSize: 16,
-                                                fontWeight: FontWeight.w400),
-                                          ),
+                                      ),
+                                    ],
+                                  ),
+
+                                      Align(
+                                        alignment: Alignment.bottomRight,
+                                        child: Text(
+                                          '${widget.userData.serviceArea}'
+                                              .toUpperCase(),
+                                          style: TextStyle(
+                                              fontWeight: FontWeight.bold,
+                                              fontSize: 10.5,
+                                              color: Color(0xFFBCBCBC)),
                                         ),
-                                      ],
-                                    ),
-                                  ],
-                                ),
-                          AnimatedSwitcher(
-                            duration: Duration(milliseconds: 500),
-                            child: model.getExpandedStatus
-                                ? Column(children: [
-                                    widget.userData.subServices == null ||
-                                            widget.userData.subServices.isEmpty
-                                        ? SizedBox()
-                                        : AnimatedContainer(
-                                            duration:
-                                                Duration(milliseconds: 400),
-                                            child: Column(
+                                  ),
+                                  SizedBox(height: 2),
+                                  Row(
+                                    children: [
+                                      Padding(
+                                        padding: const EdgeInsets.only(top: 4),
+                                        child: Icon(
+                                          Icons.location_on,
+                                          color: Color(0xFF9B049B),
+                                          size: 20,
+                                        ),
+                                      ),
+                                      SizedBox(
+                                        width: 4,
+                                      ),
+                                      SizedBox(
+                                        width: 200,
+                                        child: Text(
+                                          '${first == null ? '${widget.userData.userAddress}' : first.addressLine}',
+                                          softWrap: true,
+                                          maxLines: 2,
+                                          style: TextStyle(
+                                              fontWeight: FontWeight.w500,
+                                              fontSize: 15),
+                                        ),
+                                      )
+                                    ],
+                                  ),
+
+
+                                  Row(
+                                    children: [
+                                      Text(
+                                        '${double.parse(widget.userData.userRating.toString())}',
+                                        style: TextStyle(
+                                            color: Color(0xFF333333),
+                                            fontSize: 16,
+                                            fontWeight: FontWeight.w600),
+                                      ),
+                                      SizedBox(
+                                        width: 3,
+                                      ),
+                                      Icon(
+                                        Icons.star,
+                                        color: Color(0xFFFC5302),
+                                        size: 18,
+                                      ),
+                                      SizedBox(
+                                        width: 3,
+                                      ),
+                                      Text(
+                                        '(${this.widget.userData.reviews} reviews)',
+                                        style: TextStyle(
+                                            color: Color(0xFF333333),
+                                            fontSize: 16,
+                                            fontWeight: FontWeight.w600),
+                                      ),
+                                      // StarRating(
+                                      //   rating: double.parse(
+                                      //       widget.userData.userRating.toString()),
+                                      // ),
+                                    ],
+                                  ),
+
+                                ],
+                              ),
+                            )
+                          ],
+                        ),
+                      ),
+                      Padding(
+                        padding:
+                            const EdgeInsets.only(left: 18, right: 18, top: 18),
+                        child: Column(
+                          children: [
+                            SizedBox(
+                              height: 5,
+                            ),
+
+                            widget.userData.bio == null ||
+                                    widget.userData.bio == ''
+                                ? SizedBox()
+                                : Column(
+                                    children: [
+                                      AnimatedContainer(
+                                        duration: Duration(milliseconds: 400),
+                                        child: Column(
+                                          children: [
+                                            Divider(),
+
+                                            Row(
                                               children: [
-                                                Divider(),
-                                                Row(
-                                                  children: [
-                                                    Text(
-                                                      'SUBSERVICES',
-                                                      style: TextStyle(
-                                                          color:
-                                                              Color(0xFF333333),
-                                                          fontSize: 16,
-                                                          fontWeight:
-                                                              FontWeight.w600),
-                                                    ),
-                                                  ],
+                                                Text(
+                                                  'About',
+                                                  style: TextStyle(
+                                                      color: Color(0xFF333333),
+                                                      fontSize: 16,
+                                                      fontWeight: FontWeight.w600),
                                                 ),
+                                              ],
+                                            ),
+                                            Wrap(
+                                              children: [
                                                 Align(
-                                                  alignment:
-                                                      Alignment.centerLeft,
-                                                  child: Wrap(
-                                                    spacing: 5,
-                                                    alignment:
-                                                        WrapAlignment.start,
-                                                    children: [
-                                                      for (dynamic subService
-                                                          in widget.userData
-                                                              .subServices)
-                                                        Chip(
-                                                          backgroundColor:
-                                                              Color(0xFF9B049B)
-                                                                  .withOpacity(
-                                                                      0.5),
-                                                          label: Text(
-                                                            subService[
-                                                                    'subservice']
-                                                                .toString(),
-                                                            style: TextStyle(
-                                                                color: Colors
-                                                                    .white),
-                                                          ),
-                                                        ),
-                                                    ],
+                                                  alignment: Alignment.centerLeft,
+                                                  child: Text(
+                                                    '${widget.userData.bio == null ? '' : widget.userData.bio}',
+                                                    style: TextStyle(
+                                                        color: Color(0xFF333333),
+                                                        fontSize: 16,
+                                                        fontWeight: FontWeight.w400),
                                                   ),
                                                 ),
                                               ],
                                             ),
-                                          ),
-                                    AnimatedContainer(
-                                      duration: Duration(milliseconds: 400),
-                                      child: Column(
-                                        children: [
-                                          Divider(),
-                                          Row(
-                                            children: [
-                                              Text(
-                                                'Business Address',
-                                                style: TextStyle(
-                                                    color: Color(0xFF333333),
-                                                    fontSize: 16,
-                                                    fontWeight:
-                                                        FontWeight.w600),
-                                              ),
-                                            ],
-                                          ),
-                                          Wrap(
-                                            children: [
-                                              Align(
-                                                alignment: Alignment.centerLeft,
-                                                child: Text(
-                                                  '${widget.userData.businessAddress.toString().isEmpty || widget.userData.businessAddress == null ? widget.userData.userAddress : widget.userData.businessAddress}',
+                                            SizedBox(height:10),
+
+                                            Row(
+                                              children: [
+                                                Text(
+                                                  'Business Address',
                                                   style: TextStyle(
                                                       color: Color(0xFF333333),
                                                       fontSize: 16,
                                                       fontWeight:
-                                                          FontWeight.w400),
+                                                      FontWeight.w600),
                                                 ),
+                                              ],
+                                            ),
+                                            Wrap(
+                                              children: [
+                                                Align(
+                                                  alignment: Alignment.centerLeft,
+                                                  child: Text(
+                                                    '${widget.userData.businessAddress.toString().isEmpty || widget.userData.businessAddress == null ? widget.userData.userAddress : widget.userData.businessAddress}',
+                                                    style: TextStyle(
+                                                        color: Color(0xFF333333),
+                                                        fontSize: 16,
+                                                        fontWeight:
+                                                        FontWeight.w400),
+                                                  ),
+                                                ),
+                                              ],
+                                            ),
+                                          ],
+                                        ),
+                                      ),
+
+                                    ],
+                                  ),
+                            AnimatedSwitcher(
+                              duration: Duration(milliseconds: 500),
+                              child: model.getExpandedStatus
+                                  ? Column(children: [
+                                      widget.userData.subServices == null ||
+                                              widget.userData.subServices.isEmpty
+                                          ? SizedBox()
+                                          : AnimatedContainer(
+                                              duration:
+                                                  Duration(milliseconds: 400),
+                                              child: Column(
+                                                children: [
+                                                  SizedBox(height:10),
+                                                  Row(
+                                                    children: [
+                                                      Text(
+                                                        'Sub-Services',
+                                                        style: TextStyle(
+                                                            color:
+                                                                Color(0xFF333333),
+                                                            fontSize: 16,
+                                                            fontWeight:
+                                                                FontWeight.w600),
+                                                      ),
+                                                    ],
+                                                  ),
+                                                  Align(
+                                                    alignment:
+                                                        Alignment.centerLeft,
+                                                    child: Wrap(
+                                                      spacing: 5,
+                                                      alignment:
+                                                          WrapAlignment.start,
+                                                      children: [
+                                                        for (dynamic subService
+                                                            in widget.userData
+                                                                .subServices)
+                                                          Chip(
+                                                            backgroundColor:
+                                                                Color(0xFF9B049B)
+                                                                    .withOpacity(
+                                                                        0.5),
+                                                            label: Text(
+                                                              subService[
+                                                                      'subservice']
+                                                                  .toString(),
+                                                              style: TextStyle(
+                                                                  color: Colors
+                                                                      .white),
+                                                            ),
+                                                          ),
+                                                      ],
+                                                    ),
+                                                  ),
+                                                ],
                                               ),
-                                            ],
+                                            ),
+
+                                    ])
+                                  : SizedBox(),
+                            ),
+                          ],
+                        ),
+                      ),
+                      Padding(
+                        padding:
+                            const EdgeInsets.only(left: 18, right: 18, top: 5),
+                        child: Row(
+                          children: [
+                            Container(
+                              decoration: BoxDecoration(
+                                  borderRadius: BorderRadius.circular(5)),
+                              child: FlatButton(
+                                onPressed: () {
+                                  FirebaseApi.addUserChat(
+                                    token2: data.fcmToken ,
+                              token: widget.userData.fcmToken,
+                              recieveruserId2: network.userId,
+                               recieveruserId:  widget.userData.id,
+                               serviceId: widget.userData.serviceId,
+                              serviceId2: network.serviceId,
+                                    urlAvatar2:
+                                        'https://uploads.fixme.ng/originals/${network.profilePicFileName}',
+                                    name2: network.firstName,
+                                    idArtisan: network.mobileDeviceToken,
+                                    artisanMobile: network.phoneNum,
+                                    userMobile: widget.userData.userMobile,
+                                    idUser: widget.userData.idUser,
+                                    urlAvatar:
+                                        'https://uploads.fixme.ng/originals/${widget.userData.urlAvatar}',
+                                    name: widget.userData.name,
+                                  );
+
+                                  Navigator.push(
+                                    context,
+                                    PageRouteBuilder(
+                                      pageBuilder: (context, animation,
+                                          secondaryAnimation) {
+                                        return ChatPage(user: widget.userData);
+                                      },
+                                      transitionsBuilder: (context, animation,
+                                          secondaryAnimation, child) {
+                                        return FadeTransition(
+                                          opacity: animation,
+                                          child: child,
+                                        );
+                                      },
+                                    ),
+                                  );
+                                },
+                                color: Color(0xFF9B049B),
+                                shape: RoundedRectangleBorder(
+                                    borderRadius: BorderRadius.circular(5)),
+                                padding: EdgeInsets.all(0.0),
+                                child: Ink(
+                                  decoration: BoxDecoration(
+                                      borderRadius: BorderRadius.circular(5)),
+                                  child: Container(
+                                    constraints: BoxConstraints(
+                                        maxWidth: 120, minHeight: 35.0),
+                                    alignment: Alignment.center,
+                                    child: Text(
+                                      "Message",
+                                      textAlign: TextAlign.center,
+                                      style: TextStyle(
+                                          color: Colors.white,
+                                          fontWeight: FontWeight.w600),
+                                    ),
+                                  ),
+                                ),
+                              ),
+                            ),
+                            Container(
+                              margin: EdgeInsets.only(left: 10),
+                              height: 35,
+                              decoration: BoxDecoration(
+                                  border: Border.all(
+                                      color: Color(0xFFE9E9E9), width: 1),
+                                  borderRadius: BorderRadius.circular(5)),
+                              child: FlatButton(
+                                disabledColor: Color(0x909B049B),
+                                onPressed: () async {
+                                  await UrlLauncher.launch(
+                                      "tel://${widget.userData.fullNumber}");
+                                },
+                                // full_number
+                                color: Colors.transparent,
+                                shape: RoundedRectangleBorder(
+                                    borderRadius: BorderRadius.circular(5)),
+                                padding: EdgeInsets.all(0.0),
+                                child: Ink(
+                                  decoration: BoxDecoration(
+                                      borderRadius: BorderRadius.circular(5)),
+                                  child: Container(
+                                    constraints: BoxConstraints(
+                                        maxWidth: 100, minHeight: 35.0),
+                                    alignment: Alignment.center,
+                                    child: Text(
+                                      "Call",
+                                      textAlign: TextAlign.center,
+                                      style: TextStyle(
+                                          color: Colors.black,
+                                          fontWeight: FontWeight.w600),
+                                    ),
+                                  ),
+                                ),
+                              ),
+                            ),
+                            Container(
+                              margin: EdgeInsets.only(left: 10),
+                              height: 35,
+                              width: 33,
+                              decoration: BoxDecoration(
+                                  border: Border.all(
+                                      color: Color(0xFFE9E9E9), width: 1),
+                                  borderRadius: BorderRadius.circular(5)),
+                              child: FlatButton(
+                                disabledColor: Color(0x909B049B),
+                                onPressed: () {
+                                  model.setExpandedStatus =
+                                      !model.getExpandedStatus;
+                                },
+                                color: Colors.transparent,
+                                shape: RoundedRectangleBorder(
+                                    borderRadius: BorderRadius.circular(5)),
+                                padding: EdgeInsets.all(0.0),
+                                child: Ink(
+                                  decoration: BoxDecoration(
+                                      borderRadius: BorderRadius.circular(5)),
+                                  child: Container(
+                                      constraints:
+                                          BoxConstraints(minHeight: 35.0),
+                                      alignment: Alignment.center,
+                                      child: Icon(
+                                        model.getExpandedStatus
+                                            ? FeatherIcons.chevronUp
+                                            : FeatherIcons.chevronDown,
+                                        size: 15,
+                                      )),
+                                ),
+                              ),
+                            ),
+                          ],
+                        ),
+                      ),
+                      SizedBox(
+                        height: 5,
+                      ),
+                      StatefulBuilder(
+                        builder:(context, setState){
+                         return Wrap(
+                          children: [
+                            Container(
+                              decoration: BoxDecoration(
+                                border: Border(
+                                    top: BorderSide(width: 1, color: Color(0xFFEFEFEF)),
+                                    bottom:
+                                        BorderSide(width: 1, color: Color(0xFFEFEFEF))),
+                              ),
+                              child: TabBar(
+                                controller: _tabController,
+                                unselectedLabelColor: Colors.black26,
+                                labelColor: Colors.black54,
+                                indicatorSize: TabBarIndicatorSize.tab,
+                                indicatorColor: Colors.black54,
+                                onTap: (value){
+                                  setState((){
+                                    index = value;
+                                  });
+                                },
+                                tabs: [
+                                  Tab(
+                                      child: Text(
+                                          widget.userData.userRole == 'artisan'
+                                              ? 'Catalogue(${model.getCatalogueCount == 0 ? 0 : model.getCatalogueCount})'
+                                              : 'Products(${model.getProductCount == 0 ? 0 : model.getProductCount})',
+                                          style: GoogleFonts.poppins(
+                                              fontSize: 16,
+                                              fontWeight: FontWeight.w600))),
+                                  Tab(
+                                      child: Text(
+                                          'Reviews(${this.widget.userData.reviews})',
+                                          style: GoogleFonts.poppins(
+                                              fontSize: 16,
+                                              fontWeight: FontWeight.w600))),
+                                ],
+                              ),
+                            ),
+
+                            Container(
+                              margin: EdgeInsets.only(top:20),
+                              child: AnimatedCrossFade(
+                                duration: const Duration(milliseconds: 500),
+                                firstChild:  Expanded(
+                                child: ListView(
+                                  shrinkWrap: true,
+                                  physics: ScrollPhysics(),
+                                  children: [
+                                    Container(
+                                      child: widget.userData.userRole == 'artisan'
+                                          ? FutureBuilder(
+                                          future: cataloguePhotos,
+                                          builder: (context, snapshot) {
+                                            Widget mainWidget;
+                                            if (snapshot.connectionState ==
+                                                ConnectionState.done) {
+                                              if (snapshot.data == null ||
+                                                  snapshot.data.length == 0) {
+                                                mainWidget = Center(
+                                                  child: Column(
+                                                    mainAxisAlignment:
+                                                    MainAxisAlignment.center,
+                                                    crossAxisAlignment:
+                                                    CrossAxisAlignment.center,
+                                                    children: [
+                                                      Padding(
+                                                        padding: const EdgeInsets.all(8.0),
+                                                        child: Text('No images',
+                                                            style: TextStyle(
+                                                              // letterSpacing: 4,
+                                                                color:
+                                                                Color(0xFF333333),
+                                                                fontSize: 18,
+                                                                fontWeight:
+                                                                FontWeight.w600)),
+                                                      ),
+                                                    ],
+                                                  ),
+                                                );
+                                              } else {
+                                                mainWidget = Container(
+                                                    margin: const EdgeInsets.only(
+                                                        bottom: 5,
+                                                        left: 5,
+                                                        right: 5,
+                                                        top: 5),
+                                                    child: GridView.builder(
+                                                      shrinkWrap: true,
+                                                      physics: ScrollPhysics(),
+                                                      itemCount: snapshot.data ==
+                                                          null
+                                                          ? 0
+                                                          : snapshot.data.length,
+                                                      gridDelegate:
+                                                      SliverGridDelegateWithFixedCrossAxisCount(
+                                                        crossAxisCount: 3,
+                                                        crossAxisSpacing: 5,
+                                                        mainAxisSpacing: 5,
+                                                      ),
+                                                      itemBuilder:
+                                                          (BuildContext context,
+                                                          int index) {
+                                                        return InkWell(
+                                                          onTap: () {
+                                                            Navigator.push(
+                                                              context,
+                                                              PageRouteBuilder(
+                                                                pageBuilder: (context,
+                                                                    animation,
+                                                                    secondaryAnimation) {
+                                                                  return PhotoView(
+                                                                    'https://uploads.fixme.ng/originals/${snapshot.data[index]['imageFileName']}',
+                                                                    snapshot.data[
+                                                                    index][
+                                                                    'imageFileName'],
+                                                                  );
+                                                                },
+                                                                transitionsBuilder:
+                                                                    (context,
+                                                                    animation,
+                                                                    secondaryAnimation,
+                                                                    child) {
+                                                                  return FadeTransition(
+                                                                    opacity:
+                                                                    animation,
+                                                                    child: child,
+                                                                  );
+                                                                },
+                                                              ),
+                                                            );
+                                                          },
+                                                          child: Hero(
+                                                            tag: snapshot
+                                                                .data[index]
+                                                            ['imageFileName'],
+                                                            child: Container(
+                                                                width: 200,
+                                                                child:
+                                                                Image.network(
+                                                                  'https://uploads.fixme.ng/originals/${snapshot.data[index]['imageFileName']}',
+                                                                  fit: BoxFit.cover,
+                                                                )),
+                                                          ),
+                                                        );
+                                                      },
+                                                    ));
+                                              }
+                                            } else {
+                                              mainWidget = Center(
+                                                child: Column(
+                                                  mainAxisAlignment:
+                                                  MainAxisAlignment.center,
+                                                  crossAxisAlignment:
+                                                  CrossAxisAlignment.center,
+                                                  children: [
+                                                    Theme(
+                                                        data: Theme.of(context)
+                                                            .copyWith(
+                                                            accentColor: Color(
+                                                                0xFF9B049B)),
+                                                        child:
+                                                        CircularProgressIndicator(valueColor: AlwaysStoppedAnimation<Color>(Color(0xFF9B049B)),
+
+                                                          strokeWidth: 2,
+                                                          backgroundColor: Colors.white,
+                                                        )),
+                                                    SizedBox(
+                                                      height: 10,
+                                                    ),
+                                                    Padding(
+                                                      padding: const EdgeInsets.all(8.0),
+                                                      child: Text('Loading',
+                                                          style: TextStyle(
+                                                            // letterSpacing: 4,
+                                                              color:
+                                                              Color(0xFF333333),
+                                                              fontSize: 18,
+                                                              fontWeight:
+                                                              FontWeight.w600)),
+                                                    ),
+                                                  ],
+                                                ),
+                                              );
+                                            }
+                                            return mainWidget;
+                                          })
+                                          : FutureBuilder(
+                                          future: products,
+                                          builder: (context, snapshot) {
+                                            Widget mainWidget;
+                                            if (snapshot.connectionState ==
+                                                ConnectionState.done) {
+                                              if (snapshot.data == null ||
+                                                  snapshot.data.length == 0) {
+                                                mainWidget = Center(
+                                                  child: Column(
+                                                    mainAxisAlignment:
+                                                    MainAxisAlignment.center,
+                                                    crossAxisAlignment:
+                                                    CrossAxisAlignment.center,
+                                                    children: [
+                                                      Padding(
+                                                        padding: const EdgeInsets.all(8.0),
+                                                        child: Text('No products',
+                                                            style: TextStyle(
+                                                              // letterSpacing: 4,
+                                                                color:
+                                                                Color(0xFF333333),
+                                                                fontSize: 18,
+                                                                fontWeight:
+                                                                FontWeight.w600)),
+                                                      ),
+                                                    ],
+                                                  ),
+                                                );
+                                              } else {
+                                                mainWidget = Container(
+                                                    margin: const EdgeInsets.only(
+                                                        bottom: 30.0,
+                                                        left: 8,
+                                                        right: 8),
+                                                    child: GridView.builder(
+                                                      gridDelegate: SliverGridDelegateWithMaxCrossAxisExtent(
+                                                          maxCrossAxisExtent: 180,
+                                                          childAspectRatio: 1,
+                                                          crossAxisSpacing: 20,
+                                                          mainAxisSpacing: 5),
+                                                      shrinkWrap: true,
+                                                      physics: ScrollPhysics(),
+                                                      itemCount: snapshot.data ==
+                                                          null
+                                                          ? 0
+                                                          : snapshot.data.length,
+                                                      itemBuilder:
+                                                          (BuildContext context,
+                                                          int index) {
+                                                        return
+
+                                                          InkWell(
+                                                            onTap: (){
+                                                              _viewProduct(
+                                                                  location,
+                                                                              data: snapshot
+                                                                                  .data[
+                                                                              index]);
+                                                            },
+                                                            child: Container(
+                                                              // width: 150,
+                                                              margin: const EdgeInsets.only(
+                                                                top: 12,
+                                                              ),
+                                                              decoration: BoxDecoration(
+                                                                  color: Color(0xFFFFFFFF),
+                                                                  border: Border.all(
+                                                                      color: Color(0xFFF1F1FD)),
+                                                                  boxShadow: [
+                                                                    BoxShadow(
+                                                                        color:
+                                                                        Color(0xFFF1F1F6),
+                                                                        blurRadius: 10.0,
+                                                                        offset:
+                                                                        Offset(0.3, 4.0))
+                                                                  ],
+                                                                  borderRadius:
+                                                                  BorderRadius.all(
+                                                                      Radius.circular(7))),
+                                                              child: Column(
+                                                                children: [
+                                                                  Stack(
+                                                                    children: [
+                                                                      Padding(
+                                                                          padding:
+                                                                          const EdgeInsets
+                                                                              .only(
+                                                                              bottom: 4.0),
+                                                                          child: Container(
+                                                                            height: 90,
+                                                                            width: 180,
+                                                                            clipBehavior: Clip
+                                                                                .antiAliasWithSaveLayer,
+                                                                            decoration: BoxDecoration(
+                                                                                borderRadius: BorderRadius.only(
+                                                                                    topLeft: Radius
+                                                                                        .circular(
+                                                                                        7),
+                                                                                    topRight: Radius
+                                                                                        .circular(
+                                                                                        7))),
+                                                                            child:
+                                                                            Image.network(
+                                                                              'https://uploads.fixme.ng/originals/${snapshot.data[index]['productImages'][0]['imageFileName']}',
+                                                                              fit: BoxFit.cover,
+                                                                            ),
+                                                                          )),
+
+                                                                    ],
+                                                                  ),
+                                                                  Divider(),
+
+                                                                  Container(
+                                                                    width: 150,
+                                                                    child: Column(
+                                                                      mainAxisAlignment: MainAxisAlignment.center,
+                                                                      children: [
+                                                                        Align(
+                                                                          alignment:
+                                                                          Alignment.center,
+                                                                          child: Padding(
+                                                                            padding:
+                                                                            const EdgeInsets.only(
+                                                                                left: 8.0,
+                                                                                right: 8.0, top:2),
+                                                                            child: Wrap(
+                                                                              children: [
+                                                                                Text(
+                                                              "${snapshot.data[index]['product_name']}"
+                                                                            .capitalizeFirstOfEach,
+                                                                                  style: TextStyle(
+                                                                                      fontSize: 13,
+                                                                                      fontWeight:
+                                                                                      FontWeight
+                                                                                          .w600),
+                                                                                  textAlign: TextAlign.center,
+                                                                                  maxLines: 1,
+                                                                                ),
+                                                                              ],
+                                                                            ),
+                                                                          ),
+                                                                        ),
+
+                                                                      ],
+                                                                    ),
+                                                                  ),
+                                                                  Align(
+                                                                      alignment:
+                                                                      Alignment.center,
+                                                                      child: Padding(
+                                                                        padding:
+                                                                        const EdgeInsets
+                                                                            .only(
+                                                                            left: 0.0,
+                                                                            right: 0.0),
+                                                                        child: Wrap(
+                                                                          children: [
+                                                                            Container(
+                                                                              // width:140,
+                                                                              child: Padding(
+                                                                                padding: const EdgeInsets.only(top:8.0),
+                                                                                child: Text(
+                                                                                    '\u{20A6}'+"${snapshot.data[index]['price']}",
+                                                                                    style: TextStyle(
+                                                                                      fontFamily: 'Roboto'
+                                                                                    )),
+                                                                              ),
+                                                                            ),
+                                                                          ],
+                                                                        ),
+                                                                      )),
+
+                                                                ],
+                                                              ),
+                                                            ),
+                                                          );
+                                                      },
+                                                    ));
+                                              }
+                                            } else {
+                                              mainWidget = Center(
+                                                child: Column(
+                                                  mainAxisAlignment:
+                                                  MainAxisAlignment.center,
+                                                  crossAxisAlignment:
+                                                  CrossAxisAlignment.center,
+                                                  children: [
+                                                    Theme(
+                                                        data: Theme.of(context)
+                                                            .copyWith(
+                                                            accentColor: Color(
+                                                                0xFF9B049B)),
+                                                        child:
+                                                        CircularProgressIndicator(valueColor: AlwaysStoppedAnimation<Color>(Color(0xFF9B049B)),
+
+                                                          strokeWidth: 2,
+                                                          backgroundColor: Colors.white,
+                                                        )),
+                                                    SizedBox(
+                                                      height: 10,
+                                                    ),
+                                                    Padding(
+                                                      padding: const EdgeInsets.all(8.0),
+                                                      child: Text('Loading',
+                                                          style: TextStyle(
+                                                            // letterSpacing: 4,
+                                                              color:
+                                                              Color(0xFF333333),
+                                                              fontSize: 18,
+                                                              fontWeight:
+                                                              FontWeight.w600)),
+                                                    ),
+                                                  ],
+                                                ),
+                                              );
+                                            }
+                                            return mainWidget;
+                                          }),
+                                    ),
+
+                                  ],
+                                )),
+                                secondChild:  Expanded(
+                                    child: ListView(
+                                      shrinkWrap: true,
+                                      physics: ScrollPhysics(),
+                                      children: [
+                                        StatefulBuilder(builder:
+                                            (BuildContext context, StateSetter setStates) {
+                                          return FutureBuilder(
+                                              future: network
+                                                  .getArtisanReviews(widget.userData.id),
+                                              builder: (context, snapshot) {
+                                                Widget mainWidget;
+                                                if (snapshot.connectionState ==
+                                                    ConnectionState.done) {
+                                                  if (snapshot.data == null ||
+                                                      snapshot.data.length == 0) {
+                                                    mainWidget = Center(
+                                                      child: Column(
+                                                        mainAxisAlignment:
+                                                        MainAxisAlignment.center,
+                                                        crossAxisAlignment:
+                                                        CrossAxisAlignment.center,
+                                                        children: [
+                                                          Padding(
+                                                            padding: const EdgeInsets.all(8.0),
+                                                            child: Text('No reviews',
+                                                                style: TextStyle(
+                                                                  // letterSpacing: 4,
+                                                                    color: Color(0xFF333333),
+                                                                    fontSize: 18,
+                                                                    fontWeight:
+                                                                    FontWeight.w600)),
+                                                          ),
+                                                        ],
+                                                      ),
+                                                    );
+                                                  } else {
+                                                    if (snapshot.data.length == 0) {
+                                                      print('empty');
+                                                    }
+                                                    mainWidget = Container(
+                                                      width:
+                                                      MediaQuery.of(context).size.width,
+                                                      child: ListView.separated(
+                                                          separatorBuilder:
+                                                              (BuildContext context,
+                                                              int index) =>
+                                                              Divider(),
+                                                          shrinkWrap: true,
+                                                          itemCount: snapshot.data.length,
+                                                          physics: ScrollPhysics(),
+                                                          itemBuilder: (context, index) {
+                                                            DateTime dateOfReview =
+                                                            DateTime.parse(snapshot
+                                                                .data[index]
+                                                            ['dateAdded']
+                                                                .toString());
+                                                            return Column(
+                                                              children: [
+                                                                Padding(
+                                                                  padding:
+                                                                  const EdgeInsets.only(
+                                                                      top: 12,
+                                                                      left: 15,
+                                                                      right: 15,
+                                                                      bottom: 2),
+                                                                  child: Wrap(
+                                                                    children: [
+                                                                      Align(
+                                                                        alignment: Alignment
+                                                                            .centerLeft,
+                                                                        child: Text(
+                                                                            '${snapshot.data[index]['reviewer']['user_first_name'].toString()} ${snapshot.data[index]['reviewer']['user_last_name'].toString()}',
+                                                                            style: GoogleFonts.poppins(
+                                                                                fontSize:
+                                                                                17,
+                                                                                fontWeight:
+                                                                                FontWeight
+                                                                                    .w600)),
+                                                                      ),
+                                                                      Align(
+                                                                        alignment: Alignment
+                                                                            .centerLeft,
+                                                                        child: Text(
+                                                                            '${snapshot.data[index]['review'].toString()}',
+                                                                            style: GoogleFonts.poppins(
+                                                                                fontSize:
+                                                                                16,
+                                                                                fontWeight:
+                                                                                FontWeight
+                                                                                    .w500)),
+                                                                      )
+                                                                    ],
+                                                                  ),
+                                                                ),
+                                                                ListTile(
+                                                                  leading: CircleAvatar(
+                                                                    child: Text(''),
+                                                                    radius: 22,
+                                                                    backgroundImage:
+                                                                    NetworkImage(
+                                                                      network.profilePicFileName ==
+                                                                          'no_picture_upload' ||
+                                                                          network.profilePicFileName ==
+                                                                              null
+                                                                          ? 'https://uploads.fixme.ng/originals/no_picture_upload'
+                                                                          : 'https://uploads.fixme.ng/originals/${network.profilePicFileName}',
+                                                                    ),
+                                                                    foregroundColor:
+                                                                    Colors.white,
+                                                                    backgroundColor:
+                                                                    Colors.white,
+                                                                  ),
+                                                                  title: Text(
+                                                                      '${DateFormat('MMM dd, y').format(dateOfReview)}',
+                                                                      style: GoogleFonts
+                                                                          .openSans(
+                                                                          fontSize: 17,
+                                                                          fontWeight:
+                                                                          FontWeight
+                                                                              .w600)),
+                                                                  subtitle: Padding(
+                                                                    padding:
+                                                                    const EdgeInsets
+                                                                        .only(top: 5),
+                                                                    child: StarRating(
+                                                                      rating: double.parse(
+                                                                          '${snapshot.data[index]['rating']}'),
+                                                                    ),
+                                                                  ),
+                                                                )
+                                                              ],
+                                                            );
+                                                          }),
+                                                    );
+                                                  }
+                                                } else {
+                                                  mainWidget = Center(
+                                                    child: Column(
+                                                      mainAxisAlignment:
+                                                      MainAxisAlignment.center,
+                                                      crossAxisAlignment:
+                                                      CrossAxisAlignment.center,
+                                                      children: [
+                                                        Theme(
+                                                            data: Theme.of(context)
+                                                                .copyWith(
+                                                                accentColor:
+                                                                Color(0xFF9B049B)),
+                                                            child:
+                                                            CircularProgressIndicator(valueColor: AlwaysStoppedAnimation<Color>(Color(0xFF9B049B)),
+
+                                                              strokeWidth: 2,
+                                                              backgroundColor: Colors.white,
+                                                            )),
+                                                        SizedBox(
+                                                          height: 10,
+                                                        ),
+                                                        Padding(
+                                                          padding: const EdgeInsets.all(8.0),
+                                                          child: Text('Loading',
+                                                              style: TextStyle(
+                                                                // letterSpacing: 4,
+                                                                  color: Color(0xFF333333),
+                                                                  fontSize: 18,
+                                                                  fontWeight:
+                                                                  FontWeight.w600)),
+                                                        ),
+                                                      ],
+                                                    ),
+                                                  );
+                                                }
+
+                                                return mainWidget;
+                                              });
+                                        }),
+                                      ],
+                                    )),
+                                crossFadeState: index==0 ? CrossFadeState.showFirst : CrossFadeState.showSecond,
+                              ),
+                            ),
+                          ],
+                        );}
+                      )
+                    ],
+                  ),
+                );
+              }));
+        });
+  }
+
+  _viewProduct(location,{data}) {
+    showModalBottomSheet(
+        backgroundColor: Colors.white,
+        context: context,
+        isScrollControlled: true,
+        builder: (builder) {
+          return  Scaffold(
+                appBar:  PreferredSize(
+                  preferredSize: Size(double.infinity, 80),
+                  child: Container(
+                    height: 80,
+                    child: Stack(
+                      children: [
+                        AppBar(
+                            actions: [
+                              Padding(
+                                padding: const EdgeInsets.only(top:40.0),
+                                child: PopupMenuButton(
+                                  icon: Icon(FeatherIcons.moreHorizontal,
+                                      color: Colors.white),
+                                  onSelected: (value) {
+                                    data.makeOpenUrl(
+                                        'https://www.google.com/maps?saddr=${location.locationLatitude},${location.locationLongitude}&daddr= ${widget.userData.latitude}, ${widget.userData.longitude}');
+                                  },
+                                  elevation: 0.1,
+                                  padding: EdgeInsets.all(0),
+                                  color: Color(0xFFF6F6F6),
+                                  shape: RoundedRectangleBorder(
+                                      borderRadius: BorderRadius.circular(5)),
+                                  itemBuilder: (BuildContext context) => <PopupMenuEntry>[
+                                    PopupMenuItem(
+                                      height: 30,
+                                      value: "get direction",
+                                      child: Row(
+                                        mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                                        children: [
+                                          Text("Get direction",
+                                              style: GoogleFonts.poppins(
+                                                  color: Colors.black87,
+                                                  fontSize: 16,
+                                                  height: 1.4,
+                                                  fontWeight: FontWeight.w600)),
+                                          Icon(
+                                            FeatherIcons.map,
+                                            color: Color(0xFF9B049B),
+                                            size: 15,
                                           ),
                                         ],
                                       ),
                                     ),
-                                  ])
-                                : SizedBox(),
+                                  ],
+                                ),
+                              )
+                            ],
+                            backgroundColor: Color(0xFF9B049B),
+                          leading: Text(''),
+                          ),
+                        Padding(
+                          padding: const EdgeInsets.only(top:30.0),
+                          child: IconButton(
+                            padding: EdgeInsets.all(0),
+                            onPressed: (){
+                              Navigator.pop(context);
+                            },
+                            icon: Icon(Icons.arrow_back, color: Colors.white,),
+                          ),
+                        ),
+                      ],
+                    ),
+                  ),
+                ),
+
+                body: Container(
+                  height: MediaQuery.of(context).size.height,
+                  decoration: BoxDecoration(
+                      color: Colors.white,
+                      ),
+                  child: ListView(
+                    physics: BouncingScrollPhysics(),
+                    padding: EdgeInsets.all(0),
+                    children: [
+
+
+                      Container(
+                        color: Color(0xFFF0F0F0),
+                        child: Row(
+                          children: [
+                            for (dynamic item in data['productImages'])
+                              Container(
+                                width: MediaQuery.of(context).size.width,
+                                height: 200,
+                                child: Stack(
+                                  children: [
+                                    ClipRRect(
+                                      borderRadius: BorderRadius.circular(10),
+                                      child: Container(
+                                        width: MediaQuery.of(context).size.width,
+                                        height: 200,
+                                        child: Image.network(
+                                          'https://uploads.fixme.ng/originals/${item['imageFileName']}',
+                                          fit: BoxFit.cover,
+                                        ),
+                                      ),
+                                    ),
+                                  ],
+                                ),
+                              ),
+                          ],
+                        ),
+                      ),
+                      SizedBox(
+                        height: 7,
+                      ),
+                      Row(
+                        children: [
+                          SizedBox(
+                            width: 8,
+                          ),
+                          Text(
+                            "${data['product_name']}".capitalizeFirstOfEach,
+                            style: TextStyle(fontSize: 18),
                           ),
                         ],
                       ),
-                    ),
-                    Padding(
-                      padding:
-                          const EdgeInsets.only(left: 18, right: 18, top: 5),
-                      child: Row(
+                      Divider(),
+                      SizedBox(
+                        width: 8,
+                      ),
+                      Padding(
+                        padding: const EdgeInsets.only(left:8.0),
+                        child: Align(
+                          alignment:Alignment.bottomLeft,
+                          child: Text(
+                            "Description:",
+                            style:
+                            TextStyle(fontWeight: FontWeight.w600, fontSize: 16),
+                          ),
+                        ),
+                      ),
+                      Row(
+                        crossAxisAlignment: CrossAxisAlignment.start,
+                        mainAxisAlignment: MainAxisAlignment.start,
                         children: [
-                          Container(
+                          SizedBox(
+                            width: 8,
+                          ),
+                          Text(
+                            "${data['description']}",
+                            style: TextStyle(fontSize: 18),
+                          ),
+                        ],
+                      ),
+                      SizedBox(
+                        height: 25,
+                      ),
+Divider(),
+                      Row(
+                        children: [
+                          SizedBox(
+                            width: 8,
+                          ),
+                          RichText(
+                            text: TextSpan(
+                              text: 'NGN ',
+                              style: TextStyle(
+                                fontSize: 20,
+                                  color: Colors.black,
+                                  fontWeight: FontWeight.w500),
+                              children: <TextSpan>[
+                                TextSpan(
+                                    text: "${data['price']}",
+                                    style: GoogleFonts.poppins(
+                                       fontSize: 20,
+                                        color: Colors.black,
+                                        fontWeight: FontWeight.w500)),
+                              ],
+                            ),
+                          ),
+                        ],
+                      ),
+
+                      Divider(),
+
+
+
+
+
+
+
+
+
+                      Container(
+                        padding: EdgeInsets.only( left:  80, right: 80),
+                        width: 200,
                             decoration: BoxDecoration(
                                 borderRadius: BorderRadius.circular(5)),
                             child: FlatButton(
                               onPressed: () {
+                                var network = Provider.of<WebServices>(context, listen: false);
+                                var datas = Provider.of<Utils>(context, listen: false);
                                 FirebaseApi.addUserChat(
-                                  token2: data.fcmToken ,
-                            token: widget.userData.fcmToken,
+                                  token2: datas.fcmToken ,
+                                  token: widget.userData.fcmToken,
+                                  recieveruserId2: network.userId,
+                                   recieveruserId:  widget.userData.id,
+                                   serviceId: widget.userData.serviceId,
+                                  serviceId2: network.serviceId,
                                   urlAvatar2:
-                                      'https://uploads.fixme.ng/originals/${network.profilePicFileName}',
+                                  'https://uploads.fixme.ng/originals/${network.profilePicFileName}',
                                   name2: network.firstName,
                                   idArtisan: network.mobileDeviceToken,
                                   artisanMobile: network.phoneNum,
                                   userMobile: widget.userData.userMobile,
                                   idUser: widget.userData.idUser,
                                   urlAvatar:
-                                      'https://uploads.fixme.ng/originals/${widget.userData.urlAvatar}',
+                                  'https://uploads.fixme.ng/originals/${widget.userData.urlAvatar}',
                                   name: widget.userData.name,
                                 );
 
@@ -450,7 +1398,7 @@ class _ArtisanPageNewState extends State<ArtisanPageNew> {
                                   PageRouteBuilder(
                                     pageBuilder: (context, animation,
                                         secondaryAnimation) {
-                                      return ChatPage(user: widget.userData);
+                                      return ChatPage(user: widget.userData, productData: data, productSend: 'send',);
                                     },
                                     transitionsBuilder: (context, animation,
                                         secondaryAnimation, child) {
@@ -471,10 +1419,10 @@ class _ArtisanPageNewState extends State<ArtisanPageNew> {
                                     borderRadius: BorderRadius.circular(5)),
                                 child: Container(
                                   constraints: BoxConstraints(
-                                      maxWidth: 120, minHeight: 35.0),
+                                      maxWidth: 200, minHeight: 36.0),
                                   alignment: Alignment.center,
                                   child: Text(
-                                    "Message",
+                                    "Get this Product",
                                     textAlign: TextAlign.center,
                                     style: TextStyle(
                                         color: Colors.white,
@@ -484,687 +1432,143 @@ class _ArtisanPageNewState extends State<ArtisanPageNew> {
                               ),
                             ),
                           ),
-                          Container(
-                            margin: EdgeInsets.only(left: 10),
-                            height: 35,
-                            decoration: BoxDecoration(
-                                border: Border.all(
-                                    color: Color(0xFFE9E9E9), width: 1),
-                                borderRadius: BorderRadius.circular(5)),
-                            child: FlatButton(
-                              disabledColor: Color(0x909B049B),
-                              onPressed: () async {
-                                await UrlLauncher.launch(
-                                    "tel://${widget.userData.fullNumber}");
-                              },
-                              // full_number
-                              color: Colors.transparent,
-                              shape: RoundedRectangleBorder(
-                                  borderRadius: BorderRadius.circular(5)),
-                              padding: EdgeInsets.all(0.0),
-                              child: Ink(
-                                decoration: BoxDecoration(
-                                    borderRadius: BorderRadius.circular(5)),
-                                child: Container(
-                                  constraints: BoxConstraints(
-                                      maxWidth: 100, minHeight: 35.0),
-                                  alignment: Alignment.center,
-                                  child: Text(
-                                    "Call",
-                                    textAlign: TextAlign.center,
-                                    style: TextStyle(
-                                        color: Colors.black,
-                                        fontWeight: FontWeight.w600),
-                                  ),
-                                ),
-                              ),
-                            ),
-                          ),
-                          Container(
-                            margin: EdgeInsets.only(left: 10),
-                            height: 35,
-                            width: 33,
-                            decoration: BoxDecoration(
-                                border: Border.all(
-                                    color: Color(0xFFE9E9E9), width: 1),
-                                borderRadius: BorderRadius.circular(5)),
-                            child: FlatButton(
-                              disabledColor: Color(0x909B049B),
-                              onPressed: () {
-                                model.setExpandedStatus =
-                                    !model.getExpandedStatus;
-                              },
-                              color: Colors.transparent,
-                              shape: RoundedRectangleBorder(
-                                  borderRadius: BorderRadius.circular(5)),
-                              padding: EdgeInsets.all(0.0),
-                              child: Ink(
-                                decoration: BoxDecoration(
-                                    borderRadius: BorderRadius.circular(5)),
-                                child: Container(
-                                    constraints:
-                                        BoxConstraints(minHeight: 35.0),
-                                    alignment: Alignment.center,
-                                    child: Icon(
-                                      model.getExpandedStatus
-                                          ? FeatherIcons.chevronUp
-                                          : FeatherIcons.chevronDown,
-                                      size: 15,
-                                    )),
-                              ),
-                            ),
-                          ),
-                        ],
-                      ),
-                    ),
-                    SizedBox(
-                      height: 5,
-                    ),
-                    Container(
-                      decoration: BoxDecoration(
-                        border: Border(
-                            top: BorderSide(width: 1, color: Color(0xFFEFEFEF)),
-                            bottom:
-                                BorderSide(width: 1, color: Color(0xFFEFEFEF))),
-                      ),
-                      child: TabBar(
-                        controller: _tabController,
-                        unselectedLabelColor: Colors.black26,
-                        labelColor: Colors.black54,
-                        indicatorSize: TabBarIndicatorSize.tab,
-                        indicatorColor: Colors.black54,
-                        tabs: [
-                          Tab(
-                              child: Text(
-                                  widget.userData.userRole == 'artisan'
-                                      ? 'Catalogue(${model.getCatalogueCount == 0 ? 0 : model.getCatalogueCount})'
-                                      : 'Products(${model.getProductCount == 0 ? 0 : model.getProductCount})',
-                                  style: GoogleFonts.openSans(
-                                      fontSize: 16,
-                                      fontWeight: FontWeight.w600))),
-                          Tab(
-                              child: Text(
-                                  'Reviews(${this.widget.userData.reviews})',
-                                  style: GoogleFonts.openSans(
-                                      fontSize: 16,
-                                      fontWeight: FontWeight.w600))),
-                        ],
-                      ),
-                    ),
-                    Expanded(
-                      child: Container(
-                        width: double.infinity,
-                        child: TabBarView(
-                          controller: _tabController,
+
+                      Padding(
+                        padding:
+                        const EdgeInsets.only(left: 18, right: 18, top: 18),
+                        child: Row(
                           children: [
-                            //Catalogue Widget
-                            Container(
-                              child: widget.userData.userRole == 'artisan'
-                                  ? FutureBuilder(
-                                      future: cataloguePhotos,
-                                      builder: (context, snapshot) {
-                                        Widget mainWidget;
-                                        if (snapshot.connectionState ==
-                                            ConnectionState.done) {
-                                          if (snapshot.data == null ||
-                                              snapshot.data.length == 0) {
-                                            mainWidget = Center(
-                                              child: Column(
-                                                mainAxisAlignment:
-                                                    MainAxisAlignment.center,
-                                                crossAxisAlignment:
-                                                    CrossAxisAlignment.center,
-                                                children: [
-                                                  Text('No images',
-                                                      style: TextStyle(
-                                                          // letterSpacing: 4,
-                                                          color:
-                                                              Color(0xFF333333),
-                                                          fontSize: 18,
-                                                          fontWeight:
-                                                              FontWeight.w600)),
-                                                ],
-                                              ),
-                                            );
-                                          } else {
-                                            mainWidget = Container(
-                                                margin: const EdgeInsets.only(
-                                                    bottom: 5,
-                                                    left: 5,
-                                                    right: 5,
-                                                    top: 5),
-                                                child: GridView.builder(
-                                                  shrinkWrap: true,
-                                                  physics: ScrollPhysics(),
-                                                  itemCount: snapshot.data ==
-                                                          null
-                                                      ? 0
-                                                      : snapshot.data.length,
-                                                  gridDelegate:
-                                                      SliverGridDelegateWithFixedCrossAxisCount(
-                                                    crossAxisCount: 3,
-                                                    crossAxisSpacing: 5,
-                                                    mainAxisSpacing: 5,
-                                                  ),
-                                                  itemBuilder:
-                                                      (BuildContext context,
-                                                          int index) {
-                                                    return InkWell(
-                                                      onTap: () {
-                                                        Navigator.push(
-                                                          context,
-                                                          PageRouteBuilder(
-                                                            pageBuilder: (context,
-                                                                animation,
-                                                                secondaryAnimation) {
-                                                              return PhotoView(
-                                                                'https://uploads.fixme.ng/originals/${snapshot.data[index]['imageFileName']}',
-                                                                snapshot.data[
-                                                                        index][
-                                                                    'imageFileName'],
-                                                              );
-                                                            },
-                                                            transitionsBuilder:
-                                                                (context,
-                                                                    animation,
-                                                                    secondaryAnimation,
-                                                                    child) {
-                                                              return FadeTransition(
-                                                                opacity:
-                                                                    animation,
-                                                                child: child,
-                                                              );
-                                                            },
-                                                          ),
-                                                        );
-                                                      },
-                                                      child: Hero(
-                                                        tag: snapshot
-                                                                .data[index]
-                                                            ['imageFileName'],
-                                                        child: Container(
-                                                            width: 200,
-                                                            child:
-                                                                Image.network(
-                                                              'https://uploads.fixme.ng/originals/${snapshot.data[index]['imageFileName']}',
-                                                              fit: BoxFit.cover,
-                                                            )),
-                                                      ),
-                                                    );
-                                                  },
-                                                ));
-                                          }
-                                        } else {
-                                          mainWidget = Center(
-                                            child: Column(
-                                              mainAxisAlignment:
-                                                  MainAxisAlignment.center,
-                                              crossAxisAlignment:
-                                                  CrossAxisAlignment.center,
-                                              children: [
-                                                Theme(
-                                                    data: Theme.of(context)
-                                                        .copyWith(
-                                                            accentColor: Color(
-                                                                0xFF9B049B)),
-                                                    child:
-                                                        CircularProgressIndicator()),
-                                                SizedBox(
-                                                  height: 10,
-                                                ),
-                                                Text('Loading',
-                                                    style: TextStyle(
-                                                        // letterSpacing: 4,
-                                                        color:
-                                                            Color(0xFF333333),
-                                                        fontSize: 18,
-                                                        fontWeight:
-                                                            FontWeight.w600)),
-                                              ],
-                                            ),
-                                          );
-                                        }
-                                        return mainWidget;
-                                      })
-                                  : FutureBuilder(
-                                      future: products,
-                                      builder: (context, snapshot) {
-                                        Widget mainWidget;
-                                        if (snapshot.connectionState ==
-                                            ConnectionState.done) {
-                                          if (snapshot.data == null ||
-                                              snapshot.data.length == 0) {
-                                            mainWidget = Center(
-                                              child: Column(
-                                                mainAxisAlignment:
-                                                    MainAxisAlignment.center,
-                                                crossAxisAlignment:
-                                                    CrossAxisAlignment.center,
-                                                children: [
-                                                  Text('No products',
-                                                      style: TextStyle(
-                                                          // letterSpacing: 4,
-                                                          color:
-                                                              Color(0xFF333333),
-                                                          fontSize: 18,
-                                                          fontWeight:
-                                                              FontWeight.w600)),
-                                                ],
-                                              ),
-                                            );
-                                          } else {
-                                            mainWidget = Container(
-                                                margin: const EdgeInsets.only(
-                                                    bottom: 30.0,
-                                                    left: 8,
-                                                    right: 8),
-                                                child: ListView.builder(
-                                                  shrinkWrap: true,
-                                                  physics: ScrollPhysics(),
-                                                  itemCount: snapshot.data ==
-                                                          null
-                                                      ? 0
-                                                      : snapshot.data.length,
-                                                  itemBuilder:
-                                                      (BuildContext context,
-                                                          int index) {
-                                                    return ClipRRect(
-                                                      borderRadius:
-                                                          BorderRadius.circular(
-                                                              10),
-                                                      child: Container(
-                                                        child: ListTile(
-                                                          onTap: () {
-                                                            _viewProduct(
-                                                                data: snapshot
-                                                                        .data[
-                                                                    index]);
-                                                          },
-                                                          contentPadding:
-                                                              const EdgeInsets
-                                                                      .only(
-                                                                  left: 0),
-                                                          leading: CircleAvatar(
-                                                            child: Text(''),
-                                                            radius: 40,
-                                                            backgroundImage:
-                                                                NetworkImage(
-                                                              'https://uploads.fixme.ng/originals/${snapshot.data[index]['productImages'][0]['imageFileName']}',
-                                                            ),
-                                                            foregroundColor:
-                                                                Colors.white,
-                                                            backgroundColor:
-                                                                Colors.white,
-                                                          ),
-                                                          title: Text(
-                                                              "${snapshot.data[index]['product_name']}"
-                                                                  .capitalizeFirstOfEach,
-                                                              style: TextStyle(
-                                                                  color: Colors
-                                                                      .black)),
-                                                          subtitle: RichText(
-                                                            text: TextSpan(
-                                                              text: '\u{20A6} ',
-                                                              style: TextStyle(
-                                                                  fontFamily:
-                                                                      'Roboto',
-                                                                  color: Colors
-                                                                      .green,
-                                                                  fontWeight:
-                                                                      FontWeight
-                                                                          .bold),
-                                                              children: <
-                                                                  TextSpan>[
-                                                                TextSpan(
-                                                                    text:
-                                                                        "${snapshot.data[index]['price']}",
-                                                                    style: GoogleFonts.openSans(
-                                                                        color: Colors
-                                                                            .green,
-                                                                        fontWeight:
-                                                                            FontWeight.bold)),
-                                                              ],
-                                                            ),
-                                                          ),
-                                                        ),
-                                                      ),
-                                                    );
-                                                  },
-                                                ));
-                                          }
-                                        } else {
-                                          mainWidget = Center(
-                                            child: Column(
-                                              mainAxisAlignment:
-                                                  MainAxisAlignment.center,
-                                              crossAxisAlignment:
-                                                  CrossAxisAlignment.center,
-                                              children: [
-                                                Theme(
-                                                    data: Theme.of(context)
-                                                        .copyWith(
-                                                            accentColor: Color(
-                                                                0xFF9B049B)),
-                                                    child:
-                                                        CircularProgressIndicator()),
-                                                SizedBox(
-                                                  height: 10,
-                                                ),
-                                                Text('Loading',
-                                                    style: TextStyle(
-                                                        // letterSpacing: 4,
-                                                        color:
-                                                            Color(0xFF333333),
-                                                        fontSize: 18,
-                                                        fontWeight:
-                                                            FontWeight.w600)),
-                                              ],
-                                            ),
-                                          );
-                                        }
-                                        return mainWidget;
-                                      }),
-                            ),
+                            Stack(children: <Widget>[
+                              CircleAvatar(
+                                child: Text(''),
+                                radius: 50,
+                                backgroundImage: NetworkImage(
+                                  widget.userData == 'no_picture_upload' ||
+                                      widget.userData == null
+                                      ? 'https://uploads.fixme.ng/originals/no_picture_upload'
+                                      : 'https://uploads.fixme.ng/originals/${widget.userData.urlAvatar}',
+                                ),
+                                foregroundColor: Colors.white,
+                                backgroundColor: Colors.white,
+                              ),
 
-                            //Comments Widget
-                            StatefulBuilder(builder:
-                                (BuildContext context, StateSetter setStates) {
-                              return FutureBuilder(
-                                  future: network
-                                      .getArtisanReviews(widget.userData.id),
-                                  builder: (context, snapshot) {
-                                    Widget mainWidget;
-                                    if (snapshot.connectionState ==
-                                        ConnectionState.done) {
-                                      if (snapshot.data == null ||
-                                          snapshot.data.length == 0) {
-                                        mainWidget = Center(
-                                          child: Column(
-                                            mainAxisAlignment:
-                                                MainAxisAlignment.center,
-                                            crossAxisAlignment:
-                                                CrossAxisAlignment.center,
-                                            children: [
-                                              Text('No reviews',
-                                                  style: TextStyle(
-                                                      // letterSpacing: 4,
-                                                      color: Color(0xFF333333),
-                                                      fontSize: 18,
-                                                      fontWeight:
-                                                          FontWeight.w600)),
-                                            ],
-                                          ),
-                                        );
-                                      } else {
-                                        if (snapshot.data.length == 0) {
-                                          print('empty');
-                                        }
-                                        mainWidget = Container(
-                                          width:
-                                              MediaQuery.of(context).size.width,
-                                          child: ListView.separated(
-                                              separatorBuilder:
-                                                  (BuildContext context,
-                                                          int index) =>
-                                                      Divider(),
-                                              shrinkWrap: true,
-                                              itemCount: snapshot.data.length,
-                                              physics: ScrollPhysics(),
-                                              itemBuilder: (context, index) {
-                                                DateTime dateOfReview =
-                                                    DateTime.parse(snapshot
-                                                        .data[index]
-                                                            ['dateAdded']
-                                                        .toString());
-                                                return Column(
-                                                  children: [
-                                                    Padding(
-                                                      padding:
-                                                          const EdgeInsets.only(
-                                                              top: 12,
-                                                              left: 15,
-                                                              right: 15,
-                                                              bottom: 2),
-                                                      child: Wrap(
-                                                        children: [
-                                                          Align(
-                                                            alignment: Alignment
-                                                                .centerLeft,
-                                                            child: Text(
-                                                                '${snapshot.data[index]['reviewer']['user_first_name'].toString()} ${snapshot.data[index]['reviewer']['user_last_name'].toString()}',
-                                                                style: GoogleFonts.openSans(
-                                                                    fontSize:
-                                                                        17,
-                                                                    fontWeight:
-                                                                        FontWeight
-                                                                            .w600)),
-                                                          ),
-                                                          Align(
-                                                            alignment: Alignment
-                                                                .centerLeft,
-                                                            child: Text(
-                                                                '${snapshot.data[index]['review'].toString()}',
-                                                                style: GoogleFonts.openSans(
-                                                                    fontSize:
-                                                                        16,
-                                                                    fontWeight:
-                                                                        FontWeight
-                                                                            .w500)),
-                                                          )
-                                                        ],
-                                                      ),
-                                                    ),
-                                                    ListTile(
-                                                      leading: CircleAvatar(
-                                                        child: Text(''),
-                                                        radius: 22,
-                                                        backgroundImage:
-                                                            NetworkImage(
-                                                          network.profilePicFileName ==
-                                                                      'no_picture_upload' ||
-                                                                  network.profilePicFileName ==
-                                                                      null
-                                                              ? 'https://uploads.fixme.ng/originals/no_picture_upload'
-                                                              : 'https://uploads.fixme.ng/originals/${network.profilePicFileName}',
-                                                        ),
-                                                        foregroundColor:
-                                                            Colors.white,
-                                                        backgroundColor:
-                                                            Colors.white,
-                                                      ),
-                                                      title: Text(
-                                                          '${DateFormat('MMM dd, y').format(dateOfReview)}',
-                                                          style: GoogleFonts
-                                                              .openSans(
-                                                                  fontSize: 17,
-                                                                  fontWeight:
-                                                                      FontWeight
-                                                                          .w600)),
-                                                      subtitle: Padding(
-                                                        padding:
-                                                            const EdgeInsets
-                                                                .only(top: 5),
-                                                        child: StarRating(
-                                                          rating: double.parse(
-                                                              '${snapshot.data[index]['rating']}'),
-                                                        ),
-                                                      ),
-                                                    )
-                                                  ],
-                                                );
-                                              }),
-                                        );
-                                      }
-                                    } else {
-                                      mainWidget = Center(
-                                        child: Column(
-                                          mainAxisAlignment:
-                                              MainAxisAlignment.center,
-                                          crossAxisAlignment:
-                                              CrossAxisAlignment.center,
-                                          children: [
-                                            Theme(
-                                                data: Theme.of(context)
-                                                    .copyWith(
-                                                        accentColor:
-                                                            Color(0xFF9B049B)),
-                                                child:
-                                                    CircularProgressIndicator()),
-                                            SizedBox(
-                                              height: 10,
-                                            ),
-                                            Text('Loading',
-                                                style: TextStyle(
-                                                    // letterSpacing: 4,
-                                                    color: Color(0xFF333333),
-                                                    fontSize: 18,
-                                                    fontWeight:
-                                                        FontWeight.w600)),
-                                          ],
+                            ]),
+                            Padding(
+                              padding: const EdgeInsets.only(left: 12),
+                              child: Column(
+                                mainAxisAlignment: MainAxisAlignment.start,
+                                crossAxisAlignment: CrossAxisAlignment.start,
+                                children: [
+                                  Row(
+                                    children: [
+                                      Padding(
+                                        padding: const EdgeInsets.only(left: 0),
+                                        child: Text(
+                                          '${widget.userData.name} ${widget.userData.userLastName}'
+                                              .capitalizeFirstOfEach,
+                                          style: TextStyle(
+                                              color: Color(0xFF333333),
+                                              fontSize: 18,
+                                              fontWeight: FontWeight.w600),
                                         ),
-                                      );
-                                    }
+                                      ),
+                                    ],
+                                  ),
 
-                                    return mainWidget;
-                                  });
-                            }),
+                                  Align(
+                                    alignment: Alignment.bottomRight,
+                                    child: Text(
+                                      '${widget.userData.serviceArea}'
+                                          .toUpperCase(),
+                                      style: TextStyle(
+                                          fontWeight: FontWeight.bold,
+                                          fontSize: 10.5,
+                                          color: Color(0xFFBCBCBC)),
+                                    ),
+                                  ),
+                                  SizedBox(height: 2),
+
+
+                                  Row(
+                                    children: [
+                                      Text(
+                                        '${double.parse(widget.userData.userRating.toString())}',
+                                        style: TextStyle(
+                                            color: Color(0xFF333333),
+                                            fontSize: 16,
+                                            fontWeight: FontWeight.w600),
+                                      ),
+                                      SizedBox(
+                                        width: 3,
+                                      ),
+                                      Icon(
+                                        Icons.star,
+                                        color: Color(0xFFFC5302),
+                                        size: 18,
+                                      ),
+                                      SizedBox(
+                                        width: 3,
+                                      ),
+                                      Text(
+                                        '(${this.widget.userData.reviews} reviews)',
+                                        style: TextStyle(
+                                            color: Color(0xFF333333),
+                                            fontSize: 16,
+                                            fontWeight: FontWeight.w600),
+                                      ),
+                                      // StarRating(
+                                      //   rating: double.parse(
+                                      //       widget.userData.userRating.toString()),
+                                      // ),
+                                    ],
+                                  ),
+
+                                ],
+                              ),
+                            )
                           ],
                         ),
                       ),
-                    )
-                  ],
-                );
-              }));
-        });
-  }
 
-  _viewProduct({data}) {
-    showModalBottomSheet(
-        backgroundColor: Colors.transparent,
-        context: context,
-        isScrollControlled: true,
-        builder: (builder) {
-          return Container(
-            height: 335.0,
-            padding: EdgeInsets.only(
-              top: 10,
-            ),
-            decoration: BoxDecoration(
-                color: Colors.white,
-                borderRadius: BorderRadius.only(
-                  topLeft: Radius.circular(15.0),
-                  topRight: Radius.circular(15.0),
-                )),
-            child: Column(
-              children: [
-                Row(
-                  mainAxisAlignment: MainAxisAlignment.center,
-                  children: <Widget>[
-                    Container(
-                      width: 70,
-                      height: 4,
-                      margin: const EdgeInsets.only(bottom: 10),
-                      decoration: BoxDecoration(
-                          color: Colors.grey[300],
-                          borderRadius:
-                              BorderRadius.all(Radius.circular(12.0))),
-                    ),
-                  ],
-                ),
-                Container(
-                  color: Color(0xFFF0F0F0),
-                  child: Row(
-                    children: [
-                      for (dynamic item in data['productImages'])
-                        Container(
-                          width: 100,
-                          height: 100,
-                          margin: const EdgeInsets.all(8),
-                          child: Stack(
-                            children: [
-                              ClipRRect(
-                                borderRadius: BorderRadius.circular(10),
-                                child: Container(
-                                  width: 100,
-                                  height: 100,
-                                  child: Image.network(
-                                    'https://uploads.fixme.ng/originals/${item['imageFileName']}',
-                                    fit: BoxFit.cover,
-                                  ),
-                                ),
+                      Container(
+                        margin: EdgeInsets.only(left: 120, right :120, top:30,bottom: 30),
+                        height: 35,
+                        decoration: BoxDecoration(
+                            border: Border.all(
+                                color: Color(0xFFE9E9E9), width: 1),
+                            borderRadius: BorderRadius.circular(5)),
+                        child: FlatButton(
+                          disabledColor: Color(0x909B049B),
+                          onPressed: () async {
+                            Navigator.pop(context);
+                          },
+                          // full_number
+                          color: Colors.transparent,
+                          shape: RoundedRectangleBorder(
+                              borderRadius: BorderRadius.circular(5)),
+                          padding: EdgeInsets.all(0.0),
+                          child: Ink(
+                            decoration: BoxDecoration(
+                                borderRadius: BorderRadius.circular(5)),
+                            child: Container(
+                              constraints: BoxConstraints(
+                                  maxWidth: 100, minHeight: 35.0),
+                              alignment: Alignment.center,
+                              child: Text(
+                                "View Profile",
+                                textAlign: TextAlign.center,
+                                style: TextStyle(
+                                    color: Colors.black,
+                                    fontWeight: FontWeight.w600),
                               ),
-                            ],
+                            ),
                           ),
                         ),
-                    ],
-                  ),
-                ),
-                SizedBox(
-                  height: 7,
-                ),
-                Row(
-                  children: [
-                    SizedBox(
-                      width: 8,
-                    ),
-                    Text(
-                      "Product name",
-                      style:
-                          TextStyle(fontWeight: FontWeight.w600, fontSize: 16),
-                    ),
-                  ],
-                ),
-                Row(
-                  children: [
-                    SizedBox(
-                      width: 8,
-                    ),
-                    Text(
-                      "${data['product_name']}",
-                      style: TextStyle(fontSize: 18),
-                    ),
-                  ],
-                ),
-                Divider(),
-                Row(
-                  children: [
-                    SizedBox(
-                      width: 8,
-                    ),
-                    Text(
-                      "Product amount",
-                      style:
-                          TextStyle(fontWeight: FontWeight.w600, fontSize: 16),
-                    ),
-                  ],
-                ),
-                Row(
-                  children: [
-                    SizedBox(
-                      width: 8,
-                    ),
-                    RichText(
-                      text: TextSpan(
-                        text: '\u{20A6} ',
-                        style: TextStyle(
-                            fontFamily: 'Roboto',
-                            color: Colors.green,
-                            fontWeight: FontWeight.bold),
-                        children: <TextSpan>[
-                          TextSpan(
-                              text: "${data['price']}",
-                              style: GoogleFonts.openSans(
-                                  color: Colors.green,
-                                  fontWeight: FontWeight.bold)),
-                        ],
                       ),
-                    ),
-                  ],
+                    ],
+                      )
                 ),
-              
-              ],
-            ),
-          );
+              );
         });
   }
 }

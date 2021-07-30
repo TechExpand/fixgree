@@ -7,6 +7,7 @@ class UserSearch {
   List subServices; 
   String userRegDate;
   String  bio;
+  String project_owner_user_id;
   String verification;
   String  businessName;
   String  businessAddress;
@@ -38,6 +39,7 @@ class UserSearch {
       this.subServices,
       this.userLastName,
       this.verification,
+        this.project_owner_user_id,
       this.idUser,
       this.locationTimeUpdated,
         this.fcmToken,
@@ -72,6 +74,7 @@ class UserSearch {
         userLastName: json['user_last_name'],
         userRegDate: json['user_reg_date'],
         latitude: json['latitude'],
+    project_owner_user_id: json['project_owner_user_id'],
         subServices: json['subServices'],
          bio: json['bio'],
           businessName: json['business_name'],
@@ -107,6 +110,7 @@ class UserSearch {
   Map<String, dynamic> toJson() => {
         'user_email': userEmail,
         'agentId': agentId,
+    'project_owner_user_id': project_owner_user_id,
         'distance': distance,
         'user_last_name': userLastName,
         'user_reg_date': userRegDate,

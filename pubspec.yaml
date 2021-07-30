@@ -15,7 +15,7 @@ publish_to: 'none' # Remove this line if you wish to publish to pub.dev
 # In iOS, build-name is used as CFBundleShortVersionString while build-number used as CFBundleVersion.
 # Read more about iOS versioning at
 # https://developer.apple.com/library/archive/documentation/General/Reference/InfoPlistKeyReference/Articles/CoreFoundationKeys.html
-version: 1.1.0+31
+version: 1.1.0+33
 
 environment:
   sdk: ">=2.7.0 <3.0.0"
@@ -32,41 +32,45 @@ dependencies:
   in_app_update: ^2.0.0
   device_info: ^2.0.2
   get: ^4.1.4
-  intl_phone_number_input: any
-  firebase_auth: 0.18.4+1
-  firebase_core: any
+  intl_phone_number_input: ^0.7.0
+  firebase_auth: any
+  firebase_core: ^1.4.0
   url_launcher:
+  autocomplete_textfield: ^1.7.3
   cloud_firestore: any
   firebase_storage: any
   date_format:
-  firebase_messaging: ^7.0.3
-  location: ^3.0.2
+  firebase_messaging: ^10.0.3
+  location: ^4.3.0
   user_experior: ^1.1.22
   agora_rtc_engine: ^3.3.1
   flutter_audio_recorder: ^0.5.5
   permission_handler:
-  image: ^2.1.19
+  image: ^3.0.2
   geocoder: ^0.2.1
   flutter_ringtone_player: ^2.0.0
   audioplayer:
-  #gx_file_picker: any
+  grouped_list: ^4.1.0
+  get_it: ^7.2.0
+  gx_file_picker: any
   flutter_feather_icons: ^1.0.3
   flutter_multi_formatter:
-  path_provider: ^1.6.0
+  path_provider: ^2.0.2
   flutter_local_notifications:
   font_awesome_flutter:
-  image_picker: ^0.6.3+1
-  geolocator: ^6.0.0
+  bubble: ^1.2.1
+  image_picker: any
+  geolocator: ^7.3.1
   flushbar: ^1.10.4
-  flutter_paystack: ^1.0.4
+  flutter_paystack: ^1.0.5+1
   clipboard: ^0.1.2+8
   http:
-  shared_preferences: ^0.5.12+4
+  shared_preferences: ^2.0.6
+  fl_toast: any
   flutter_tawk: ^0.0.5
   share: ^0.6.5+4
   rating_dialog: ^2.0.0
-  super_tooltip: ^1.0.1
-  google_fonts: ^1.1.2
+  google_fonts: ^2.1.0
 
 
 dev_dependencies:
@@ -109,9 +113,24 @@ flutter:
   # list giving the asset and other descriptors for the font. For
   # example:
   fonts:
-     - family: Firesans
-       fonts:
-         - asset: assets/fonts/firesans.ttf
+    - family: Firesans
+      fonts:
+        - asset: assets/fonts/firesans.ttf
+    - family: MyFlutterApp # the name of your font family
+      fonts:
+        - asset: assets/fonts/MyFlutterApp.ttf # your font file name and the directory
+    - family: MyFlutterApp2 # the name of your font family
+      fonts:
+        - asset: assets/fonts/MyFlutterApp2.ttf # your font file name and the directory
+    - family: MyFlutterApp3 # the name of your font family
+      fonts:
+        - asset: assets/fonts/MyFlutterApp3.ttf # your font file name and the directory
+    - family: MyFlutterApp4 # the name of your font family
+      fonts:
+        - asset: assets/fonts/MyFlutterApp4.ttf # your font file name and the directory
+
+
+
   # fonts:
   #   - family: Schyler
   #     fonts:

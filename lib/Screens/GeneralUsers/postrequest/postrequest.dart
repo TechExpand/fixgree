@@ -3,6 +3,7 @@ import 'dart:io';
 import 'package:fixme/Screens/GeneralUsers/Wallet/CardPayment.dart';
 import 'package:fixme/Services/network_service.dart';
 import 'package:fixme/Services/postrequest_service.dart';
+import 'package:fixme/Utils/utils.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_paystack/flutter_paystack.dart';
 import 'package:google_fonts/google_fonts.dart';
@@ -39,12 +40,12 @@ class PostScreenState extends State<PostScreen> {
       });
   }
 
-
+  final plugin = PaystackPlugin();
 
   @override
   void initState(){
     super.initState();
-    PaystackPlugin.initialize(publicKey: publicKey);
+    plugin.initialize(publicKey: publicKey);
   }
 
   List<Services> result = [];
@@ -73,15 +74,19 @@ class PostScreenState extends State<PostScreen> {
         ..reference = _getReference()
       // or ..accessCode = _getAccessCodeFrmInitialization()
         ..email = email;
-      CheckoutResponse response = await PaystackPlugin.checkout(
+      CheckoutResponse response = await plugin.checkout(
         context,
+        logo: Image.asset(
+          'assets/images/fixme.png',
+          scale: 5,
+        ),
         method: CheckoutMethod.card, // Defaults to CheckoutMethod.selectable
         charge: charge,
       );
       if (response.status) {
+
         network.validatePayment(response.reference);
-        SharedPreferences prefs = await SharedPreferences.getInstance();
-        prefs.setBool('card', true);
+        Utils().storeData('paymentToken', 'active');
         print(response.reference);
       }
     }
@@ -96,7 +101,7 @@ class PostScreenState extends State<PostScreen> {
         elevation: 2.5,
         shadowColor: Color(0xFFF1F1FD).withOpacity(0.5),
         title: Text('Post A Request',
-            style: GoogleFonts.openSans(
+            style: GoogleFonts.poppins(
                 color: Color(0xFF333333), fontWeight: FontWeight.w600)),
       ),
       body: Padding(
@@ -199,17 +204,21 @@ class PostScreenState extends State<PostScreen> {
               splashColor: Colors.transparent,
               highlightColor: Colors.transparent,
               onTap: ()async {
-                // SharedPreferences prefs = await SharedPreferences.getInstance();
-                // var card = prefs.getBool('card');
-                // if(card == false || card == null){
-                //   paymentMethod(context, 5000, network.email);
-                // }else{
+                SharedPreferences prefs = await SharedPreferences.getInstance();
+                var status = prefs.getString('paymentToken');
+                if(status == null || status == 'null' || status == '' || status == 'in_active'){
+                  paymentMethod(context, 5000, network.email);
+                }else{
                   result = postRequestProvider.allservicesList;
                   dialogPage(context);
-                // }
-                // result = postRequestProvider.allservicesList;
-                // dialogPage(context);
-              },
+                }
+                print(status);
+                print(status);
+                print(status);
+                print(status);
+                print(status);
+                print(status);
+                },
               child: TextFormField(
                 keyboardType: TextInputType.multiline,
                 enabled: false,

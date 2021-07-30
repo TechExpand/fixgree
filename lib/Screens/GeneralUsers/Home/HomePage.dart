@@ -1,6 +1,7 @@
 import 'dart:io';
 import 'dart:ui';
 import 'package:cloud_firestore/cloud_firestore.dart';
+import 'package:firebase_core/firebase_core.dart';
 import 'package:fixme/Model/Notify.dart';
 import 'package:fixme/Services/Firebase_service.dart';
 import 'package:fixme/Services/network_service.dart';
@@ -11,17 +12,26 @@ import 'package:fixme/Screens/GeneralUsers/Wallet/Wallet.dart';
 import 'package:fixme/Screens/GeneralUsers/pending/pendingpage.dart';
 import 'package:fixme/Screens/GeneralUsers/postrequest/postrequest.dart';
 import 'package:fixme/Utils/Provider.dart';
+import 'package:fixme/Utils/icons.dart';
+import 'package:fixme/Utils/service_locator.dart';
 import 'package:flutter_local_notifications/flutter_local_notifications.dart';
 import 'package:fixme/Services/postrequest_service.dart';
 import 'package:fixme/Utils/utils.dart';
 import 'package:fixme/Services/location_service.dart';
+import 'package:get_it/get_it.dart';
 import 'package:provider/provider.dart';
 import 'package:fixme/Widgets/Drawer.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_feather_icons/flutter_feather_icons.dart';
 import 'package:shared_preferences/shared_preferences.dart';
-
 import 'Home.dart';
+
+
+var userid = getIt<WebServices>();
+
+
+
+
 
 class  HomePage extends StatefulWidget {
   HomePage();
@@ -34,134 +44,173 @@ class _HomePageState extends State<HomePage> {
   PageController _myPage;
   var search;
   final scafoldKey = GlobalKey<ScaffoldState>();
-  String _message = '';
 
-  final FirebaseMessaging _firebaseMessaging = FirebaseMessaging();
-  FlutterLocalNotificationsPlugin flutterLocalNotificationsPlugin =
-      FlutterLocalNotificationsPlugin();
+
+
+
+
+  /// Create a [AndroidNotificationChannel] for heads up notifications
+  static const AndroidNotificationChannel channel = AndroidNotificationChannel(
+    'high_importance_channel', // id
+    'High Importance Notifications', // title
+    'This channel is used for important notifications.', // description
+    importance: Importance.max,
+    sound: RawResourceAndroidNotificationSound('sound'),
+    playSound: true,
+
+  );
+
+
+  static const AndroidNotificationChannel channel2 = AndroidNotificationChannel(
+    'high_importance_channel 2', // id
+    'High Importance Notifications 2', // title
+    'This channel is used for important notifications 2.', // description
+    importance: Importance.max,
+    sound: RawResourceAndroidNotificationSound('normal'),
+    playSound: true,
+
+  );
+
+  /// Initialize the [FlutterLocalNotificationsPlugin] package.
+  final FlutterLocalNotificationsPlugin flutterLocalNotificationsPlugin =
+  FlutterLocalNotificationsPlugin();
+
+
+
+
+  initChannel()async{
+  await flutterLocalNotificationsPlugin
+      .resolvePlatformSpecificImplementation<
+      AndroidFlutterLocalNotificationsPlugin>()
+      ?.createNotificationChannel(channel);
+
+
+
+  await flutterLocalNotificationsPlugin
+      .resolvePlatformSpecificImplementation<
+      AndroidFlutterLocalNotificationsPlugin>()
+      ?.createNotificationChannel(channel2);
+
+
+  await FirebaseMessaging.instance.setForegroundNotificationPresentationOptions(
+  alert: true,
+  badge: true,
+  sound: true,
+  );
+
+
+  }
+
+  showNotification(notification){
+    flutterLocalNotificationsPlugin.show(
+        notification.hashCode,
+        notification.title,
+        notification.body,
+        NotificationDetails(
+          android: AndroidNotificationDetails(
+            channel.id,
+            channel.name,
+            channel.description,
+            // TODO add a proper drawable resource to android, for now using
+            //      one that already exists in example app.
+            icon: 'launch_background',
+          ),
+        ));
+  }
+
+
+  showNotification2(notification){
+    flutterLocalNotificationsPlugin.show(
+        notification.hashCode,
+        notification.title,
+        notification.body,
+        NotificationDetails(
+          android: AndroidNotificationDetails(
+            channel2.id,
+            channel2.name,
+            channel2.description,
+            // TODO add a proper drawable resource to android, for now using
+            //      one that already exists in example app.
+            icon: 'launch_background',
+          ),
+        ));
+  }
+
+
+
 
   @override
   void initState() {
-    super.initState();
-    Provider.of<WebServices>(context, listen: false).initializeValues();
-    getMessage();
-    var data = Provider.of<Utils>(context, listen: false);
     var network = Provider.of<WebServices>(context, listen: false);
+    super.initState();
+    userid.newid = network.userId;
+    FirebaseMessaging.onBackgroundMessage(_firebaseMessagingBackgroundHandler);
+    var data = Provider.of<Utils>(context, listen: false);
     var datas = Provider.of<DataProvider>(context, listen: false);
+    Provider.of<WebServices>(context, listen: false).initializeValues();
     datas.setSelectedBottomNavBar(0);
-    var initializationSettingsAndroid =
-        new AndroidInitializationSettings('@mipmap/ic_launcher');
-    var initializationSettingsIOs = IOSInitializationSettings();
-    var initSetttings = InitializationSettings(
-        android: initializationSettingsAndroid, iOS: initializationSettingsIOs);
-
-    flutterLocalNotificationsPlugin.initialize(initSetttings,
-        onSelectNotification: onSelectNotification);
-
     network.updateFCMToken(network.userId, data.fcmToken);
     Provider.of<LocationService>(context, listen: false).getCurrentLocation();
     _myPage =
         PageController(initialPage: 0, viewportFraction: 1, keepPage: true);
-
     WidgetsBinding.instance.addPostFrameCallback((timeStamp) {
       PostRequestProvider postRequestProvider =
           Provider.of<PostRequestProvider>(context, listen: false);
       postRequestProvider.getAllServices();
     });
-  }
-
-  Future onSelectNotification(String payload) {
-    var data = Provider.of<DataProvider>(context);
-    _myPage.jumpToPage(3);
-    data.setSelectedBottomNavBar(3);
-  }
 
 
 
+    initChannel();
 
+    FirebaseMessaging.instance
+        .getInitialMessage()
+        .then((RemoteMessage message) {
 
-  void getMessage() {
-    var network = Provider.of<WebServices>(context, listen: false);
-    _firebaseMessaging.configure(
-        onMessage: (Map<String, dynamic> message) async {
-print( message["data"]["notification_type"]);
-print( message["data"]["notification_type"]);
-print( message["data"]["notification_type"]);
-          message["data"]["notification_type"].toString()=='new_project'?showNotification(message["notification"]["title"],message["notification"]["body"]):
-          showNotification2(message["notification"]["title"],message["notification"]["body"]);
+      if (message != null) {
 
-      FirebaseApi.uploadNotification(
-        network.userId.toString(),
-        message["notification"]["title"],
-        message["data"]["notification_type"],
-        '${message["data"]["lastName"]} ${message["data"]["firstName"]}',
-        '${message["data"]["jobId"]}',
-        '${message["data"]["bidId"]}',
-        '${message["data"]["bidderId"]}',
-        '${message["data"]["artisanId"]}',
-        '${message['data']['budget']}'
-      );
-      FirebaseApi.uploadCheckNotify(
-        network.userId.toString(),
-      );
-      //}
-
-      setState(() => _message = message["notification"]["title"]);
-    }, onResume: (Map<String, dynamic> message) async {
-      setState(() => _message = message["notification"]["title"]);
-    }, onLaunch: (Map<String, dynamic> message) async {
-      setState(() => _message = message["notification"]["title"]);
+      }
     });
+
+
+    FirebaseMessaging.onMessage.listen((RemoteMessage message) {
+      RemoteNotification notification = message.notification;
+      AndroidNotification android = message.notification?.android;
+      if (notification != null && android != null) {
+        message.data["notification_type"].toString()=='new_project'?showNotification(notification):
+        showNotification2(notification);
+
+        FirebaseApi.uploadNotification(
+            network.userId.toString(),
+            message.notification.title,
+            message.data["notification_type"],
+            '${message.data["lastName"]} ${message.data["firstName"]}',
+            '${message.data["jobId"]}',
+            '${message.data["bidId"]}',
+            '${message.data["bidderId"]}',
+            '${message.data["artisanId"]}',
+            '${message.data['budget']}',
+            '${message.data['invoiceId']}',
+            '${message.data['service_id']}'
+
+        );
+        FirebaseApi.uploadCheckNotify(
+          network.userId.toString(),
+        );
+      }
+    });
+
+    FirebaseMessaging.onMessageOpenedApp.listen((RemoteMessage message) {
+
+
+    });
+
+
+
   }
 
-  // showNotification(value1, value2) async {
-  //   var android = AndroidNotificationDetails('id', 'channel ', 'description',
-  //       priority: Priority.high, importance: Importance.max);
-  //   var iOS = IOSNotificationDetails(
-  //     presentAlert: true,
-  //     presentBadge: true,
-  //     presentSound: true,
-  //   );
-  //   var platform = new NotificationDetails(android: android, iOS: iOS);
-  //   await flutterLocalNotificationsPlugin.show(
-  //       0, '$value1', '$value2', platform,
-  //       payload: 'New job is available around you');
-  // }
-
- showNotification(value1, value2) async {
-    var android = AndroidNotificationDetails('myid', 'mychannel ', 'mydescription',
-        priority: Priority.high, importance: Importance.max, sound: RawResourceAndroidNotificationSound('sound'),
-      playSound: true,
-    );
-    var iOS = IOSNotificationDetails(
-      sound: 'sound.wav',
-      presentAlert: true,
-      presentBadge: true,
-      presentSound: true,
-    );
-    var platform = new NotificationDetails(android: android, iOS: iOS);
-    await flutterLocalNotificationsPlugin.show(
-        1, '$value1', '$value2', platform,
-        payload: 'another job is available around you');
-  }
 
 
-  showNotification2(value1, value2) async {
-    var android = AndroidNotificationDetails('id', 'channel ', 'description',
-      priority: Priority.high, importance: Importance.max, sound: RawResourceAndroidNotificationSound('normal'),
-      playSound: true,
-    );
-    var iOS = IOSNotificationDetails(
-      sound: 'normal.wav',
-      presentAlert: true,
-      presentBadge: true,
-      presentSound: true,
-    );
-    var platform = new NotificationDetails(android: android, iOS: iOS);
-    await flutterLocalNotificationsPlugin.show(
-        0, '$value1', '$value2', platform,
-        payload: 'New job is available around you');
-  }
   @override
   void dispose() {
     _myPage.dispose();
@@ -170,10 +219,13 @@ print( message["data"]["notification_type"]);
 
   @override
   Widget build(BuildContext context) {
+
     var data = Provider.of<DataProvider>(context, listen: false);
     WebServices network = Provider.of<WebServices>(context, listen: false);
     List<Notify> notify;
     // FirebaseApi.updateUsertoOnline(datas.mobile_device_token);
+
+
 
     var widget = Scaffold(
       key: scafoldKey,
@@ -210,10 +262,8 @@ print( message["data"]["notification_type"]);
                 icon: Padding(
                   padding: const EdgeInsets.only(bottom: 1),
                   child: Icon(
-                    conData.selectedPage == 0
-                        ? Icons.home_rounded
-                        : Icons.home_outlined,
-                    size: 28,
+                    MyFlutterApp.home,
+                    size: 20,
                   ),
                 ),
                 label: 'Home',
@@ -221,21 +271,18 @@ print( message["data"]["notification_type"]);
               BottomNavigationBarItem(
                 icon: Padding(
                   padding: const EdgeInsets.only(bottom: 3),
-                  child: Icon(conData.selectedPage == 1
-                      ? Icons.account_balance_wallet
-                      : Icons.account_balance_wallet_outlined),
+                  child: Icon(
+                    MyFlutterApp.wallet,
+                    size: 20,
+                  ),
                 ),
                 label: 'Wallet',
               ),
               BottomNavigationBarItem(
                 icon: Padding(
                   padding: const EdgeInsets.only(bottom: 3),
-                  child: conData.selectedPage == 2
-                      ? Icon(
-                          Icons.add_circle_rounded,
-                          size: 25,
-                        )
-                      : Icon(FeatherIcons.plusCircle),
+                  child: Icon(MyFlutterApp.vector,
+                    size:20, ),
                 ),
                 label: 'Post',
               ),
@@ -288,7 +335,9 @@ print( message["data"]["notification_type"]);
                                   child: Container());
                             }
                           }),
-                      Icon(FeatherIcons.bell),
+                      Icon(
+                        MyFlutterApp.bell,
+                        size: 24,),
                     ],
                   ),
                 ),
@@ -455,4 +504,40 @@ print( message["data"]["notification_type"]);
 
     return PickupLayout(scaffold: widget);
   }
+}
+
+
+
+
+handlebackgrundMessage(message)async{
+  SharedPreferences prefs = await SharedPreferences.getInstance();
+  var id = prefs.getString('user_id');
+  userid.newid = int.parse(id);
+  FirebaseApi.uploadCheckNotify(
+    userid.newid.toString(),
+  );
+  FirebaseApi.uploadNotification(
+      userid.newid.toString(),
+      message.notification.title,
+      message.data["notification_type"],
+      '${message.data["lastName"]} ${message.data["firstName"]}',
+      '${message.data["jobId"]}',
+      '${message.data["bidId"]}',
+      '${message.data["bidderId"]}',
+      '${message.data["artisanId"]}',
+      '${message.data['budget']}',
+      '${message.data['invoiceId']}',
+      '${message.data['service_id']}'
+
+  );
+
+}
+
+
+bool count = true;
+Future<void> _firebaseMessagingBackgroundHandler(RemoteMessage message) async {
+  count?setup():null;
+  count = false;
+  await Firebase.initializeApp();
+  handlebackgrundMessage(message);
 }

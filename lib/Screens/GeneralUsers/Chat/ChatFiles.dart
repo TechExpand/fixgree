@@ -1,3 +1,4 @@
+import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:fixme/Model/Message.dart';
 import 'package:fixme/Services/Firebase_service.dart';
 import 'package:fixme/Services/network_service.dart';
@@ -52,7 +53,7 @@ class _ChatFilesState extends State<ChatFiles> {
                 ],
               ),
               preferredSize: Size(double.infinity, 30)),
-          backgroundColor: Color(0xFFA40C85),
+          backgroundColor: Color(0xFF9B049B),
         ),
         body: TabBarView(children: [
           MediaWidget(idUser: widget.user.idUser, user: widget.user),
@@ -79,63 +80,87 @@ class MediaWidget extends StatelessWidget {
     var data = Provider.of<DataProvider>(context);
     var network = Provider.of<WebServices>(context, listen: false);
     return Container(
-      child: StreamBuilder<List<Message>>(
-       stream:  FirebaseApi.getMessages(idUser,  '${network.firstName}-${user.name}',  '${user.name}-${network.firstName}'),
-        builder: (context, snapshot) {
-          switch (snapshot.connectionState) {
-            case ConnectionState.waiting:
-              return Center(child: CircularProgressIndicator());
-            default:
-              if (snapshot.hasError) {
-                return buildText('Something Went Wrong Try later');
-              } else {
-                final messages = snapshot.data;
+      child: StreamBuilder(
+       stream:  FirebaseApi.getMessages(idUser,  '${network.userId}-${user.id}',  '${user.id}-${network.userId}'),
+        builder: (context, AsyncSnapshot<QuerySnapshot> snapshot) {
+          List<Message> messageData;
 
-                return messages.isEmpty
-                    ? buildText('No photos found.')
-                    : ListView.builder(
-                        itemCount: messages.length,
-                        itemBuilder: (context, index) {
-                          final message = messages[index];
-                          return message.message.contains('https://') ||
-                                  message.message.contains('http://')
-                              ? data.categorizeUrl(message.message) == 'image'
-                                  ? Hero(
-                                    tag: message.message,
-                                    child: GestureDetector(
-                                                       onTap: (){
-                             return  Navigator.push(
-        context,
-        PageRouteBuilder(
-          pageBuilder: (context, animation, secondaryAnimation) {
-            return PhotoView(
-                                 message.message,
-                                  message.message,
-                            );
-          },
-          transitionsBuilder: (context, animation, secondaryAnimation, child) {
-            return FadeTransition(
-              opacity: animation,
-              child: child,
-            );
-          },
-        ),
-      );
-                          
-                          },                     child: Container(
-                                          height: 150,
-                                          child: Image.network(
-                                            message.message,
-                                            fit: BoxFit.cover,
-                                          )),
-                                    ),
-                                  )
-                                  : Container()
-                              : Container();
-                        },
-                      );
-              }
+          if (snapshot.hasData) {
+            messageData = snapshot.data.docs
+                .map((doc) => Message.fromMap(doc.data(), doc.id))
+                .toList();
+
+            switch (snapshot.connectionState) {
+              case ConnectionState.waiting:
+                return Center(child: Theme(
+                    data: Theme.of(context)
+                        .copyWith(accentColor: Color(0xFF9B049B)),
+                    child: CircularProgressIndicator(valueColor: AlwaysStoppedAnimation<Color>(Color(0xFF9B049B)),
+                      strokeWidth: 2,
+                      backgroundColor: Colors.white,
+                    )),);
+              default:
+                if (snapshot.hasError) {
+                  return buildText(
+                      'Something Went Wrong Try later');
+                } else {
+                  final messages = messageData;
+                  if (messages.isEmpty) {
+                    return buildText('No image found.');
+                  } else
+                    return ListView.builder(
+                      itemCount: messages.length,
+                      itemBuilder: (context, index) {
+                        final message = messages[index];
+                        return message.message.contains('https://') ||
+                            message.message.contains('http://')
+                            ? data.categorizeUrl(message.message) == 'image'
+                            ? Hero(
+                          tag: message.message,
+                          child: GestureDetector(
+                            onTap: (){
+                              return  Navigator.push(
+                                context,
+                                PageRouteBuilder(
+                                  pageBuilder: (context, animation, secondaryAnimation) {
+                                    return PhotoView(
+                                      message.message,
+                                      message.message,
+                                    );
+                                  },
+                                  transitionsBuilder: (context, animation, secondaryAnimation, child) {
+                                    return FadeTransition(
+                                      opacity: animation,
+                                      child: child,
+                                    );
+                                  },
+                                ),
+                              );
+
+                            },                     child: Container(
+                              height: 150,
+                              child: Image.network(
+                                message.message,
+                                fit: BoxFit.cover,
+                              )),
+                          ),
+                        )
+                            : Container()
+                            : Container();
+                      },
+                    );
+                }
+            }
+          } else {
+            return Center(child: Theme(
+                data: Theme.of(context)
+                    .copyWith(accentColor: Color(0xFF9B049B)),
+                child: CircularProgressIndicator(valueColor: AlwaysStoppedAnimation<Color>(Color(0xFF9B049B)),
+                  strokeWidth: 2,
+                  backgroundColor: Colors.white,
+                )),);
           }
+
         },
       ),
     );
@@ -165,42 +190,67 @@ class DocWidget extends StatelessWidget {
     var data = Provider.of<DataProvider>(context);
     var network = Provider.of<WebServices>(context, listen: false);
     return Container(
-      child: StreamBuilder<List<Message>>(
-        stream:  FirebaseApi.getMessages(idUser,  '${network.firstName}-${user.name}',  '${user.name}-${network.firstName}'),
-        builder: (context, snapshot) {
-          switch (snapshot.connectionState) {
-            case ConnectionState.waiting:
-              return Center(child: CircularProgressIndicator());
-            default:
-              if (snapshot.hasError) {
-                return buildText('Something Went Wrong Try later');
-              } else {
-                final messages = snapshot.data;
-                return messages.isEmpty
-                    ? buildText('No docs found.')
-                    : ListView.builder(
-                        itemCount: messages.length,
-                        itemBuilder: (context, index) {
-                          final message = messages[index];
-                          return message.message.contains('https://') ||
-                                  message.message.contains('http://')
-                              ? data.categorizeUrl(message.message) == 'doc'
-                                  ? InkWell(
-               onTap: () {
-                datas.opeLink(message.message);
-                          },
-              child: Card(
-                    child: Tab(
-                  text: 'Open this Document/Download',
-                  icon: Icon(FontAwesomeIcons.file , size: 40),
-                ),
-              )) 
-                                  : Container()
-                              : Container();
-                        },
-                      );
-              }
+      child: StreamBuilder(
+        stream:  FirebaseApi.getMessages(idUser,  '${network.userId}-${user.id}',  '${user.id}-${network.userId}'),
+        builder: (context, AsyncSnapshot<QuerySnapshot>snapshot) {
+          List<Message> messageData;
+
+          if (snapshot.hasData) {
+            messageData = snapshot.data.docs
+                .map((doc) => Message.fromMap(doc.data(), doc.id))
+                .toList();
+
+            switch (snapshot.connectionState) {
+              case ConnectionState.waiting:
+                return Center(child: Theme(
+                    data: Theme.of(context)
+                        .copyWith(accentColor: Color(0xFF9B049B)),
+                    child: CircularProgressIndicator(valueColor: AlwaysStoppedAnimation<Color>(Color(0xFF9B049B)),
+                      strokeWidth: 2,
+                      backgroundColor: Colors.white,
+                    )),);
+              default:
+                if (snapshot.hasError) {
+                  return buildText(
+                      'Something Went Wrong Try later');
+                } else {
+                  final messages = messageData;
+                  if (messages.isEmpty) {
+                    return buildText('No document found.');
+                  } else
+                    return ListView.builder(
+                      itemCount: messages.length,
+                      itemBuilder: (context, index) {
+                        final message = messages[index];
+                        return message.message.contains('https://') ||
+                            message.message.contains('http://')
+                            ? data.categorizeUrl(message.message) == 'doc'
+                            ? InkWell(
+                            onTap: () {
+                              datas.opeLink(message.message);
+                            },
+                            child: Card(
+                              child: Tab(
+                                text: 'Open this Document/Download',
+                                icon: Icon(FontAwesomeIcons.file , size: 40),
+                              ),
+                            ))
+                            : Container()
+                            : Container();
+                      },
+                    );
+                }
+            }
+          } else {
+            return Center(child: Theme(
+                data: Theme.of(context)
+                    .copyWith(accentColor: Color(0xFF9B049B)),
+                child: CircularProgressIndicator(valueColor: AlwaysStoppedAnimation<Color>(Color(0xFF9B049B)),
+                  strokeWidth: 2,
+                  backgroundColor: Colors.white,
+                )),);
           }
+
         },
       ),
     );
@@ -230,41 +280,66 @@ class LinkWidget extends StatelessWidget {
     var data = Provider.of<DataProvider>(context);
     var datas = Provider.of<Utils>(context);
     return Container(
-      child: StreamBuilder<List<Message>>(
-        stream:  FirebaseApi.getMessages(idUser,  '${network.firstName}-${user.name}',  '${user.name}-${network.firstName}'),
-        builder: (context, snapshot) {
-          switch (snapshot.connectionState) {
-            case ConnectionState.waiting:
-              return Center(child: CircularProgressIndicator());
-            default:
-              if (snapshot.hasError) {
-                return buildText('Something Went Wrong Try later');
-              } else {
-                final messages = snapshot.data;
-               
-                return messages.isEmpty
-                    ? buildText('No links found.')
-                    : ListView.builder(
-                        itemCount: messages.length,
-                        itemBuilder: (context, index) {
-                          final message = messages[index];
-                          return message.message.contains('https://') ||
-                                  message.message.contains('http://')
-                              ? data.categorizeUrl(message.message) == 'link'
-                                  ? InkWell(
-                                      onTap: () {
-                                        datas.opeLink(message.message);
-                                      },
-                                      child: Padding(
-                                        padding: const EdgeInsets.all(8.0),
-                                        child: Text(message.message, style: TextStyle(color: Colors.blue)),
-                                      ))
-                                  : Container()
-                              : Container();
-                        },
-                      );
-              }
+      child: StreamBuilder(
+        stream:  FirebaseApi.getMessages(idUser,  '${network.userId}-${user.id}',  '${user.id}-${network.userId}'),
+        builder: (context, AsyncSnapshot<QuerySnapshot>snapshot) {
+          List<Message> messageData;
+
+          if (snapshot.hasData) {
+            messageData = snapshot.data.docs
+                .map((doc) => Message.fromMap(doc.data(), doc.id))
+                .toList();
+
+            switch (snapshot.connectionState) {
+              case ConnectionState.waiting:
+                return Center(child: Theme(
+                    data: Theme.of(context)
+                        .copyWith(accentColor: Color(0xFF9B049B)),
+                    child: CircularProgressIndicator(valueColor: AlwaysStoppedAnimation<Color>(Color(0xFF9B049B)),
+                      strokeWidth: 2,
+                      backgroundColor: Colors.white,
+                    )),);
+              default:
+                if (snapshot.hasError) {
+                  return buildText(
+                      'Something Went Wrong Try later');
+                } else {
+                  final messages = messageData;
+                  if (messages.isEmpty) {
+                    return buildText('No links found.');
+                  } else
+                    return ListView.builder(
+                      itemCount: messages.length,
+                      itemBuilder: (context, index) {
+                        final message = messages[index];
+                        return message.message.contains('https://') ||
+                            message.message.contains('http://')|| message.message.contains('www.')
+                            ? data.categorizeUrl(message.message) == 'link'
+                            ? InkWell(
+                            onTap: () {
+                              datas.opeLink(message.message);
+                            },
+                            child: Padding(
+                              padding: const EdgeInsets.all(8.0),
+                              child: Text(message.message, style: TextStyle(color: Colors.blue)),
+                            ))
+                            : Container()
+                            : Container();
+                      },
+                    );
+                }
+            }
+          } else {
+            return Center(child: Theme(
+                data: Theme.of(context)
+                    .copyWith(accentColor: Color(0xFF9B049B)),
+                child: CircularProgressIndicator(valueColor: AlwaysStoppedAnimation<Color>(Color(0xFF9B049B)),
+                  strokeWidth: 2,
+                  backgroundColor: Colors.white,
+                )),);
           }
+
+
         },
       ),
     );

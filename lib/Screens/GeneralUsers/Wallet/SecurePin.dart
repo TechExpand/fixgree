@@ -191,10 +191,16 @@ displayCreateSecurePinBottomModal(
                                         FeatherIcons.arrowRightCircle,
                                         color: Colors.white,
                                       )
-                                    : CircularProgressIndicator(
-                                        strokeWidth: 2,
-                                        backgroundColor: Colors.white,
-                                      ))
+                                    : Theme(
+                                                    data: Theme.of(context)
+                                                        .copyWith(
+                                                            accentColor: Color(
+                                                                0xFF9B049B)),
+                                                    child:
+                                                    CircularProgressIndicator(valueColor: AlwaysStoppedAnimation<Color>(Color(0xFF9B049B)),
+                                                       strokeWidth: 2,
+                                              backgroundColor: Colors.white,
+                                                    )),)
                           ],
                         ),
                       ),
@@ -410,7 +416,7 @@ displayEnterSecurePinBottomModal(
                                     //                       FeatherIcons.checkCircle,
                                     //                       color: Colors.white,
                                     //                     )
-                                    //                   : CircularProgressIndicator(
+                                    //                   : CircularProgressIndicator(valueColor: AlwaysStoppedAnimation<Color>(Color(0xFF9B049B)),
                                     //                       strokeWidth: 2,
                                     //                       backgroundColor: Colors.white,
                                     //                     ))
@@ -430,7 +436,7 @@ displayEnterSecurePinBottomModal(
                                   child: Theme(
                                     data: Theme.of(context).copyWith(
                                         accentColor: Color(0xFF9B049B)),
-                                    child: CircularProgressIndicator(
+                                    child: CircularProgressIndicator(valueColor: AlwaysStoppedAnimation<Color>(Color(0xFF9B049B)),
                                       strokeWidth: 2,
                                       backgroundColor: Colors.white,
                                     ),
