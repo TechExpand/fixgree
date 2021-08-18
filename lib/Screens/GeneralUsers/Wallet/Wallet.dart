@@ -139,7 +139,7 @@ class _WalletState extends State<Wallet> {
                                                 children: <TextSpan>[
                                                   TextSpan(
                                                       text:
-                                                          '${userBankInfo.balance}',
+                                                          '${double.parse(userBankInfo.balance.toString()).toStringAsFixed(2)}',
                                                       style:
                                                           GoogleFonts.poppins(
                                                               color:
@@ -158,10 +158,10 @@ class _WalletState extends State<Wallet> {
 
                                       Align(
                                         alignment: Alignment.centerLeft,
-                                        child: Text('\u{20A6}'+'${userBankInfo.transitIncome}',
+                                        child: Text('transit: '+'\u{20A6}'+'${double.parse(userBankInfo.transitIncome.toString()).toStringAsFixed(2)}',
                                             style: TextStyle(
                                                 color:
-                                                Colors.white,
+                                                Color(0xFF25262A),
                                                 fontSize: 17,
                                                 fontFamily: 'Roboto',
                                                 height: 1.5,
@@ -316,7 +316,8 @@ class _WalletState extends State<Wallet> {
                                 fontWeight: FontWeight.w500)),
                       ],
                     ),
-                    Column(
+                network.role == 'artisan' || network.role == 'business'
+                    ?Column(
                       mainAxisAlignment: MainAxisAlignment.center,
                       crossAxisAlignment: CrossAxisAlignment.center,
                       children: [
@@ -355,7 +356,7 @@ class _WalletState extends State<Wallet> {
                                 height: 1.4,
                                 fontWeight: FontWeight.w500)),
                       ],
-                    )
+                    ):SizedBox()
                   ],
                 ),
               );

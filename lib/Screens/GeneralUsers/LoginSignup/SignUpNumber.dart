@@ -124,7 +124,7 @@ class SignUpState extends State<SignUp> {
               Padding(
                 padding: const EdgeInsets.only(top: 15.0, bottom: 15),
                 child: Text(
-                  'We wil send a code to verify your mobile number',
+                  'We will send a code to verify your mobile number',
                 ),
               ),
               Container(
@@ -134,7 +134,7 @@ class SignUpState extends State<SignUp> {
                     border: Border.all(
                       color: Color(0xFF9B049B),
                     ),
-                    borderRadius: BorderRadius.all(Radius.circular(12))),
+                    borderRadius: BorderRadius.all(Radius.circular(16))),
                 child: Padding(
                   padding: const EdgeInsets.only(left: 7.0),
                   child: InternationalPhoneNumberInput(

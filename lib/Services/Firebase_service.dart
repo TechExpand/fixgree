@@ -30,8 +30,7 @@ final newMessage = {
   'chatId': chatId ?? '',
   'idUser': network.mobileDeviceToken ?? '',
   'urlAvatar':
-  'https://uploads.fixme.ng/originals/${network.profilePicFileName}' ??
-      '',
+  'https://uploads.fixme.ng/originals/${network.profilePicFileName}' ?? '',
   'username': network.firstName ?? '',
   'message': message ?? '',
   'createdAt': FieldValue.serverTimestamp()
@@ -59,7 +58,7 @@ final newMessage = {
   }
 
   static Future uploadImage(
-      String idUser, idArtisan, message, context, chatId) async {
+      String idUser, idArtisan, message, context, chatId, file) async {
     var network = Provider.of<WebServices>(context, listen: false);
     final refMessages =
     FirebaseFirestore.instance.collection('chats/$idUser/messages').doc();
@@ -68,9 +67,9 @@ final newMessage = {
 
     Reference storageReferenceImage = FirebaseStorage.instance
         .ref()
-        .child('image/${Path.basename(message.path)}');
+        .child('image/${Path.basename(file?message.paths[0]:message.path)}');
 
-    UploadTask uploadtask =  storageReferenceImage.putFile(File(message.path));
+    UploadTask uploadtask =  storageReferenceImage.putFile(File(file?message.paths[0]:message.path));
     uploadtask.then((res){
      storageReferenceImage.getDownloadURL().then((imageurl) async {
        final newMessage = {
@@ -156,7 +155,7 @@ final newMessage = {
       FirebaseFirestore.instance
           .collection('chats/$idUser/messages')
           .where('chatId', whereIn: [chatId1, chatId2])
-          .orderBy(MessageField.createdAt, descending: false)
+          .orderBy(MessageField.createdAt, descending: true)
           .snapshots();
           // .transform(Utils.transformer(Message.fromJson));
 
@@ -472,7 +471,7 @@ final newMessage = {
   }) async {
     final refUsers =
     FirebaseFirestore.instance.collection('UserChat/$idUser/individual');
-    await refUsers.doc(idUser).update({
+    await refUsers.doc(idArtisan).update({
       'token': token,
     });
   }

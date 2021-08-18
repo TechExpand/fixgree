@@ -13,7 +13,14 @@ class Utils with ChangeNotifier {
   bool isExpanded = false;
   String fcmToken = '';
   bool isExpanded1 = true;
+  bool isLoading = false;
 
+
+
+  setLoading(value){
+    isLoading = value;
+    notifyListeners();
+  }
   // static StreamTransformer transformer<T>(
   //         T Function(Map<String, dynamic> json) fromJson) =>
   //     StreamTransformer<QuerySnapshot, List<T>>.fromHandlers(
@@ -66,6 +73,24 @@ class Utils with ChangeNotifier {
     }
   }
 
+
+  compareDateChat(DateTime date) {
+    if(date == null){
+      return '...';
+    }
+    else if (date.difference(DateTime.now()).inHours.abs() <= 22) {
+      var value = formatTime(date);
+      return value;
+    } else if (date.difference(DateTime.now()).inHours.abs() >= 22 &&
+        date.difference(DateTime.now()).inHours.abs() <= 48) {
+      var value = formatTime(date);
+      return 'yesterday at $value';
+    } else {
+      var value = formatYear(date);
+      return value;
+    }
+  }
+
   formatDate(DateTime now) {
     final DateFormat formatter = DateFormat('yyyy-MMMM-dd hh:mm');
     final String formatted = formatter.format(now);
@@ -102,23 +127,21 @@ class Utils with ChangeNotifier {
     }
   }
 
-  File selectedImage;
+  XFile selectedImage;
   final picker = ImagePicker();
   Future selectimage({@required ImageSource source, context}) async {
-    var image = await ImagePicker.pickImage(source: source);
+    var image = await picker.pickImage(source: source);
     selectedImage = image;
-
     notifyListeners();
   }
 
 
 
 
-
-  File selectedImage2;
+  XFile selectedImage2;
 
   Future selectimage2({@required ImageSource source, context}) async {
-    var images = await ImagePicker.pickImage(source: source);
+    var images = await picker.pickImage(source: source);
     selectedImage2 = images;
 
     notifyListeners();
@@ -126,10 +149,9 @@ class Utils with ChangeNotifier {
 
 
 
-  File ediproductImage;
-  final picker3 = ImagePicker();
+  XFile ediproductImage;
   Future selectProductImage({@required ImageSource source, context}) async {
-    var images = await ImagePicker.pickImage(source: source);
+    var images = await picker.pickImage(source: source);
     ediproductImage = images;
     notifyListeners();
   }

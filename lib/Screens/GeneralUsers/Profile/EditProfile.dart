@@ -20,7 +20,7 @@ class _EditProfileState extends State<EditProfile> {
   final _lastnameController = TextEditingController();
   final _statusController = TextEditingController();
   final _formKey1 = GlobalKey<FormState>();
-  File selectedImage;
+  XFile selectedImage;
 
 
   Future<Map> user;
@@ -28,7 +28,8 @@ class _EditProfileState extends State<EditProfile> {
   void pickImage({@required ImageSource source, context}) async {
     var network = Provider.of<WebServices>(context, listen: false);
     var data = Provider.of<Utils>(context, listen: false);
-    var image = await ImagePicker.pickImage(source: source);
+    final picker = ImagePicker();
+    var image = await picker.pickImage(source: source);
     setState(() => selectedImage = image);
 
     String imageName = await network.uploadProfilePhoto(

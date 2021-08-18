@@ -4,6 +4,7 @@ import 'package:fixme/Screens/ArtisanUser/Profile/ArtisanProvider.dart';
 import 'package:fixme/Screens/ArtisanUser/Profile/EditProfilePage.dart';
 import 'package:fixme/Screens/GeneralUsers/Home/HomePage.dart';
 import 'package:fixme/Services/network_service.dart';
+import 'package:fixme/Utils/Provider.dart';
 import 'package:fixme/Utils/utils.dart';
 import 'package:fixme/Widgets/Rating.dart';
 import 'package:fixme/Widgets/photoView.dart';
@@ -1155,7 +1156,48 @@ class _ProfilePageNewState extends State<ProfilePageNew> {
                                               });
                                         }),
                                       ][_tabController.index],
-                                    )
+                                    ),
+
+
+
+                                    Container(
+                                      padding: EdgeInsets.only(bottom: 20),
+                                      width: 200,
+                                      decoration: BoxDecoration(
+                                          borderRadius: BorderRadius.circular(5)),
+                                      child: FlatButton(
+                                        onPressed: snapshot.data['role'] == 'artisan'
+                                            ? () {
+                                          _AddCatalogue();
+                                        }
+                                            : () {
+                                          _AddProduct();
+                                        },
+                                        color: Color(0xFF9B049B),
+                                        shape: RoundedRectangleBorder(
+                                            borderRadius: BorderRadius.circular(5)),
+                                        padding: EdgeInsets.all(0.0),
+                                        child: Ink(
+                                          decoration: BoxDecoration(
+                                              borderRadius: BorderRadius.circular(5)),
+                                          child: Container(
+                                            constraints: BoxConstraints(
+                                                maxWidth: 200, minHeight: 36.0),
+                                            alignment: Alignment.center,
+                                            child: Text(
+                                              snapshot.data['role'] == 'artisan'? "Add Catalog":'Add Product',
+                                              textAlign: TextAlign.center,
+                                              style: TextStyle(
+                                                  color: Colors.white,
+                                                  fontWeight: FontWeight.w600),
+                                            ),
+                                          ),
+                                        ),
+                                      ),
+                                    ),
+
+
+
                                   ]),
                                 ),
                               ),
@@ -1168,6 +1210,501 @@ class _ProfilePageNewState extends State<ProfilePageNew> {
               ));
         });
   }
+
+
+
+
+
+
+
+
+
+  void _AddProduct() {
+    DataProvider datas = Provider.of<DataProvider>(context, listen: false);
+    Utils data = Provider.of<Utils>(context, listen: false);
+    final _controller = TextEditingController();
+    final _controller1 = TextEditingController();
+    final _controller2 = TextEditingController();
+    var network = Provider.of<WebServices>(context, listen: false);
+    showModalBottomSheet(
+        context: context,
+        isScrollControlled: true,
+        builder: (builder) {
+          return AnimatedPadding(
+            padding: MediaQuery.of(context).viewInsets,
+            duration: const Duration(milliseconds: 100),
+            curve: Curves.decelerate,
+            child: new StatefulBuilder(builder: (context, setStat) {
+              return Container(
+                  padding: EdgeInsets.symmetric(vertical: 20, horizontal: 20),
+                  color: Colors.transparent,
+                  child: ListView(
+                    children: [
+                      SizedBox(height: MediaQuery.of(context).size.height * 0.19),
+                      Text(
+                        "Product Name",
+                        style:
+                        TextStyle(fontWeight: FontWeight.w500, fontSize: 18),
+                      ),
+                      SizedBox(
+                        height: 10,
+                      ),
+                      Container(
+                        height: 50,
+                        alignment: Alignment.center,
+                        padding: const EdgeInsets.only(left: 12),
+                        decoration: BoxDecoration(
+                            color: Color(0xFFFFFFFF),
+                            border: Border.all(color: Color(0xFFF1F1FD)),
+                            borderRadius: BorderRadius.all(Radius.circular(7))),
+                        child: TextField(
+                          controller: _controller,
+                          decoration: InputDecoration.collapsed(
+                            hintText: 'Product Name',
+                            hintStyle:
+                            TextStyle(fontSize: 16, color: Colors.black38),
+                          ),
+                        ),
+                      ),
+                      SizedBox(
+                        height: 10,
+                      ),
+                      Text(
+                        "Product Price",
+                        style:
+                        TextStyle(fontWeight: FontWeight.w500, fontSize: 18),
+                      ),
+                      SizedBox(
+                        height: 10,
+                      ),
+                      Container(
+                        height: 50,
+                        alignment: Alignment.center,
+                        padding: const EdgeInsets.only(left: 12),
+                        decoration: BoxDecoration(
+                            color: Color(0xFFFFFFFF),
+                            border: Border.all(color: Color(0xFFF1F1FD)),
+                            borderRadius: BorderRadius.all(Radius.circular(7))),
+                        child: TextField(
+                          controller: _controller1,
+                          keyboardType: TextInputType.number,
+                          decoration: InputDecoration.collapsed(
+                            hintText: 'Product Price',
+                            hintStyle:
+                            TextStyle(fontSize: 16, color: Colors.black38),
+                          ),
+                        ),
+                      ),
+                      SizedBox(
+                        height: 10,
+                      ),
+                      Text(
+                        "Product Description",
+                        style:
+                        TextStyle(fontWeight: FontWeight.w500, fontSize: 18),
+                      ),
+                      SizedBox(
+                        height: 10,
+                      ),
+                      Container(
+                        height: 50,
+                        alignment: Alignment.center,
+                        padding: const EdgeInsets.only(left: 12),
+                        decoration: BoxDecoration(
+                            color: Color(0xFFFFFFFF),
+                            border: Border.all(color: Color(0xFFF1F1FD)),
+                            borderRadius: BorderRadius.all(Radius.circular(7))),
+                        child: TextField(
+                          controller: _controller2,
+                          decoration: InputDecoration.collapsed(
+                            hintText: 'Product Description',
+                            hintStyle:
+                            TextStyle(fontSize: 16, color: Colors.black38),
+                          ),
+                        ),
+                      ),
+                      SizedBox(
+                        height: 10,
+                      ),
+                      Center(
+                        child: SizedBox(
+                          height: 100, // card height
+                          child: data.selectedImage2 == null
+                              ? Text('No Image Selected')
+                              : Container(
+                            width: 100,
+                            child: Card(
+                                elevation: 2,
+                                shape: RoundedRectangleBorder(
+                                    borderRadius:
+                                    BorderRadius.circular(20)),
+                                child: Image.file(
+                                  File(
+                                    data.selectedImage2.path,
+                                  ),
+                                  fit: BoxFit.cover,
+                                )),
+                          ),
+                        ),
+                      ),
+                      Padding(
+                        padding: const EdgeInsets.all(8.0),
+                        child: ClipRRect(
+                          borderRadius: BorderRadius.circular(26),
+                          child: Container(
+                            decoration: BoxDecoration(
+                                border: Border.all(color: Colors.white),
+                                borderRadius: BorderRadius.circular(26)),
+                            child: FlatButton(
+                              disabledColor: Color(0xFF9B049B),
+                              onPressed: () {
+                                data
+                                    .selectimage2(source: ImageSource.gallery)
+                                    .then((value) {
+                                  setStat(() {
+                                    print('done');
+                                  }
+                                  );
+                                });
+                              },
+                              color: Color(0xFF9B049B),
+                              shape: RoundedRectangleBorder(
+                                  borderRadius: BorderRadius.circular(26)),
+                              padding: EdgeInsets.all(0.0),
+                              child: Ink(
+                                decoration: BoxDecoration(
+                                    borderRadius: BorderRadius.circular(26)),
+                                child: Container(
+                                  constraints: BoxConstraints(
+                                      maxWidth:
+                                      MediaQuery.of(context).size.width / 1.3,
+                                      minHeight: 45.0),
+                                  alignment: Alignment.center,
+                                  child: Text(
+                                    "Select/Upload Product Photo",
+                                    textAlign: TextAlign.center,
+                                    style: TextStyle(
+                                        fontSize: 17, color: Colors.white),
+                                  ),
+                                ),
+                              ),
+                            ),
+                          ),
+                        ),
+                      ),
+                      SizedBox(
+                        height: 30,
+                      ),
+                      Row(mainAxisAlignment: MainAxisAlignment.end, children: [
+                        Container(
+                          height: 34,
+                          decoration: BoxDecoration(
+                              border:
+                              Border.all(color: Color(0xFFE9E9E9), width: 1),
+                              borderRadius: BorderRadius.circular(5)),
+                          child: FlatButton(
+                            disabledColor: Color(0x909B049B),
+                            onPressed: () => Navigator.pop(context),
+                            color: Colors.transparent,
+                            shape: RoundedRectangleBorder(
+                                borderRadius: BorderRadius.circular(5)),
+                            padding: EdgeInsets.all(0.0),
+                            child: Ink(
+                              decoration: BoxDecoration(
+                                  borderRadius: BorderRadius.circular(5)),
+                              child: Container(
+                                constraints: BoxConstraints(
+                                    maxWidth: 100, minHeight: 34.0),
+                                alignment: Alignment.center,
+                                child: Text(
+                                  "Cancel",
+                                  textAlign: TextAlign.center,
+                                  style: TextStyle(
+                                      color: Colors.black87,
+                                      fontWeight: FontWeight.w600),
+                                ),
+                              ),
+                            ),
+                          ),
+                        ),
+                        SizedBox(
+                          width: 20,
+                        ),
+                        Container(
+                          height: 34,
+                          decoration: BoxDecoration(
+                              border:
+                              Border.all(color: Color(0xFFE9E9E9), width: 1),
+                              borderRadius: BorderRadius.circular(5)),
+                          child: FlatButton(
+                            disabledColor: Color(0x909B049B),
+                            onPressed: () async{
+                              Navigator.pop(context);
+                          network.addProductCatalog(
+                                context: context,
+                                bio: _controller2.text.toString(),
+                                productName: _controller.text.toString(),
+                                price: _controller1.text.toString(),
+                                path: data.selectedImage2.path,
+                              ).then((value) {
+                            if (value == true) {
+                               showTextToast(
+                                  text: 'Product Added successful.',
+                                  context: context,
+                              );
+
+                              setState(() {});
+                            } else{
+                               showTextToast(
+                                  text: 'Product fail to Add.',
+                                  context: context,
+                              );
+                            }
+
+                          });
+
+
+
+
+                            },
+                            color: Colors.transparent,
+                            shape: RoundedRectangleBorder(
+                                borderRadius: BorderRadius.circular(5)),
+                            padding: EdgeInsets.all(0.0),
+                            child: Ink(
+                              decoration: BoxDecoration(
+                                  borderRadius: BorderRadius.circular(5)),
+                              child: Container(
+                                constraints: BoxConstraints(
+                                    maxWidth: 100, minHeight: 34.0),
+                                alignment: Alignment.center,
+                                child: Text(
+                                  "Save",
+                                  textAlign: TextAlign.center,
+                                  style: TextStyle(
+                                      color: Colors.black87,
+                                      fontWeight: FontWeight.w600),
+                                ),
+                              ),
+                            ),
+                          ),
+                        ),
+                      ])
+                    ],
+                  ));
+            }),
+          );
+        });
+  }
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+  void _AddCatalogue() {
+    DataProvider datas = Provider.of<DataProvider>(context, listen: false);
+    Utils data = Provider.of<Utils>(context, listen: false);
+    var network = Provider.of<WebServices>(context, listen: false);
+    showModalBottomSheet(
+        context: context,
+        isScrollControlled: true,
+        builder: (builder) {
+          return AnimatedPadding(
+            padding: MediaQuery.of(context).viewInsets,
+            duration: const Duration(milliseconds: 100),
+            curve: Curves.decelerate,
+            child: new StatefulBuilder(builder: (context, setStat) {
+              return Container(
+                  height: 300,
+                  padding: EdgeInsets.symmetric(vertical: 20, horizontal: 20),
+                  color: Colors.transparent,
+                  child: ListView(
+                    children: [
+                      SizedBox(
+                        height: 10,
+                      ),
+                      Center(
+                        child: SizedBox(
+                          height: 100, // card height
+                          child: data.selectedImage2 == null
+                              ? Text('No Image Selected')
+                              : Container(
+                            width: 100,
+                            child: Card(
+                                elevation: 2,
+                                shape: RoundedRectangleBorder(
+                                    borderRadius:
+                                    BorderRadius.circular(20)),
+                                child: Image.file(
+                                  File(
+                                    data.selectedImage2.path,
+                                  ),
+                                  fit: BoxFit.cover,
+                                )),
+                          ),
+                        ),
+                      ),
+                      Padding(
+                        padding: const EdgeInsets.all(8.0),
+                        child: ClipRRect(
+                          borderRadius: BorderRadius.circular(26),
+                          child: Container(
+                            decoration: BoxDecoration(
+                                border: Border.all(color: Colors.white),
+                                borderRadius: BorderRadius.circular(26)),
+                            child: FlatButton(
+                              disabledColor: Color(0xFF9B049B),
+                              onPressed: () {
+                                data
+                                    .selectimage2(source: ImageSource.gallery)
+                                    .then((value) {
+                                  setStat(() {});
+                                });
+                              },
+                              color: Color(0xFF9B049B),
+                              shape: RoundedRectangleBorder(
+                                  borderRadius: BorderRadius.circular(26)),
+                              padding: EdgeInsets.all(0.0),
+                              child: Ink(
+                                decoration: BoxDecoration(
+                                    borderRadius: BorderRadius.circular(26)),
+                                child: Container(
+                                  constraints: BoxConstraints(
+                                      maxWidth:
+                                      MediaQuery.of(context).size.width / 1.3,
+                                      minHeight: 45.0),
+                                  alignment: Alignment.center,
+                                  child: Text(
+                                    "Select/Upload Service Photo",
+                                    textAlign: TextAlign.center,
+                                    style: TextStyle(
+                                        fontSize: 17, color: Colors.white),
+                                  ),
+                                ),
+                              ),
+                            ),
+                          ),
+                        ),
+                      ),
+                      SizedBox(
+                        height: 30,
+                      ),
+                      Row(mainAxisAlignment: MainAxisAlignment.end, children: [
+                        Container(
+                          height: 34,
+                          decoration: BoxDecoration(
+                              border:
+                              Border.all(color: Color(0xFFE9E9E9), width: 1),
+                              borderRadius: BorderRadius.circular(5)),
+                          child: FlatButton(
+                            disabledColor: Color(0x909B049B),
+                            onPressed: () => Navigator.pop(context),
+                            color: Colors.transparent,
+                            shape: RoundedRectangleBorder(
+                                borderRadius: BorderRadius.circular(5)),
+                            padding: EdgeInsets.all(0.0),
+                            child: Ink(
+                              decoration: BoxDecoration(
+                                  borderRadius: BorderRadius.circular(5)),
+                              child: Container(
+                                constraints: BoxConstraints(
+                                    maxWidth: 100, minHeight: 34.0),
+                                alignment: Alignment.center,
+                                child: Text(
+                                  "Cancel",
+                                  textAlign: TextAlign.center,
+                                  style: TextStyle(
+                                      color: Colors.black87,
+                                      fontWeight: FontWeight.w600),
+                                ),
+                              ),
+                            ),
+                          ),
+                        ),
+                        SizedBox(
+                          width: 20,
+                        ),
+                        Container(
+                          height: 34,
+                          decoration: BoxDecoration(
+                              border:
+                              Border.all(color: Color(0xFFE9E9E9), width: 1),
+                              borderRadius: BorderRadius.circular(5)),
+                          child: FlatButton(
+                            disabledColor: Color(0x909B049B),
+                            onPressed: () {
+                              Navigator.pop(context);
+                              network.addCatalog(
+                                context,
+                                path: data.selectedImage2.path,
+                                uploadType: 'servicePicture',
+                              ).then((value) {
+                                if (value == true) {
+                                  showTextToast(
+                                    text: 'Service Photo Added successful.',
+                                    context: context,
+                                  );
+
+                                  setState(() {});
+                                } else{
+                                  showTextToast(
+                                    text: 'Service Photo fail to Add.',
+                                    context: context,
+                                  );
+                                }
+                              });
+                            },
+                            color: Colors.transparent,
+                            shape: RoundedRectangleBorder(
+                                borderRadius: BorderRadius.circular(5)),
+                            padding: EdgeInsets.all(0.0),
+                            child: Ink(
+                              decoration: BoxDecoration(
+                                  borderRadius: BorderRadius.circular(5)),
+                              child: Container(
+                                constraints: BoxConstraints(
+                                    maxWidth: 100, minHeight: 34.0),
+                                alignment: Alignment.center,
+                                child: Text(
+                                  "Save",
+                                  textAlign: TextAlign.center,
+                                  style: TextStyle(
+                                      color: Colors.black87,
+                                      fontWeight: FontWeight.w600),
+                                ),
+                              ),
+                            ),
+                          ),
+                        ),
+                      ])
+                    ],
+                  ));
+            }),
+          );
+        });
+  }
+
+
+
+
+
+
+
+
+
+
+
+
 
   _viewProduct({data}) {
     var network = Provider.of<WebServices>(context, listen: false);

@@ -1,3 +1,4 @@
+import 'package:file_picker/file_picker.dart';
 import 'package:firebase_messaging/firebase_messaging.dart';
 import 'package:fixme/Services/Firebase_service.dart';
 import 'package:fixme/Services/network_service.dart';
@@ -8,7 +9,6 @@ import 'package:fixme/Widgets/messages_widget.dart';
 import 'package:fixme/Widgets/popup_menu.dart';
 import 'package:fl_toast/fl_toast.dart';
 import 'package:google_fonts/google_fonts.dart';
-import 'package:gx_file_picker/gx_file_picker.dart';
 import 'dart:async';
 import 'package:http/http.dart' as http;
 import 'dart:io' as io;
@@ -26,12 +26,14 @@ class ChatPage extends StatefulWidget {
   final productSend;
   final productData;
   final user;
+  final instantChat;
   final popData;
   final LocalFileSystem localFileSystem;
 
   ChatPage({
     this.productSend,
     this.productData,
+    this.instantChat,
     this.popData,
     localFileSystem,
     @required this.user,
@@ -180,15 +182,27 @@ class _ChatPageState extends State<ChatPage> {
 
       sendMessageTriggerFirst() async {
       var datass = Provider.of<DataProvider>(context, listen: false);
-      var datas = Provider.of<DataProvider>(context, listen: false);
       var network = Provider.of<WebServices>(context, listen: false);
-      message =
-            """Hey, i would love to get this product from you!.Product Name: ${widget.productData['product_name']} Product Price: ₦${widget.productData['price']}""";
+      if(widget.instantChat != 'market'){
+        message =
+        """Hey, i would love to get this product from you!.Product Name: ${widget.productData['product_name']} Product Price: ₦${widget.productData['price']}""";
+      }else{
+        message =
+        """Hey, i would love to get this product from you!.Product Name: ${widget.productData.product_name} Product Price: ₦${widget.productData.price}""";
+      }
+
 
         String productImage;
-        for (dynamic item in widget.productData['productImages']){
-          productImage = 'https://uploads.fixme.ng/originals/${item['imageFileName']}';
+        if(widget.instantChat == 'market'){
+          for (dynamic item in widget.productData.productImages){
+            productImage = 'https://uploads.fixme.ng/originals/${item['imageFileName']}';
+          }
+        }else{
+          for (dynamic item in widget.productData['productImages']){
+            productImage = 'https://uploads.fixme.ng/originals/${item['imageFileName']}';
+          }
         }
+
         await FirebaseApi.uploadmessage(
             widget.user.idUser,
             network.mobileDeviceToken,
@@ -276,9 +290,11 @@ class _ChatPageState extends State<ChatPage> {
     final GlobalKey<ScaffoldState> scaffoldKey = GlobalKey<ScaffoldState>();
 
     void pickImage({@required ImageSource source, context}) async {
-      var selectedImage = await ImagePicker.pickImage(source: source);
+      final picker = ImagePicker();
+      var selectedImage = await picker.pickImage(source: source);
       FocusScope.of(context).unfocus();
       // _controller2.clear();
+      FirebaseApi.uploadCheckChat(widget.user.idUser);
       _controller.clear();
       datas.setWritingTo(false);
       await FirebaseApi.uploadImage(
@@ -286,32 +302,35 @@ class _ChatPageState extends State<ChatPage> {
               network.mobileDeviceToken,
               selectedImage,
               context,
-              '${network.userId}-${widget.user.id}')
+              '${network.userId}-${widget.user.id}',
+        false,
+      )
           .then((value) {
-        Navigator.pop(context);
         sendAndRetrieveMessage(message,  widget.user.fcmToken);
       });
     }
 
     pickDoc() async {
       final selectedImage =
-      await FilePicker.getFile(type: FileType.custom, allowedExtensions: [
-        '.pdf',
-        '.doc',
-        '.docx',
-        '.csv',
-        '.xls',
-        '.xlsx',
-        '.ods',
-        '.txt',
-        '.html',
-        '.png',
-        '.jpeg',
-        '.jpg',
-        '.gif'
+      await FilePicker.platform.pickFiles(type: FileType.custom, allowedExtensions: [
+        'pdf',
+        'doc',
+        'docx',
+        'csv',
+        'xls',
+        'xlsx',
+        'ods',
+        'txt',
+        'html',
+        'png',
+        'jpeg',
+        'jpg',
+        'gif'
       ]);
 
       FocusScope.of(context).unfocus();
+      FirebaseApi.uploadCheckChat(widget.user.idUser);
+
       // _controller2.clear();
       _controller.clear();
       datas.setWritingTo(false);
@@ -320,13 +339,16 @@ class _ChatPageState extends State<ChatPage> {
           network.mobileDeviceToken,
           selectedImage,
           context,
-          '${network.userId}-${widget.user.id}');
+          '${network.userId}-${widget.user.id}',
+      true,
+      );
       sendAndRetrieveMessage(message,  widget.user.fcmToken);
     }
 
     void record({record, context}) async {
       FocusScope.of(context).unfocus();
       // _controller2.clear();
+      FirebaseApi.uploadCheckChat(widget.user.idUser);
       _controller.clear();
       datas.setWritingTo(false);
       await FirebaseApi.uploadRecord(
@@ -343,6 +365,7 @@ class _ChatPageState extends State<ChatPage> {
       if (!currentFocus.hasPrimaryFocus) {
         currentFocus.unfocus();
       }
+      FirebaseApi.uploadCheckChat(widget.user.idUser);
       _controller.clear();
       datas.setWritingTo(false);
       await FirebaseApi.uploadmessage(
@@ -354,184 +377,183 @@ class _ChatPageState extends State<ChatPage> {
       sendAndRetrieveMessage(message,  widget.user.fcmToken);
     }
 
-    void _modalBottomSheetRecord() {
-      showModalBottomSheet(
-          context: context,
-          builder: (builder) {
-            return StatefulBuilder(
-                builder: (BuildContext context, StateSetter setState) {
-                  _start() async {
-                    try {
-                      await _recorder.start();
-                      var recording = await _recorder.current(channel: 0);
-                      setState(() {
-                        _current = recording;
-                      });
-
-                      const tick = const Duration(milliseconds: 50);
-                      new Timer.periodic(tick, (Timer t) async {
-                        if (_currentStatus == RecordingStatus.Stopped) {
-                          t.cancel();
-                        }
-
-                        var current = await _recorder.current(channel: 0);
-                        // print(current.status);
-                        setState(() {
-                          _current = current;
-                          _currentStatus = _current.status;
-                        });
-                      });
-                    } catch (e) {}
-                  }
-
-                  _resume() async {
-                    await _recorder.resume();
-                    setState(() {});
-                  }
-
-                  _pause() async {
-                    await _recorder.pause();
-                    setState(() {});
-                  }
-
-                  _stop() async {
-                    var result = await _recorder.stop();
-                    // File file = widget.localFileSystem.file(result.path);
-
-                    setState(() {
-                      _current = result;
-                      _currentStatus = _current.status;
-                    });
-                  }
-
-                  initilize() async {
-                    try {
-                      if (await FlutterAudioRecorder.hasPermissions) {
-                        String customPath = '/flutter_audio_recorder_';
-                        io.Directory appDocDirectory;
-//        io.Directory appDocDirectory = await getApplicationDocumentsDirectory();
-                        if (io.Platform.isIOS) {
-                          appDocDirectory =
-                          await getApplicationDocumentsDirectory();
-                        } else {
-                          appDocDirectory = await getExternalStorageDirectory();
-                        }
-
-                        // can add extension like ".mp4" ".wav" ".m4a" ".aac"
-                        customPath = appDocDirectory.path +
-                            customPath +
-                            DateTime.now().millisecondsSinceEpoch.toString();
-
-                        // .wav <---> AudioFormat.WAV
-                        // .mp4 .m4a .aac <---> AudioFormat.AAC
-                        // AudioFormat is optional, if given value, will overwrite path extension when there is conflicts.
-                        _recorder = FlutterAudioRecorder(customPath,
-                            audioFormat: AudioFormat.WAV);
-
-                        await _recorder.initialized;
-                        // after initialization
-                        var current = await _recorder.current(channel: 0);
-
-                        // should be "Initialized", if all working fine
-                        setState(() {
-                          _current = current;
-                          _currentStatus = current.status;
-                        });
-                      } else {
-                        await showTextToast(
-                          text: 'You must accept permissions.',
-                          context: context,
-                        );
-
-                      }
-                    } catch (e) {}
-                  }
-
-
-
-
-                  return new Container(
-                height: 100.0,
-                color: Colors.transparent,
-                //could change this to Color(0xFF737373),
-                //so you don't have to change MaterialApp canvasColor
-                child: Padding(
-                  padding: const EdgeInsets.only(
-                      top: 4.0, bottom: 4, left: 8, right: 8),
-                  child: Column(children: <Widget>[
-                    new Row(
-                      mainAxisAlignment: MainAxisAlignment.spaceEvenly,
-                      children: <Widget>[
-                        Padding(
-                          padding: const EdgeInsets.all(8.0),
-                          child: new FlatButton(
-                            onPressed: () {
-                              switch (_currentStatus) {
-                                case RecordingStatus.Initialized:
-                                  {
-                                    _start();
-                                    break;
-                                  }
-                                case RecordingStatus.Recording:
-                                  {
-                                    _pause();
-                                    break;
-                                  }
-                                case RecordingStatus.Paused:
-                                  {
-                                    _resume();
-                                    break;
-                                  }
-                                case RecordingStatus.Stopped:
-                                  {
-                                    initilize();
-                                    break;
-                                  }
-                                default:
-                                  break;
-                              }
-                            },
-                            child: _buildText(_currentStatus),
-                            color: Color(0xFFA40C85),
-                          ),
-                        ),
-                        new FlatButton(
-                          onPressed: _currentStatus != RecordingStatus.Unset
-                              ? _stop
-                              : null,
-                          child: new Text("Stop",
-                              style: TextStyle(color: Colors.white)),
-                          color: Color(0xFFA40C85).withOpacity(.5),
-                        ),
-                        _currentStatus == RecordingStatus.Stopped
-                            ? new InkWell(
-                                onTap: () {
-                                  Navigator.pop(context);
-                                  record(
-                                    context: context,
-                                    record: _current,
-                                  );
-                                },
-                                child: Icon(Icons.send,
-                                    size: 40, color: Colors.black),
-                              )
-                            : Icon(Icons.send, size: 40, color: Colors.black54),
-                      ],
-                    ),
-                    /*  Padding(
-                  padding: const EdgeInsets.all(8.0),
-                  child: new Text("Status : $_currentStatus"),
-                ),*/
-                    Text(
-                        "Recording Duration : ${_current?.duration.toString()}"),
-                  ]),
-                ),
-              );
-            });
-          });
-    }
-
-
+//     void _modalBottomSheetRecord() {
+//       showModalBottomSheet(
+//           context: context,
+//           builder: (builder) {
+//             return StatefulBuilder(
+//                 builder: (BuildContext context, StateSetter setState) {
+//                   _start() async {
+//                     try {
+//                       await _recorder.start();
+//                       var recording = await _recorder.current(channel: 0);
+//                       setState(() {
+//                         _current = recording;
+//                       });
+//
+//                       const tick = const Duration(milliseconds: 50);
+//                       new Timer.periodic(tick, (Timer t) async {
+//                         if (_currentStatus == RecordingStatus.Stopped) {
+//                           t.cancel();
+//                         }
+//
+//                         var current = await _recorder.current(channel: 0);
+//                         // print(current.status);
+//                         setState(() {
+//                           _current = current;
+//                           _currentStatus = _current.status;
+//                         });
+//                       });
+//                     } catch (e) {}
+//                   }
+//
+//                   _resume() async {
+//                     await _recorder.resume();
+//                     setState(() {});
+//                   }
+//
+//                   _pause() async {
+//                     await _recorder.pause();
+//                     setState(() {});
+//                   }
+//
+//                   _stop() async {
+//                     var result = await _recorder.stop();
+//                     // File file = widget.localFileSystem.file(result.path);
+//
+//                     setState(() {
+//                       _current = result;
+//                       _currentStatus = _current.status;
+//                     });
+//                   }
+//
+//                   initilize() async {
+//                     try {
+//                       if (await FlutterAudioRecorder.hasPermissions) {
+//                         String customPath = '/flutter_audio_recorder_';
+//                         io.Directory appDocDirectory;
+// //        io.Directory appDocDirectory = await getApplicationDocumentsDirectory();
+//                         if (io.Platform.isIOS) {
+//                           appDocDirectory =
+//                           await getApplicationDocumentsDirectory();
+//                         } else {
+//                           appDocDirectory = await getExternalStorageDirectory();
+//                         }
+//
+//                         // can add extension like ".mp4" ".wav" ".m4a" ".aac"
+//                         customPath = appDocDirectory.path +
+//                             customPath +
+//                             DateTime.now().millisecondsSinceEpoch.toString();
+//
+//                         // .wav <---> AudioFormat.WAV
+//                         // .mp4 .m4a .aac <---> AudioFormat.AAC
+//                         // AudioFormat is optional, if given value, will overwrite path extension when there is conflicts.
+//                         _recorder = FlutterAudioRecorder(customPath,
+//                             audioFormat: AudioFormat.WAV);
+//
+//                         await _recorder.initialized;
+//                         // after initialization
+//                         var current = await _recorder.current(channel: 0);
+//
+//                         // should be "Initialized", if all working fine
+//                         setState(() {
+//                           _current = current;
+//                           _currentStatus = current.status;
+//                         });
+//                       } else {
+//                         await showTextToast(
+//                           text: 'You must accept permissions.',
+//                           context: context,
+//                         );
+//
+//                       }
+//                     } catch (e) {}
+//                   }
+//
+//
+//
+//
+//                   return new Container(
+//                 height: 100.0,
+//                 color: Colors.transparent,
+//                 //could change this to Color(0xFF737373),
+//                 //so you don't have to change MaterialApp canvasColor
+//                 child: Padding(
+//                   padding: const EdgeInsets.only(
+//                       top: 4.0, bottom: 4, left: 8, right: 8),
+//                   child: Column(children: <Widget>[
+//                     new Row(
+//                       mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+//                       children: <Widget>[
+//                         Padding(
+//                           padding: const EdgeInsets.all(8.0),
+//                           child: new FlatButton(
+//                             onPressed: () {
+//                               switch (_currentStatus) {
+//                                 case RecordingStatus.Initialized:
+//                                   {
+//                                     _start();
+//                                     break;
+//                                   }
+//                                 case RecordingStatus.Recording:
+//                                   {
+//                                     _pause();
+//                                     break;
+//                                   }
+//                                 case RecordingStatus.Paused:
+//                                   {
+//                                     _resume();
+//                                     break;
+//                                   }
+//                                 case RecordingStatus.Stopped:
+//                                   {
+//                                     initilize();
+//                                     break;
+//                                   }
+//                                 default:
+//                                   break;
+//                               }
+//                             },
+//                             child: _buildText(_currentStatus),
+//                             color: Color(0xFFA40C85),
+//                           ),
+//                         ),
+//                         new FlatButton(
+//                           onPressed: _currentStatus != RecordingStatus.Unset
+//                               ? _stop
+//                               : null,
+//                           child: new Text("Stop",
+//                               style: TextStyle(color: Colors.white)),
+//                           color: Color(0xFFA40C85).withOpacity(.5),
+//                         ),
+//                         _currentStatus == RecordingStatus.Stopped
+//                             ? new InkWell(
+//                                 onTap: () {
+//                                   Navigator.pop(context);
+//                                   record(
+//                                     context: context,
+//                                     record: _current,
+//                                   );
+//                                 },
+//                                 child: Icon(Icons.send,
+//                                     size: 40, color: Colors.black),
+//                               )
+//                             : Icon(Icons.send, size: 40, color: Colors.black54),
+//                       ],
+//                     ),
+//                     /*  Padding(
+//                   padding: const EdgeInsets.all(8.0),
+//                   child: new Text("Status : $_currentStatus"),
+//                 ),*/
+//                     Text(
+//                         "Recording Duration : ${_current?.duration.toString()}"),
+//                   ]),
+//                 ),
+//               );
+//             });
+//           });
+//     }
+//
 
     var numberDialog = AnimatedContainer(
       height: 80,
@@ -1010,8 +1032,7 @@ class _ChatPageState extends State<ChatPage> {
                                 recordStatus?AnimatedOpacity(
                                   opacity: recordStatus?1:0.5,
                                   duration: Duration(microseconds: 1000),
-                                  child: Expanded(
-                                    child: SingleChildScrollView(
+                                  child: SingleChildScrollView(
                                       scrollDirection: Axis.horizontal,
                                       child: Row(
                                         crossAxisAlignment:CrossAxisAlignment.center,
@@ -1064,8 +1085,8 @@ class _ChatPageState extends State<ChatPage> {
                                         ],
                                       ),
                                     ),
-                                  ),
-                                ):Container(),
+                                  )
+                                :Container(),
                                 recordStatus? Container():datass.isWriting
                                     ? Container(
                                   margin: EdgeInsets.only(left:5),

@@ -1,4 +1,9 @@
+import 'dart:async';
+import 'dart:io';
+import 'dart:ui';
+
 import 'package:cloud_firestore/cloud_firestore.dart';
+import 'package:connectivity_plus/connectivity_plus.dart';
 import 'package:fixme/DummyData.dart';
 import 'package:fixme/Model/Notify.dart';
 import 'package:fixme/Screens/ArtisanUser/Profile/ArtisanPageNew.dart';
@@ -9,6 +14,7 @@ import 'package:fixme/Screens/GeneralUsers/Home/NearbyArtisansSeeAll.dart';
 import 'package:fixme/Screens/GeneralUsers/Home/NearbyShopsSeeAll.dart';
 import 'package:fixme/Screens/GeneralUsers/Home/PopularServices.dart';
 import 'package:fixme/Screens/GeneralUsers/Home/Search.dart';
+import 'package:fixme/Screens/GeneralUsers/Notification/Notification.dart';
 import 'package:fixme/Services/Firebase_service.dart';
 import 'package:fixme/Services/location_service.dart';
 import 'package:fixme/Services/network_service.dart';
@@ -17,16 +23,26 @@ import 'package:fixme/Utils/icons.dart';
 import 'package:fixme/Widgets/Rating.dart';
 import 'package:flutter/material.dart';
 import 'package:fixme/Utils/utils.dart';
+import 'package:flutter/services.dart';
+import 'package:permission_handler/permission_handler.dart';
 import 'package:provider/provider.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 
-class Home extends StatelessWidget {
+class Home extends StatefulWidget {
   final scafoldKey;
   var search;
   final data;
   final controller;
 
   Home(this.scafoldKey, this.data, this.controller);
+
+  @override
+  _HomeState createState() => _HomeState();
+}
+
+
+class _HomeState extends State<Home> {
+
 
   String getDistance({String rawDistance}) {
     String distance;
@@ -35,59 +51,460 @@ class Home extends StatelessWidget {
 
     return distance;
   }
+  final Connectivity _connectivity = Connectivity();
+  StreamSubscription<ConnectivityResult> _connectivitySubscription;
+  ConnectivityResult _connectionStatus = ConnectivityResult.none;
+
+
+@override
+ void initState(){
+   super.initState();
+   initConnectivity();
+
+   _connectivitySubscription =    _connectivity.onConnectivityChanged.listen(_updateConnectionStatus);
+   checkConnection();
+ }
+
+
+
+
+
+
+  Future<Widget> checkConnection()async{
+    var locationStatus = await Permission.location.status;
+    var notificationStatus = await Permission.notification.status;
+    // var connectivityResult = await (Connectivity().checkConnectivity());
+    if (_connectionStatus == ConnectivityResult.mobile) {
+      if(locationStatus.isGranted && notificationStatus.isGranted){
+      //  decideFirstWidget();
+      }else{
+        showDialog(
+            barrierDismissible: false,
+            context: context, builder: (context){
+          return WillPopScope(
+            onWillPop: (){},
+            child: BackdropFilter(
+              filter: ImageFilter.blur(sigmaX: 8, sigmaY: 8),
+              child: AlertDialog(
+                elevation: 6,
+                shape: RoundedRectangleBorder(
+                    borderRadius: BorderRadius.all(Radius.circular(32.0))),
+                content: Container(
+                  height: 200,
+                  child: Column(
+                    crossAxisAlignment: CrossAxisAlignment.center,
+                    mainAxisAlignment: MainAxisAlignment.center,
+                    children: <Widget>[
+                      Text(
+                        'Notice',
+                        style: TextStyle(
+                            fontSize: 20,
+                            color: Color(0xFF9B049B),
+                            fontWeight: FontWeight.bold),
+                      ),
+                      Row(
+                        children: [
+                          Container(
+                            width: 250,
+                            padding: EdgeInsets.only(top: 15, bottom: 15),
+                            child: Center(
+                              child: Text(
+                                'Accepting notification is neccessary for the app to function',
+                                style: TextStyle(
+                                  fontSize: 14,
+                                  fontWeight: FontWeight.bold,
+                                  color: Colors.black54,
+                                ),
+                                textAlign: TextAlign.center,
+                              ),
+                            ),
+                          ),
+                        ],
+                      ),
+                      ButtonBar(
+                          alignment: MainAxisAlignment.center,
+                          children: [
+                            Material(
+                              borderRadius: BorderRadius.circular(26),
+                              elevation: 2,
+                              child: Container(
+                                height: 35,
+                                width: 100,
+                                decoration: BoxDecoration(
+                                    border: Border.all(
+                                        color: Color(0xFF9B049B)),
+                                    borderRadius:
+                                    BorderRadius.circular(26)),
+                                child: FlatButton(
+                                  onPressed: () {
+                                    return exit(0);
+                                  },
+                                  color: Color(0xFF9B049B),
+                                  shape: RoundedRectangleBorder(
+                                      borderRadius:
+                                      BorderRadius.circular(26)),
+                                  padding: EdgeInsets.all(0.0),
+                                  child: Ink(
+                                    decoration: BoxDecoration(
+                                        borderRadius:
+                                        BorderRadius.circular(26)),
+                                    child: Container(
+                                      constraints: BoxConstraints(
+                                          maxWidth: 190.0, minHeight: 53.0),
+                                      alignment: Alignment.center,
+                                      child: Text(
+                                        "Exit",
+                                        textAlign: TextAlign.center,
+                                        style: TextStyle(
+                                            fontSize: 12,
+                                            fontWeight: FontWeight.bold,
+                                            color: Colors.white),
+                                      ),
+                                    ),
+                                  ),
+                                ),
+                              ),
+                            ),
+                            Material(
+                              borderRadius: BorderRadius.circular(26),
+                              elevation: 2,
+                              child: Container(
+                                height: 35,
+                                width: 100,
+                                decoration: BoxDecoration(
+                                    border: Border.all(
+                                        color: Color(0xFF9B049B)),
+                                    borderRadius:
+                                    BorderRadius.circular(26)),
+                                child: FlatButton(
+                                  onPressed: () async{
+                                    Navigator.pop(context);
+                                    check()async{
+                                      await Permission.location.request();
+                                      await Permission.notification.request();
+                                    }
+
+                                    check().then((value){
+                                      //decideFirstWidget();
+                                    });
+                                  },
+                                  color: Color(0xFF9B049B),
+                                  shape: RoundedRectangleBorder(
+                                      borderRadius:
+                                      BorderRadius.circular(26)),
+                                  padding: EdgeInsets.all(0.0),
+                                  child: Ink(
+                                    decoration: BoxDecoration(
+                                        borderRadius:
+                                        BorderRadius.circular(26)),
+                                    child: Container(
+                                      constraints: BoxConstraints(
+                                          maxWidth: 190.0, minHeight: 53.0),
+                                      alignment: Alignment.center,
+                                      child: Text(
+                                        "Grant Access",
+                                        textAlign: TextAlign.center,
+                                        style: TextStyle(
+                                            fontSize: 12,
+                                            fontWeight: FontWeight.bold,
+                                            color: Colors.white),
+                                      ),
+                                    ),
+                                  ),
+                                ),
+                              ),
+                            ),
+                          ]),
+                    ],
+                  ),
+                ),
+              ),
+            ),
+          );
+        });
+      }
+    } else if (_connectionStatus == ConnectivityResult.wifi) {
+      if(locationStatus.isGranted && notificationStatus.isGranted){
+       // decideFirstWidget();
+      }else{
+        showDialog(
+            barrierDismissible: false,
+            context: context, builder: (context){
+          return WillPopScope(
+            onWillPop: (){},
+            child:BackdropFilter(
+              filter: ImageFilter.blur(sigmaX: 8, sigmaY: 8),
+              child: AlertDialog(
+                elevation: 6,
+                shape: RoundedRectangleBorder(
+                    borderRadius: BorderRadius.all(Radius.circular(32.0))),
+                content: Container(
+                  height: 200,
+                  child: Column(
+                    crossAxisAlignment: CrossAxisAlignment.center,
+                    mainAxisAlignment: MainAxisAlignment.center,
+                    children: <Widget>[
+                      Text(
+                        'Notice',
+                        style: TextStyle(
+                            fontSize: 20,
+                            color: Color(0xFF9B049B),
+                            fontWeight: FontWeight.bold),
+                      ),
+                      Row(
+                        children: [
+                          Container(
+                            width: 250,
+                            padding: EdgeInsets.only(top: 15, bottom: 15),
+                            child: Center(
+                              child: Text(
+                                'Accepting notification is neccessary for the app to function',
+                                style: TextStyle(
+                                  fontSize: 14,
+                                  fontWeight: FontWeight.bold,
+                                  color: Colors.black54,
+                                ),
+                                textAlign: TextAlign.center,
+                              ),
+                            ),
+                          ),
+                        ],
+                      ),
+                      ButtonBar(
+                          alignment: MainAxisAlignment.center,
+                          children: [
+                            Material(
+                              borderRadius: BorderRadius.circular(26),
+                              elevation: 2,
+                              child: Container(
+                                height: 35,
+                                width: 100,
+                                decoration: BoxDecoration(
+                                    border: Border.all(
+                                        color: Color(0xFF9B049B)),
+                                    borderRadius:
+                                    BorderRadius.circular(26)),
+                                child: FlatButton(
+                                  onPressed: () {
+                                    return exit(0);
+                                  },
+                                  color: Color(0xFF9B049B),
+                                  shape: RoundedRectangleBorder(
+                                      borderRadius:
+                                      BorderRadius.circular(26)),
+                                  padding: EdgeInsets.all(0.0),
+                                  child: Ink(
+                                    decoration: BoxDecoration(
+                                        borderRadius:
+                                        BorderRadius.circular(26)),
+                                    child: Container(
+                                      constraints: BoxConstraints(
+                                          maxWidth: 190.0, minHeight: 53.0),
+                                      alignment: Alignment.center,
+                                      child: Text(
+                                        "Exit",
+                                        textAlign: TextAlign.center,
+                                        style: TextStyle(
+                                            fontSize: 12,
+                                            fontWeight: FontWeight.bold,
+                                            color: Colors.white),
+                                      ),
+                                    ),
+                                  ),
+                                ),
+                              ),
+                            ),
+                            Material(
+                              borderRadius: BorderRadius.circular(26),
+                              elevation: 2,
+                              child: Container(
+                                height: 35,
+                                width: 100,
+                                decoration: BoxDecoration(
+                                    border: Border.all(
+                                        color: Color(0xFF9B049B)),
+                                    borderRadius:
+                                    BorderRadius.circular(26)),
+                                child: FlatButton(
+                                  onPressed: () async{
+                                    Navigator.pop(context);
+
+                                    check()async{
+                                      await Permission.location.request();
+                                      await Permission.notification.request();
+                                    }
+
+                                    check().then((value){
+                                     // decideFirstWidget();
+                                    });
+
+                                  },
+                                  color: Color(0xFF9B049B),
+                                  shape: RoundedRectangleBorder(
+                                      borderRadius:
+                                      BorderRadius.circular(26)),
+                                  padding: EdgeInsets.all(0.0),
+                                  child: Ink(
+                                    decoration: BoxDecoration(
+                                        borderRadius:
+                                        BorderRadius.circular(26)),
+                                    child: Container(
+                                      constraints: BoxConstraints(
+                                          maxWidth: 190.0, minHeight: 53.0),
+                                      alignment: Alignment.center,
+                                      child: Text(
+                                        "Grant Access",
+                                        textAlign: TextAlign.center,
+                                        style: TextStyle(
+                                            fontSize: 12,
+                                            fontWeight: FontWeight.bold,
+                                            color: Colors.white),
+                                      ),
+                                    ),
+                                  ),
+                                ),
+                              ),
+                            ),
+                          ]),
+                    ],
+                  ),
+                ),
+              ),
+            ),
+          );
+        });
+      }
+    }else{
+      showDialog(context: context, builder: (context){
+        return WillPopScope(
+          onWillPop: (){},
+          child: BackdropFilter(
+            filter: ImageFilter.blur(sigmaX: 8, sigmaY: 8),
+            child: AlertDialog(
+              elevation: 6,
+              shape: RoundedRectangleBorder(
+                  borderRadius: BorderRadius.all(Radius.circular(32.0))),
+              content: Container(
+                height: 150,
+                child: Column(
+                  crossAxisAlignment: CrossAxisAlignment.center,
+                  mainAxisAlignment: MainAxisAlignment.center,
+                  children: <Widget>[
+                    Text(
+                      'Oops!!',
+                      style: TextStyle(
+                          fontSize: 20,
+                          color: Color(0xFF9B049B),
+                          fontWeight: FontWeight.bold),
+                    ),
+                    Row(
+                      children: [
+                        Container(
+                          width:250,
+                          padding: EdgeInsets.only(top: 15, bottom: 15),
+                          child: Center(
+                            child: Text(
+                              'No Network Activity Found',
+                              style: TextStyle(
+                                fontSize: 14,
+                                fontWeight: FontWeight.bold,
+                                color: Colors.black54,
+                              ),
+                              textAlign: TextAlign.center,
+                            ),
+                          ),
+                        ),
+                      ],
+                    ),
+                    ButtonBar(
+                        alignment: MainAxisAlignment.center,
+                        children: [
+                          Material(
+                            borderRadius: BorderRadius.circular(26),
+                            elevation: 2,
+                            child: Container(
+                              height: 35,
+                              width: 100,
+                              decoration: BoxDecoration(
+                                  border: Border.all(
+                                      color: Color(0xFF9B049B)),
+                                  borderRadius:
+                                  BorderRadius.circular(26)),
+                              child: FlatButton(
+                                onPressed: () {
+                                  Navigator.pop(context);
+                                },
+                                color: Color(0xFF9B049B),
+                                shape: RoundedRectangleBorder(
+                                    borderRadius:
+                                    BorderRadius.circular(26)),
+                                padding: EdgeInsets.all(0.0),
+                                child: Ink(
+                                  decoration: BoxDecoration(
+                                      borderRadius:
+                                      BorderRadius.circular(26)),
+                                  child: Container(
+                                    constraints: BoxConstraints(
+                                        maxWidth: 190.0, minHeight: 53.0),
+                                    alignment: Alignment.center,
+                                    child: Text(
+                                      "Exit",
+                                      textAlign: TextAlign.center,
+                                      style: TextStyle(
+                                          fontSize: 16,
+                                          fontWeight: FontWeight.bold,
+                                          color: Colors.white),
+                                    ),
+                                  ),
+                                ),
+                              ),
+                            ),
+                          ),
+
+                        ]),
+                  ],
+                ),
+              ),
+            ),
+          ),
+        );
+      });
+    }
+  }
+
+
+  Future<void> initConnectivity() async {
+    ConnectivityResult result;
+    try {
+      result = await _connectivity.checkConnectivity();
+    } on PlatformException catch (e) {
+      print(e.toString());
+      return;
+    }
+    if (!mounted) {
+      return Future.value(null);
+    }
+
+    return _updateConnectionStatus(result);
+  }
+
+
+  Future<void> _updateConnectionStatus(ConnectivityResult result) async {
+    setState(() {
+      _connectionStatus = result;
+    });
+  }
+
+  @override
+  dispose() {
+    super.dispose();
+    _connectivitySubscription.cancel();
+  }
+
 
   @override
   Widget build(BuildContext context) {
-    // showOverLay() async {
-    //   SharedPreferences prefs = await SharedPreferences.getInstance();
-    //   var overlay = prefs.getString('overlay');
-    //   var data = Provider.of<DataProvider>(context, listen: false);
-    //   if (overlay == null || overlay == 'null' || overlay == '') {
 
-        // var numberDialog = Container(
-        //   margin: const EdgeInsets.all(3.0),
-        //   child: Align(
-        //     alignment: Alignment(-0.8, -0.9),
-        //     child: Material(
-        //       color: Colors.black87,
-        //       shape: RoundedRectangleBorder(
-        //           borderRadius: BorderRadius.circular(10.0)),
-        //       child: Container(
-        //         padding: const EdgeInsets.all(4.0),
-        //         width: 140,
-        //         child: Column(
-        //           mainAxisSize: MainAxisSize.min,
-        //           children: <Widget>[
-        //             Text(
-        //               'Welcome!!',
-        //               style: TextStyle(color: Colors.white),
-        //               textAlign: TextAlign.center,
-        //             ),
-        //             Text(
-        //               'You can  change to business account by clicking this picture',
-        //               textAlign: TextAlign.center,
-        //               style: TextStyle(
-        //                   color: Colors.white, fontWeight: FontWeight.bold),
-        //             ),
-        //           ],
-        //         ),
-        //       ),
-        //     ),
-        //   ),
-        // );
-    //     showDialog(
-    //       barrierColor: Colors.transparent,
-    //       context: context,
-    //       builder: (BuildContext context) {
-    //         return numberDialog;
-    //       },
-    //     ).whenComplete(() {
-    //       prefs.setString('overlay', 'overlay');
-    //     });
-    //   } else {}
-    // }
-
-    // showOverLay();
     var network = Provider.of<WebServices>(context, listen: false);
     List<Notify> notify;
     var location = Provider.of<LocationService>(context);
@@ -112,17 +529,96 @@ class Home extends StatelessWidget {
                       padding: const EdgeInsets.only(top:4.0, bottom: 4, left:10),
                       child: IconButton(
                         onPressed: (){
-                          scafoldKey.currentState.openDrawer();
+                          widget.scafoldKey.currentState.openDrawer();
                         },
                         icon: Icon(MyFlutterApp.hamburger,
                           size: 17, color: Colors.black),
                       ),
                     ),
+                  Spacer(),
                   Image.asset(
                     'assets/images/fixme1.png',
                     height: 70,
                     width: 70,
                   ),
+               Spacer(),
+               InkWell(
+                 onTap: (){
+                   Navigator.push(
+                     context,
+                     PageRouteBuilder(
+                       pageBuilder:
+                           (context, animation, secondaryAnimation) {
+                         return NotificationPage(widget.scafoldKey, widget.controller);
+                       },
+                       transitionsBuilder:
+                           (context, animation, secondaryAnimation, child) {
+                         return FadeTransition(
+                           opacity: animation,
+                           child: child,
+                         );
+                       },
+                     ),
+                   );
+                 },
+                 child: Padding(
+                        padding: const EdgeInsets.only(top: 5,right: 10, left:5),
+                        child: Stack(
+                          children: [
+                            Icon(
+                              MyFlutterApp.vector_4,
+                              color:  Color(0xF0A40C85),
+                              size: 24,),
+                            StreamBuilder(
+                                stream: FirebaseApi.userCheckNotifyStream(
+                                    network.userId.toString()),
+                                builder:
+                                    (context, AsyncSnapshot<QuerySnapshot> snapshot) {
+                                  if (snapshot.hasData) {
+                                    notify = snapshot.data.docs
+                                        .map((doc) =>
+                                            Notify.fromMap(doc.data(), doc.id))
+                                        .toList();
+
+                                    switch (snapshot.connectionState) {
+                                      case ConnectionState.waiting:
+                                        return Positioned(
+                                            left: 12,
+                                            child: Container());
+                                      default:
+                                        if (snapshot.hasError) {
+                                          return Positioned(
+                                              left: 12,
+                                              child: Container());
+                                        } else {
+                                          final users = notify;
+                                          if (users.isEmpty || users == null) {
+                                            return Positioned(
+                                                left: 12,
+                                                child: Container());
+                                          } else {
+                                            return Positioned(
+                                              left: 12,
+                                                child: Icon(
+                                              Icons.circle,
+                                              color: Colors.red,
+                                                  size: 12,
+                                            ));
+                                          }
+                                        }
+                                    }
+                                  } else {
+                                    return Positioned(
+                                        left: 12,
+                                        child: Container());
+                                  }
+                                }),
+
+                          ],
+                        ),
+                      ),
+               ),
+
                   InkWell(
                     onTap: () {
                       Navigator.push(
@@ -142,64 +638,63 @@ class Home extends StatelessWidget {
                         ),
                       );
 
-                      FirebaseApi.clearCheckNotify(
-                        network.userId.toString(),
+                      FirebaseApi.clearCheckChat(
+                        network.mobileDeviceToken
+                            .toString(),
                       );
                     },
                     child: Padding(
-                      padding: const EdgeInsets.only(top:8.0, bottom: 8, right: 16, left: 8),
-                      child: Stack(
-                        children: [
-                          Stack(
+                      padding: const EdgeInsets.only(top:8.0, bottom: 8, right: 16, left: 16),
+                      child:  Stack(
                             children: [
                               Icon(
                                   MyFlutterApp.fill_1,
                                   size: 23, color: Color(0xF0A40C85)),
                               Icon(Icons.more_horiz, size: 23, color: Colors.white,),
+                              StreamBuilder(
+                                  stream: FirebaseApi.userCheckChatStream(
+                                      network.mobileDeviceToken.toString()),
+                                  builder: (context,
+                                      AsyncSnapshot<QuerySnapshot> snapshot) {
+                                    if (snapshot.hasData) {
+                                      notify = snapshot.data.docs
+                                          .map((doc) =>
+                                          Notify.fromMap(doc.data(), doc.id))
+                                          .toList();
+
+                                      switch (snapshot.connectionState) {
+                                        case ConnectionState.waiting:
+                                          return Positioned(
+                                              right: 12, child: Container());
+                                        default:
+                                          if (snapshot.hasError) {
+                                            return Positioned(
+                                                right: 12, child: Container());
+                                          } else {
+                                            final users = notify;
+                                            if (users.isEmpty || users == null) {
+                                              return Positioned(
+                                                  left: 12, child: Container());
+                                            } else {
+                                              return Container(
+                                                margin: EdgeInsets.only(left: 12),
+                                                    height: 12,
+                                                      width: 12,
+                                                   decoration: BoxDecoration(
+                                                     color: Colors.red,
+                                                     borderRadius: BorderRadius.circular(100)
+                                                   ),
+                                                  );
+                                            }
+                                          }
+                                      }
+                                    } else {
+                                      return Positioned(
+                                          right: 12, child: Container());
+                                    }
+                                  }),
                             ],
                           ),
-                          StreamBuilder(
-                              stream: FirebaseApi.userCheckChatStream(
-                                  network.userId.toString()),
-                              builder: (context,
-                                  AsyncSnapshot<QuerySnapshot> snapshot) {
-                                if (snapshot.hasData) {
-                                  notify = snapshot.data.docs
-                                      .map((doc) =>
-                                          Notify.fromMap(doc.data(), doc.id))
-                                      .toList();
-
-                                  switch (snapshot.connectionState) {
-                                    case ConnectionState.waiting:
-                                      return Positioned(
-                                          left: 12, child: Container());
-                                    default:
-                                      if (snapshot.hasError) {
-                                        return Positioned(
-                                            left: 12, child: Container());
-                                      } else {
-                                        final users = notify;
-                                        if (users.isEmpty || users == null) {
-                                          return Positioned(
-                                              left: 12, child: Container());
-                                        } else {
-                                          return Positioned(
-                                              right: 14.4,
-                                              child: Icon(
-                                                Icons.circle,
-                                                color: Color(0xFF9B049B),
-                                                size: 12,
-                                              ));
-                                        }
-                                      }
-                                  }
-                                } else {
-                                  return Positioned(
-                                      left: 12, child: Container());
-                                }
-                              }),
-                        ],
-                      ),
                     ),
                   ),
                 ],
@@ -464,7 +959,7 @@ class Home extends StatelessWidget {
                                   ))
                               : snapshot.hasData && !snapshot.data.isEmpty
                                   ? Container(
-                                      height: 200,
+                                      height: 222,
                                       margin: const EdgeInsets.only(bottom: 6),
                                       child: ListView.builder(
                                         scrollDirection: Axis.horizontal,
@@ -499,187 +994,189 @@ class Home extends StatelessWidget {
                                                 ),
                                               );
                                             },
-                                            child: Container(
-                                              // width: 150,
-                                              margin: const EdgeInsets.only(
-                                                left: 10,
-                                                top: 12,
-                                              ),
-                                              decoration: BoxDecoration(
-                                                  color: Color(0xFFFFFFFF),
-                                                  border: Border.all(
-                                                      color: Color(0xFFF1F1FD)),
-                                                  boxShadow: [
-                                                    BoxShadow(
-                                                        color:
-                                                            Color(0xFFF1F1F6),
-                                                        blurRadius: 10.0,
-                                                        offset:
-                                                            Offset(0.3, 4.0))
-                                                  ],
-                                                  borderRadius:
-                                                      BorderRadius.all(
-                                                          Radius.circular(7))),
-                                              child: Column(
-                                                children: [
-                                                  Stack(
-                                                    children: [
-                                                      Padding(
-                                                          padding:
-                                                              const EdgeInsets
-                                                                      .only(
-                                                                  bottom: 4.0),
-                                                          child: Container(
-                                                            height: 90,
-                                                            width: 150,
-                                                            clipBehavior: Clip
-                                                                .antiAliasWithSaveLayer,
-                                                            decoration: BoxDecoration(
-                                                                borderRadius: BorderRadius.only(
-                                                                    topLeft: Radius
-                                                                        .circular(
-                                                                            7),
-                                                                    topRight: Radius
-                                                                        .circular(
-                                                                            7))),
-                                                            child:
-                                                                Image.network(
-                                                              snapshot.data[index].urlAvatar ==
-                                                                          'no_picture_upload' ||
-                                                                      snapshot.data[index]
-                                                                              .urlAvatar ==
-                                                                          null
-                                                                  ? 'https://uploads.fixme.ng/originals/no_picture_upload'
-                                                                  : 'https://uploads.fixme.ng/originals/${snapshot.data[index].urlAvatar}',
-                                                              fit: BoxFit.cover,
-                                                            ),
-                                                          )),
-                                                      Positioned(
-                                                        bottom: 4,
-                                                        child: Container(
-                                                          height: 20,
-                                                          width: 150,
-                                                          padding:
-                                                              const EdgeInsets
-                                                                      .only(
-                                                                  left: 5),
-                                                          color: Colors.black
-                                                              .withOpacity(0.5),
-                                                          child: Row(
-                                                            mainAxisAlignment: MainAxisAlignment.center,
-                                                            children: [
-                                                              Icon(
-                                                                Icons
-                                                                    .location_on,
-                                                                color: Colors
-                                                                    .white,
-                                                                size: 14,
-                                                              ),
-                                                              Text(
-                                                                '$distance away',
-                                                                style: TextStyle(
-                                                                    color: Colors
-                                                                        .white,
-                                                                    fontSize:
-                                                                        12,
-                                                                    fontWeight:
-                                                                        FontWeight
-                                                                            .w500),
-                                                              ),
-                                                            ],
-                                                          ),
-                                                        ),
-                                                      ),
+                                            child: GridTile(
+                                              child: Container(
+                                                // width: 150,
+                                                margin: const EdgeInsets.only(
+                                                  left: 10,
+                                                  top: 12,
+                                                ),
+                                                decoration: BoxDecoration(
+                                                    color: Color(0xFFFFFFFF),
+                                                    border: Border.all(
+                                                        color: Color(0xFFF1F1FD)),
+                                                    boxShadow: [
+                                                      BoxShadow(
+                                                          color:
+                                                              Color(0xFFF1F1F6),
+                                                          blurRadius: 10.0,
+                                                          offset:
+                                                              Offset(0.3, 4.0))
                                                     ],
-                                                  ),
-                                                  Align(
-                                                      alignment:
-                                                          Alignment.bottomLeft,
-                                                      child: Padding(
-                                                        padding:
-                                                            const EdgeInsets
-                                                                    .only(
-                                                                left: 0.0,
-                                                                right: 0.0),
-                                                        child: Wrap(
-                                                          children: [
-                                                            Container(
-                                                             // width:140,
-                                                              child: Padding(
-                                                                padding: const EdgeInsets.only(top:8.0),
-                                                                child: Text(
-                                                                  snapshot
-                                                                              .data[
-                                                                                  index]
-                                                                              .businessName
-                                                                              .isEmpty ||
-                                                                          snapshot.data[index].businessName ==
-                                                                              ''
-                                                                      ? '${snapshot.data[index].name}\'s shop '
-                                                                          .capitalizeFirstOfEach
-                                                                      : '${snapshot.data[index].businessName}'
-                                                                          .capitalizeFirstOfEach,
-                                                                  style: TextStyle(
-                                                                    fontSize: 13,
-                                                                  ),
-                                                                  maxLines: 1,
-                                                                  textAlign: TextAlign.center,
-                                                                ),
-                                                              ),
-                                                            ),
-                                                          ],
-                                                        ),
-                                                      )),
-                                                  Container(
-                                                    width: 150,
-                                                    child: Column(
-                                                      mainAxisAlignment: MainAxisAlignment.center,
+                                                    borderRadius:
+                                                        BorderRadius.all(
+                                                            Radius.circular(7))),
+                                                child: Column(
+                                                  children: [
+                                                    Stack(
                                                       children: [
-                                                        Align(
-                                                          alignment:
-                                                          Alignment.center,
-                                                          child: Padding(
+                                                        Padding(
                                                             padding:
-                                                            const EdgeInsets.only(
-                                                                left: 8.0,
-                                                                right: 8.0, top:2),
-                                                            child: Wrap(
+                                                                const EdgeInsets
+                                                                        .only(
+                                                                    bottom: 4.0),
+                                                            child: Container(
+                                                              height: 90,
+                                                              width: 150,
+                                                              clipBehavior: Clip
+                                                                  .antiAliasWithSaveLayer,
+                                                              decoration: BoxDecoration(
+                                                                  borderRadius: BorderRadius.only(
+                                                                      topLeft: Radius
+                                                                          .circular(
+                                                                              7),
+                                                                      topRight: Radius
+                                                                          .circular(
+                                                                              7))),
+                                                              child:
+                                                                  Image.network(
+                                                                snapshot.data[index].urlAvatar ==
+                                                                            'no_picture_upload' ||
+                                                                        snapshot.data[index]
+                                                                                .urlAvatar ==
+                                                                            null
+                                                                    ? 'https://uploads.fixme.ng/originals/no_picture_upload'
+                                                                    : 'https://uploads.fixme.ng/originals/${snapshot.data[index].urlAvatar}',
+                                                                fit: BoxFit.cover,
+                                                              ),
+                                                            )),
+                                                        Positioned(
+                                                          bottom: 4,
+                                                          child: Container(
+                                                            height: 20,
+                                                            width: 150,
+                                                            padding:
+                                                                const EdgeInsets
+                                                                        .only(
+                                                                    left: 5),
+                                                            color: Colors.black
+                                                                .withOpacity(0.5),
+                                                            child: Row(
+                                                              mainAxisAlignment: MainAxisAlignment.center,
                                                               children: [
+                                                                Icon(
+                                                                  Icons
+                                                                      .location_on,
+                                                                  color: Colors
+                                                                      .white,
+                                                                  size: 14,
+                                                                ),
                                                                 Text(
-                                                                  '${snapshot.data[index].serviceArea}',
+                                                                  '$distance away',
                                                                   style: TextStyle(
-                                                                      fontSize: 13,
+                                                                      color: Colors
+                                                                          .white,
+                                                                      fontSize:
+                                                                          12,
                                                                       fontWeight:
-                                                                      FontWeight
-                                                                          .w600),
-                                                                  textAlign: TextAlign.center,
+                                                                          FontWeight
+                                                                              .w500),
                                                                 ),
                                                               ],
                                                             ),
                                                           ),
                                                         ),
-                                                        Row(
-                                                          mainAxisAlignment: MainAxisAlignment.center,
-                                                          children: [
-                                                            Padding(
-                                                              padding:
-                                                              const EdgeInsets.only(
-                                                                bottom: 2, top:4),
-                                                              child: Center(
-                                                                child: StarRating(
-                                                                    rating: double.parse(
-                                                                        snapshot.data[index]
-                                                                            .userRating
-                                                                            .toString())),
-                                                              ),
-                                                            ),
-                                                          ],
-                                                        ),
                                                       ],
                                                     ),
-                                                  )
+                                                    Align(
+                                                        alignment:
+                                                            Alignment.bottomLeft,
+                                                        child: Padding(
+                                                          padding:
+                                                              const EdgeInsets
+                                                                      .only(
+                                                                  left: 0.0,
+                                                                  right: 0.0),
+                                                          child: Wrap(
+                                                            children: [
+                                                              Container(
+                                                               // width:140,
+                                                                child: Padding(
+                                                                  padding: const EdgeInsets.only(top:8.0),
+                                                                  child: Text(
+                                                                    snapshot
+                                                                                .data[
+                                                                                    index]
+                                                                                .businessName
+                                                                                .isEmpty ||
+                                                                            snapshot.data[index].businessName ==
+                                                                                ''
+                                                                        ? '${snapshot.data[index].name}\'s shop '
+                                                                            .capitalizeFirstOfEach
+                                                                        : '${snapshot.data[index].businessName}'
+                                                                            .capitalizeFirstOfEach,
+                                                                    style: TextStyle(
+                                                                      fontSize: 13,
+                                                                    ),
+                                                                    maxLines: 1,
+                                                                    textAlign: TextAlign.center,
+                                                                  ),
+                                                                ),
+                                                              ),
+                                                            ],
+                                                          ),
+                                                        )),
+                                                    Container(
+                                                      width: 150,
+                                                      child: Column(
+                                                        mainAxisAlignment: MainAxisAlignment.center,
+                                                        children: [
+                                                          Align(
+                                                            alignment:
+                                                            Alignment.center,
+                                                            child: Padding(
+                                                              padding:
+                                                              const EdgeInsets.only(
+                                                                  left: 8.0,
+                                                                  right: 8.0, top:2),
+                                                              child: Wrap(
+                                                                children: [
+                                                                  Text(
+                                                                    '${snapshot.data[index].serviceArea}',
+                                                                    style: TextStyle(
+                                                                        fontSize: 13,
+                                                                        fontWeight:
+                                                                        FontWeight
+                                                                            .w600),
+                                                                    textAlign: TextAlign.center,
+                                                                  ),
+                                                                ],
+                                                              ),
+                                                            ),
+                                                          ),
+                                                          Row(
+                                                            mainAxisAlignment: MainAxisAlignment.center,
+                                                            children: [
+                                                              Padding(
+                                                                padding:
+                                                                const EdgeInsets.only(
+                                                                  bottom: 2, top:4),
+                                                                child: Center(
+                                                                  child: StarRating(
+                                                                      rating: double.parse(
+                                                                          snapshot.data[index]
+                                                                              .userRating
+                                                                              .toString())),
+                                                                ),
+                                                              ),
+                                                            ],
+                                                          ),
+                                                        ],
+                                                      ),
+                                                    )
 
-                                                ],
+                                                  ],
+                                                ),
                                               ),
                                             ),
                                           );
@@ -709,7 +1206,7 @@ class Home extends StatelessWidget {
                         mainAxisAlignment: MainAxisAlignment.spaceBetween,
                         children: [
                           Text(
-                            'Nearby Artisans',
+                            'Nearby Service Provider',
                             style: TextStyle(
                                 fontWeight: FontWeight.w600, fontSize: 15),
                           ),
@@ -770,7 +1267,7 @@ class Home extends StatelessWidget {
                                         SizedBox(
                                           height: 10,
                                         ),
-                                        Text('Loading artisans',
+                                        Text('Loading Service Provider',
                                             style: TextStyle(
                                                 color: Color(0xFF333333),
                                                 fontWeight: FontWeight.w500)),
@@ -781,7 +1278,7 @@ class Home extends StatelessWidget {
                                   ?
 
                           Container(
-                            height: 200,
+                            height: 222,
                             margin: const EdgeInsets.only(bottom: 6),
                             child: ListView.builder(
                               scrollDirection: Axis.horizontal,
@@ -816,187 +1313,189 @@ class Home extends StatelessWidget {
                                       ),
                                     );
                                   },
-                                  child: Container(
-                                    // width: 150,
-                                    margin: const EdgeInsets.only(
-                                      left: 10,
-                                      top: 12,
-                                    ),
-                                    decoration: BoxDecoration(
-                                        color: Color(0xFFFFFFFF),
-                                        border: Border.all(
-                                            color: Color(0xFFF1F1FD)),
-                                        boxShadow: [
-                                          BoxShadow(
-                                              color:
-                                              Color(0xFFF1F1F6),
-                                              blurRadius: 10.0,
-                                              offset:
-                                              Offset(0.3, 4.0))
-                                        ],
-                                        borderRadius:
-                                        BorderRadius.all(
-                                            Radius.circular(7))),
-                                    child: Column(
-                                      children: [
-                                        Stack(
-                                          children: [
-                                            Padding(
-                                                padding:
-                                                const EdgeInsets
-                                                    .only(
-                                                    bottom: 4.0),
-                                                child: Container(
-                                                  height: 90,
-                                                  width: 150,
-                                                  clipBehavior: Clip
-                                                      .antiAliasWithSaveLayer,
-                                                  decoration: BoxDecoration(
-                                                      borderRadius: BorderRadius.only(
-                                                          topLeft: Radius
-                                                              .circular(
-                                                              7),
-                                                          topRight: Radius
-                                                              .circular(
-                                                              7))),
-                                                  child:
-                                                  Image.network(
-                                                    snapshot.data[index].urlAvatar ==
-                                                        'no_picture_upload' ||
-                                                        snapshot.data[index]
-                                                            .urlAvatar ==
-                                                            null
-                                                        ? 'https://uploads.fixme.ng/originals/no_picture_upload'
-                                                        : 'https://uploads.fixme.ng/originals/${snapshot.data[index].urlAvatar}',
-                                                    fit: BoxFit.cover,
-                                                  ),
-                                                )),
-                                            Positioned(
-                                              bottom: 4,
-                                              child: Container(
-                                                height: 20,
-                                                width: 150,
-                                                padding:
-                                                const EdgeInsets
-                                                    .only(
-                                                    left: 5),
-                                                color: Colors.black
-                                                    .withOpacity(0.5),
-                                                child: Row(
-                                                  mainAxisAlignment: MainAxisAlignment.center,
-                                                  children: [
-                                                    Icon(
-                                                      Icons
-                                                          .location_on,
-                                                      color: Colors
-                                                          .white,
-                                                      size: 14,
-                                                    ),
-                                                    Text(
-                                                      '$distance away',
-                                                      style: TextStyle(
-                                                          color: Colors
-                                                              .white,
-                                                          fontSize:
-                                                          12,
-                                                          fontWeight:
-                                                          FontWeight
-                                                              .w500),
-                                                    ),
-                                                  ],
-                                                ),
-                                              ),
-                                            ),
+                                  child: GridTile(
+                                    child: Container(
+                                      // width: 150,
+                                      margin: const EdgeInsets.only(
+                                        left: 10,
+                                        top: 12,
+                                      ),
+                                      decoration: BoxDecoration(
+                                          color: Color(0xFFFFFFFF),
+                                          border: Border.all(
+                                              color: Color(0xFFF1F1FD)),
+                                          boxShadow: [
+                                            BoxShadow(
+                                                color:
+                                                Color(0xFFF1F1F6),
+                                                blurRadius: 10.0,
+                                                offset:
+                                                Offset(0.3, 4.0))
                                           ],
-                                        ),
-                                        Align(
-                                            alignment:
-                                            Alignment.bottomLeft,
-                                            child: Padding(
-                                              padding:
-                                              const EdgeInsets
-                                                  .only(
-                                                  left: 0.0,
-                                                  right: 0.0),
-                                              child: Wrap(
-                                                children: [
-                                                  Container(
-                                                    // width:140,
-                                                    child: Padding(
-                                                      padding: const EdgeInsets.only(top:8.0),
-                                                      child: Text(
-                                                        snapshot
-                                                            .data[
-                                                        index]
-                                                            .businessName
-                                                            .isEmpty ||
-                                                            snapshot.data[index].businessName ==
-                                                                ''
-                                                            ? '${snapshot.data[index].name}\'s shop '
-                                                            .capitalizeFirstOfEach
-                                                            : '${snapshot.data[index].businessName}'
-                                                            .capitalizeFirstOfEach,
-                                                        style: TextStyle(
-                                                          fontSize: 13,
-                                                        ),
-                                                        maxLines: 1,
-                                                        textAlign: TextAlign.center,
-                                                      ),
-                                                    ),
-                                                  ),
-                                                ],
-                                              ),
-                                            )),
-                                        Container(
-                                          width: 150,
-                                          child: Column(
-                                            mainAxisAlignment: MainAxisAlignment.center,
+                                          borderRadius:
+                                          BorderRadius.all(
+                                              Radius.circular(7))),
+                                      child: Column(
+                                        children: [
+                                          Stack(
                                             children: [
-                                              Align(
-                                                alignment:
-                                                Alignment.center,
-                                                child: Padding(
+                                              Padding(
                                                   padding:
-                                                  const EdgeInsets.only(
-                                                      left: 8.0,
-                                                      right: 8.0, top:2),
-                                                  child: Wrap(
+                                                  const EdgeInsets
+                                                      .only(
+                                                      bottom: 4.0),
+                                                  child: Container(
+                                                    height: 90,
+                                                    width: 150,
+                                                    clipBehavior: Clip
+                                                        .antiAliasWithSaveLayer,
+                                                    decoration: BoxDecoration(
+                                                        borderRadius: BorderRadius.only(
+                                                            topLeft: Radius
+                                                                .circular(
+                                                                7),
+                                                            topRight: Radius
+                                                                .circular(
+                                                                7))),
+                                                    child:
+                                                    Image.network(
+                                                      snapshot.data[index].urlAvatar ==
+                                                          'no_picture_upload' ||
+                                                          snapshot.data[index]
+                                                              .urlAvatar ==
+                                                              null
+                                                          ? 'https://uploads.fixme.ng/originals/no_picture_upload'
+                                                          : 'https://uploads.fixme.ng/originals/${snapshot.data[index].urlAvatar}',
+                                                      fit: BoxFit.cover,
+                                                    ),
+                                                  )),
+                                              Positioned(
+                                                bottom: 4,
+                                                child: Container(
+                                                  height: 20,
+                                                  width: 150,
+                                                  padding:
+                                                  const EdgeInsets
+                                                      .only(
+                                                      left: 5),
+                                                  color: Colors.black
+                                                      .withOpacity(0.5),
+                                                  child: Row(
+                                                    mainAxisAlignment: MainAxisAlignment.center,
                                                     children: [
+                                                      Icon(
+                                                        Icons
+                                                            .location_on,
+                                                        color: Colors
+                                                            .white,
+                                                        size: 14,
+                                                      ),
                                                       Text(
-                                                        '${snapshot.data[index].serviceArea}',
+                                                        '$distance away',
                                                         style: TextStyle(
-                                                            fontSize: 13,
+                                                            color: Colors
+                                                                .white,
+                                                            fontSize:
+                                                            12,
                                                             fontWeight:
                                                             FontWeight
-                                                                .w600),
-                                                        textAlign: TextAlign.center,
+                                                                .w500),
                                                       ),
                                                     ],
                                                   ),
                                                 ),
                                               ),
-                                              Row(
-                                                mainAxisAlignment: MainAxisAlignment.center,
-                                                children: [
-                                                  Padding(
-                                                    padding:
-                                                    const EdgeInsets.only(
-                                                        bottom: 2, top:4),
-                                                    child: Center(
-                                                      child: StarRating(
-                                                          rating: double.parse(
-                                                              snapshot.data[index]
-                                                                  .userRating
-                                                                  .toString())),
-                                                    ),
-                                                  ),
-                                                ],
-                                              ),
                                             ],
                                           ),
-                                        )
+                                          Align(
+                                              alignment:
+                                              Alignment.bottomLeft,
+                                              child: Padding(
+                                                padding:
+                                                const EdgeInsets
+                                                    .only(
+                                                    left: 0.0,
+                                                    right: 0.0),
+                                                child: Wrap(
+                                                  children: [
+                                                    Container(
+                                                      // width:140,
+                                                      child: Padding(
+                                                        padding: const EdgeInsets.only(top:8.0),
+                                                        child: Text(
+                                                          snapshot
+                                                              .data[
+                                                          index]
+                                                              .businessName
+                                                              .isEmpty ||
+                                                              snapshot.data[index].businessName ==
+                                                                  ''
+                                                              ? '${snapshot.data[index].name}\'s shop '
+                                                              .capitalizeFirstOfEach
+                                                              : '${snapshot.data[index].businessName}'
+                                                              .capitalizeFirstOfEach,
+                                                          style: TextStyle(
+                                                            fontSize: 13,
+                                                          ),
+                                                          maxLines: 1,
+                                                          textAlign: TextAlign.center,
+                                                        ),
+                                                      ),
+                                                    ),
+                                                  ],
+                                                ),
+                                              )),
+                                          Container(
+                                            width: 150,
+                                            child: Column(
+                                              mainAxisAlignment: MainAxisAlignment.center,
+                                              children: [
+                                                Align(
+                                                  alignment:
+                                                  Alignment.center,
+                                                  child: Padding(
+                                                    padding:
+                                                    const EdgeInsets.only(
+                                                        left: 8.0,
+                                                        right: 8.0, top:2),
+                                                    child: Wrap(
+                                                      children: [
+                                                        Text(
+                                                          '${snapshot.data[index].serviceArea}',
+                                                          style: TextStyle(
+                                                              fontSize: 13,
+                                                              fontWeight:
+                                                              FontWeight
+                                                                  .w600),
+                                                          textAlign: TextAlign.center,
+                                                        ),
+                                                      ],
+                                                    ),
+                                                  ),
+                                                ),
+                                                Row(
+                                                  mainAxisAlignment: MainAxisAlignment.center,
+                                                  children: [
+                                                    Padding(
+                                                      padding:
+                                                      const EdgeInsets.only(
+                                                          bottom: 2, top:4),
+                                                      child: Center(
+                                                        child: StarRating(
+                                                            rating: double.parse(
+                                                                snapshot.data[index]
+                                                                    .userRating
+                                                                    .toString())),
+                                                      ),
+                                                    ),
+                                                  ],
+                                                ),
+                                              ],
+                                            ),
+                                          )
 
-                                      ],
+                                        ],
+                                      ),
                                     ),
                                   ),
                                 );
@@ -1011,7 +1510,7 @@ class Home extends StatelessWidget {
                                             color: Color(0xFFBBBBBB),
                                             padding: const EdgeInsets.all(4),
                                             child: Text(
-                                              'No Nearby Artisans',
+                                              'No Nearby Service Provider',
                                               style: TextStyle(
                                                   color: Colors.white,
                                                   fontWeight: FontWeight.w500),
@@ -1128,7 +1627,7 @@ class Home extends StatelessWidget {
                           child: FlatButton(
                             onPressed: () {
                               data.setCallToActionStatus = false;
-                              controller.jumpToPage(2);
+                              widget.controller.jumpToPage(2);
                               data.setSelectedBottomNavBar(2);
                             },
                             color: Color(0xFF9B049B),

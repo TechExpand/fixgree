@@ -208,16 +208,11 @@ class PostScreenState extends State<PostScreen> {
                 var status = prefs.getString('paymentToken');
                 if(status == null || status == 'null' || status == '' || status == 'in_active'){
                   paymentMethod(context, 5000, network.email);
-                }else{
+                }
+                else{
                   result = postRequestProvider.allservicesList;
                   dialogPage(context);
                 }
-                print(status);
-                print(status);
-                print(status);
-                print(status);
-                print(status);
-                print(status);
                 },
               child: TextFormField(
                 keyboardType: TextInputType.multiline,

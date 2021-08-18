@@ -37,33 +37,27 @@ class PopUpMenu extends StatelessWidget {
           network.role == 'artisan' || network.role == 'business'
               ?  PopupMenuItem(
                       value: 1,
-                      child: InkWell(
-                        onTap: () {
+                      child: TextButton(
+                        onPressed: () {
                           dialogPage(context);
                         },
-                        child: Padding(
-                          padding: const EdgeInsets.all(8),
-                          child: Text('Initiate Project'),
-                        ),
+                          child: Text('Send Cost/Budget', style: TextStyle(color:Colors.black),),
                       )):null,
               PopupMenuItem(
                   value: 2,
-                  child: InkWell(
-                    onTap: () {
+                  child: TextButton(
+                    onPressed: () {
                       FirebaseApi.clearMessage(
                           idUser,
                           '${network.userId}-${user.id}',
                           '${user.id}-${network.userId}');
                     },
-                    child: Padding(
-                      padding: const EdgeInsets.all(8),
-                      child: Text('Clear Message'),
-                    ),
+                    child:Text('Clear Message',style: TextStyle(color:Colors.black)),
                   )),
               PopupMenuItem(
                   value: 3,
-                  child: InkWell(
-                    onTap: () {
+                  child: TextButton(
+                    onPressed: () {
                       Navigator.push(
                         context,
                         PageRouteBuilder(
@@ -81,10 +75,8 @@ class PopUpMenu extends StatelessWidget {
                         ),
                       );
                     },
-                    child: Padding(
-                      padding: const EdgeInsets.all(8),
-                      child: Text('Media, links, and docs'),
-                    ),
+
+                      child: Text('Media, links, and docs', style: TextStyle(color:Colors.black)),
                   )),
             ]);
   }
@@ -170,7 +162,7 @@ class PopUpMenu extends StatelessWidget {
                                   maxWidth: 125, minHeight: 45.0),
                               alignment: Alignment.center,
                               child: Text(
-                                "INITIATE",
+                                "SEND",
                                 textAlign: TextAlign.center,
                                 style: TextStyle(color: Colors.white),
                               ),

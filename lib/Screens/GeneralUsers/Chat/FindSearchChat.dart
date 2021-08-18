@@ -21,7 +21,7 @@ class _SearchChatState extends State<SearchChatPage> {
     return Scaffold(
       appBar: AppBar(
         title: Text('New message'),
-        backgroundColor: Color(0xFFA40C85),
+        backgroundColor: Color(0xFF9B049B),
         leading: InkWell(
             onTap: () {
               Navigator.pop(context);

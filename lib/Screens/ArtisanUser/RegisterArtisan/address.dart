@@ -180,7 +180,7 @@ TextEditingController businessName = TextEditingController();
                 child: FlatButton(
                   disabledColor: Color(0x909B049B),
                   onPressed:
-                      officeAddress.text.isEmpty || homeAddress.text.isEmpty|| businessName.text.isEmpty
+                  conData.officeAddress.isEmpty || conData.homeAddress.isEmpty|| conData.businessName.isEmpty
                           ? null
                           : () {
                               Navigator.push(

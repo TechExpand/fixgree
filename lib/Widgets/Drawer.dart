@@ -1,6 +1,7 @@
 import 'dart:ui';
 import 'package:fixme/Screens/ArtisanUser/Profile/ProfilePageNew.dart';
 import 'package:fixme/Screens/GeneralUsers/Profile/ProfileNew.dart';
+import 'package:fixme/Screens/GeneralUsers/pending/pendingpage.dart';
 import 'package:fixme/Services/Firebase_service.dart';
 import 'package:fixme/Utils/icons.dart';
 import 'package:share/share.dart';
@@ -70,6 +71,8 @@ class _DrawerState extends State<DrawerWidget> {
                     Text(
                       network.email,
                       style: TextStyle(color: Colors.white),
+                      maxLines: 1,
+                      overflow: TextOverflow.ellipsis,
                     ),
                   ],
                 ),
@@ -158,7 +161,7 @@ class _DrawerState extends State<DrawerWidget> {
                     },
                   ),
                 );
-                FirebaseApi.clearCheckNotify(
+                FirebaseApi.clearCheckChat(
                   network.userId.toString(),
                 );
               },
@@ -275,8 +278,9 @@ class _DrawerState extends State<DrawerWidget> {
           InkWell(
             onTap: () {
               Navigator.pop(context);
-              widget.controller.jumpToPage(1);
-              data.setSelectedBottomNavBar(1);
+              widget.controller.jumpToPage(3);
+              data.setSelectedBottomNavBar(3);
+              PendingScreen(paymentPush:true);
             },
             child: SizedBox(
               height: 40,
@@ -300,7 +304,7 @@ class _DrawerState extends State<DrawerWidget> {
           ),
           InkWell(
             onTap: () {
-              Share.share('Hey\n\n I use Fixme to find Service Providers or Businesses around me. Fixme is safe and would help you gain customers as a busness. \n\n Get Fixme for free at: https://fixme.com.ng/\n\n My Referral Code is: Fixme-${network.userId}',
+              Share.share('Hey\n\n I use Fixme to find Service Providers or Businesses around me. Fixme is safe and would help you gain customers as a busness. \n\n Get Fixme for free at: https://fixme.ng\n\n My Referral Code is: Fixme-${network.userId}',
                   subject: 'Share Fixme');
             },
             child: SizedBox(

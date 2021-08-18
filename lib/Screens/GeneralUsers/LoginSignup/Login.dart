@@ -111,7 +111,7 @@ class LoginState extends State<Login> {
                     border: Border.all(
                       color: Color(0xFF9B049B),
                     ),
-                    borderRadius: BorderRadius.all(Radius.circular(12))),
+                    borderRadius: BorderRadius.all(Radius.circular(16))),
                 child: Padding(
                   padding: const EdgeInsets.only(left: 7.0),
                   child: InternationalPhoneNumberInput(

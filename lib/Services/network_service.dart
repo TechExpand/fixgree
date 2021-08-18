@@ -1,6 +1,7 @@
 import 'dart:async';
 import 'dart:convert';
 import 'dart:io';
+import 'package:fixme/Model/Product.dart';
 import 'package:fixme/Model/UserSearch.dart';
 import 'package:device_info/device_info.dart';
 import 'package:fixme/Model/Project.dart';
@@ -81,7 +82,7 @@ class WebServices extends ChangeNotifier {
 
     } else {
       IosDeviceInfo iosInfo = await deviceInfo.iosInfo;
-      info = iosInfo.model;
+      info = iosInfo.model.toString()+" "+iosInfo.name+" "+iosInfo.systemName;
       os = 'IOS';
       print('Running on ${iosInfo.utsname.machine}');
     }
@@ -118,6 +119,7 @@ class WebServices extends ChangeNotifier {
       firstName = body['firstName'];
       lastName = body['lastName'];
       phoneNum = body['fullNumber'];
+      email = body['email'];
       paymentToken = body['payment_token'];
       role = body['user_role'];
       serviceId = body['service_id'];
@@ -128,6 +130,7 @@ class WebServices extends ChangeNotifier {
         datas.storeData('mobile_device_token', mobileDeviceToken);
         datas.storeData('user_id', userId.toString());
         datas.storeData('profile_pic_file_name', profilePicFileName);
+        datas.storeData('email', email);
         datas.storeData('firstName', firstName);
         datas.storeData('lastName', lastName);
         datas.storeData('service_id', serviceId.toString());
@@ -138,7 +141,7 @@ class WebServices extends ChangeNotifier {
           context,
           PageRouteBuilder(
             pageBuilder: (context, animation, secondaryAnimation) {
-              return HomePage();
+              return HomePage(firstUser: 'first',);
             },
             transitionsBuilder:
                 (context, animation, secondaryAnimation, child) {
@@ -269,26 +272,32 @@ class WebServices extends ChangeNotifier {
 
   Future<dynamic> initiateProject(mainserviceId, projectOwnerUserId, bidId,
       projectId, serviceId, budget, context, setStates) async {
-    print("userid $userId");
-    print('proid $projectOwnerUserId');
-    print('bidid $bidId');
-    print('project $projectId');
-    print('service $mainserviceId');
-    print('budget $budget');
+    // print("userid $userId");
+    // print('proid $projectOwnerUserId');
+    // print('bidid ${bidId==null}');
+    // print('project ${projectId==null}');
+    // print('service $mainserviceId');
+    // print('budget $budget');
+    bool budID= (bidId==null) || (bidId == '');
+    bool prodID = (projectId==null) || (projectId == '');
+
 
     try {
       var response =
           await http.post(Uri.parse('$mainUrl/save-send-budget'), body: {
         'user_id': userId.toString(),
         'project_owner_user_id': projectOwnerUserId.toString(),
-        bidId == null ? null : 'bid_id': bidId,
-        projectId == null ? null : 'project_id': projectId,
+            budID?'':'bid_id':bidId.toString(),
+            prodID?'':'project_id': projectId.toString(),
         'service_id': mainserviceId.toString(),
-        'budget': budget,
+        'budget': budget.toString(),
       }, headers: {
         "Content-type": "application/x-www-form-urlencoded",
         'Authorization': 'Bearer $bearer',
       });
+      print(response.body);
+    print(response.body);
+    print(response.body);
       var body = json.decode(response.body);
 
       notifyListeners();
@@ -312,9 +321,6 @@ class WebServices extends ChangeNotifier {
           text: "JOB INITIATION FAILED",
           context: context,
         );
-//      scaffoldKey.showSnackBar(
-//          new SnackBar(content: new Text("JOB INITIATION FAILED")));
-
       }
     } catch (e) {
       setStates(() {});
@@ -324,8 +330,6 @@ class WebServices extends ChangeNotifier {
         text: "JOB INITIATION FAILED",
         context: context,
       );
-//      scaffoldKey.showSnackBar(
-//          new SnackBar(content: new Text("Failed")));
     }
   }
 
@@ -521,17 +525,30 @@ class WebServices extends ChangeNotifier {
     }
     }
 
-  Future<dynamic> confirmPaymentAndReview(
-      [rating, jobid,bidid,serviceId, comment, scafoldKey, artisanId, userId, context]) async {
+  Future<dynamic> confirmPaymentAndReview({
+  rating, jobid,bidid,serviceId, comment, artisanId, userId, context}) async {
+    print(rating);
+    print(jobid);
+    print(bidid);
+    print(serviceId);
+    print(artisanId);
+    print(userId);
+    print(comment);
+
+    bool serID = (serviceId==null) || (serviceId == 'null');
+    print(serID);
+    print(serID);
+    print(serID);
+    print(serID);
+    try{
     var response = await http.post(
-        Uri.parse('$mainUrl/confirm-project-completion-rating'
-            ''),
+        Uri.parse('$mainUrl/confirm-project-completion-rating'),
         body: {
           'reviewing_user_id': userId.toString(),
           'reviewed_user_id': artisanId.toString(),
           'bid_id': bidid.toString(),
           'jobId': jobid.toString(),
-          serviceId==null?null:'service_request_id': serviceId,
+          serID?'':'service_request_id': serviceId.toString(),
           'rating': rating.toString(),
           'review': comment.toString(),
         },
@@ -539,7 +556,10 @@ class WebServices extends ChangeNotifier {
           "Content-type": "application/x-www-form-urlencoded",
           'Authorization': 'Bearer $bearer',
         });
-    var body = json.decode(response.body);
+   var body = json.decode(response.body.toString());
+   print(body);
+    print(body);
+    print(body);
     notifyListeners();
     if (body['reqRes'] == 'true') {
       print(body);
@@ -550,7 +570,16 @@ class WebServices extends ChangeNotifier {
 
       return body;
     } else if (body['reqRes'] == 'false') {
+      await showTextToast(
+        text: "Payment Approved Already.",
+        context: context,
+      );
       print(body);
+    }
+  }
+  catch(e){
+      print(e);
+      print('eeeee');
     }
   }
 
@@ -616,6 +645,42 @@ class WebServices extends ChangeNotifier {
     }
   }
 
+
+
+
+  Future<dynamic> getMarket() async {
+    var response = await http
+        .post(Uri.parse('$mainUrl/explore-product'), body: {
+      'user_id': userId.toString(),
+
+    }, headers: {
+      "Content-type": "application/x-www-form-urlencoded",
+     'Authorization': 'Bearer $bearer',
+    });
+    var body1 = json.decode(response.body);
+    List body = body1['products'];
+    List<Product> projects = body
+        .map((data) {
+      return Product.fromJson(data);
+    })
+        .toSet()
+        .toList();
+    notifyListeners();
+    if (body1['reqRes'] == 'true') {
+      print(projects);
+      return projects;
+    } else if (body1['reqRes'] == 'false') {
+        print(body1);
+    }
+  }
+
+
+
+
+
+
+
+
   Future<dynamic> getServiceImage([userId, requestedId]) async {
     print(userId);
     var response = await http.post(Uri.parse('$mainUrl/service-images'), body: {
@@ -654,9 +719,7 @@ class WebServices extends ChangeNotifier {
   }
 
   Future uploadProductCatalog(
-      {bio,
-      productName,
-      price,
+      {
       scaffoldKey,
       path,
       context,
@@ -666,9 +729,9 @@ class WebServices extends ChangeNotifier {
     try {
       var res =
           await http.post(Uri.parse('$mainUrl/save-catlog-product'), body: {
-        'product_name': controlName.text.toString() ?? '',
-        'price': controlPrice.text.toString() ?? '',
-        'product_description': controlDes.text.toString() ?? '',
+        'product_name': controlName.toString() ?? '',
+        'price': controlPrice.toString() ?? '',
+        'product_description': controlDes.toString() ?? '',
         'user_id': '$userId',
       }, headers: {
         "Content-type": "application/x-www-form-urlencoded",
@@ -683,7 +746,7 @@ class WebServices extends ChangeNotifier {
         var file = await http.MultipartFile.fromPath('file', path);
         upload.files.add(file);
         upload.fields['product_id'] = body['productId'].toString();
-        upload.fields['product_name'] = productName.toString();
+        upload.fields['product_name'] = controlName.toString();
         upload.fields['user_id'] = userId.toString();
         upload.headers['authorization'] = 'Bearer $bearer';
 
@@ -968,23 +1031,12 @@ class WebServices extends ChangeNotifier {
       var bodys = jsonDecode(resp.body);
 
       if (bodys['upldRes'] == 'true') {
-        await showTextToast(
-          text: bodys.toString(),
-          context: context,
-        );
-
-        return 'success';
+        return true;
       } else if (bodys['upldRes'] == 'false') {
-        await showTextToast(
-          text: "RThere was a Problem Working on it.",
-          context: context,
-        );
+        return false;
       }
     } else if (body['reqRes'] == 'false') {
-      await showTextToast(
-        text: "There was a Problem Working on it.",
-        context: context,
-      );
+      return false;
     }
   }
 
@@ -1861,25 +1913,13 @@ class WebServices extends ChangeNotifier {
       var body = jsonDecode(res.body);
       notifyListeners();
       if (body['upldRes'] == 'true') {
-        await showTextToast(
-          text: "Image upload was succesful .",
-          context: context,
-        );
-
-        return 'succesful';
+        return true;
       } else if (body['upldRes'] == 'false') {
-        await showTextToast(
-          text: "Image upload was unsuccesful.",
-          context: context,
-        );
 
-        return 'failed';
+        return false;
       }
     } catch (e) {
-      await showTextToast(
-        text: e.toString(),
-        context: context,
-      );
+      return false;
     }
   }
 

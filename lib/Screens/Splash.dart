@@ -1,10 +1,16 @@
+import 'dart:io';
+import 'dart:ui';
+
+import 'package:connectivity_plus/connectivity_plus.dart';
 import 'package:firebase_core/firebase_core.dart';
 import 'package:fixme/Screens/GeneralUsers/IntroPages/intro.dart';
 import 'package:fixme/Services/Firebase_service.dart';
 import 'package:fixme/Utils/Provider.dart';
 import 'package:fixme/Utils/service_locator.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter/services.dart';
 import 'package:in_app_update/in_app_update.dart';
+import 'package:permission_handler/permission_handler.dart';
 import 'GeneralUsers/Home/HomePage.dart';
 import 'GeneralUsers/LoginSignup/Login.dart';
 import 'package:fixme/Utils/utils.dart';
@@ -31,17 +37,66 @@ class SPLASHSTATE extends State<SplashScreen> {
   @override
   void initState() {
     super.initState();
+
+
+    Future<Widget> decideFirstWidget() async {
+      SharedPreferences prefs = await SharedPreferences.getInstance();
+      var token = prefs.getString('Bearer');
+      var data = Provider.of<DataProvider>(context, listen: false);
+      data.setSplash(true);
+
+      if (token == null || token == 'null' || token == '') {
+        return Navigator.pushAndRemoveUntil(
+          context,
+          PageRouteBuilder(
+            pageBuilder: (context, animation, secondaryAnimation) {
+              return IntroPage();
+            },
+            transitionsBuilder: (context, animation, secondaryAnimation, child) {
+              return FadeTransition(
+                opacity: animation,
+                child: child,
+              );
+            },
+          ),
+              (route) => false,
+        );
+      } else {
+        return Navigator.pushAndRemoveUntil(
+          context,
+          PageRouteBuilder(
+            pageBuilder: (context, animation, secondaryAnimation) {
+              return HomePage(); //SignUpAddress();
+            },
+            transitionsBuilder: (context, animation, secondaryAnimation, child) {
+              return FadeTransition(
+                opacity: animation,
+                child: child,
+              );
+            },
+          ),
+              (route) => false,
+        );
+      }
+    }
+
+
+
+
+
+
     checkForUpdate();
     Provider.of<WebServices>(context, listen: false).initializeValues();
     Provider.of<WebServices>(context, listen: false).checkDevice();
     Future.delayed(Duration(seconds: 5), () async {
       //sendAndRetrieveMessage();
       getit();
-
-
       return decideFirstWidget();
     });
+
+
   }
+
 
 // Replace with server token from firebase console settings.
     FirebaseMessaging firebaseMessaging = FirebaseMessaging.instance;
@@ -71,60 +126,23 @@ class SPLASHSTATE extends State<SplashScreen> {
 
 
 
-
-  Future<Widget> decideFirstWidget() async {
-    SharedPreferences prefs = await SharedPreferences.getInstance();
-    var token = prefs.getString('Bearer');
-    var data = Provider.of<DataProvider>(context, listen: false);
-    data.setSplash(true);
-
-    if (token == null || token == 'null' || token == '') {
-      return Navigator.pushAndRemoveUntil(
-        context,
-        PageRouteBuilder(
-          pageBuilder: (context, animation, secondaryAnimation) {
-            return IntroPage();
-          },
-          transitionsBuilder: (context, animation, secondaryAnimation, child) {
-            return FadeTransition(
-              opacity: animation,
-              child: child,
-            );
-          },
-        ),
-        (route) => false,
-      );
-    } else {
-      return Navigator.pushAndRemoveUntil(
-        context,
-        PageRouteBuilder(
-          pageBuilder: (context, animation, secondaryAnimation) {
-            return HomePage(); //SignUpAddress();
-          },
-          transitionsBuilder: (context, animation, secondaryAnimation, child) {
-            return FadeTransition(
-              opacity: animation,
-              child: child,
-            );
-          },
-        ),
-        (route) => false,
-      );
-    }
-  }
-
   @override
   Widget build(BuildContext context) {
-    return Material(
-      child: Container(
-        width: MediaQuery.of(context).size.width,
-        height: MediaQuery.of(context).size.height,
-        child: Center(
-          child: Hero(
-            tag: 'MainImage',
-            child: Image.asset(
-              'assets/images/fixme.png',
-              scale: 1.5,
+    return WillPopScope(
+      onWillPop: (){
+
+      },
+      child: Material(
+        child: Container(
+          width: MediaQuery.of(context).size.width,
+          height: MediaQuery.of(context).size.height,
+          child: Center(
+            child: Hero(
+              tag: 'MainImage',
+              child: Image.asset(
+                'assets/images/fixme.png',
+                scale: 1.5,
+              ),
             ),
           ),
         ),

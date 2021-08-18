@@ -31,6 +31,9 @@ class MyFlutterApp {
   static const _kFontFam4 = 'MyFlutterApp4';
   static const String _kFontPkg4 = null;
 
+  static const _kFontFam5 = 'MyFlutterApp5';
+  static const String _kFontPkg5 = null;
+
 
 
   static const IconData postarequest = IconData(0xe800, fontFamily: _kFontFam3, fontPackage: _kFontPkg3);
@@ -49,5 +52,9 @@ class MyFlutterApp {
   static const IconData filter = IconData(0xe801, fontFamily: _kFontFam4, fontPackage: _kFontPkg4);
 
 
-
+  static const IconData vector_1 = IconData(0xe800, fontFamily: _kFontFam5, fontPackage: _kFontPkg5);
+  static const IconData vector_3 = IconData(0xe801, fontFamily: _kFontFam5, fontPackage: _kFontPkg5);
+  static const IconData vector_4 = IconData(0xe802, fontFamily: _kFontFam5, fontPackage: _kFontPkg5);
+  static const IconData vector_5 = IconData(0xe803, fontFamily: _kFontFam5, fontPackage: _kFontPkg5);
+  static const IconData wallet2 = IconData(0xe804, fontFamily: _kFontFam5, fontPackage: _kFontPkg5);
 }

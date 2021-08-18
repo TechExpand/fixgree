@@ -71,66 +71,6 @@ class ProductDetailPageState extends State<ProductDetailPage> {
               ),
             ),
           ),
-          // Padding(
-          //   padding: const EdgeInsets.only(top: 8.0, bottom: 13),
-          //   child: Text('What product do you sell?'),
-          // ),
-          // InkWell(
-          //   onTap: chips.length >= 5
-          //       ? null
-          //       : () {
-          //           result = postRequestProvider.allservicesList;
-          //           dialogPageAdd(context);
-          //         },
-          //   child: Container(
-          //     width: MediaQuery.of(context).size.width / 0.2,
-          //     height: 50,
-          //     child: TextFormField(
-          //       style: TextStyle(color: Colors.black),
-          //       cursorColor: Colors.black,
-          //       enabled: false,
-          //       decoration: InputDecoration(
-          //         prefixIcon: Icon(Icons.add, color: Color(0xFF9B049B)),
-          //         labelStyle: TextStyle(color: Color(0xFF9B049B)),
-          //         labelText: 'Add',
-          //         disabledBorder: OutlineInputBorder(
-          //             borderSide: const BorderSide(
-          //                 color: Color(0xFF9B049B), width: 0.0),
-          //             borderRadius: BorderRadius.all(Radius.circular(12))),
-          //         focusedBorder: OutlineInputBorder(
-          //             borderSide: const BorderSide(
-          //                 color: Color(0xFF9B049B), width: 0.0),
-          //             borderRadius: BorderRadius.all(Radius.circular(12))),
-          //         border: OutlineInputBorder(
-          //             borderSide: const BorderSide(
-          //                 color: Color(0xFF9B049B), width: 0.0),
-          //             borderRadius: BorderRadius.all(Radius.circular(12))),
-          //       ),
-          //     ),
-          //   ),
-          // ),
-          // Padding(
-          //   padding: const EdgeInsets.only(top: 8.0, bottom: 13),
-          //   child: Align(
-          //       alignment: Alignment.bottomRight,
-          //       child: Text('Enter at least 1 product')),
-          // ),
-          // Wrap(
-          //   children: chips,
-          // ),
-          // Padding(
-          //   padding: const EdgeInsets.all(8.0),
-          //   child: InkWell(
-          //       onTap: () {
-          //         chips.clear();
-          //         data.setclrSubCat();
-          //         setState(() {});
-          //       },
-          //       child: Text('Clear All',
-          //           style: TextStyle(
-          //               color: Color(0xFF9B049B),
-          //               fontWeight: FontWeight.bold))),
-          // ),
           Spacer(),
           Align(
             alignment: Alignment.center,

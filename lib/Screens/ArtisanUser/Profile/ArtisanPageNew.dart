@@ -617,8 +617,7 @@ class _ArtisanPageNewState extends State<ArtisanPageNew> with SingleTickerProvid
                               margin: EdgeInsets.only(top:20),
                               child: AnimatedCrossFade(
                                 duration: const Duration(milliseconds: 500),
-                                firstChild:  Expanded(
-                                child: ListView(
+                                firstChild:  ListView(
                                   shrinkWrap: true,
                                   physics: ScrollPhysics(),
                                   children: [
@@ -796,11 +795,11 @@ class _ArtisanPageNewState extends State<ArtisanPageNew> with SingleTickerProvid
                                                         left: 8,
                                                         right: 8),
                                                     child: GridView.builder(
-                                                      gridDelegate: SliverGridDelegateWithMaxCrossAxisExtent(
-                                                          maxCrossAxisExtent: 180,
-                                                          childAspectRatio: 1,
-                                                          crossAxisSpacing: 20,
-                                                          mainAxisSpacing: 5),
+                                                      gridDelegate:   SliverGridDelegateWithFixedCrossAxisCount(
+                                                        crossAxisCount: 2,
+                                                        crossAxisSpacing: 5,
+                                                        mainAxisSpacing: 5,
+                                                      ),
                                                       shrinkWrap: true,
                                                       physics: ScrollPhysics(),
                                                       itemCount: snapshot.data ==
@@ -816,16 +815,12 @@ class _ArtisanPageNewState extends State<ArtisanPageNew> with SingleTickerProvid
                                                             onTap: (){
                                                               _viewProduct(
                                                                   location,
-                                                                              data: snapshot
-                                                                                  .data[
-                                                                              index]);
+                                                                  data: snapshot
+                                                                      .data[
+                                                                  index]);
                                                             },
                                                             child: Container(
-                                                              // width: 150,
-                                                              margin: const EdgeInsets.only(
-                                                                top: 12,
-                                                              ),
-                                                              decoration: BoxDecoration(
+                                                            decoration:  BoxDecoration(
                                                                   color: Color(0xFFFFFFFF),
                                                                   border: Border.all(
                                                                       color: Color(0xFFF1F1FD)),
@@ -840,17 +835,101 @@ class _ArtisanPageNewState extends State<ArtisanPageNew> with SingleTickerProvid
                                                                   borderRadius:
                                                                   BorderRadius.all(
                                                                       Radius.circular(7))),
-                                                              child: Column(
-                                                                children: [
-                                                                  Stack(
+                                                              child: GridTile(
+                                                                footer: Column(
+                                                                  children: [
+                                                                    SizedBox(
+                                                                      height: 20,
+                                                                    ),
+                                                                    Container(
+                                                                      width: 150,
+                                                                      child: Column(
+                                                                        mainAxisAlignment: MainAxisAlignment.center,
+                                                                        children: [
+                                                                          Align(
+                                                                            alignment:
+                                                                            Alignment.center,
+                                                                            child: Padding(
+                                                                              padding:
+                                                                              const EdgeInsets.only(
+                                                                                  left: 8.0,
+                                                                                  right: 8.0, top:0),
+                                                                              child: Wrap(
+                                                                                children: [
+                                                                                  Text(
+                                                                                    "${snapshot.data[index]['product_name']}"
+                                                                                        .capitalizeFirstOfEach,
+                                                                                    style: TextStyle(
+                                                                                        fontSize: 13,
+                                                                                        fontWeight:
+                                                                                        FontWeight
+                                                                                            .w500),
+                                                                                    textAlign: TextAlign.center,
+                                                                                    maxLines: 1,
+                                                                                  ),
+                                                                                ],
+                                                                              ),
+                                                                            ),
+                                                                          ),
+
+                                                                        ],
+                                                                      ),
+                                                                    ),
+                                                                    Align(
+                                                                        alignment:
+                                                                        Alignment.center,
+                                                                        child: Padding(
+                                                                          padding:
+                                                                          const EdgeInsets
+                                                                              .only(
+                                                                              left: 0.0,
+                                                                              right: 0.0),
+                                                                          child: Wrap(
+                                                                            children: [
+                                                                              Container(
+                                                                                // width:140,
+                                                                                margin: const EdgeInsets.only(top:5.0),
+                                                                                child: Text(
+                                                                                    '\u{20A6}'+"${snapshot.data[index]['price']}",
+                                                                                    style: TextStyle(
+                                                                                        fontFamily: 'Roboto',
+                                                                                            fontWeight: FontWeight.bold,
+                                                                                    )),
+
+                                                                              ),
+                                                                            ],
+                                                                          ),
+                                                                        )),
+                                                                    SizedBox(
+                                                                      height: 20,
+                                                                    )
+                                                                  ],
+                                                                ),
+                                                                header:  Container(
+                                                                  decoration:  BoxDecoration(
+                                                                      color: Color(0xFFFFFFFF),
+                                                                      border: Border.all(
+                                                                          color: Color(0xFFF1F1FD)),
+                                                                      boxShadow: [
+                                                                        BoxShadow(
+                                                                            color:
+                                                                            Colors.black26,
+                                                                            blurRadius: 3.0,
+                                                                            offset:
+                                                                            Offset(0.3, 0.3))
+                                                                      ],
+                                                                      borderRadius:
+                                                                      BorderRadius.all(
+                                                                          Radius.circular(7))),
+                                                                  child: Stack(
                                                                     children: [
                                                                       Padding(
                                                                           padding:
                                                                           const EdgeInsets
                                                                               .only(
-                                                                              bottom: 4.0),
+                                                                              bottom: 0.0),
                                                                           child: Container(
-                                                                            height: 90,
+                                                                            height: 110,
                                                                             width: 180,
                                                                             clipBehavior: Clip
                                                                                 .antiAliasWithSaveLayer,
@@ -871,70 +950,9 @@ class _ArtisanPageNewState extends State<ArtisanPageNew> with SingleTickerProvid
 
                                                                     ],
                                                                   ),
-                                                                  Divider(),
-
-                                                                  Container(
-                                                                    width: 150,
-                                                                    child: Column(
-                                                                      mainAxisAlignment: MainAxisAlignment.center,
-                                                                      children: [
-                                                                        Align(
-                                                                          alignment:
-                                                                          Alignment.center,
-                                                                          child: Padding(
-                                                                            padding:
-                                                                            const EdgeInsets.only(
-                                                                                left: 8.0,
-                                                                                right: 8.0, top:2),
-                                                                            child: Wrap(
-                                                                              children: [
-                                                                                Text(
-                                                              "${snapshot.data[index]['product_name']}"
-                                                                            .capitalizeFirstOfEach,
-                                                                                  style: TextStyle(
-                                                                                      fontSize: 13,
-                                                                                      fontWeight:
-                                                                                      FontWeight
-                                                                                          .w600),
-                                                                                  textAlign: TextAlign.center,
-                                                                                  maxLines: 1,
-                                                                                ),
-                                                                              ],
-                                                                            ),
-                                                                          ),
-                                                                        ),
-
-                                                                      ],
-                                                                    ),
-                                                                  ),
-                                                                  Align(
-                                                                      alignment:
-                                                                      Alignment.center,
-                                                                      child: Padding(
-                                                                        padding:
-                                                                        const EdgeInsets
-                                                                            .only(
-                                                                            left: 0.0,
-                                                                            right: 0.0),
-                                                                        child: Wrap(
-                                                                          children: [
-                                                                            Container(
-                                                                              // width:140,
-                                                                              child: Padding(
-                                                                                padding: const EdgeInsets.only(top:8.0),
-                                                                                child: Text(
-                                                                                    '\u{20A6}'+"${snapshot.data[index]['price']}",
-                                                                                    style: TextStyle(
-                                                                                      fontFamily: 'Roboto'
-                                                                                    )),
-                                                                              ),
-                                                                            ),
-                                                                          ],
-                                                                        ),
-                                                                      )),
-
-                                                                ],
-                                                              ),
+                                                                ),
+                                                                child: Text(''),
+                                                                ),
                                                             ),
                                                           );
                                                       },
@@ -982,9 +1000,8 @@ class _ArtisanPageNewState extends State<ArtisanPageNew> with SingleTickerProvid
                                     ),
 
                                   ],
-                                )),
-                                secondChild:  Expanded(
-                                    child: ListView(
+                                ),
+                                secondChild:  ListView(
                                       shrinkWrap: true,
                                       physics: ScrollPhysics(),
                                       children: [
@@ -1160,7 +1177,7 @@ class _ArtisanPageNewState extends State<ArtisanPageNew> with SingleTickerProvid
                                               });
                                         }),
                                       ],
-                                    )),
+                                    ),
                                 crossFadeState: index==0 ? CrossFadeState.showFirst : CrossFadeState.showSecond,
                               ),
                             ),
@@ -1195,7 +1212,8 @@ class _ArtisanPageNewState extends State<ArtisanPageNew> with SingleTickerProvid
                                   icon: Icon(FeatherIcons.moreHorizontal,
                                       color: Colors.white),
                                   onSelected: (value) {
-                                    data.makeOpenUrl(
+                                    var datas = Provider.of<Utils>(context, listen: false);
+                                    datas.makeOpenUrl(
                                         'https://www.google.com/maps?saddr=${location.locationLatitude},${location.locationLongitude}&daddr= ${widget.userData.latitude}, ${widget.userData.longitude}');
                                   },
                                   elevation: 0.1,
@@ -1292,9 +1310,11 @@ class _ArtisanPageNewState extends State<ArtisanPageNew> with SingleTickerProvid
                           SizedBox(
                             width: 8,
                           ),
-                          Text(
-                            "${data['product_name']}".capitalizeFirstOfEach,
-                            style: TextStyle(fontSize: 18),
+                          Expanded(
+                            child: Text(
+                              "${data['product_name']}".capitalizeFirstOfEach,
+                              style: TextStyle(fontSize: 18),
+                            ),
                           ),
                         ],
                       ),
@@ -1320,9 +1340,11 @@ class _ArtisanPageNewState extends State<ArtisanPageNew> with SingleTickerProvid
                           SizedBox(
                             width: 8,
                           ),
-                          Text(
-                            "${data['description']}",
-                            style: TextStyle(fontSize: 18),
+                          Expanded(
+                            child: Text(
+                              "${data['description']}",
+                              style: TextStyle(fontSize: 18),
+                            ),
                           ),
                         ],
                       ),
@@ -1398,7 +1420,7 @@ Divider(),
                                   PageRouteBuilder(
                                     pageBuilder: (context, animation,
                                         secondaryAnimation) {
-                                      return ChatPage(user: widget.userData, productData: data, productSend: 'send',);
+                                      return ChatPage(user: widget.userData, productData: data, productSend: 'send', instantChat: '',);
                                     },
                                     transitionsBuilder: (context, animation,
                                         secondaryAnimation, child) {

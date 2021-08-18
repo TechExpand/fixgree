@@ -21,7 +21,7 @@ class EditProfilePage extends StatefulWidget {
 class _EditProfilePageState extends State<EditProfilePage> {
   List<Services> result = [];
   Future<dynamic> userInfo;
-  File selectedImage;
+  XFile selectedImage;
 
   Future<dynamic> cataloguePhotos;
   Future<dynamic> products;
@@ -65,7 +65,8 @@ class _EditProfilePageState extends State<EditProfilePage> {
   void pickImage({@required ImageSource source, context}) async {
     var network = Provider.of<WebServices>(context, listen: false);
     var data = Provider.of<Utils>(context, listen: false);
-    var image = await ImagePicker.pickImage(source: source);
+    final picker = ImagePicker();
+    var image = await picker.pickImage(source: source);
     setState(() => selectedImage = image);
 
     String imageName = await network.uploadProfilePhoto(

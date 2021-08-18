@@ -175,10 +175,13 @@ class SearchResultState extends State<SearchResult> {
                             fontWeight: FontWeight.w600))))
             : widget.searchValue == '' || widget.searchValue == null
                 ? Expanded(
-                    child: Center(child: Text('Search for any service or item you want.',  style: TextStyle(
-                        color: Color(0xFF333333),
-                        fontSize: 18,
-                        fontWeight: FontWeight.w600))))
+                    child: Center(child: Padding(
+                      padding: const EdgeInsets.all(8.0),
+                      child: Text('Search for any service or item you want.',  style: TextStyle(
+                          color: Color(0xFF333333),
+                          fontSize: 18,
+                          fontWeight: FontWeight.w600)),
+                    )))
                 : !snapshot.hasData
                     ? Expanded(
                         child: Center(child: Theme(
@@ -311,10 +314,13 @@ class SearchResultState extends State<SearchResult> {
                         : snapshot.data.length == 0
                             ? Expanded(
                                 child: Center(
-                                    child: Text('Artisans/Service Not Found', style: TextStyle(
-                                        color: Color(0xFF333333),
-                                        fontSize: 18,
-                                        fontWeight: FontWeight.w600))))
+                                    child: Padding(
+                                      padding: const EdgeInsets.all(8.0),
+                                      child: Text('Artisans/Service Not Found', style: TextStyle(
+                                          color: Color(0xFF333333),
+                                          fontSize: 18,
+                                          fontWeight: FontWeight.w600)),
+                                    )))
                             : Expanded(child: Center(child: Text('')));
       },
     );

@@ -63,25 +63,30 @@ class SignThankyouState extends State<SignThankyou> {
                    text : TextSpan(
                      children:[
                        TextSpan(
-                       text: """Fixme helps connects businesses and service providers to customers. By switching to a business account you are choosing to allow Fixme direct customers to your business or service. To get started, you need to fill out your business details. Select""",
+                       text: """Fixme helps connect businesses and service providers to customers. By switching to a business account you are choosing to allow Fixme direct customers to your business or service. To get started, you need to fill out your business details. Select""",
                            style: TextStyle(  height: 1.6,color: Colors.black )
                        ),
                        TextSpan(
-                         text: ' I Am an Artisan',
+                         text: ' I Provide Services',
                            style: TextStyle(  height: 1.6,color: Colors.black , fontWeight: FontWeight.bold)
                        ),
                        TextSpan(
-                         text: ' if your provide personalized services eg. cleaning, event management, makeup, photography e.t.c',
+                         text: ' if you provide personalized services eg. cleaning, event management, makeup, photography e.t.c',
                            style: TextStyle(  height: 1.6,color: Colors.black )
                        ),
                        TextSpan(
-                           text: ' Select I Am a Vendor',
+                           text: ' Select I Sell Products',
                            style: TextStyle(  height: 1.6,color: Colors.black,  fontWeight: FontWeight.bold )
                        ),
                        TextSpan(
-                         text: ' if you sell various items and want your goods or services listed for sale on Fixme. For security reasons Fixme only releases payments when a service is confirmed as completed or goods are confirmed as delivered. Fixme takes a token of 6% for transactions bellow N10,000.00 and 10% for transactions above N10,000.00.',
+                         text: ' if you sell various items and want your goods or services listed for sale on Fixme. For security reasons Fixme only releases payments when a service is confirmed as completed or goods are confirmed as delivered.',
                            style: TextStyle(  height: 1.6,color: Colors.black )
-                       )
+                       ),
+                 //
+                       TextSpan(
+                           text: '  Fixme takes a token of 6% for transactions below N10,000.00 and 10% for transactions above N10,000.00.',
+                           style: TextStyle(  height: 1.6,color: Colors.black,  fontWeight: FontWeight.bold )
+                       ),
                      ]
                    ),
                   ),
@@ -106,8 +111,11 @@ class SignThankyouState extends State<SignThankyou> {
                      children: [
                        Padding(
                          padding: EdgeInsets.only(top: 50,left: 15),
-                         child:  InkWell(
-                            onTap: (){
+                         child:  TextButton(
+                           style: ButtonStyle(
+                             splashFactory: InkSplash.splashFactory,
+                           ),
+                           onPressed: (){
                               data.setArtisanVendorChoice('artisan');
                             Navigator.push(
                               context,
@@ -126,13 +134,16 @@ class SignThankyouState extends State<SignThankyou> {
                               ),
                             );
                          },
-                           child:Text("Are you an Artisan?", style: TextStyle(color:Color(0xFF9B049B),)),
+                           child:Text("I Provide Services", style: TextStyle(color:Color(0xFF9B049B),)),
                        )),
 
                        Padding(
                          padding: EdgeInsets.only(top: 50, right: 15),
-                         child: InkWell(
-                           onTap: (){
+                         child: TextButton(
+                           style: ButtonStyle(
+                             splashFactory: InkSplash.splashFactory,
+                           ),
+                           onPressed: (){
                               data.setArtisanVendorChoice('business');
                             Navigator.push(
                               context,
@@ -151,7 +162,7 @@ class SignThankyouState extends State<SignThankyou> {
                               ),
                             );
                          },
-                           child: Text("Are you an Vendor?", style: TextStyle(color:Color(0xFF9B049B),))),
+                           child: Text("I Sell Products", style: TextStyle(color:Color(0xFF9B049B),))),
                        )
                      ]
                    ),

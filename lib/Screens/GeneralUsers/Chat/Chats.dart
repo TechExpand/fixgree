@@ -102,13 +102,16 @@ class _ListenIncomingState extends State<ListenIncoming> {
           Container(
             height: 40,
             child: InkWell(
-              onTap: () {},
+              onTap: () {
+                print(data.fcmToken);
+              },
               child: Row(
                 crossAxisAlignment: CrossAxisAlignment.center,
                 children: [
                   SizedBox(width: 8),
                   Icon(Icons.search),
                   SizedBox(width: 8),
+
 
                   Spacer(),
                   InkWell(
@@ -272,15 +275,17 @@ class _ListenIncomingState extends State<ListenIncoming> {
                                                 idUser: users[index].idUser,
                                                 idArtisan:
                                                 network.mobileDeviceToken);
+                                            print(users[index].idUser);
+                                            print(users[index].idUser);
 
-                                            String  token = await FirebaseMessaging.instance.getToken();
 
 
-                                            if(users[index].fcmToken.toString() != token){
+
+                                            if(users[index].fcmToken.toString() != data.fcmToken){
                                               FirebaseApi.updateUserFCMToken(
                                                 idUser: users[index].idUser,
                                                 idArtisan: network.mobileDeviceToken,
-                                                token: token,
+                                                token: data.fcmToken,
                                               );
                                             }
 

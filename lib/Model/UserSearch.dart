@@ -1,8 +1,8 @@
 class UserSearch {
   String userEmail;
-  int agentId;
+  var agentId;
   bool block;
-  int distance;
+  dynamic distance;
   String userLastName;
   List subServices; 
   String userRegDate;
@@ -16,31 +16,36 @@ class UserSearch {
   String fullNumber;
   String userRole;
   String name;
-  int serviceRequests;
-  int reviews;
-  int profileViews;
+  var serviceRequests;
+  var reviews;
+  var profileViews;
   String userMobile;
-  int serviceId;
+  var serviceId;
   String idUser;
   String urlAvatar;
   String locationTimeUpdated;
   String serviceArea;
-  int id;
+  var id;
   String status;
   String fcmToken;
   var longitude;
-  int userRating;
+  var job_id;
+  var bid_id;
+  var service_id;
+  var userRating;
   var servicePictures;
 
   UserSearch(
       {this.userEmail,
       this.agentId,
+        this.job_id,
       this.distance,
       this.subServices,
       this.userLastName,
       this.verification,
         this.project_owner_user_id,
       this.idUser,
+        this.bid_id,
       this.locationTimeUpdated,
         this.fcmToken,
       this.userRegDate,
@@ -48,6 +53,7 @@ class UserSearch {
       this.block,
       this.userAddress,
       this.bio,
+        this.service_id,
       this.businessAddress,
       this.businessName,
       this.fullNumber,
@@ -70,6 +76,9 @@ class UserSearch {
         userEmail: json['user_email'],
         agentId: json['agentId'],
         distance: json['distance'],
+        job_id: null,
+        bid_id: null,
+    service_id: null,
         block: json['block'],
         userLastName: json['user_last_name'],
         userRegDate: json['user_reg_date'],
@@ -116,6 +125,7 @@ class UserSearch {
         'user_reg_date': userRegDate,
     'mobile_device_token':fcmToken,
         "latitude": latitude,
+    //  'job_id': job_id,
         "user_address": userAddress,
         'full_number': fullNumber,
         'user_role': userRole,

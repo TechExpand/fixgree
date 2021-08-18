@@ -83,7 +83,7 @@ class MessageWidget extends StatelessWidget {
     var datas = Provider.of<DataProvider>(context, listen: false);
 //    var date = data
 //        .formatTime(message.createdAt);
-    var date =  data.compareDate(message.createdAt);
+    var date =  data.compareDateChat(message.createdAt);
     return Column(
       crossAxisAlignment:
       isMe ? CrossAxisAlignment.end : CrossAxisAlignment.start,
@@ -253,7 +253,7 @@ class MessageWidget extends StatelessWidget {
                     },
                     child:Container(
                       height: 170,
-                      width: 170,
+                      width: 250,
                       child: Card(
                         child: Padding(
                           padding: const EdgeInsets.all(3.0),
@@ -304,7 +304,7 @@ class MessageWidget extends StatelessWidget {
     var datas = Provider.of<DataProvider>(context, listen: false);
 //    var date = data
 //        .formatTime(message.createdAt);
-    var date =  data.compareDate(message.createdAt);
+    var date =  data.compareDateChat(message.createdAt);
     return Column(
       crossAxisAlignment:
       isMe ? CrossAxisAlignment.end : CrossAxisAlignment.start,
@@ -472,7 +472,7 @@ class MessageWidget extends StatelessWidget {
                     },
                     child:Container(
                       height: 170,
-                      width: 170,
+                      width: 250,
                       child: Card(
                         child: Padding(
                           padding: const EdgeInsets.all(3.0),

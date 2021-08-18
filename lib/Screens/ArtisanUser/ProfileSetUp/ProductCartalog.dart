@@ -23,225 +23,69 @@ class ProductCatelogPageState extends State<ProductCatelogPage> {
 
   @override
   Widget build(BuildContext context) {
-    WebServices network = Provider.of<WebServices>(context);
-    var datas = Provider.of<DataProvider>(context);
-    Utils data = Provider.of<Utils>(context);
+    WebServices network = Provider.of<WebServices>(context,  listen: false);
+    var datas = Provider.of<DataProvider>(context, listen: false);
+    //Utils data = Provider.of<Utils>(context,  listen: false);
     return Scaffold(
       resizeToAvoidBottomInset: true,
       key: scaffoldKey,
       body: WillPopScope(
         onWillPop: () {},
-        child: Container(
-          padding: const EdgeInsets.only(right: 24, left: 24),
-          child: ListView(
-           // crossAxisAlignment: CrossAxisAlignment.start,
-            children: [
-              Padding(
-                padding: const EdgeInsets.only(top: 15.0, bottom: 15),
-                child: Text('Upload your product catalog',
-                    style: TextStyle(fontWeight: FontWeight.w600)),
-              ),
-               Center(
-                child: SizedBox(
-                  height: 100, // card height
-                  child: data.selectedImage2 == null
-                      ? Text('')
-                      : Container(
-                          width: 100,
-                          child: Card(
-                              elevation: 2,
-                              shape: RoundedRectangleBorder(
-                                  borderRadius: BorderRadius.circular(20)),
-                              child: Image.file(
-                                File(
-                                  data.selectedImage2.path,
-                                ),
-                                fit: BoxFit.cover,
-                              )),
-                        ),
-                ),
-              ),
-              Material(
-                elevation: 9,
-                child: ClipRRect(
-                  borderRadius: BorderRadius.circular(26),
-                  child: Container(
-                    decoration: BoxDecoration(
-                        border: Border.all(color: Colors.white),
-                        borderRadius: BorderRadius.circular(26)),
-                    child: FlatButton(
-                      disabledColor: Colors.white,
-                      onPressed: () {
-                        data.selectimage2(source: ImageSource.gallery);
-                      },
-                      color: Colors.white,
-                      shape: RoundedRectangleBorder(
-                          borderRadius: BorderRadius.circular(26)),
-                      padding: EdgeInsets.all(0.0),
-                      child: Ink(
-                        decoration: BoxDecoration(
-                            borderRadius: BorderRadius.circular(26)),
-                        child: Container(
-                          constraints: BoxConstraints(
-                              maxWidth: MediaQuery.of(context).size.width / 1.3,
-                              minHeight: 45.0),
-                          alignment: Alignment.center,
-                          child: Text(
-                            "Select/Upload Product Photo",
-                            textAlign: TextAlign.center,
-                            style: TextStyle(fontSize: 17, color: Colors.black),
+        child: Consumer<Utils>(
+            builder: (context, conDatas, child) {
+            return Container(
+              padding: const EdgeInsets.only(right: 24, left: 24),
+              child: ListView(
+                shrinkWrap: true,
+               physics: ScrollPhysics(),
+               // crossAxisAlignment: CrossAxisAlignment.start,
+                children: [
+                  StatefulBuilder(builder: (context, setState){
+                    return Column(
+                    children: [
+                      Padding(
+                        padding: const EdgeInsets.only(bottom: 10),
+                        child: Text('Upload your product catalog',
+                            style: TextStyle(fontWeight: FontWeight.w600)),
+                      ),
+                      Center(
+                        child: SizedBox(
+                          height: 100, // card height
+                          child: conDatas.selectedImage2 == null
+                              ? Text('')
+                              : Container(
+                            width: 100,
+                            child: Card(
+                                elevation: 2,
+                                shape: RoundedRectangleBorder(
+                                    borderRadius: BorderRadius.circular(20)),
+                                child: Image.file(
+                                  File(
+                                    conDatas.selectedImage2.path,
+                                  ),
+                                  fit: BoxFit.cover,
+                                )),
                           ),
                         ),
                       ),
-                    ),
-                  ),
-                ),
-              ),
-              Container(
-                margin: EdgeInsets.only(bottom: 15, top: 28),
-                width: MediaQuery.of(context).size.width / 0.2,
-                height: 55,
-                child: TextFormField(
-                  controller: controlName,
-                  onChanged: (value) {
-                    setState(() {
-                      datas.setProductName(value);
-                    });
-
-                  },
-                  style: TextStyle(color: Colors.black),
-                  cursorColor: Colors.black,
-                  maxLines: null,
-                  decoration: InputDecoration(
-                    isDense: true,
-                    labelStyle: TextStyle(color: Colors.black38),
-                    labelText: 'Product Name',
-                    enabledBorder: OutlineInputBorder(
-                        borderSide: const BorderSide(
-                            color: Color(0xFF9B049B), width: 0.0),
-                        borderRadius: BorderRadius.all(Radius.circular(12))),
-                    focusedBorder: OutlineInputBorder(
-                        borderSide: const BorderSide(
-                            color: Color(0xFF9B049B), width: 0.0),
-                        borderRadius: BorderRadius.all(Radius.circular(12))),
-                    border: OutlineInputBorder(
-                        borderSide: const BorderSide(
-                            color: Color(0xFF9B049B), width: 0.0),
-                        borderRadius: BorderRadius.all(Radius.circular(12))),
-                  ),
-                ),
-              ),
-              Container(
-                margin: EdgeInsets.only(bottom: 15),
-                width: MediaQuery.of(context).size.width / 0.2,
-                height: 55,
-                child: TextFormField(
-                  maxLines: null,
-                  controller: controlPrice,
-                  keyboardType: TextInputType.number,
-                  onChanged: (value) {
-                    setState(() {
-                      datas.setProductPrice(value);
-                    });
-
-                  },
-                  style: TextStyle(color: Colors.black),
-                  cursorColor: Colors.black,
-                  decoration: InputDecoration(
-                    isDense: true,
-                    labelStyle: TextStyle(color: Colors.black38),
-                    labelText: 'Product Price',
-                    enabledBorder: OutlineInputBorder(
-                        borderSide: const BorderSide(
-                            color: Color(0xFF9B049B), width: 0.0),
-                        borderRadius: BorderRadius.all(Radius.circular(12))),
-                    focusedBorder: OutlineInputBorder(
-                        borderSide: const BorderSide(
-                            color: Color(0xFF9B049B), width: 0.0),
-                        borderRadius: BorderRadius.all(Radius.circular(12))),
-                    border: OutlineInputBorder(
-                        borderSide: const BorderSide(
-                            color: Color(0xFF9B049B), width: 0.0),
-                        borderRadius: BorderRadius.all(Radius.circular(12))),
-                  ),
-                ),
-              ),
-              Container(
-                margin: EdgeInsets.only(bottom: 15),
-                width: MediaQuery.of(context).size.width / 0.2,
-                height: 55,
-                child: TextFormField(
-                  maxLines: null,
-                  controller: controlDes,
-                  onChanged: (value) {
-                    setState(() {
-                      datas.setProductBio(value);
-                    });
-
-                  },
-                  style: TextStyle(color: Colors.black),
-                  cursorColor: Colors.black,
-                  decoration: InputDecoration(
-                    isDense: true,
-                    labelStyle: TextStyle(color: Colors.black38),
-                    labelText: 'Product Description',
-                    enabledBorder: OutlineInputBorder(
-                        borderSide: const BorderSide(
-                            color: Color(0xFF9B049B), width: 0.0),
-                        borderRadius: BorderRadius.all(Radius.circular(12))),
-                    focusedBorder: OutlineInputBorder(
-                        borderSide: const BorderSide(
-                            color: Color(0xFF9B049B), width: 0.0),
-                        borderRadius: BorderRadius.all(Radius.circular(12))),
-                    border: OutlineInputBorder(
-                        borderSide: const BorderSide(
-                            color: Color(0xFF9B049B), width: 0.0),
-                        borderRadius: BorderRadius.all(Radius.circular(12))),
-                  ),
-                ),
-              ),
-             
-              Spacer(),
-    Consumer2<DataProvider,Utils >(
-    builder: (context, conData,conData2 ,child) {
-    return Padding(
-        padding: EdgeInsets.only(
-            bottom: MediaQuery.of(context).viewInsets.bottom),
-    child: Align(
-                    alignment: Alignment.center,
-                    child: !network.loginState
-                        ? Container(
+                      Material(
+                        elevation: 9,
+                        child: ClipRRect(
+                          borderRadius: BorderRadius.circular(26),
+                          child: Container(
                             decoration: BoxDecoration(
                                 border: Border.all(color: Colors.white),
                                 borderRadius: BorderRadius.circular(26)),
                             child: FlatButton(
-                              disabledColor: Color(0x909B049B),
-                              onPressed: conData.productBio.isEmpty ||
-                                      conData.productPrice.isEmpty ||
-                                      conData.productName.isEmpty ||
-                                      conData2.selectedImage2 == null
-                                  ? () {}
-                                  : () {
-
-                                      network.loginSetState();
-                                      network.uploadProductCatalog(
-                                        scaffoldKey: scaffoldKey,
-                                        context: context,
-                                        bio: datas.productBio,
-                                        productName: datas.productName,
-                                        price: datas.productPrice,
-                                        path: data.selectedImage2.path,
-                                        controlDes: controlDes,
-                                        controlName: controlName,
-                                        controlPrice: controlPrice,
-
-                                      );
-                                      FocusScopeNode currentFocus = FocusScope.of(context);
-                                      if (!currentFocus.hasPrimaryFocus) {
-                                        currentFocus.unfocus();
-                                      }
-                                    },
-                              color: Color(0xFF9B049B),
+                              disabledColor: Colors.white,
+                              onPressed: () {
+                                conDatas.selectimage2(source: ImageSource.gallery).then((value){
+                                  setState(() {
+                                    print('j');
+                                  });
+                                });
+                              },
+                              color: Colors.white,
                               shape: RoundedRectangleBorder(
                                   borderRadius: BorderRadius.circular(26)),
                               padding: EdgeInsets.all(0.0),
@@ -250,35 +94,206 @@ class ProductCatelogPageState extends State<ProductCatelogPage> {
                                     borderRadius: BorderRadius.circular(26)),
                                 child: Container(
                                   constraints: BoxConstraints(
-                                      maxWidth:
-                                          MediaQuery.of(context).size.width / 1.3,
+                                      maxWidth: MediaQuery.of(context).size.width / 1.3,
                                       minHeight: 45.0),
                                   alignment: Alignment.center,
                                   child: Text(
-                                    "Upload",
+                                    "Select/Upload Product Photo",
                                     textAlign: TextAlign.center,
-                                    style: TextStyle(color: Colors.white),
+                                    style: TextStyle(fontSize: 17, color: Colors.black),
                                   ),
                                 ),
                               ),
                             ),
-                          )
-                        : Padding(
-                            padding: const EdgeInsets.only(bottom: 50.0, top: 20),
-                            child: Theme(
-                                                      data: Theme.of(context)
-                                                          .copyWith(
-                                                              accentColor: Color(
-                                                                  0xFF9B049B)),
-                                                      child:
-                                                      CircularProgressIndicator(valueColor: AlwaysStoppedAnimation<Color>(Color(0xFF9B049B)),
-                                                         strokeWidth: 2,
-                                                backgroundColor: Colors.white,
-                                                      )),
-                          )),
+                          ),
+                        ),
+                      ),
+                    ],
+                    );
+            }),
+                  Container(
+                    margin: EdgeInsets.only(bottom: 15, top: 28),
+                    width: MediaQuery.of(context).size.width / 0.2,
+                    height: 55,
+                    child: TextFormField(
+                      controller: controlName,
+                      onChanged: (value) {
+                        setState(() {
+                          datas.setProductName(value);
+                        });
+
+                      },
+                      style: TextStyle(color: Colors.black),
+                      cursorColor: Colors.black,
+                      maxLines: null,
+                      decoration: InputDecoration(
+                        isDense: true,
+                        labelStyle: TextStyle(color: Colors.black38),
+                        labelText: 'Product Name',
+                        enabledBorder: OutlineInputBorder(
+                            borderSide: const BorderSide(
+                                color: Color(0xFF9B049B), width: 0.0),
+                            borderRadius: BorderRadius.all(Radius.circular(12))),
+                        focusedBorder: OutlineInputBorder(
+                            borderSide: const BorderSide(
+                                color: Color(0xFF9B049B), width: 0.0),
+                            borderRadius: BorderRadius.all(Radius.circular(12))),
+                        border: OutlineInputBorder(
+                            borderSide: const BorderSide(
+                                color: Color(0xFF9B049B), width: 0.0),
+                            borderRadius: BorderRadius.all(Radius.circular(12))),
+                      ),
+                    ),
+                  ),
+                  Container(
+                    margin: EdgeInsets.only(bottom: 15),
+                    width: MediaQuery.of(context).size.width / 0.2,
+                    height: 55,
+                    child: TextFormField(
+                      maxLines: null,
+                      controller: controlPrice,
+                      keyboardType: TextInputType.number,
+                      onChanged: (value) {
+                        setState(() {
+                          datas.setProductPrice(value);
+                        });
+
+                      },
+                      style: TextStyle(color: Colors.black),
+                      cursorColor: Colors.black,
+                      decoration: InputDecoration(
+                        isDense: true,
+                        labelStyle: TextStyle(color: Colors.black38),
+                        labelText: 'Product Price',
+                        enabledBorder: OutlineInputBorder(
+                            borderSide: const BorderSide(
+                                color: Color(0xFF9B049B), width: 0.0),
+                            borderRadius: BorderRadius.all(Radius.circular(12))),
+                        focusedBorder: OutlineInputBorder(
+                            borderSide: const BorderSide(
+                                color: Color(0xFF9B049B), width: 0.0),
+                            borderRadius: BorderRadius.all(Radius.circular(12))),
+                        border: OutlineInputBorder(
+                            borderSide: const BorderSide(
+                                color: Color(0xFF9B049B), width: 0.0),
+                            borderRadius: BorderRadius.all(Radius.circular(12))),
+                      ),
+                    ),
+                  ),
+                  Container(
+                    margin: EdgeInsets.only(bottom: 15),
+                    width: MediaQuery.of(context).size.width / 0.2,
+                    height: 55,
+                    child: TextFormField(
+                      maxLines: null,
+                      controller: controlDes,
+                      onChanged: (value) {
+                        setState(() {
+                          datas.setProductBio(value);
+                        });
+
+                      },
+                      style: TextStyle(color: Colors.black),
+                      cursorColor: Colors.black,
+                      decoration: InputDecoration(
+                        isDense: true,
+                        labelStyle: TextStyle(color: Colors.black38),
+                        labelText: 'Product Description',
+                        enabledBorder: OutlineInputBorder(
+                            borderSide: const BorderSide(
+                                color: Color(0xFF9B049B), width: 0.0),
+                            borderRadius: BorderRadius.all(Radius.circular(12))),
+                        focusedBorder: OutlineInputBorder(
+                            borderSide: const BorderSide(
+                                color: Color(0xFF9B049B), width: 0.0),
+                            borderRadius: BorderRadius.all(Radius.circular(12))),
+                        border: OutlineInputBorder(
+                            borderSide: const BorderSide(
+                                color: Color(0xFF9B049B), width: 0.0),
+                            borderRadius: BorderRadius.all(Radius.circular(12))),
+                      ),
+                    ),
+                  ),
+
+                  SizedBox(
+                    width: MediaQuery.of(context).size.height/3.5,
+                  ),
+    Consumer2<DataProvider,Utils >(
+    builder: (context, conData,conData2 ,child) {
+    return Padding(
+            padding: EdgeInsets.only(
+                bottom: MediaQuery.of(context).viewInsets.bottom),
+    child: Align(
+                        alignment: Alignment.center,
+                        child: !network.loginState
+                            ? Container(
+                                decoration: BoxDecoration(
+                                    border: Border.all(color: Colors.white),
+                                    borderRadius: BorderRadius.circular(26)),
+                                child: FlatButton(
+                                  disabledColor: Color(0x909B049B),
+                                  onPressed: conData.productBio.isEmpty ||
+                                          conData.productPrice.isEmpty ||
+                                          conData.productName.isEmpty ||
+                                          conData2.selectedImage2 == null
+                                      ? null
+                                      : () {
+
+                                          network.loginSetState();
+                                          network.uploadProductCatalog(
+                                            scaffoldKey: scaffoldKey,
+                                            context: context,
+                                            path: conDatas.selectedImage2.path,
+                                            controlDes: controlDes.text,
+                                            controlName: controlName.text,
+                                            controlPrice: controlPrice.text,
+
+                                          );
+                                          FocusScopeNode currentFocus = FocusScope.of(context);
+                                          if (!currentFocus.hasPrimaryFocus) {
+                                            currentFocus.unfocus();
+                                          }
+                                        },
+                                  color: Color(0xFF9B049B),
+                                  shape: RoundedRectangleBorder(
+                                      borderRadius: BorderRadius.circular(26)),
+                                  padding: EdgeInsets.all(0.0),
+                                  child: Ink(
+                                    decoration: BoxDecoration(
+                                        borderRadius: BorderRadius.circular(26)),
+                                    child: Container(
+                                      constraints: BoxConstraints(
+                                          maxWidth:
+                                              MediaQuery.of(context).size.width / 1.3,
+                                          minHeight: 45.0),
+                                      alignment: Alignment.center,
+                                      child: Text(
+                                        "Upload",
+                                        textAlign: TextAlign.center,
+                                        style: TextStyle(color: Colors.white),
+                                      ),
+                                    ),
+                                  ),
+                                ),
+                              )
+                            : Padding(
+                                padding: const EdgeInsets.only(bottom: 50.0, top: 20),
+                                child: Theme(
+                                                          data: Theme.of(context)
+                                                              .copyWith(
+                                                                  accentColor: Color(
+                                                                      0xFF9B049B)),
+                                                          child:
+                                                          CircularProgressIndicator(valueColor: AlwaysStoppedAnimation<Color>(Color(0xFF9B049B)),
+                                                             strokeWidth: 2,
+                                                    backgroundColor: Colors.white,
+                                                          )),
+                              )),
     );}),
-            ],
-          ),
+                ],
+              ),
+            );
+          }
         ),
       ),
     );

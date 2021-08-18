@@ -1,12 +1,12 @@
 Map<String, String> data = {'': ''};
 
 List<Map<String, String>> popularServices = [
+  {'text': 'Food Vendor', 'image': 'assets/images/pp1.jpg', 'id': '122'},
   {'text': 'Web Designer', 'image': 'assets/images/pp2.jpg', 'id': '68'},
-  {'text': 'Plumber', 'image': 'assets/images/p2.png', 'id': '165'},
-  {'text': 'Electrician', 'image': 'assets/images/pp4.png', 'id': '1'},
-  {'text': 'Mechanic', 'image': 'assets/images/pp5.jpg', 'id': '2'},
-  {'text': 'Food Vendor', 'image': 'assets/images/pp1.jpg', 'id': '202'},
   {'text': 'Graphic', 'image': 'assets/images/pp3.jpg', 'id': '169'},
+  {'text': 'Electrician', 'image': 'assets/images/pp4.png', 'id': '1'},
+  {'text': 'Plumber', 'image': 'assets/images/p2.png', 'id': '165'},
+  {'text': 'Mechanic', 'image': 'assets/images/pp5.jpg', 'id': '2'},
 ];
 
 List<Map<String, String>> featuredServices = [

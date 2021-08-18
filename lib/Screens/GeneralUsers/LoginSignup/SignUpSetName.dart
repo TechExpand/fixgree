@@ -64,17 +64,17 @@ class SignUpSetProfileState extends State<SignUpSetProfile> {
                               borderSide: const BorderSide(
                                   color: Color(0xFF9B049B), width: 0.0),
                               borderRadius:
-                                  BorderRadius.all(Radius.circular(12))),
+                                  BorderRadius.all(Radius.circular(16))),
                           focusedBorder: OutlineInputBorder(
                               borderSide: const BorderSide(
                                   color: Color(0xFF9B049B), width: 0.0),
                               borderRadius:
-                                  BorderRadius.all(Radius.circular(12))),
+                                  BorderRadius.all(Radius.circular(16))),
                           border: OutlineInputBorder(
                               borderSide: const BorderSide(
                                   color: Color(0xFF9B049B), width: 0.0),
                               borderRadius:
-                                  BorderRadius.all(Radius.circular(12))),
+                                  BorderRadius.all(Radius.circular(16))),
                         )),
                   ),
                   Container(
@@ -93,17 +93,17 @@ class SignUpSetProfileState extends State<SignUpSetProfile> {
                               borderSide: const BorderSide(
                                   color: Color(0xFF9B049B), width: 0.0),
                               borderRadius:
-                                  BorderRadius.all(Radius.circular(12))),
+                                  BorderRadius.all(Radius.circular(16))),
                           focusedBorder: OutlineInputBorder(
                               borderSide: const BorderSide(
                                   color: Color(0xFF9B049B), width: 0.0),
                               borderRadius:
-                                  BorderRadius.all(Radius.circular(12))),
+                                  BorderRadius.all(Radius.circular(16))),
                           border: OutlineInputBorder(
                               borderSide: const BorderSide(
                                   color: Color(0xFF9B049B), width: 0.0),
                               borderRadius:
-                                  BorderRadius.all(Radius.circular(12))),
+                                  BorderRadius.all(Radius.circular(16))),
                         )),
                   ),
                 ],
@@ -135,17 +135,17 @@ class SignUpSetProfileState extends State<SignUpSetProfile> {
                           borderSide: const BorderSide(
                               color: Color(0xFF9B049B), width: 0.0),
                           borderRadius:
-                          BorderRadius.all(Radius.circular(12))),
+                          BorderRadius.all(Radius.circular(16))),
                       focusedBorder: OutlineInputBorder(
                           borderSide: const BorderSide(
                               color: Color(0xFF9B049B), width: 0.0),
                           borderRadius:
-                          BorderRadius.all(Radius.circular(12))),
+                          BorderRadius.all(Radius.circular(16))),
                       border: OutlineInputBorder(
                           borderSide: const BorderSide(
                               color: Color(0xFF9B049B), width: 0.0),
                           borderRadius:
-                          BorderRadius.all(Radius.circular(12))),
+                          BorderRadius.all(Radius.circular(16))),
                     )),
               ),
               Spacer(),

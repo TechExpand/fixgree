@@ -3,6 +3,7 @@ import 'dart:ui';
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:firebase_core/firebase_core.dart';
 import 'package:fixme/Model/Notify.dart';
+import 'package:fixme/Screens/GeneralUsers/Market/market.dart';
 import 'package:fixme/Services/Firebase_service.dart';
 import 'package:fixme/Services/network_service.dart';
 import 'package:firebase_messaging/firebase_messaging.dart';
@@ -34,7 +35,8 @@ var userid = getIt<WebServices>();
 
 
 class  HomePage extends StatefulWidget {
-  HomePage();
+  final  firstUser;
+  HomePage({this.firstUser});
 
   @override
   _HomePageState createState() => _HomePageState();
@@ -152,7 +154,7 @@ class _HomePageState extends State<HomePage> {
     network.updateFCMToken(network.userId, data.fcmToken);
     Provider.of<LocationService>(context, listen: false).getCurrentLocation();
     _myPage =
-        PageController(initialPage: 0, viewportFraction: 1, keepPage: true);
+        PageController(initialPage: widget.firstUser=='first'?1:0, viewportFraction: 1, keepPage: true);
     WidgetsBinding.instance.addPostFrameCallback((timeStamp) {
       PostRequestProvider postRequestProvider =
           Provider.of<PostRequestProvider>(context, listen: false);
@@ -176,7 +178,12 @@ class _HomePageState extends State<HomePage> {
     FirebaseMessaging.onMessage.listen((RemoteMessage message) {
       RemoteNotification notification = message.notification;
       AndroidNotification android = message.notification?.android;
+      AppleNotification ios = message.notification?.apple;
       if (notification != null && android != null) {
+        print(message.data);
+        print(message.data);
+        print(message.data);
+
         message.data["notification_type"].toString()=='new_project'?showNotification(notification):
         showNotification2(notification);
 
@@ -192,7 +199,30 @@ class _HomePageState extends State<HomePage> {
             '${message.data['budget']}',
             '${message.data['invoiceId']}',
             '${message.data['service_id']}'
+        );
+        FirebaseApi.uploadCheckNotify(
+          network.userId.toString(),
+        );
+      }else if(notification != null && ios != null){
+        print(message.data);
+        print(message.data);
+        print(message.data);
 
+        message.data["notification_type"].toString()=='new_project'?showNotification(notification):
+        showNotification2(notification);
+
+        FirebaseApi.uploadNotification(
+            network.userId.toString(),
+            message.notification.title,
+            message.data["notification_type"],
+            '${message.data["lastName"]} ${message.data["firstName"]}',
+            '${message.data["jobId"]}',
+            '${message.data["bidId"]}',
+            '${message.data["bidderId"]}',
+            '${message.data["artisanId"]}',
+            '${message.data['budget']}',
+            '${message.data['invoiceId']}',
+            '${message.data['service_id']}'
         );
         FirebaseApi.uploadCheckNotify(
           network.userId.toString(),
@@ -205,8 +235,8 @@ class _HomePageState extends State<HomePage> {
 
     });
 
-
-
+    var datan = Provider.of<DataProvider>(context, listen: false);
+    widget.firstUser=='first'?datan.setSelectedBottomNavBar(1):null;
   }
 
 
@@ -230,13 +260,14 @@ class _HomePageState extends State<HomePage> {
     var widget = Scaffold(
       key: scafoldKey,
       drawer: SizedBox(
-        width: 240,
+        width: 250,
         child: Drawer(
           child: DrawerWidget(context, _myPage),
         ),
       ),
       bottomNavigationBar: Consumer<DataProvider>(
           builder: (context, conData, child) {
+
             return Container(
         height: 60,
         child: BottomNavigationBar(
@@ -262,26 +293,24 @@ class _HomePageState extends State<HomePage> {
                 icon: Padding(
                   padding: const EdgeInsets.only(bottom: 1),
                   child: Icon(
-                    MyFlutterApp.home,
+                    conData.selectedPage==0?MyFlutterApp.home:MyFlutterApp.vector_1,
                     size: 20,
                   ),
                 ),
                 label: 'Home',
               ),
+
               BottomNavigationBarItem(
-                icon: Padding(
-                  padding: const EdgeInsets.only(bottom: 3),
-                  child: Icon(
-                    MyFlutterApp.wallet,
-                    size: 20,
+                icon: Icon(
+                    conData.selectedPage==1?Icons.shopping_bag:Icons.shopping_bag_outlined,
+                    size: 23,
                   ),
-                ),
-                label: 'Wallet',
+                label: 'Market',
               ),
               BottomNavigationBarItem(
                 icon: Padding(
                   padding: const EdgeInsets.only(bottom: 3),
-                  child: Icon(MyFlutterApp.vector,
+                  child: Icon(conData.selectedPage==2?MyFlutterApp.vector_3:MyFlutterApp.vector,
                     size:20, ),
                 ),
                 label: 'Post',
@@ -289,66 +318,20 @@ class _HomePageState extends State<HomePage> {
               BottomNavigationBarItem(
                 icon: Padding(
                   padding: const EdgeInsets.only(bottom: 3),
-                  child: Stack(
-                    children: [
-                      StreamBuilder(
-                          stream: FirebaseApi.userCheckNotifyStream(
-                              network.userId.toString()),
-                          builder:
-                              (context, AsyncSnapshot<QuerySnapshot> snapshot) {
-                            if (snapshot.hasData) {
-                              notify = snapshot.data.docs
-                                  .map((doc) =>
-                                      Notify.fromMap(doc.data(), doc.id))
-                                  .toList();
-
-                              switch (snapshot.connectionState) {
-                                case ConnectionState.waiting:
-                                  return Positioned(
-                                      left: 12,
-                                      child: Container());
-                                default:
-                                  if (snapshot.hasError) {
-                                    return Positioned(
-                                        left: 12,
-                                        child: Container());
-                                  } else {
-                                    final users = notify;
-                                    if (users.isEmpty || users == null) {
-                                      return Positioned(
-                                          left: 12,
-                                          child: Container());
-                                    } else {
-                                      return Positioned(
-                                        left: 12,
-                                          child: Icon(
-                                        Icons.circle,
-                                        color: Color(0xFF9B049B),
-                                            size: 12,
-                                      ));
-                                    }
-                                  }
-                              }
-                            } else {
-                              return Positioned(
-                                  left: 12,
-                                  child: Container());
-                            }
-                          }),
-                      Icon(
-                        MyFlutterApp.bell,
-                        size: 24,),
-                    ],
+                  child: Icon(
+                    conData.selectedPage==3?MyFlutterApp.wallet2:MyFlutterApp.wallet,
+                    size: 20,
                   ),
                 ),
-                label: 'Notifications',
+                label: 'Wallet',
               ),
+
               BottomNavigationBarItem(
                 icon: Padding(
                   padding: const EdgeInsets.only(bottom: 3),
-                  child: Icon(FeatherIcons.clock),
+                  child: Icon(conData.selectedPage==4?MyFlutterApp.vector_5:FeatherIcons.clock),
                 ),
-                label: 'Manage',
+                label: 'Tasks',
               )
             ]),
       );}),
@@ -488,16 +471,22 @@ class _HomePageState extends State<HomePage> {
                 );
               });
         },
-        child: PageView(
-          controller: _myPage,
-          physics: NeverScrollableScrollPhysics(),
-          children: [
-            Home(scafoldKey, data, _myPage),
-            Wallet(),
-            PostScreen(),
-            NotificationPage(scafoldKey,  _myPage),
-            PendingScreen(scafoldKey),
-          ],
+        child: Builder(
+          builder: (context) {
+            return PageView(
+              controller: _myPage,
+              physics: NeverScrollableScrollPhysics(),
+              children: [
+                Home(scafoldKey, data, _myPage),
+                MarketPage(scafoldKey,_myPage),
+               // Wallet(),
+                PostScreen(),
+                Wallet(),
+               // NotificationPage(scafoldKey,  _myPage),
+                PendingScreen(scafoldKey:scafoldKey),
+              ],
+            );
+          }
         ),
       ),
     );

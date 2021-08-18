@@ -13,8 +13,8 @@ import 'package:provider/provider.dart';
 
 class PendingScreen extends StatefulWidget {
   final scafoldKey;
-
-  PendingScreen(this.scafoldKey);
+  final paymentPush;
+  PendingScreen({this.scafoldKey, this.paymentPush});
 
   @override
   _PendingScreenState createState() => _PendingScreenState();
@@ -145,8 +145,8 @@ class _PendingScreenState extends State<PendingScreen> {
                                 },
                               ),
                             );
-                            FirebaseApi.clearCheckNotify(
-                              network.userId.toString(),
+                            FirebaseApi.clearCheckChat(
+                              network.mobileDeviceToken.toString(),
                             );
                           },
                           child: Padding(
@@ -163,7 +163,7 @@ class _PendingScreenState extends State<PendingScreen> {
                                 ),
                                 StreamBuilder(
                                     stream: FirebaseApi.userCheckChatStream(
-                                        network.userId.toString()),
+                                        network.mobileDeviceToken.toString()),
                                     builder: (context,
                                         AsyncSnapshot<QuerySnapshot> snapshot) {
                                       if (snapshot.hasData) {
@@ -186,13 +186,15 @@ class _PendingScreenState extends State<PendingScreen> {
                                                 return Positioned(
                                                     left: 12, child: Container());
                                               } else {
-                                                return Positioned(
-                                                    right: 14.4,
-                                                    child: Icon(
-                                                      Icons.circle,
-                                                      color: Color(0xFF9B049B),
-                                                      size: 12,
-                                                    ));
+                                                return Container(
+                                                  margin: EdgeInsets.only(left: 12),
+                                                  height: 12,
+                                                  width: 12,
+                                                  decoration: BoxDecoration(
+                                                      color: Colors.red,
+                                                      borderRadius: BorderRadius.circular(100)
+                                                  ),
+                                                );
                                               }
                                             }
                                         }
@@ -302,10 +304,7 @@ class _PendingScreenState extends State<PendingScreen> {
                                         ),
                                       ),
                                     ),
-                                    ListView.separated(
-                                        separatorBuilder: (context, index) {
-                                          return Divider();
-                                        },
+                                    ListView.builder(
                                         physics: NeverScrollableScrollPhysics(),
                                         shrinkWrap: true,
                                         itemCount: snapshot.data.length,
@@ -797,65 +796,68 @@ class _PendingScreenState extends State<PendingScreen> {
                                                     return snapshot.data[index]
                                                                 .status ==
                                                             'ongoing'
-                                                        ? Padding(
-                                                            padding:
-                                                                const EdgeInsets
-                                                                        .only(
-                                                                    left: 20,
-                                                                    right: 20,
-                                                                    bottom: 14),
-                                                            child: Row(
+                                                        ? PopupMenuButton(
+                                                        offset: const Offset(0, 1),
+                                                        elevation: 5,
+                                                        child:     Padding(
+                                                          padding:
+                                                          const EdgeInsets
+                                                              .only(
+                                                              left: 20,
+                                                              right: 20,
+                                                              bottom: 14),
+                                                          child:  Row(
                                                               children: [
                                                                 Container(
                                                                     height: 25,
                                                                     child:
-                                                                        Center(
-                                                                            child:
-                                                                                Text(
-                                                                      '${snapshot.data[index].jobTitle}',
-                                                                      style: TextStyle(
-                                                                          color: Color(
-                                                                              0xFF9B049B),
-                                                                          fontWeight: FontWeight
-                                                                              .bold,
-                                                                          fontSize:
+                                                                    Center(
+                                                                        child:
+                                                                        Text(
+                                                                          '${snapshot.data[index].jobTitle}',
+                                                                          style: TextStyle(
+                                                                              color: Color(
+                                                                                  0xFF9B049B),
+                                                                              fontWeight: FontWeight
+                                                                                  .bold,
+                                                                              fontSize:
                                                                               9.5),
-                                                                      textAlign:
+                                                                          textAlign:
                                                                           TextAlign
                                                                               .center,
-                                                                    )),
+                                                                        )),
                                                                     width: 73,
                                                                     decoration:
-                                                                        BoxDecoration(
+                                                                    BoxDecoration(
                                                                       borderRadius:
-                                                                          BorderRadius.circular(
-                                                                              30),
+                                                                      BorderRadius.circular(
+                                                                          30),
                                                                       color: Color(
-                                                                              0xFFA40C85)
+                                                                          0xFFA40C85)
                                                                           .withOpacity(
-                                                                              0.35),
+                                                                          0.35),
                                                                     )),
                                                                 Padding(
                                                                   padding: const EdgeInsets
-                                                                          .only(
+                                                                      .only(
                                                                       left:
-                                                                          10.0),
+                                                                      10.0),
                                                                   child: Column(
                                                                     children: [
                                                                       Column(
                                                                         crossAxisAlignment:
-                                                                            CrossAxisAlignment
-                                                                                .start,
+                                                                        CrossAxisAlignment
+                                                                            .start,
                                                                         children: [
                                                                           Padding(
                                                                             padding:
-                                                                                const EdgeInsets.only(bottom: 4.0),
+                                                                            const EdgeInsets.only(bottom: 4.0),
                                                                             child: Text(
                                                                                 '${snapshot.data[index].jobDescription}'.isEmpty
                                                                                     ? 'No Desription'
                                                                                     : '${snapshot.data[index].jobDescription}',
                                                                                 style:
-                                                                                    TextStyle(color: Colors.black)),
+                                                                                TextStyle(color: Colors.black)),
                                                                           ),
                                                                           Text(
                                                                               '${snapshot.data[index].status}',
@@ -872,47 +874,45 @@ class _PendingScreenState extends State<PendingScreen> {
                                                                   children: [
                                                                     Padding(
                                                                         padding:
-                                                                            const EdgeInsets.only(bottom: 3.0),
-                                                                        child: PopupMenuButton(
-                                                                            offset: const Offset(0, 1),
-                                                                            elevation: 5,
-                                                                            icon: Icon(
-                                                                              Icons.more_vert,
-                                                                              size: 22,
-                                                                            ),
-                                                                            itemBuilder: (context) => [
-                                                                                  PopupMenuItem(
-                                                                                      value: 1,
-                                                                                      child: InkWell(
-                                                                                        onTap: () {
-                                                                                          network.requestPayment(
-                                                                                              snapshot.data[index].sn.toString(),
-                                                                                              snapshot.data[index].projectBid.toString()
-
-                                                                                          ).then((value) {
-                                                                                            setState(() {
-                                                                                              print('done');
-                                                                                            });
-                                                                                          });
-                                                                                          Navigator.pop(context);
-                                                                                        },
-                                                                                        child: Padding(
-                                                                                          padding: const EdgeInsets.all(8),
-                                                                                          child: Text('Request for payment'),
-                                                                                        ),
-                                                                                      )),
-                                                                                ])),
+                                                                        const EdgeInsets.only(bottom: 3.0),
+                                                                        child: Icon(Icons.more_vert)),
                                                                     Text(
                                                                       '${snapshot.data[index].dateOpen.toString().substring(0, 10)}',
                                                                       style: TextStyle(
                                                                           color:
-                                                                              Colors.black38),
+                                                                          Colors.black38),
                                                                     )
                                                                   ],
                                                                 ),
                                                               ],
-                                                            ),
-                                                          )
+                                                          ),
+                                                        ),
+                                                        // icon: Icon(
+                                                        //   Icons.more_vert,
+                                                        //   size: 22,
+                                                        // ),
+                                                        itemBuilder: (context) => [
+                                                          PopupMenuItem(
+                                                              value: 1,
+                                                              child: InkWell(
+                                                                onTap: () {
+                                                                  network.requestPayment(
+                                                                      snapshot.data[index].sn.toString(),
+                                                                      snapshot.data[index].projectBid.toString()
+
+                                                                  ).then((value) {
+                                                                    setState(() {
+                                                                      print('done');
+                                                                    });
+                                                                  });
+                                                                  Navigator.pop(context);
+                                                                },
+                                                                child: Padding(
+                                                                  padding: const EdgeInsets.all(8),
+                                                                  child: Text('Mark This Task as Completed'),
+                                                                ),
+                                                              )),
+                                                        ])
                                                         : Container();
                                                   }),
                                             ]),
