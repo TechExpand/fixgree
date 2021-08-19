@@ -66,10 +66,10 @@ class _HomeState extends State<Home> {
    var network = Provider.of<WebServices>(context, listen: false);
    var data = Provider.of<Utils>(context, listen: false);
    network.updateFCMToken(network.userId, data.fcmToken);
-   initConnectivity();
-
-   _connectivitySubscription =    _connectivity.onConnectivityChanged.listen(_updateConnectionStatus);
-   checkConnection();
+   // initConnectivity();
+   //
+   // _connectivitySubscription =    _connectivity.onConnectivityChanged.listen(_updateConnectionStatus);
+   // checkConnection();
  }
 
 

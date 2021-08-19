@@ -192,8 +192,6 @@ class WebServices extends ChangeNotifier {
       serviceId = body['service_id'];
       paymentToken = body['payment_token'];
 
-      print(body.toString());
-      print(body.toString());
       if (body['reqRes'] == 'true') {
         var response2 = await http
             .post(Uri.parse('$mainUrl/user-info?user_id=$userId'), headers: {
