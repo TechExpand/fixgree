@@ -95,7 +95,22 @@ void main() async {
     }
    // print('start sending initiasllll');
     getCurrentLocation();
+     await messaging.requestPermission(
+      alert: true,
+      announcement: true,
+      badge: true,
+      carPlay: true,
+      criticalAlert: true,
+      provisional: true,
+      sound: true,
+    );
 
+    await FirebaseMessaging.instance
+        .setForegroundNotificationPresentationOptions(
+      alert: true,
+      badge: true,
+      sound: true,
+    );
 
     // print('ebnd sending initiasllll');
     const oneSec = const Duration(minutes: 8);
@@ -107,15 +122,7 @@ void main() async {
   Provider.debugCheckInvalidValueType = null;
   onlocation();
 
-  NotificationSettings settings = await messaging.requestPermission(
-    alert: true,
-    announcement: true,
-    badge: true,
-    carPlay: true,
-    criticalAlert: true,
-    provisional: true,
-    sound: true,
-  );
+
 
 
   // Widget widget = await decideFirstWidget();

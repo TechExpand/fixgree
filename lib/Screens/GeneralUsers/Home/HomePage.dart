@@ -147,11 +147,10 @@ class _HomePageState extends State<HomePage> {
     super.initState();
     userid.newid = network.userId;
     FirebaseMessaging.onBackgroundMessage(_firebaseMessagingBackgroundHandler);
-    var data = Provider.of<Utils>(context, listen: false);
     var datas = Provider.of<DataProvider>(context, listen: false);
     Provider.of<WebServices>(context, listen: false).initializeValues();
     datas.setSelectedBottomNavBar(0);
-    network.updateFCMToken(network.userId, data.fcmToken);
+
     Provider.of<LocationService>(context, listen: false).getCurrentLocation();
     _myPage =
         PageController(initialPage: widget.firstUser=='first'?1:0, viewportFraction: 1, keepPage: true);

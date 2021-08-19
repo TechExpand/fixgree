@@ -2,14 +2,17 @@ import 'dart:async';
 import 'dart:io';
 import 'dart:ui';
 
+import 'package:app_settings/app_settings.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:connectivity_plus/connectivity_plus.dart';
+import 'package:firebase_messaging/firebase_messaging.dart';
 import 'package:fixme/DummyData.dart';
 import 'package:fixme/Model/Notify.dart';
 import 'package:fixme/Screens/ArtisanUser/Profile/ArtisanPageNew.dart';
 import 'package:fixme/Screens/ArtisanUser/Profile/ProfilePageNew.dart';
 import 'package:fixme/Screens/ArtisanUser/RegisterArtisan/thankyou.dart';
 import 'package:fixme/Screens/GeneralUsers/Chat/Chats.dart';
+import 'package:fixme/Screens/GeneralUsers/Home/HomePage.dart';
 import 'package:fixme/Screens/GeneralUsers/Home/NearbyArtisansSeeAll.dart';
 import 'package:fixme/Screens/GeneralUsers/Home/NearbyShopsSeeAll.dart';
 import 'package:fixme/Screens/GeneralUsers/Home/PopularServices.dart';
@@ -42,6 +45,7 @@ class Home extends StatefulWidget {
 
 
 class _HomeState extends State<Home> {
+  FirebaseMessaging messaging = FirebaseMessaging.instance;
 
 
   String getDistance({String rawDistance}) {
@@ -59,6 +63,9 @@ class _HomeState extends State<Home> {
 @override
  void initState(){
    super.initState();
+   var network = Provider.of<WebServices>(context, listen: false);
+   var data = Provider.of<Utils>(context, listen: false);
+   network.updateFCMToken(network.userId, data.fcmToken);
    initConnectivity();
 
    _connectivitySubscription =    _connectivity.onConnectivityChanged.listen(_updateConnectionStatus);
@@ -75,9 +82,11 @@ class _HomeState extends State<Home> {
     var notificationStatus = await Permission.notification.status;
     // var connectivityResult = await (Connectivity().checkConnectivity());
     if (_connectionStatus == ConnectivityResult.mobile) {
-      if(locationStatus.isGranted && notificationStatus.isGranted){
-      //  decideFirstWidget();
-      }else{
+      if(locationStatus.isDenied && notificationStatus.isDenied){
+        print(locationStatus.isGranted);
+        print(notificationStatus.isGranted);
+        print(locationStatus.isGranted);
+        print(notificationStatus.isGranted);
         showDialog(
             barrierDismissible: false,
             context: context, builder: (context){
@@ -109,7 +118,7 @@ class _HomeState extends State<Home> {
                             padding: EdgeInsets.only(top: 15, bottom: 15),
                             child: Center(
                               child: Text(
-                                'Accepting notification is neccessary for the app to function',
+                                locationStatus.isDenied?'Accepting location permission is neccessary for the app to function': 'Accepting notification permission is neccessary for the app to function',
                                 style: TextStyle(
                                   fontSize: 14,
                                   fontWeight: FontWeight.bold,
@@ -177,16 +186,16 @@ class _HomeState extends State<Home> {
                                     borderRadius:
                                     BorderRadius.circular(26)),
                                 child: FlatButton(
-                                  onPressed: () async{
+                                  onPressed:Platform.isAndroid? () async{
                                     Navigator.pop(context);
-                                    check()async{
-                                      await Permission.location.request();
-                                      await Permission.notification.request();
-                                    }
-
-                                    check().then((value){
-                                      //decideFirstWidget();
-                                    });
+                                    Map<Permission, PermissionStatus> statuses = await [
+                                      Permission.notification,
+                                      Permission.accessNotificationPolicy,
+                                      Permission.locationAlways,
+                                    ].request();
+                                  }:(){
+                                    Navigator.pop(context);
+                                    note();
                                   },
                                   color: Color(0xFF9B049B),
                                   shape: RoundedRectangleBorder(
@@ -222,11 +231,24 @@ class _HomeState extends State<Home> {
             ),
           );
         });
+      }else{
+
       }
     } else if (_connectionStatus == ConnectivityResult.wifi) {
-      if(locationStatus.isGranted && notificationStatus.isGranted){
-       // decideFirstWidget();
-      }else{
+      if(locationStatus.isDenied && notificationStatus.isDenied){
+        print('isGranted locationStatus ' + locationStatus.isGranted.toString());
+        print('isLimited locationStatus '+locationStatus.isLimited.toString());
+        print('isDenied locationStatus'+locationStatus.isDenied.toString());
+        print('isRestricted locationStatus'+locationStatus.isRestricted.toString());
+        print('isPermanentlyDenied locationStatus'+locationStatus.isPermanentlyDenied.toString());
+
+
+
+        print('isGranted notificationStatus ' + notificationStatus.isGranted.toString());
+        print('isLimited notificationStatus '+notificationStatus.isLimited.toString());
+        print('isDenied notificationStatus'+notificationStatus.isDenied.toString());
+        print('isRestricted notificationStatus'+notificationStatus.isRestricted.toString());
+        print('isPermanentlyDenied notificationStatus'+notificationStatus.isPermanentlyDenied.toString());
         showDialog(
             barrierDismissible: false,
             context: context, builder: (context){
@@ -258,7 +280,7 @@ class _HomeState extends State<Home> {
                             padding: EdgeInsets.only(top: 15, bottom: 15),
                             child: Center(
                               child: Text(
-                                'Accepting notification is neccessary for the app to function',
+                                locationStatus.isDenied?'Accepting location permission is neccessary for the app to function': 'Accepting notification permission is neccessary for the app to function',
                                 style: TextStyle(
                                   fontSize: 14,
                                   fontWeight: FontWeight.bold,
@@ -326,18 +348,16 @@ class _HomeState extends State<Home> {
                                     borderRadius:
                                     BorderRadius.circular(26)),
                                 child: FlatButton(
-                                  onPressed: () async{
+                                  onPressed: Platform.isAndroid? () async{
                                     Navigator.pop(context);
-
-                                    check()async{
-                                      await Permission.location.request();
-                                      await Permission.notification.request();
-                                    }
-
-                                    check().then((value){
-                                     // decideFirstWidget();
-                                    });
-
+                                    Map<Permission, PermissionStatus> statuses = await [
+                                      Permission.notification,
+                                      Permission.accessNotificationPolicy,
+                                      Permission.locationAlways,
+                                    ].request();
+                                  }: (){
+                                    Navigator.pop(context);
+                                    note();
                                   },
                                   color: Color(0xFF9B049B),
                                   shape: RoundedRectangleBorder(
@@ -373,6 +393,8 @@ class _HomeState extends State<Home> {
             ),
           );
         });
+      }else{
+
       }
     }else{
       showDialog(context: context, builder: (context){
@@ -472,6 +494,16 @@ class _HomeState extends State<Home> {
     }
   }
 
+
+  note()async{
+    var locationStatus = await Permission.location.status;
+    var notificationStatus = await Permission.notification.status;
+    if(locationStatus.isDenied){
+    AppSettings.openLocationSettings();
+    }else if(notificationStatus.isDenied){
+      AppSettings.openNotificationSettings();
+    }
+  }
 
   Future<void> initConnectivity() async {
     ConnectivityResult result;
