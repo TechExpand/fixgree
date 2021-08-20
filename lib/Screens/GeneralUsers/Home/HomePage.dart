@@ -176,33 +176,10 @@ class _HomePageState extends State<HomePage> {
 
     FirebaseMessaging.onMessage.listen((RemoteMessage message) {
       RemoteNotification notification = message.notification;
-      AndroidNotification android = message.notification?.android;
-      AppleNotification ios = message.notification?.apple;
-      if (notification != null && android != null) {
-        print(message.data);
-        print(message.data);
-        print(message.data);
-
-        message.data["notification_type"].toString()=='new_project'?showNotification(notification):
-        showNotification2(notification);
-
-        FirebaseApi.uploadNotification(
-            network.userId.toString(),
-            message.notification.title,
-            message.data["notification_type"],
-            '${message.data["lastName"]} ${message.data["firstName"]}',
-            '${message.data["jobId"]}',
-            '${message.data["bidId"]}',
-            '${message.data["bidderId"]}',
-            '${message.data["artisanId"]}',
-            '${message.data['budget']}',
-            '${message.data['invoiceId']}',
-            '${message.data['service_id']}'
-        );
-        FirebaseApi.uploadCheckNotify(
-          network.userId.toString(),
-        );
-      }else if(notification != null && ios != null){
+    //  AndroidNotification android = message.notification?.android;
+    //  AppleNotification ios = message.notification?.apple;
+     // notification != null && android != null
+      if (notification != null) {
         print(message.data);
         print(message.data);
         print(message.data);
@@ -227,6 +204,31 @@ class _HomePageState extends State<HomePage> {
           network.userId.toString(),
         );
       }
+      //else if(notification != null && ios != null){
+      //   print(message.data);
+      //   print(message.data);
+      //   print(message.data);
+      //
+      //   message.data["notification_type"].toString()=='new_project'?showNotification(notification):
+      //   showNotification2(notification);
+      //
+      //   FirebaseApi.uploadNotification(
+      //       network.userId.toString(),
+      //       message.notification.title,
+      //       message.data["notification_type"],
+      //       '${message.data["lastName"]} ${message.data["firstName"]}',
+      //       '${message.data["jobId"]}',
+      //       '${message.data["bidId"]}',
+      //       '${message.data["bidderId"]}',
+      //       '${message.data["artisanId"]}',
+      //       '${message.data['budget']}',
+      //       '${message.data['invoiceId']}',
+      //       '${message.data['service_id']}'
+      //   );
+      //   FirebaseApi.uploadCheckNotify(
+      //     network.userId.toString(),
+      //   );
+      // }
     });
 
     FirebaseMessaging.onMessageOpenedApp.listen((RemoteMessage message) {
