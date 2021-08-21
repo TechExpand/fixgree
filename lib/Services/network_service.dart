@@ -84,7 +84,7 @@ class WebServices extends ChangeNotifier {
       IosDeviceInfo iosInfo = await deviceInfo.iosInfo;
       info = iosInfo.model.toString()+" "+iosInfo.name+" "+iosInfo.systemName;
       os = 'IOS';
-      print('Running on ${iosInfo.utsname.machine}');
+     // print('Running on ${iosInfo.utsname.machine}');
     }
     notifyListeners();
   }
