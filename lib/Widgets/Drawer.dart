@@ -414,21 +414,21 @@ class _DrawerState extends State<DrawerWidget> {
                                           onPressed: ()async{
                                             SharedPreferences prefs = await SharedPreferences.getInstance();
                                             prefs.clear();
-                                            ScaffoldMessenger.of(context).dispose();
-                                            Navigator.push(
+                                            //ScaffoldMessenger.of(context).dispose();
+                                            Navigator.pushAndRemoveUntil(
                                               context,
                                               PageRouteBuilder(
                                                 pageBuilder: (context, animation, secondaryAnimation) {
-                                                  return Login();
+                                                  return Login(); //SignUpAddress();
                                                 },
-                                                transitionsBuilder:
-                                                    (context, animation, secondaryAnimation, child) {
+                                                transitionsBuilder: (context, animation, secondaryAnimation, child) {
                                                   return FadeTransition(
                                                     opacity: animation,
                                                     child: child,
                                                   );
                                                 },
                                               ),
+                                                  (route) => false,
                                             );
                                           },
                                           color: Color(0xFF9B049B),

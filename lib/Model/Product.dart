@@ -9,15 +9,17 @@ class Product {
   final String description;
   final String product_name;
   final UserSearch user;
+  final network;
 
 
   const Product({
-    @required this.productImages,
-    @required this.user_id,
-    @required this.price,
-    @required this.description,
-    @required this.product_name,
-    @required this.user,
+   this.productImages,
+    this.user_id,
+  this.price,
+  this.description,
+    this.product_name,
+     this.user,
+    this.network,
   });
 
   static Product fromJson(Map<String, dynamic> json) => Product(

@@ -30,8 +30,10 @@ TextEditingController businessName = TextEditingController();
       ),
       body: Padding(
         padding: const EdgeInsets.only(left: 20.0, right: 20,),
-        child: Column(
-          crossAxisAlignment: CrossAxisAlignment.start,
+        child: ListView(
+          shrinkWrap: true,
+          padding: EdgeInsets.zero,
+          physics: BouncingScrollPhysics(),
           children: <Widget>[
             Padding(
               padding: const EdgeInsets.only(bottom: 12.0, top: 15),
@@ -166,66 +168,70 @@ TextEditingController businessName = TextEditingController();
               ),
             ),
             Spacer(),
-    Consumer<DataProvider>(
-    builder: (context, conData, child) {
-    return Align(
-              alignment: Alignment.center,
-              child: Container(
-                margin: EdgeInsets.only(
-                  bottom: 30,
-                ),
-                decoration: BoxDecoration(
-                    border: Border.all(color: Colors.white),
-                    borderRadius: BorderRadius.circular(26)),
-                child: FlatButton(
-                  disabledColor: Color(0x909B049B),
-                  onPressed:
-                  conData.officeAddress.isEmpty || conData.homeAddress.isEmpty|| conData.businessName.isEmpty
-                          ? null
-                          : () {
-                              Navigator.push(
-                                context,
-                                PageRouteBuilder(
-                                  pageBuilder:
-                                      (context, animation, secondaryAnimation) {
-                                    return SignUpBvn();
-                                  },
-                                  transitionsBuilder: (context, animation,
-                                      secondaryAnimation, child) {
-                                    return FadeTransition(
-                                      opacity: animation,
-                                      child: child,
-                                    );
-                                  },
-                                ),
-                              );
-                              FocusScopeNode currentFocus = FocusScope.of(context);
-                              if (!currentFocus.hasPrimaryFocus) {
-                                currentFocus.unfocus();
-                              }
-                            },
-                  color: Color(0xFF9B049B),
-                  shape: RoundedRectangleBorder(
+    Padding(
+        padding: EdgeInsets.only(
+            bottom: MediaQuery.of(context).viewInsets.bottom),
+      child: Consumer<DataProvider>(
+      builder: (context, conData, child) {
+      return Align(
+                alignment: Alignment.center,
+                child: Container(
+                  margin: EdgeInsets.only(
+                    bottom: 30,
+                  ),
+                  decoration: BoxDecoration(
+                      border: Border.all(color: Colors.white),
                       borderRadius: BorderRadius.circular(26)),
-                  padding: EdgeInsets.all(0.0),
-                  child: Ink(
-                    decoration:
-                        BoxDecoration(borderRadius: BorderRadius.circular(26)),
-                    child: Container(
-                      constraints: BoxConstraints(
-                          maxWidth: MediaQuery.of(context).size.width / 1.3,
-                          minHeight: 45.0),
-                      alignment: Alignment.center,
-                      child: Text(
-                        "CONTINUE",
-                        textAlign: TextAlign.center,
-                        style: TextStyle(color: Colors.white),
+                  child: FlatButton(
+                    disabledColor: Color(0x909B049B),
+                    onPressed:
+                   officeAddress.text.isEmpty || homeAddress.text.isEmpty|| businessName.text.isEmpty
+                            ? null
+                            : () {
+                                Navigator.push(
+                                  context,
+                                  PageRouteBuilder(
+                                    pageBuilder:
+                                        (context, animation, secondaryAnimation) {
+                                      return SignUpBvn();
+                                    },
+                                    transitionsBuilder: (context, animation,
+                                        secondaryAnimation, child) {
+                                      return FadeTransition(
+                                        opacity: animation,
+                                        child: child,
+                                      );
+                                    },
+                                  ),
+                                );
+                                FocusScopeNode currentFocus = FocusScope.of(context);
+                                if (!currentFocus.hasPrimaryFocus) {
+                                  currentFocus.unfocus();
+                                }
+                              },
+                    color: Color(0xFF9B049B),
+                    shape: RoundedRectangleBorder(
+                        borderRadius: BorderRadius.circular(26)),
+                    padding: EdgeInsets.all(0.0),
+                    child: Ink(
+                      decoration:
+                          BoxDecoration(borderRadius: BorderRadius.circular(26)),
+                      child: Container(
+                        constraints: BoxConstraints(
+                            maxWidth: MediaQuery.of(context).size.width / 1.3,
+                            minHeight: 45.0),
+                        alignment: Alignment.center,
+                        child: Text(
+                          "CONTINUE",
+                          textAlign: TextAlign.center,
+                          style: TextStyle(color: Colors.white),
+                        ),
                       ),
                     ),
                   ),
                 ),
-              ),
-            );}),
+              );}),
+    ),
           ],
         ),
       ),

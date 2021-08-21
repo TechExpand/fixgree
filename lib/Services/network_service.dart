@@ -645,8 +645,42 @@ class WebServices extends ChangeNotifier {
 
 
 
+  Future<dynamic> checkData() async {
+    try{
+      var response = await http
+          .post(Uri.parse('$mainUrl/explore-product'), body: {
+        'user_id': userId.toString(),
+
+      }, headers: {
+        "Content-type": "application/x-www-form-urlencoded",
+        'Authorization': 'Bearer $bearer',
+      }).timeout(Duration(seconds: 20));
+      var body1 = json.decode(response.body);
+      if (body1['reqRes'] == 'true') {
+        return '200';
+      } else {
+        print('500');
+        print('500');
+        print('500');
+        print('500');
+        print('500');
+      return '500';
+      }}on TimeoutException catch (e) {
+      print('time out Error: $e');
+      return 'timeout';
+    } on SocketException catch (e) {
+      print('Socket Error: $e');
+      return 'socket';
+    } on Error catch (e) {
+      print('General Error: $e');
+      return 'error';
+    }
+  }
+
+
 
   Future<dynamic> getMarket() async {
+    try{
     var response = await http
         .post(Uri.parse('$mainUrl/explore-product'), body: {
       'user_id': userId.toString(),
@@ -654,7 +688,7 @@ class WebServices extends ChangeNotifier {
     }, headers: {
       "Content-type": "application/x-www-form-urlencoded",
      'Authorization': 'Bearer $bearer',
-    });
+    }).timeout(Duration(seconds: 20));
     var body1 = json.decode(response.body);
     List body = body1['products'];
     List<Product> projects = body
@@ -669,6 +703,24 @@ class WebServices extends ChangeNotifier {
       return projects;
     } else if (body1['reqRes'] == 'false') {
         print(body1);
+    }}on TimeoutException catch (e) {
+      List<Product> defaul = [
+        Product(network: true)
+      ];
+      print('time out Error: $e');
+      return defaul;
+    } on SocketException catch (e) {
+      List<Product> defaul = [
+        Product(network: true)
+      ];
+      print('Socket Error: $e');
+      return defaul;
+    } on Error catch (e) {
+      List<Product> defaul = [
+        Product(network: true)
+      ];
+      print('General Error: $e');
+      return defaul;
     }
   }
 
@@ -1332,7 +1384,6 @@ class WebServices extends ChangeNotifier {
       upload.fields['firstName'] = firstName.toString();
       upload.fields['uploadType'] = uploadType.toString();
       upload.files.add(file);
-
       final stream = await upload.send();
       var res = await http.Response.fromStream(stream);
       var body = jsonDecode(res.body);
@@ -1682,33 +1733,7 @@ class WebServices extends ChangeNotifier {
     });
     if (response.statusCode == 500) {
       print("You are not connected to internet");
-      showDialog<void>(
-        context: context,
-        barrierDismissible: false, // user must tap button!
-        builder: (BuildContext context) {
-          return AlertDialog(
-            title: Center(child: Text('Connection TimeOut')),
-            content: SingleChildScrollView(
-              child: ListBody(
-                children: <Widget>[
-                  Center(child: Text('Retry or Login Again')),
-                ],
-              ),
-            ),
-            actions: <Widget>[
-              TextButton(
-                child: Text(
-                  'exit',
-                  style: TextStyle(color: Color(0xFF9B049B)),
-                ),
-                onPressed: () {
-                  Navigator.of(context).pop();
-                },
-              ),
-            ],
-          );
-        },
-      );
+
     } else {
       var body = json.decode(response.body);
       List result = body['sortedUsers'];
