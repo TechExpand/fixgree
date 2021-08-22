@@ -69,7 +69,7 @@ class _ProfileState extends State<Profile> {
       'about': about,
       'phone': phone,
       'address': address,
-      'photoUrl': 'https://uploads.fixme.ng/originals/$photoUrl'
+      'photoUrl': 'https://uploads.fixme.ng/thumbnails/$photoUrl'
     };
 
     return userDetails;

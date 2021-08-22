@@ -145,8 +145,8 @@ class _BidderPageState extends State<BidderPage> {
                                                       snapshot.data[
                                                               'profile_pic_file_name'] ==
                                                           null
-                                                  ? 'https://uploads.fixme.ng/originals/no_picture_upload'
-                                                  : 'https://uploads.fixme.ng/originals/${snapshot.data['profile_pic_file_name']}',
+                                                  ? 'https://uploads.fixme.ng/thumbnails/no_picture_upload'
+                                                  : 'https://uploads.fixme.ng/thumbnails/${snapshot.data['profile_pic_file_name']}',
                                             ),
                                             foregroundColor: Colors.white,
                                             backgroundColor: Colors.white,
@@ -319,14 +319,14 @@ class _BidderPageState extends State<BidderPage> {
                                               serviceId: snapshot.data['service_id'],
                                 serviceId2: network.serviceId,
                                               urlAvatar2:
-                                                  'https://uploads.fixme.ng/originals/${network.profilePicFileName}',
+                                                  'https://uploads.fixme.ng/thumbnails/${network.profilePicFileName}',
                                               name2: network.firstName,
                                               idArtisan: network.mobileDeviceToken,
                                               artisanMobile: network.phoneNum,
                                               userMobile: snapshot.data['fullNumber'],
                                               idUser: snapshot.data['firebase_id'],
                                               urlAvatar:
-                                                  'https://uploads.fixme.ng/originals/${snapshot.data['profile_pic_file_name']}',
+                                                  'https://uploads.fixme.ng/thumbnails/${snapshot.data['profile_pic_file_name']}',
                                               name: snapshot.data['firstName'],
                                             );
 
@@ -576,7 +576,7 @@ class _BidderPageState extends State<BidderPage> {
                                   //                                   animation,
                                   //                                   secondaryAnimation) {
                                   //                                 return PhotoView(
-                                  //                                   'https://uploads.fixme.ng/originals/${snapshot.data[index]['imageFileName']}',
+                                  //                                   'https://uploads.fixme.ng/thumbnails/${snapshot.data[index]['imageFileName']}',
                                   //                                   snapshot.data[
                                   //                                           index][
                                   //                                       'imageFileName'],
@@ -607,7 +607,7 @@ class _BidderPageState extends State<BidderPage> {
                                   //                                 width: 200,
                                   //                                 child:
                                   //                                     Image.network(
-                                  //                                   'https://uploads.fixme.ng/originals/${snapshot.data[index]['imageFileName']}',
+                                  //                                   'https://uploads.fixme.ng/thumbnails/${snapshot.data[index]['imageFileName']}',
                                   //                                   fit: BoxFit.cover,
                                   //                                 )),
                                   //                           ),
@@ -674,7 +674,7 @@ class _BidderPageState extends State<BidderPage> {
                                   //                               backgroundImage:
                                   //                               NetworkImage(
                                   //                                 snapshot.data[index]['productImages'].isNotEmpty?
-                                  //                                 'https://uploads.fixme.ng/originals/${snapshots.data[index]['productImages'][0]['imageFileName']}':'',
+                                  //                                 'https://uploads.fixme.ng/thumbnails/${snapshots.data[index]['productImages'][0]['imageFileName']}':'',
                                   //                               ),
                                   //                               foregroundColor:
                                   //                               Colors.white,
@@ -837,8 +837,8 @@ class _BidderPageState extends State<BidderPage> {
 //                                                                 'no_picture_upload' ||
 //                                                                 network.profilePicFileName ==
 //                                                                     null
-//                                                                 ? 'https://uploads.fixme.ng/originals/no_picture_upload'
-//                                                                 : 'https://uploads.fixme.ng/originals/${network.profilePicFileName}',
+//                                                                 ? 'https://uploads.fixme.ng/thumbnails/no_picture_upload'
+//                                                                 : 'https://uploads.fixme.ng/thumbnails/${network.profilePicFileName}',
 //                                                           ),
 //                                                           foregroundColor:
 //                                                           Colors.white,
@@ -1024,7 +1024,7 @@ class _BidderPageState extends State<BidderPage> {
                                                                                     animation,
                                                                                     secondaryAnimation) {
                                                                                   return PhotoView(
-                                                                                    'https://uploads.fixme.ng/originals/${snapshot.data[index]['imageFileName']}',
+                                                                                    'https://uploads.fixme.ng/thumbnails/${snapshot.data[index]['imageFileName']}',
                                                                                     snapshot.data[
                                                                                     index][
                                                                                     'imageFileName'],
@@ -1052,7 +1052,7 @@ class _BidderPageState extends State<BidderPage> {
                                                                                 width: 200,
                                                                                 child:
                                                                                 Image.network(
-                                                                                  'https://uploads.fixme.ng/originals/${snapshot.data[index]['imageFileName']}',
+                                                                                  'https://uploads.fixme.ng/thumbnails/${snapshot.data[index]['imageFileName']}',
                                                                                   fit: BoxFit.cover,
                                                                                 )),
                                                                           ),
@@ -1280,7 +1280,7 @@ class _BidderPageState extends State<BidderPage> {
                                                                                                         7))),
                                                                                             child:
                                                                                             Image.network(
-                                                                                              'https://uploads.fixme.ng/originals/${snapshot.data[index]['productImages'][0]['imageFileName']}',
+                                                                                              'https://uploads.fixme.ng/thumbnails/${snapshot.data[index]['productImages'][0]['imageFileName']}',
                                                                                               fit: BoxFit.cover,
                                                                                             ),
                                                                                           )),
@@ -1442,8 +1442,8 @@ class _BidderPageState extends State<BidderPage> {
                                                                                       'no_picture_upload' ||
                                                                                       network.profilePicFileName ==
                                                                                           null
-                                                                                      ? 'https://uploads.fixme.ng/originals/no_picture_upload'
-                                                                                      : 'https://uploads.fixme.ng/originals/${network.profilePicFileName}',
+                                                                                      ? 'https://uploads.fixme.ng/thumbnails/no_picture_upload'
+                                                                                      : 'https://uploads.fixme.ng/thumbnails/${network.profilePicFileName}',
                                                                                 ),
                                                                                 foregroundColor:
                                                                                 Colors.white,
@@ -1637,23 +1637,54 @@ class _BidderPageState extends State<BidderPage> {
                       child: Row(
                         children: [
                           for (dynamic item in data['productImages'])
-                            Container(
-                              width: MediaQuery.of(context).size.width,
-                              height: 200,
-                              child: Stack(
-                                children: [
-                                  ClipRRect(
-                                    borderRadius: BorderRadius.circular(10),
-                                    child: Container(
-                                      width: MediaQuery.of(context).size.width,
-                                      height: 200,
-                                      child: Image.network(
-                                        'https://uploads.fixme.ng/originals/${item['imageFileName']}',
-                                        fit: BoxFit.cover,
-                                      ),
+                            Hero(
+                              tag:  'https://uploads.fixme.ng/originals/${item['imageFileName']}',
+                              child: InkWell(
+                                onTap: () {
+                                  Navigator.push(
+                                    context,
+                                    PageRouteBuilder(
+                                      pageBuilder: (context,
+                                          animation,
+                                          secondaryAnimation) {
+                                        return PhotoView(
+                                          'https://uploads.fixme.ng/originals/${item['imageFileName']}',
+                                          'https://uploads.fixme.ng/originals/${item['imageFileName']}',
+                                        );
+                                      },
+                                      transitionsBuilder:
+                                          (context,
+                                          animation,
+                                          secondaryAnimation,
+                                          child) {
+                                        return FadeTransition(
+                                          opacity:
+                                          animation,
+                                          child: child,
+                                        );
+                                      },
                                     ),
+                                  );
+                                },
+                                child: Container(
+                                  width: MediaQuery.of(context).size.width,
+                                  height: 200,
+                                  child: Stack(
+                                    children: [
+                                      ClipRRect(
+                                        borderRadius: BorderRadius.circular(10),
+                                        child: Container(
+                                          width: MediaQuery.of(context).size.width,
+                                          height: 200,
+                                          child: Image.network(
+                                            'https://uploads.fixme.ng/thumbnails/${item['imageFileName']}',
+                                            fit: BoxFit.cover,
+                                          ),
+                                        ),
+                                      ),
+                                    ],
                                   ),
-                                ],
+                                ),
                               ),
                             ),
                         ],
@@ -1761,14 +1792,14 @@ class _BidderPageState extends State<BidderPage> {
                             serviceId: userdata['service_id'],
                             serviceId2: network.serviceId,
                             urlAvatar2:
-                            'https://uploads.fixme.ng/originals/${network.profilePicFileName}',
+                            'https://uploads.fixme.ng/thumbnails/${network.profilePicFileName}',
                             name2: network.firstName,
                             idArtisan: network.mobileDeviceToken,
                             artisanMobile: network.phoneNum,
                             userMobile: userdata['full_number'],
                             idUser: userdata['firebase_id'],
                             urlAvatar:
-                            'https://uploads.fixme.ng/originals/${userdata['profile_pic_file_name']}',
+                            'https://uploads.fixme.ng/thumbnails/${userdata['profile_pic_file_name']}',
                             name: userdata['user_first_name'],
                           );
 
@@ -1828,8 +1859,8 @@ class _BidderPageState extends State<BidderPage> {
                               backgroundImage: NetworkImage(
                                 userdata == 'no_picture_upload' ||
                                     userdata == null
-                                    ? 'https://uploads.fixme.ng/originals/no_picture_upload'
-                                    : 'https://uploads.fixme.ng/originals/${userdata['profile_pic_file_name']}',
+                                    ? 'https://uploads.fixme.ng/thumbnails/no_picture_upload'
+                                    : 'https://uploads.fixme.ng/thumbnails/${userdata['profile_pic_file_name']}',
                               ),
                               foregroundColor: Colors.white,
                               backgroundColor: Colors.white,

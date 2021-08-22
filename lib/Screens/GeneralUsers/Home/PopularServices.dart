@@ -237,8 +237,8 @@ class _PopularServicesState extends State<PopularServices> {
                                                   filteredItems[index]
                                                           .urlAvatar ==
                                                       null
-                                              ? 'https://uploads.fixme.ng/originals/no_picture_upload'
-                                              : 'https://uploads.fixme.ng/originals/${filteredItems[index].urlAvatar}',
+                                              ? 'https://uploads.fixme.ng/thumbnails/no_picture_upload'
+                                              : 'https://uploads.fixme.ng/thumbnails/${filteredItems[index].urlAvatar}',
                                         ),
                                         foregroundColor: Colors.white,
                                         backgroundColor: Colors.white,
@@ -352,8 +352,8 @@ class _PopularServicesState extends State<PopularServices> {
                                                       'no_picture_upload' ||
                                                   userItems[index].urlAvatar ==
                                                       null
-                                              ? 'https://uploads.fixme.ng/originals/no_picture_upload'
-                                              : 'https://uploads.fixme.ng/originals/${userItems[index].urlAvatar}',
+                                              ? 'https://uploads.fixme.ng/thumbnails/no_picture_upload'
+                                              : 'https://uploads.fixme.ng/thumbnails/${userItems[index].urlAvatar}',
                                         ),
                                         foregroundColor: Colors.white,
                                         backgroundColor: Colors.white,

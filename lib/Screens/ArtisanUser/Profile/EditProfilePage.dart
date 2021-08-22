@@ -133,8 +133,8 @@ class _EditProfilePageState extends State<EditProfilePage> {
                                   network.profilePicFileName ==
                                               'no_picture_upload' ||
                                           network.profilePicFileName == null
-                                      ? 'https://uploads.fixme.ng/originals/no_picture_upload'
-                                      : 'https://uploads.fixme.ng/originals/${network.profilePicFileName}',
+                                      ? 'https://uploads.fixme.ng/thumbnails/no_picture_upload'
+                                      : 'https://uploads.fixme.ng/thumbnails/${network.profilePicFileName}',
                                 ),
                                 foregroundColor: Colors.white,
                                 backgroundColor: Colors.white,
@@ -675,7 +675,7 @@ class _EditProfilePageState extends State<EditProfilePage> {
                                                       child: Container(
                                                           width: 200,
                                                           child: Image.network(
-                                                            'https://uploads.fixme.ng/originals/${snapshot.data[index]['imageFileName']}',
+                                                            'https://uploads.fixme.ng/thumbnails/${snapshot.data[index]['imageFileName']}',
                                                             fit: BoxFit.cover,
                                                           )),
                                                     ),
@@ -999,7 +999,7 @@ class _EditProfilePageState extends State<EditProfilePage> {
                               radius: 40,
                               backgroundImage:
                               NetworkImage(snapshot.data[index]['productImages'].isNotEmpty?
-                              "https://uploads.fixme.ng/originals/${snapshot.data[index]['productImages'][0]['imageFileName']}":'',
+                              "https://uploads.fixme.ng/thumbnails/${snapshot.data[index]['productImages'][0]['imageFileName']}":'',
                               ),
                               foregroundColor:
                               Colors.white,
@@ -2036,7 +2036,7 @@ class _EditProfilePageState extends State<EditProfilePage> {
                                     borderRadius:
                                     BorderRadius.circular(20)),
                                 child: Image.network(
-                                  'https://uploads.fixme.ng/originals/${productImage}',
+                                  'https://uploads.fixme.ng/thumbnails/${productImage}',
                                   fit: BoxFit.cover,
                                 )),
                           )
@@ -2656,7 +2656,7 @@ class _EditProfilePageState extends State<EditProfilePage> {
                                     width: 100,
                                     height: 100,
                                     child: Image.network(
-                                      'https://uploads.fixme.ng/originals/${item['imageFileName']}',
+                                      'https://uploads.fixme.ng/thumbnails/${item['imageFileName']}',
                                       fit: BoxFit.cover,
                                     ),
                                   ),

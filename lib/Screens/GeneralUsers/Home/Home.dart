@@ -1077,8 +1077,8 @@ class _HomeState extends State<Home> {
                                                                         snapshot.data[index]
                                                                                 .urlAvatar ==
                                                                             null
-                                                                    ? 'https://uploads.fixme.ng/originals/no_picture_upload'
-                                                                    : 'https://uploads.fixme.ng/originals/${snapshot.data[index].urlAvatar}',
+                                                                    ? 'https://uploads.fixme.ng/thumbnails/no_picture_upload'
+                                                                    : 'https://uploads.fixme.ng/thumbnails/${snapshot.data[index].urlAvatar}',
                                                                 fit: BoxFit.cover,
                                                               ),
                                                             )),
@@ -1396,8 +1396,8 @@ class _HomeState extends State<Home> {
                                                           snapshot.data[index]
                                                               .urlAvatar ==
                                                               null
-                                                          ? 'https://uploads.fixme.ng/originals/no_picture_upload'
-                                                          : 'https://uploads.fixme.ng/originals/${snapshot.data[index].urlAvatar}',
+                                                          ? 'https://uploads.fixme.ng/thumbnails/no_picture_upload'
+                                                          : 'https://uploads.fixme.ng/thumbnails/${snapshot.data[index].urlAvatar}',
                                                       fit: BoxFit.cover,
                                                     ),
                                                   )),

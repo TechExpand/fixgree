@@ -30,7 +30,7 @@ final newMessage = {
   'chatId': chatId ?? '',
   'idUser': network.mobileDeviceToken ?? '',
   'urlAvatar':
-  'https://uploads.fixme.ng/originals/${network.profilePicFileName}' ?? '',
+  'https://uploads.fixme.ng/thumbnails/${network.profilePicFileName}' ?? '',
   'username': network.firstName ?? '',
   'message': message ?? '',
   'createdAt': FieldValue.serverTimestamp()
@@ -75,7 +75,7 @@ final newMessage = {
        final newMessage = {
          'chatId': chatId ?? '',
          'idUser': network.mobileDeviceToken ?? '',
-         'urlAvatar': 'https://uploads.fixme.ng/originals/${network
+         'urlAvatar': 'https://uploads.fixme.ng/thumbnails/${network
              .profilePicFileName}' ?? '',
          'username': network.firstName ?? '',
          'message': imageurl ?? '',
@@ -123,7 +123,7 @@ final newMessage = {
         final newMessage = {
           'chatId': chatId ?? '',
           'idUser': network.mobileDeviceToken ?? '',
-          'urlAvatar':'https://uploads.fixme.ng/originals/${network.profilePicFileName}' ?? '',
+          'urlAvatar':'https://uploads.fixme.ng/thumbnails/${network.profilePicFileName}' ?? '',
           'username': network.firstName ?? '',
           'message': imageurl ?? '',
           'createdAt': FieldValue.serverTimestamp(),

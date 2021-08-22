@@ -4,6 +4,7 @@ import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:fixme/Model/Notify.dart';
 import 'package:fixme/Model/Product.dart';
 import 'package:fixme/Screens/GeneralUsers/Notification/Notification.dart';
+import 'package:fixme/Widgets/photoView.dart';
 import 'package:http/http.dart' as http;
 import 'package:fixme/Screens/ArtisanUser/Profile/ArtisanPageNew.dart';
 import 'package:fixme/Screens/GeneralUsers/Chat/Chat.dart';
@@ -19,6 +20,8 @@ import 'package:flutter_staggered_grid_view/flutter_staggered_grid_view.dart';
 import 'package:google_fonts/google_fonts.dart';
 import 'package:provider/provider.dart';
 import 'package:transparent_image/transparent_image.dart';
+
+import '../../../strings.dart';
 
 class MarketPage extends StatefulWidget {
   final scafoldKey;
@@ -101,6 +104,9 @@ class _MarketPageState extends State<MarketPage> {
 
 
     callmarket(context);
+    var network = Provider.of<WebServices>(context, listen: false);
+    var data = Provider.of<Utils>(context, listen: false);
+    network.updateFCMToken(network.userId, data.fcmToken);
   }
 
 
@@ -355,7 +361,7 @@ class _MarketPageState extends State<MarketPage> {
                                 child: GridTile(
                                   child: FadeInImage.memoryNetwork(
                                     placeholder: kTransparentImage,
-                                    image: market[index].productImages==null?'':"https://uploads.fixme.ng/originals/${market[index].productImages[0]['imageFileName']}",fit: BoxFit.cover,),
+                                    image: market[index].productImages==null?'':"https://uploads.fixme.ng/thumbnails/${market[index].productImages[0]['imageFileName']}",fit: BoxFit.cover,),
                                   footer: Container(
                                     decoration: BoxDecoration(
                                       color: Colors.black38,
@@ -518,23 +524,54 @@ class _MarketPageState extends State<MarketPage> {
                       child: Row(
                         children: [
                           for (dynamic item in data.productImages)
-                            Container(
-                              width: MediaQuery.of(context).size.width,
-                              height: 200,
-                              child: Stack(
-                                children: [
-                                  ClipRRect(
-                                    borderRadius: BorderRadius.circular(10),
-                                    child: Container(
-                                      width: MediaQuery.of(context).size.width,
-                                      height: 200,
-                                      child: Image.network(
-                                        'https://uploads.fixme.ng/originals/${item['imageFileName']}',
-                                        fit: BoxFit.cover,
-                                      ),
+                            Hero(
+                              tag:  'https://uploads.fixme.ng/originals/${item['imageFileName']}',
+                              child: InkWell(
+                                onTap: () {
+                                  Navigator.push(
+                                    context,
+                                    PageRouteBuilder(
+                                      pageBuilder: (context,
+                                          animation,
+                                          secondaryAnimation) {
+                                        return PhotoView(
+                                          'https://uploads.fixme.ng/originals/${item['imageFileName']}',
+                                          'https://uploads.fixme.ng/originals/${item['imageFileName']}',
+                                        );
+                                      },
+                                      transitionsBuilder:
+                                          (context,
+                                          animation,
+                                          secondaryAnimation,
+                                          child) {
+                                        return FadeTransition(
+                                          opacity:
+                                          animation,
+                                          child: child,
+                                        );
+                                      },
                                     ),
+                                  );
+                                },
+                                child: Container(
+                                  width: MediaQuery.of(context).size.width,
+                                  height: 200,
+                                  child: Stack(
+                                    children: [
+                                      ClipRRect(
+                                        borderRadius: BorderRadius.circular(10),
+                                        child: Container(
+                                          width: MediaQuery.of(context).size.width,
+                                          height: 200,
+                                          child: Image.network(
+                                            'https://uploads.fixme.ng/thumbnails/${item['imageFileName']}',
+                                            fit: BoxFit.cover,
+                                          ),
+                                        ),
+                                      ),
+                                    ],
                                   ),
-                                ],
+                                ),
                               ),
                             ),
                         ],
@@ -642,14 +679,14 @@ class _MarketPageState extends State<MarketPage> {
                             serviceId: userData.serviceId,
                             serviceId2: network.serviceId,
                             urlAvatar2:
-                            'https://uploads.fixme.ng/originals/${network.profilePicFileName}',
+                            'https://uploads.fixme.ng/thumbnails/${network.profilePicFileName}',
                             name2: network.firstName,
                             idArtisan: network.mobileDeviceToken,
                             artisanMobile: network.phoneNum,
                             userMobile: userData.userMobile,
                             idUser: userData.idUser,
                             urlAvatar:
-                            'https://uploads.fixme.ng/originals/${userData.urlAvatar}',
+                            'https://uploads.fixme.ng/thumbnails/${userData.urlAvatar}',
                             name: userData.name,
                           );
 
@@ -704,8 +741,8 @@ class _MarketPageState extends State<MarketPage> {
                               radius: 50,
                               backgroundImage: NetworkImage(
                                 userData == 'no_picture_upload' ||userData == null
-                                    ? 'https://uploads.fixme.ng/originals/no_picture_upload'
-                                    : 'https://uploads.fixme.ng/originals/${userData.urlAvatar}',
+                                    ? 'https://uploads.fixme.ng/thumbnails/no_picture_upload'
+                                    : 'https://uploads.fixme.ng/thumbnails/${userData.urlAvatar}',
                               ),
                               foregroundColor: Colors.white,
                               backgroundColor: Colors.white,

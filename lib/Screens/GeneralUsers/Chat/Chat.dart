@@ -195,11 +195,11 @@ class _ChatPageState extends State<ChatPage> {
         String productImage;
         if(widget.instantChat == 'market'){
           for (dynamic item in widget.productData.productImages){
-            productImage = 'https://uploads.fixme.ng/originals/${item['imageFileName']}';
+            productImage = 'https://uploads.fixme.ng/thumbnails/${item['imageFileName']}';
           }
         }else{
           for (dynamic item in widget.productData['productImages']){
-            productImage = 'https://uploads.fixme.ng/originals/${item['imageFileName']}';
+            productImage = 'https://uploads.fixme.ng/thumbnails/${item['imageFileName']}';
           }
         }
 
@@ -760,7 +760,7 @@ class _ChatPageState extends State<ChatPage> {
                       callerId: network.mobileDeviceToken,
                       calltype: 'video',
                       myavater:
-                          'https://uploads.fixme.ng/originals/${network.profilePicFileName}',
+                          'https://uploads.fixme.ng/thumbnails/${network.profilePicFileName}',
                       context: context,
                     );
                   },
@@ -785,7 +785,7 @@ class _ChatPageState extends State<ChatPage> {
                       callerId: network.mobileDeviceToken,
                       calltype: 'audio',
                       myavater:
-                          'https://uploads.fixme.ng/originals/${network.profilePicFileName}',
+                          'https://uploads.fixme.ng/thumbnails/${network.profilePicFileName}',
                       context: context,
                     );
                   },

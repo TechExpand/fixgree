@@ -8,6 +8,7 @@ import 'package:fixme/Utils/Provider.dart';
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 
+import '../../../strings.dart';
 import 'ProfilePhoto.dart';
 
 class SignUpProfileSetupPage extends StatefulWidget {
@@ -92,8 +93,8 @@ class SignUpProfileSetupPageState extends State<SignUpProfileSetupPage> {
                     backgroundImage: NetworkImage(
                       network.profilePicFileName == 'no_picture_upload' ||
                               network.profilePicFileName == null
-                          ? 'https://uploads.fixme.ng/originals/no_picture_upload'
-                          : 'https://uploads.fixme.ng/originals/${network.profilePicFileName}',
+                          ? 'https://uploads.fixme.ng/thumbnails/no_picture_upload'
+                          : 'https://uploads.fixme.ng/thumbnails/${network.profilePicFileName}',
                     ),
                     foregroundColor: Colors.white,
                     backgroundColor: Colors.white,

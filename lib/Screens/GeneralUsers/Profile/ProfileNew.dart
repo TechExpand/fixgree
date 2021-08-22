@@ -41,7 +41,7 @@ class _ProfileNewState extends State<ProfileNew> {
       'about': about,
       'phone': phone,
       'address': address,
-      'photoUrl': 'https://uploads.fixme.ng/originals/$photoUrl'
+      'photoUrl': 'https://uploads.fixme.ng/thumbnails/$photoUrl'
     };
 
     return userDetails;
@@ -112,7 +112,7 @@ class _ProfileNewState extends State<ProfileNew> {
                             backgroundImage: NetworkImage(
                               snapshot.data['photoUrl'] != 'no_picture_upload'
                                   ? '${snapshot.data['photoUrl']}'
-                                  : 'https://uploads.fixme.ng/originals/no_picture_upload',
+                                  : 'https://uploads.fixme.ng/thumbnails/no_picture_upload',
                             ),
                             foregroundColor: Colors.white,
                             backgroundColor: Colors.white,

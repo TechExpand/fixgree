@@ -33,7 +33,7 @@ class MessageWidget extends StatelessWidget {
     radius: 16, backgroundImage: NetworkImage(
     message.
     urlAvatar=='no_picture_upload'
-    ?'https://uploads.fixme.ng/originals/no_picture_upload':
+    ?'https://uploads.fixme.ng/thumbnails/no_picture_upload':
     message.urlAvatar
     )),
     ),
@@ -63,7 +63,7 @@ class MessageWidget extends StatelessWidget {
     backgroundColor: Colors.white70,
     radius: 16
     , backgroundImage: NetworkImage(message.urlAvatar=='no_picture_upload'
-    ?'https://uploads.fixme.ng/originals/no_picture_upload':
+    ?'https://uploads.fixme.ng/thumbnails/no_picture_upload':
     message.urlAvatar
     )
     )

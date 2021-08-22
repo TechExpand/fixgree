@@ -67,7 +67,7 @@ dependencies:
   flushbar: ^1.10.4
   flutter_paystack: ^1.0.5+1
   clipboard: ^0.1.2+8
-  http:
+  http: ^0.13.3
   shared_preferences: ^2.0.6
   fl_toast: any
   flutter_tawk: ^0.0.5
@@ -75,6 +75,7 @@ dependencies:
   share: ^0.6.5+4
   rating_dialog: ^2.0.0
   google_fonts: ^2.1.0
+  dio: ^4.0.0
 
 
 dev_dependencies:
@@ -132,9 +133,9 @@ flutter:
     - family: MyFlutterApp4 # the name of your font family
       fonts:
         - asset: assets/fonts/MyFlutterApp4.ttf # your font file name and the directory
-#    - family: MyFlutterApp5 # the name of your font family
-#      fonts:
-#        - asset: assets/fonts/MyFlutterApp5.ttf # your font file name and the directory
+    - family: MyFlutterApp5 # the name of your font family
+      fonts:
+        - asset: assets/fonts/MyFlutterApp5.ttf # your font file name and the directory
 
 
 

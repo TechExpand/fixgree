@@ -177,8 +177,8 @@ class _ProfilePageNewState extends State<ProfilePageNew> {
                                                             'no_picture_upload' ||
                                                         network.profilePicFileName ==
                                                             null
-                                                    ? 'https://uploads.fixme.ng/originals/no_picture_upload'
-                                                    : 'https://uploads.fixme.ng/originals/${network.profilePicFileName}',
+                                                    ? 'https://uploads.fixme.ng/thumbnails/no_picture_upload'
+                                                    : 'https://uploads.fixme.ng/thumbnails/${network.profilePicFileName}',
                                               ),
                                               foregroundColor: Colors.white,
                                               backgroundColor: Colors.white,
@@ -713,7 +713,7 @@ class _ProfilePageNewState extends State<ProfilePageNew> {
                                                                                 child: Container(
                                                                                     width: 200,
                                                                                     child: Image.network(
-                                                                                      'https://uploads.fixme.ng/originals/${snapshot.data[index]['imageFileName']}',
+                                                                                      'https://uploads.fixme.ng/thumbnails/${snapshot.data[index]['imageFileName']}',
                                                                                       fit: BoxFit.cover,
                                                                                     )),
                                                                               ),
@@ -870,7 +870,7 @@ class _ProfilePageNewState extends State<ProfilePageNew> {
                                                                                   child: Text(''),
                                                                                   radius: 40,
                                                                                   backgroundImage: NetworkImage(
-                                                                                    snapshot.data[index]['productImages'].isNotEmpty?'https://uploads.fixme.ng/originals/${snapshot.data[index]['productImages'][0]['imageFileName']}':"",
+                                                                                    snapshot.data[index]['productImages'].isNotEmpty?'https://uploads.fixme.ng/thumbnails/${snapshot.data[index]['productImages'][0]['imageFileName']}':"",
                                                                                   ),
                                                                                   foregroundColor: Colors.white,
                                                                                   backgroundColor: Colors.white,
@@ -1073,8 +1073,8 @@ class _ProfilePageNewState extends State<ProfilePageNew> {
                                                                                   'no_picture_upload' ||
                                                                               network.profilePicFileName ==
                                                                                   null
-                                                                          ? 'https://uploads.fixme.ng/originals/no_picture_upload'
-                                                                          : 'https://uploads.fixme.ng/originals/${network.profilePicFileName}',
+                                                                          ? 'https://uploads.fixme.ng/thumbnails/no_picture_upload'
+                                                                          : 'https://uploads.fixme.ng/thumbnails/${network.profilePicFileName}',
                                                                     ),
                                                                     foregroundColor:
                                                                         Colors
@@ -1759,7 +1759,7 @@ class _ProfilePageNewState extends State<ProfilePageNew> {
                                 height: 100,
                                 child: Image.network(
                                   data['productImages'].isNotEmpty?
-                                  'https://uploads.fixme.ng/originals/${item['imageFileName']}':'',
+                                  'https://uploads.fixme.ng/thumbnails/${item['imageFileName']}':'',
                                   fit: BoxFit.cover,
                                 ),
                               ),

@@ -156,8 +156,8 @@ class _ArtisanPageNewState extends State<ArtisanPageNew> with SingleTickerProvid
                                 backgroundImage: NetworkImage(
                                   widget.userData == 'no_picture_upload' ||
                                           widget.userData == null
-                                      ? 'https://uploads.fixme.ng/originals/no_picture_upload'
-                                      : 'https://uploads.fixme.ng/originals/${widget.userData.urlAvatar}',
+                                      ? 'https://uploads.fixme.ng/thumbnails/no_picture_upload'
+                                      : 'https://uploads.fixme.ng/thumbnails/${widget.userData.urlAvatar}',
                                 ),
                                 foregroundColor: Colors.white,
                                 backgroundColor: Colors.white,
@@ -446,14 +446,14 @@ class _ArtisanPageNewState extends State<ArtisanPageNew> with SingleTickerProvid
                                serviceId: widget.userData.serviceId,
                               serviceId2: network.serviceId,
                                     urlAvatar2:
-                                        'https://uploads.fixme.ng/originals/${network.profilePicFileName}',
+                                        'https://uploads.fixme.ng/thumbnails/${network.profilePicFileName}',
                                     name2: network.firstName,
                                     idArtisan: network.mobileDeviceToken,
                                     artisanMobile: network.phoneNum,
                                     userMobile: widget.userData.userMobile,
                                     idUser: widget.userData.idUser,
                                     urlAvatar:
-                                        'https://uploads.fixme.ng/originals/${widget.userData.urlAvatar}',
+                                        'https://uploads.fixme.ng/thumbnails/${widget.userData.urlAvatar}',
                                     name: widget.userData.name,
                                   );
 
@@ -712,7 +712,7 @@ class _ArtisanPageNewState extends State<ArtisanPageNew> with SingleTickerProvid
                                                                 width: 200,
                                                                 child:
                                                                 Image.network(
-                                                                  'https://uploads.fixme.ng/originals/${snapshot.data[index]['imageFileName']}',
+                                                                  'https://uploads.fixme.ng/thumbnails/${snapshot.data[index]['imageFileName']}',
                                                                   fit: BoxFit.cover,
                                                                 )),
                                                           ),
@@ -943,7 +943,7 @@ class _ArtisanPageNewState extends State<ArtisanPageNew> with SingleTickerProvid
                                                                                         7))),
                                                                             child:
                                                                             Image.network(
-                                                                              'https://uploads.fixme.ng/originals/${snapshot.data[index]['productImages'][0]['imageFileName']}',
+                                                                              'https://uploads.fixme.ng/thumbnails/${snapshot.data[index]['productImages'][0]['imageFileName']}',
                                                                               fit: BoxFit.cover,
                                                                             ),
                                                                           )),
@@ -1105,8 +1105,8 @@ class _ArtisanPageNewState extends State<ArtisanPageNew> with SingleTickerProvid
                                                                           'no_picture_upload' ||
                                                                           network.profilePicFileName ==
                                                                               null
-                                                                          ? 'https://uploads.fixme.ng/originals/no_picture_upload'
-                                                                          : 'https://uploads.fixme.ng/originals/${network.profilePicFileName}',
+                                                                          ? 'https://uploads.fixme.ng/thumbnails/no_picture_upload'
+                                                                          : 'https://uploads.fixme.ng/thumbnails/${network.profilePicFileName}',
                                                                     ),
                                                                     foregroundColor:
                                                                     Colors.white,
@@ -1280,23 +1280,54 @@ class _ArtisanPageNewState extends State<ArtisanPageNew> with SingleTickerProvid
                         child: Row(
                           children: [
                             for (dynamic item in data['productImages'])
-                              Container(
-                                width: MediaQuery.of(context).size.width,
-                                height: 200,
-                                child: Stack(
-                                  children: [
-                                    ClipRRect(
-                                      borderRadius: BorderRadius.circular(10),
-                                      child: Container(
-                                        width: MediaQuery.of(context).size.width,
-                                        height: 200,
-                                        child: Image.network(
-                                          'https://uploads.fixme.ng/originals/${item['imageFileName']}',
-                                          fit: BoxFit.cover,
-                                        ),
+                              Hero(
+                                tag: 'https://uploads.fixme.ng/originals/${item['imageFileName']}',
+                                child: InkWell(
+                                  onTap: () {
+                                    Navigator.push(
+                                      context,
+                                      PageRouteBuilder(
+                                        pageBuilder: (context,
+                                            animation,
+                                            secondaryAnimation) {
+                                          return PhotoView(
+                                            'https://uploads.fixme.ng/originals/${item['imageFileName']}',
+                                            'https://uploads.fixme.ng/originals/${item['imageFileName']}',
+                                          );
+                                        },
+                                        transitionsBuilder:
+                                            (context,
+                                            animation,
+                                            secondaryAnimation,
+                                            child) {
+                                          return FadeTransition(
+                                            opacity:
+                                            animation,
+                                            child: child,
+                                          );
+                                        },
                                       ),
+                                    );
+                                  },
+                                  child: Container(
+                                    width: MediaQuery.of(context).size.width,
+                                    height: 200,
+                                    child: Stack(
+                                      children: [
+                                        ClipRRect(
+                                          borderRadius: BorderRadius.circular(10),
+                                          child: Container(
+                                            width: MediaQuery.of(context).size.width,
+                                            height: 200,
+                                            child: Image.network(
+                                              'https://uploads.fixme.ng/thumbnails/${item['imageFileName']}',
+                                              fit: BoxFit.cover,
+                                            ),
+                                          ),
+                                        ),
+                                      ],
                                     ),
-                                  ],
+                                  ),
                                 ),
                               ),
                           ],
@@ -1404,14 +1435,14 @@ Divider(),
                                    serviceId: widget.userData.serviceId,
                                   serviceId2: network.serviceId,
                                   urlAvatar2:
-                                  'https://uploads.fixme.ng/originals/${network.profilePicFileName}',
+                                  'https://uploads.fixme.ng/thumbnails/${network.profilePicFileName}',
                                   name2: network.firstName,
                                   idArtisan: network.mobileDeviceToken,
                                   artisanMobile: network.phoneNum,
                                   userMobile: widget.userData.userMobile,
                                   idUser: widget.userData.idUser,
                                   urlAvatar:
-                                  'https://uploads.fixme.ng/originals/${widget.userData.urlAvatar}',
+                                  'https://uploads.fixme.ng/thumbnails/${widget.userData.urlAvatar}',
                                   name: widget.userData.name,
                                 );
 
@@ -1467,8 +1498,8 @@ Divider(),
                                 backgroundImage: NetworkImage(
                                   widget.userData == 'no_picture_upload' ||
                                       widget.userData == null
-                                      ? 'https://uploads.fixme.ng/originals/no_picture_upload'
-                                      : 'https://uploads.fixme.ng/originals/${widget.userData.urlAvatar}',
+                                      ? 'https://uploads.fixme.ng/thumbnails/no_picture_upload'
+                                      : 'https://uploads.fixme.ng/thumbnails/${widget.userData.urlAvatar}',
                                 ),
                                 foregroundColor: Colors.white,
                                 backgroundColor: Colors.white,

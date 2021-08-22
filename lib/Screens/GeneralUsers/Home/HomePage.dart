@@ -152,8 +152,10 @@ class _HomePageState extends State<HomePage> {
     datas.setSelectedBottomNavBar(0);
 
     Provider.of<LocationService>(context, listen: false).getCurrentLocation();
+    // _myPage =
+    //     PageController(initialPage: widget.firstUser=='first'?1:0, viewportFraction: 1, keepPage: true);
     _myPage =
-        PageController(initialPage: widget.firstUser=='first'?1:0, viewportFraction: 1, keepPage: true);
+        PageController(initialPage: 1, viewportFraction: 1, keepPage: true);
     WidgetsBinding.instance.addPostFrameCallback((timeStamp) {
       PostRequestProvider postRequestProvider =
           Provider.of<PostRequestProvider>(context, listen: false);
@@ -237,7 +239,8 @@ class _HomePageState extends State<HomePage> {
     });
 
     var datan = Provider.of<DataProvider>(context, listen: false);
-    widget.firstUser=='first'?datan.setSelectedBottomNavBar(1):null;
+    // widget.firstUser=='first'?datan.setSelectedBottomNavBar(1):null;
+   datan.setSelectedBottomNavBar(1);
   }
 
 
@@ -320,7 +323,7 @@ class _HomePageState extends State<HomePage> {
                 icon: Padding(
                   padding: const EdgeInsets.only(bottom: 3),
                   child: Icon(
-                    conData.selectedPage==3?MyFlutterApp.wallet2:MyFlutterApp.wallet,
+                    conData.selectedPage==3?MyFlutterApp.vector_5:MyFlutterApp.wallet,
                     size: 20,
                   ),
                 ),
@@ -330,7 +333,7 @@ class _HomePageState extends State<HomePage> {
               BottomNavigationBarItem(
                 icon: Padding(
                   padding: const EdgeInsets.only(bottom: 3),
-                  child: Icon(conData.selectedPage==4?MyFlutterApp.vector_5:FeatherIcons.clock),
+                  child: Icon(conData.selectedPage==4?MyFlutterApp.wallet2:FeatherIcons.clock),
                 ),
                 label: 'Tasks',
               )

@@ -115,6 +115,7 @@ class ProfilePhotoPageState extends State<ProfilePhotoPage> {
                                           context: context,
                                           uploadType: 'profilePicture',
                                           navigate: widget.myPage,
+                                          name: conData.selectedImage.name,
                                         );
                                       },
                                 color: Color(0xFF9B049B),

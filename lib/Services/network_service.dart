@@ -8,17 +8,17 @@ import 'package:fixme/Model/Project.dart';
 import 'package:fixme/Screens/ArtisanUser/Profile/ProfilePageNew.dart';
 import 'package:fixme/Screens/GeneralUsers/Home/HomePage.dart';
 import 'package:fixme/Screens/GeneralUsers/Notification/Pay.dart';
+import 'package:fixme/Services/location_service.dart';
 import 'package:fixme/Services/postrequest_service.dart';
 import 'package:fixme/Utils/Provider.dart';
+import 'package:dio/dio.dart';
 import 'package:fixme/Utils/utils.dart';
 import 'package:fl_toast/fl_toast.dart';
 import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
-import 'package:get/get.dart';
 import 'package:http/http.dart' as http;
 import 'package:provider/provider.dart';
 import 'package:shared_preferences/shared_preferences.dart';
-
 import 'Firebase_service.dart';
 
 class WebServices extends ChangeNotifier {
@@ -92,6 +92,7 @@ class WebServices extends ChangeNotifier {
   Future<dynamic> register({context, scaffoldKey}) async {
     var data = Provider.of<DataProvider>(context, listen: false);
     var datas = Provider.of<Utils>(context, listen: false);
+    var location = Provider.of<LocationService>(context, listen: false);
     try {
       var response = await http.post(Uri.parse('$mainUrl/create-user'), body: {
         'mobile': data.number.toString().substring(
@@ -101,6 +102,8 @@ class WebServices extends ChangeNotifier {
         'referral_Id': data.referalId.isEmpty ? '0' : data.referalId,
         'device_token': datas.fcmToken.toString() ?? '',
         'device_os': os.toString(),
+        'longitude': location.locationLongitude.toString(),
+        'latitude': location.locationLatitude.toString(),
         'device_type': info.toString(),
         'password': data.password.toString(),
         'firebaseId': data.firebaseUserId.toString(),
@@ -1372,20 +1375,40 @@ class WebServices extends ChangeNotifier {
     return res;
   }
 
-  Future uploadPhoto({path, uploadType, navigate, context}) async {
+  Future uploadPhoto({path, uploadType, navigate,name, context}) async {
+    // var dio = Dio();
     try {
+    //   var formData = FormData.fromMap({
+    //     'uploadType': uploadType.toString(),
+    //     'firstName': firstName.toString(),
+    //     'user_id': userId.toString(),
+    //     'file': await MultipartFile.fromFile(path, filename: name),
+    //   });
+    //
+    //   var response = await dio.post('https://uploads.fixme.ng/uploads-processing', data: formData);
+    //
+    //   print(response.statusCode);
+    //   print(response.statusCode);
+    //   print(response.statusCode);
+    //   print(response.statusCode);
+    //
+
+
+
       var upload = http.MultipartRequest(
           'POST', Uri.parse('https://uploads.fixme.ng/uploads-processing'));
       upload.headers['Authorization'] = 'Bearer $bearer';
       upload.headers['Content-type'] = 'application/json';
       var file = await http.MultipartFile.fromPath('file', path);
-
       upload.fields['user_id'] = userId.toString();
       upload.fields['firstName'] = firstName.toString();
       upload.fields['uploadType'] = uploadType.toString();
       upload.files.add(file);
       final stream = await upload.send();
       var res = await http.Response.fromStream(stream);
+      print(res.statusCode);
+      print(res.statusCode);
+      print(res.statusCode);
       var body = jsonDecode(res.body);
       notifyListeners();
       if (body['upldRes'] == 'true') {
@@ -1405,6 +1428,18 @@ class WebServices extends ChangeNotifier {
               );
             },
             context: context);
+      }else{
+        showDialog(
+            builder: (ctx) {
+              return AlertDialog(
+                title: Center(
+                  child: Text('There was a Problem Working on it 00000000!',
+                      style: TextStyle(color: Colors.blue)),
+                ),
+              );
+            },
+            context: context);
+        loginSetState();
       }
     } catch (e) {
       showDialog(

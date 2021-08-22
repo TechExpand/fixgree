@@ -154,7 +154,7 @@ class SearchResultState extends State<SearchResult> {
                                           token2: data.fcmToken ,
                             token: snapshot.data[index].fcmToken,
                                         urlAvatar2:
-                                            'https://uploads.fixme.ng/originals/${network.profilePicFileName}',
+                                            'https://uploads.fixme.ng/thumbnails/${network.profilePicFileName}',
                                         name2: network.firstName,
                                         serviceId: snapshot.data[index].serviceId,
                             serviceId2: network.serviceId,
@@ -166,7 +166,7 @@ class SearchResultState extends State<SearchResult> {
                                             snapshot.data[index].userMobile,
                                         idUser: snapshot.data[index].idUser,
                                         urlAvatar:
-                                            'https://uploads.fixme.ng/originals/${snapshot.data[index].urlAvatar}',
+                                            'https://uploads.fixme.ng/thumbnails/${snapshot.data[index].urlAvatar}',
                                         name: snapshot.data[index].name,
                                       );
 //                                      FirebaseApi.uploadCheckChat(
@@ -202,8 +202,8 @@ class SearchResultState extends State<SearchResult> {
                                                           snapshot.data[index]
                                                                   .urlAvatar ==
                                                               null
-                                                      ? 'https://uploads.fixme.ng/originals/no_picture_upload'
-                                                      : 'https://uploads.fixme.ng/originals/${snapshot.data[index].urlAvatar}'),
+                                                      ? 'https://uploads.fixme.ng/thumbnails/no_picture_upload'
+                                                      : 'https://uploads.fixme.ng/thumbnails/${snapshot.data[index].urlAvatar}'),
                                           foregroundColor: Colors.white,
                                           backgroundColor: Colors.white,
                                         ),

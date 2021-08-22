@@ -50,8 +50,8 @@ class _DrawerState extends State<DrawerWidget> {
                   backgroundImage: NetworkImage(
                     network.profilePicFileName == 'no_picture_upload' ||
                             network.profilePicFileName == null
-                        ? 'https://uploads.fixme.ng/originals/no_picture_upload'
-                        : 'https://uploads.fixme.ng/originals/${network.profilePicFileName}',
+                        ? 'https://uploads.fixme.ng/thumbnails/no_picture_upload'
+                        : 'https://uploads.fixme.ng/thumbnails/${network.profilePicFileName}',
                   ),
                   foregroundColor: Colors.white,
                   backgroundColor: Colors.white,
