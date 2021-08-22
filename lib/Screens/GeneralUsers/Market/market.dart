@@ -555,14 +555,14 @@ class _MarketPageState extends State<MarketPage> {
                                 },
                                 child: Container(
                                   width: MediaQuery.of(context).size.width,
-                                  height: 200,
+                                  height: 300,
                                   child: Stack(
                                     children: [
                                       ClipRRect(
                                         borderRadius: BorderRadius.circular(10),
                                         child: Container(
                                           width: MediaQuery.of(context).size.width,
-                                          height: 200,
+                                          height: 300,
                                           child: Image.network(
                                             'https://uploads.fixme.ng/thumbnails/${item['imageFileName']}',
                                             fit: BoxFit.cover,
