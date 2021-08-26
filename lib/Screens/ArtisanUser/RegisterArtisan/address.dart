@@ -167,7 +167,7 @@ TextEditingController businessName = TextEditingController();
                 ),
               ),
             ),
-            Spacer(),
+
     Padding(
         padding: EdgeInsets.only(
             bottom: MediaQuery.of(context).viewInsets.bottom),

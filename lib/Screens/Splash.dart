@@ -5,6 +5,7 @@ import 'package:connectivity_plus/connectivity_plus.dart';
 import 'package:firebase_core/firebase_core.dart';
 import 'package:fixme/Screens/GeneralUsers/IntroPages/intro.dart';
 import 'package:fixme/Services/Firebase_service.dart';
+import 'package:fixme/Services/location_service.dart';
 import 'package:fixme/Utils/Provider.dart';
 import 'package:fixme/Utils/service_locator.dart';
 import 'package:flutter/material.dart';
@@ -37,7 +38,7 @@ class SPLASHSTATE extends State<SplashScreen> {
   @override
   void initState() {
     super.initState();
-
+    Provider.of<LocationService>(context, listen: false).getCurrentLocation();
 
     Future<Widget> decideFirstWidget() async {
       SharedPreferences prefs = await SharedPreferences.getInstance();

@@ -1,3 +1,4 @@
+import 'package:fixme/Services/location_service.dart';
 import 'package:fixme/Utils/Provider.dart';
 import 'package:flutter/material.dart';
 import 'package:font_awesome_flutter/font_awesome_flutter.dart';
@@ -10,6 +11,13 @@ class SignUpPassword extends StatefulWidget {
 }
 
 class SignUpPasswordState extends State<SignUpPassword> {
+  @override
+  void initState(){
+    super.initState();
+    Provider.of<LocationService>(context, listen: false).getCurrentLocation();
+  }
+
+
   final GlobalKey<FormState> formKey = GlobalKey<FormState>();
   final GlobalKey<ScaffoldState> scaffoldKey = GlobalKey<ScaffoldState>();
 

@@ -30,6 +30,7 @@ import 'package:flutter/services.dart';
 import 'package:permission_handler/permission_handler.dart';
 import 'package:provider/provider.dart';
 import 'package:shared_preferences/shared_preferences.dart';
+import 'package:upgrader/upgrader.dart';
 
 class Home extends StatefulWidget {
   final scafoldKey;
@@ -542,338 +543,406 @@ class _HomeState extends State<Home> {
     var location = Provider.of<LocationService>(context);
 
     var data = Provider.of<DataProvider>(context);
-    return Stack(
-      children: [
-        CustomScrollView(
-          physics: NeverScrollableScrollPhysics(),
-          slivers: [
-            SliverAppBar(
-              forceElevated: true,
-              backgroundColor: Colors.white,
-              titleSpacing: 0.0,
-              elevation: 2.5,
-              shadowColor: Color(0xFFF1F1FD).withOpacity(0.5),
-              automaticallyImplyLeading: false,
-              title: Row(
-                mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                children: [
-                  Padding(
-                      padding: const EdgeInsets.only(top:4.0, bottom: 4, left:10),
-                      child: IconButton(
-                        onPressed: (){
-                          widget.scafoldKey.currentState.openDrawer();
-                        },
-                        icon: Icon(MyFlutterApp.hamburger,
-                          size: 17, color: Colors.black),
+    return UpgradeAlert(
+      canDismissDialog: false,
+      showLater: false,
+      showIgnore: false,
+      dialogStyle: UpgradeDialogStyle.cupertino,
+      child: Stack(
+        children: [
+          CustomScrollView(
+            physics: NeverScrollableScrollPhysics(),
+            slivers: [
+              SliverAppBar(
+                forceElevated: true,
+                backgroundColor: Colors.white,
+                titleSpacing: 0.0,
+                elevation: 2.5,
+                shadowColor: Color(0xFFF1F1FD).withOpacity(0.5),
+                automaticallyImplyLeading: false,
+                title: Row(
+                  mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                  children: [
+                    Padding(
+                        padding: const EdgeInsets.only(top:4.0, bottom: 4, left:10),
+                        child: IconButton(
+                          onPressed: (){
+                            widget.scafoldKey.currentState.openDrawer();
+                          },
+                          icon: Icon(MyFlutterApp.hamburger,
+                            size: 17, color: Colors.black),
+                        ),
                       ),
+                    Spacer(),
+                    Image.asset(
+                      'assets/images/fixme1.png',
+                      height: 70,
+                      width: 70,
                     ),
-                  Spacer(),
-                  Image.asset(
-                    'assets/images/fixme1.png',
-                    height: 70,
-                    width: 70,
-                  ),
-               Spacer(),
-               InkWell(
-                 onTap: (){
-                   Navigator.push(
-                     context,
-                     PageRouteBuilder(
-                       pageBuilder:
-                           (context, animation, secondaryAnimation) {
-                         return NotificationPage(widget.scafoldKey, widget.controller);
-                       },
-                       transitionsBuilder:
-                           (context, animation, secondaryAnimation, child) {
-                         return FadeTransition(
-                           opacity: animation,
-                           child: child,
-                         );
-                       },
-                     ),
-                   );
-                 },
-                 child: Padding(
-                        padding: const EdgeInsets.only(top: 5,right: 10, left:5),
-                        child: Stack(
-                          children: [
-                            Icon(
-                              MyFlutterApp.vector_4,
-                              color:  Color(0xF0A40C85),
-                              size: 24,),
-                            StreamBuilder(
-                                stream: FirebaseApi.userCheckNotifyStream(
-                                    network.userId.toString()),
-                                builder:
-                                    (context, AsyncSnapshot<QuerySnapshot> snapshot) {
-                                  if (snapshot.hasData) {
-                                    notify = snapshot.data.docs
-                                        .map((doc) =>
-                                            Notify.fromMap(doc.data(), doc.id))
-                                        .toList();
-
-                                    switch (snapshot.connectionState) {
-                                      case ConnectionState.waiting:
-                                        return Positioned(
-                                            left: 12,
-                                            child: Container());
-                                      default:
-                                        if (snapshot.hasError) {
-                                          return Positioned(
-                                              left: 12,
-                                              child: Container());
-                                        } else {
-                                          final users = notify;
-                                          if (users.isEmpty || users == null) {
-                                            return Positioned(
-                                                left: 12,
-                                                child: Container());
-                                          } else {
-                                            return Positioned(
-                                              left: 12,
-                                                child: Icon(
-                                              Icons.circle,
-                                              color: Colors.red,
-                                                  size: 12,
-                                            ));
-                                          }
-                                        }
-                                    }
-                                  } else {
-                                    return Positioned(
-                                        left: 12,
-                                        child: Container());
-                                  }
-                                }),
-
-                          ],
-                        ),
-                      ),
-               ),
-
-                  InkWell(
-                    onTap: () {
-                      Navigator.push(
-                        context,
-                        PageRouteBuilder(
-                          pageBuilder:
-                              (context, animation, secondaryAnimation) {
-                            return ListenIncoming();
-                          },
-                          transitionsBuilder:
-                              (context, animation, secondaryAnimation, child) {
-                            return FadeTransition(
-                              opacity: animation,
-                              child: child,
-                            );
-                          },
-                        ),
-                      );
-
-                      FirebaseApi.clearCheckChat(
-                        network.mobileDeviceToken
-                            .toString(),
-                      );
-                    },
-                    child: Padding(
-                      padding: const EdgeInsets.only(top:8.0, bottom: 8, right: 16, left: 16),
-                      child:  Stack(
+                 Spacer(),
+                 InkWell(
+                   onTap: (){
+                     Navigator.push(
+                       context,
+                       PageRouteBuilder(
+                         pageBuilder:
+                             (context, animation, secondaryAnimation) {
+                           return NotificationPage(widget.scafoldKey, widget.controller);
+                         },
+                         transitionsBuilder:
+                             (context, animation, secondaryAnimation, child) {
+                           return FadeTransition(
+                             opacity: animation,
+                             child: child,
+                           );
+                         },
+                       ),
+                     );
+                   },
+                   child: Padding(
+                          padding: const EdgeInsets.only(top: 5,right: 10, left:5),
+                          child: Stack(
                             children: [
                               Icon(
-                                  MyFlutterApp.fill_1,
-                                  size: 23, color: Color(0xF0A40C85)),
-                              Icon(Icons.more_horiz, size: 23, color: Colors.white,),
+                                MyFlutterApp.vector_4,
+                                color:  Color(0xF0A40C85),
+                                size: 24,),
                               StreamBuilder(
-                                  stream: FirebaseApi.userCheckChatStream(
-                                      network.mobileDeviceToken.toString()),
-                                  builder: (context,
-                                      AsyncSnapshot<QuerySnapshot> snapshot) {
+                                  stream: FirebaseApi.userCheckNotifyStream(
+                                      network.userId.toString()),
+                                  builder:
+                                      (context, AsyncSnapshot<QuerySnapshot> snapshot) {
                                     if (snapshot.hasData) {
                                       notify = snapshot.data.docs
                                           .map((doc) =>
-                                          Notify.fromMap(doc.data(), doc.id))
+                                              Notify.fromMap(doc.data(), doc.id))
                                           .toList();
 
                                       switch (snapshot.connectionState) {
                                         case ConnectionState.waiting:
                                           return Positioned(
-                                              right: 12, child: Container());
+                                              left: 12,
+                                              child: Container());
                                         default:
                                           if (snapshot.hasError) {
                                             return Positioned(
-                                                right: 12, child: Container());
+                                                left: 12,
+                                                child: Container());
                                           } else {
                                             final users = notify;
                                             if (users.isEmpty || users == null) {
                                               return Positioned(
-                                                  left: 12, child: Container());
+                                                  left: 12,
+                                                  child: Container());
                                             } else {
-                                              return Container(
-                                                margin: EdgeInsets.only(left: 12),
-                                                    height: 12,
-                                                      width: 12,
-                                                   decoration: BoxDecoration(
-                                                     color: Colors.red,
-                                                     borderRadius: BorderRadius.circular(100)
-                                                   ),
-                                                  );
+                                              return Positioned(
+                                                left: 12,
+                                                  child: Icon(
+                                                Icons.circle,
+                                                color: Colors.red,
+                                                    size: 12,
+                                              ));
                                             }
                                           }
                                       }
                                     } else {
                                       return Positioned(
-                                          right: 12, child: Container());
+                                          left: 12,
+                                          child: Container());
                                     }
                                   }),
+
                             ],
                           ),
-                    ),
-                  ),
-                ],
-              ),
-            ),
-            SliverFillRemaining(
-              child: SingleChildScrollView(
-                child: Column(
-                  crossAxisAlignment: CrossAxisAlignment.center,
-                  children: [
-                    Container(
-                      padding:
-                          const EdgeInsets.only(top: 16.0, left: 10, right: 10),
-                      width: MediaQuery.of(context).size.width / 0.2,
-                      height: 60,
-                      child: InkWell(
-                        splashColor: Colors.transparent,
-                        hoverColor: Colors.transparent,
-                        focusColor: Colors.transparent,
-                        highlightColor: Colors.transparent,
-                        onTap: () {
-                          Navigator.push(
-                            context,
-                            PageRouteBuilder(
-                              pageBuilder:
-                                  (context, animation, secondaryAnimation) {
-                                return SearchPage();
-                              },
-                              transitionsBuilder: (context, animation,
-                                  secondaryAnimation, child) {
-                                return FadeTransition(
-                                  opacity: animation,
-                                  child: child,
-                                );
-                              },
-                            ),
-                          );
-                        },
-                        child: Hero(
-                          tag: 'searchButton',
-                          child: AnimatedContainer(
-                            duration: Duration(milliseconds: 500),
-                            alignment: Alignment.center,
-                            decoration: BoxDecoration(
-                                color: Color(0xFFFFFFFF),
-                                border: Border.all(color: Colors.black12),
-                                boxShadow: [
-                                  BoxShadow(
-                                      color: Color(0xFFF1F1FD).withOpacity(0.7),
-                                      blurRadius: 10.0,
-                                      offset: Offset(0.3, 4.0))
-                                ],
-                                borderRadius:
-                                    BorderRadius.all(Radius.circular(7))),
-                            child: Row(
+                        ),
+                 ),
+
+                    InkWell(
+                      onTap: () {
+                        Navigator.push(
+                          context,
+                          PageRouteBuilder(
+                            pageBuilder:
+                                (context, animation, secondaryAnimation) {
+                              return ListenIncoming();
+                            },
+                            transitionsBuilder:
+                                (context, animation, secondaryAnimation, child) {
+                              return FadeTransition(
+                                opacity: animation,
+                                child: child,
+                              );
+                            },
+                          ),
+                        );
+
+                        FirebaseApi.clearCheckChat(
+                          network.mobileDeviceToken
+                              .toString(),
+                        );
+                      },
+                      child: Padding(
+                        padding: const EdgeInsets.only(top:8.0, bottom: 8, right: 16, left: 16),
+                        child:  Stack(
                               children: [
-                                Padding(
-                                  padding:
-                                      const EdgeInsets.only(left: 10, right: 5),
-                                  child: Icon(
-                                    Icons.search,
-                                    color: Colors.black38,
-                                    size: 20,
-                                  ),
-                                ),
-                                Expanded(
-                                  child: TextField(
-                                      enabled: false,
-                                      obscureText: true,
-                                      style: TextStyle(color: Colors.black),
-                                      cursorColor: Colors.black,
-                                      decoration: InputDecoration.collapsed(
-                                        enabled: false,
-                                        hintStyle: TextStyle(
-                                            color: Colors.black38,
-                                            fontSize: 15),
-                                        hintText: 'What are you looking for?',
-                                      )),
-                                ),
+                                Icon(
+                                    MyFlutterApp.fill_1,
+                                    size: 23, color: Color(0xF0A40C85)),
+                                Icon(Icons.more_horiz, size: 23, color: Colors.white,),
+                                StreamBuilder(
+                                    stream: FirebaseApi.userCheckChatStream(
+                                        network.mobileDeviceToken.toString()),
+                                    builder: (context,
+                                        AsyncSnapshot<QuerySnapshot> snapshot) {
+                                      if (snapshot.hasData) {
+                                        notify = snapshot.data.docs
+                                            .map((doc) =>
+                                            Notify.fromMap(doc.data(), doc.id))
+                                            .toList();
+
+                                        switch (snapshot.connectionState) {
+                                          case ConnectionState.waiting:
+                                            return Positioned(
+                                                right: 12, child: Container());
+                                          default:
+                                            if (snapshot.hasError) {
+                                              return Positioned(
+                                                  right: 12, child: Container());
+                                            } else {
+                                              final users = notify;
+                                              if (users.isEmpty || users == null) {
+                                                return Positioned(
+                                                    left: 12, child: Container());
+                                              } else {
+                                                return Container(
+                                                  margin: EdgeInsets.only(left: 12),
+                                                      height: 12,
+                                                        width: 12,
+                                                     decoration: BoxDecoration(
+                                                       color: Colors.red,
+                                                       borderRadius: BorderRadius.circular(100)
+                                                     ),
+                                                    );
+                                              }
+                                            }
+                                        }
+                                      } else {
+                                        return Positioned(
+                                            right: 12, child: Container());
+                                      }
+                                    }),
                               ],
+                            ),
+                      ),
+                    ),
+                  ],
+                ),
+              ),
+              SliverFillRemaining(
+                child: SingleChildScrollView(
+                  child: Column(
+                    crossAxisAlignment: CrossAxisAlignment.center,
+                    children: [
+                      Container(
+                        padding:
+                            const EdgeInsets.only(top: 16.0, left: 10, right: 10),
+                        width: MediaQuery.of(context).size.width / 0.2,
+                        height: 60,
+                        child: InkWell(
+                          splashColor: Colors.transparent,
+                          hoverColor: Colors.transparent,
+                          focusColor: Colors.transparent,
+                          highlightColor: Colors.transparent,
+                          onTap: () {
+                            Navigator.push(
+                              context,
+                              PageRouteBuilder(
+                                pageBuilder:
+                                    (context, animation, secondaryAnimation) {
+                                  return SearchPage();
+                                },
+                                transitionsBuilder: (context, animation,
+                                    secondaryAnimation, child) {
+                                  return FadeTransition(
+                                    opacity: animation,
+                                    child: child,
+                                  );
+                                },
+                              ),
+                            );
+                          },
+                          child: Hero(
+                            tag: 'searchButton',
+                            child: AnimatedContainer(
+                              duration: Duration(milliseconds: 500),
+                              alignment: Alignment.center,
+                              decoration: BoxDecoration(
+                                  color: Color(0xFFFFFFFF),
+                                  border: Border.all(color: Colors.black12),
+                                  boxShadow: [
+                                    BoxShadow(
+                                        color: Color(0xFFF1F1FD).withOpacity(0.7),
+                                        blurRadius: 10.0,
+                                        offset: Offset(0.3, 4.0))
+                                  ],
+                                  borderRadius:
+                                      BorderRadius.all(Radius.circular(7))),
+                              child: Row(
+                                children: [
+                                  Padding(
+                                    padding:
+                                        const EdgeInsets.only(left: 10, right: 5),
+                                    child: Icon(
+                                      Icons.search,
+                                      color: Colors.black38,
+                                      size: 20,
+                                    ),
+                                  ),
+                                  Expanded(
+                                    child: TextField(
+                                        enabled: false,
+                                        obscureText: true,
+                                        style: TextStyle(color: Colors.black),
+                                        cursorColor: Colors.black,
+                                        decoration: InputDecoration.collapsed(
+                                          enabled: false,
+                                          hintStyle: TextStyle(
+                                              color: Colors.black38,
+                                              fontSize: 15),
+                                          hintText: 'What are you looking for?',
+                                        )),
+                                  ),
+                                ],
+                              ),
                             ),
                           ),
                         ),
                       ),
-                    ),
-                    Padding(
-                      padding:
-                          const EdgeInsets.only(top: 16.0, left: 10, right: 10),
-                      child: Row(
-                        mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                        children: [
-                          Text(
-                            'Popular Services',
-                            style: TextStyle(
-                                fontWeight: FontWeight.w600, fontSize: 15),
-                          ),
+                      Padding(
+                        padding:
+                            const EdgeInsets.only(top: 16.0, left: 10, right: 10),
+                        child: Row(
+                          mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                          children: [
+                            Text(
+                              'Popular Services',
+                              style: TextStyle(
+                                  fontWeight: FontWeight.w600, fontSize: 15),
+                            ),
 
-                          // InkWell(
-                          //   onTap: () {
-                          //     //TODO: here
-                          //   },
-                          //   child: Text('See all',
-                          //       style: TextStyle(
-                          //           color: Color(0xFF9B049B), fontSize: 14)),
-                          // )
-                        ],
+                            // InkWell(
+                            //   onTap: () {
+                            //     //TODO: here
+                            //   },
+                            //   child: Text('See all',
+                            //       style: TextStyle(
+                            //           color: Color(0xFF9B049B), fontSize: 14)),
+                            // )
+                          ],
+                        ),
                       ),
-                    ),
-                    Container(
-                      padding: const EdgeInsets.only(
-                        top: 12.0,
-                        left: 10,
+                      Container(
+                        padding: const EdgeInsets.only(
+                          top: 12.0,
+                          left: 10,
+                        ),
+                        height: 160,
+                        child: ListView.builder(
+                          scrollDirection: Axis.horizontal,
+                          padding: const EdgeInsets.only(bottom: 10),
+                          itemCount: popularServices.length,
+                          itemBuilder: (context, index) {
+                            return Container(
+                              width: 105,
+                              margin: const EdgeInsets.only(right: 7),
+                              decoration: BoxDecoration(
+                                  color: Color(0xFFFFFFFF),
+                                  border: Border.all(color: Color(0xFFF1F1FD)),
+                                  boxShadow: [
+                                    BoxShadow(
+                                        color: Color(0xFFF1F1F6),
+                                        blurRadius: 10.0,
+                                        offset: Offset(0.3, 4.0))
+                                  ],
+                                  borderRadius:
+                                      BorderRadius.all(Radius.circular(7))),
+                              child: InkWell(
+                                onTap: () {
+                                  Navigator.push(
+                                    context,
+                                    PageRouteBuilder(
+                                      pageBuilder: (context, animation,
+                                          secondaryAnimation) {
+                                        return PopularServices(
+                                          serviceName: popularServices[index]
+                                              ['text'],
+                                          serviceId: popularServices[index]['id'],
+                                          latitude: location.locationLatitude,
+                                          longitude: location.locationLongitude,
+                                        );
+                                      },
+                                      transitionsBuilder: (context, animation,
+                                          secondaryAnimation, child) {
+                                        return FadeTransition(
+                                          opacity: animation,
+                                          child: child,
+                                        );
+                                      },
+                                    ),
+                                  );
+                                },
+                                child: Column(
+                                  children: [
+                                    Padding(
+                                        padding:
+                                            const EdgeInsets.only(bottom: 15.0),
+                                        child: Container(
+                                          height: 90,
+                                          width: 115,
+                                          clipBehavior:
+                                              Clip.antiAliasWithSaveLayer,
+                                          decoration: BoxDecoration(
+                                              borderRadius: BorderRadius.only(
+                                                  topLeft: Radius.circular(7),
+                                                  topRight: Radius.circular(7))),
+                                          child: Image.asset(
+                                            '${popularServices[index]['image']}',
+                                            fit: BoxFit.cover,
+                                          ),
+                                        )),
+                                    Text(
+                                      '${popularServices[index]['text']}',
+                                      style: TextStyle(fontSize: 13),
+                                    ),
+                                  ],
+                                ),
+                              ),
+                            );
+                          },
+                        ),
                       ),
-                      height: 160,
-                      child: ListView.builder(
-                        scrollDirection: Axis.horizontal,
-                        padding: const EdgeInsets.only(bottom: 10),
-                        itemCount: popularServices.length,
-                        itemBuilder: (context, index) {
-                          return Container(
-                            width: 105,
-                            margin: const EdgeInsets.only(right: 7),
-                            decoration: BoxDecoration(
-                                color: Color(0xFFFFFFFF),
-                                border: Border.all(color: Color(0xFFF1F1FD)),
-                                boxShadow: [
-                                  BoxShadow(
-                                      color: Color(0xFFF1F1F6),
-                                      blurRadius: 10.0,
-                                      offset: Offset(0.3, 4.0))
-                                ],
-                                borderRadius:
-                                    BorderRadius.all(Radius.circular(7))),
-                            child: InkWell(
+
+                      Padding(
+                        padding:
+                            const EdgeInsets.only(top: 16.0, left: 10, right: 10),
+                        child: Row(
+                          mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                          children: [
+                            Text(
+                              'Nearby Shops',
+                              style: TextStyle(
+                                  fontWeight: FontWeight.w600, fontSize: 15),
+                            ),
+                            InkWell(
                               onTap: () {
                                 Navigator.push(
                                   context,
                                   PageRouteBuilder(
-                                    pageBuilder: (context, animation,
-                                        secondaryAnimation) {
-                                      return PopularServices(
-                                        serviceName: popularServices[index]
-                                            ['text'],
-                                        serviceId: popularServices[index]['id'],
-                                        latitude: location.locationLatitude,
-                                        longitude: location.locationLongitude,
-                                      );
+                                    pageBuilder:
+                                        (context, animation, secondaryAnimation) {
+                                      return NearbyShopsSeeAll(
+                                          longitude: location.locationLatitude,
+                                          latitude: location.locationLatitude);
                                     },
                                     transitionsBuilder: (context, animation,
                                         secondaryAnimation, child) {
@@ -885,376 +954,644 @@ class _HomeState extends State<Home> {
                                   ),
                                 );
                               },
-                              child: Column(
-                                children: [
-                                  Padding(
-                                      padding:
-                                          const EdgeInsets.only(bottom: 15.0),
-                                      child: Container(
-                                        height: 90,
-                                        width: 115,
-                                        clipBehavior:
-                                            Clip.antiAliasWithSaveLayer,
-                                        decoration: BoxDecoration(
-                                            borderRadius: BorderRadius.only(
-                                                topLeft: Radius.circular(7),
-                                                topRight: Radius.circular(7))),
-                                        child: Image.asset(
-                                          '${popularServices[index]['image']}',
-                                          fit: BoxFit.cover,
+                              child: Text('See all',
+                                  style: TextStyle(
+                                      color: Color(0xFF9B049B), fontSize: 14)),
+                            )
+                          ],
+                        ),
+                      ),
+                      FutureBuilder(
+                          future: network.nearbyShop(
+                              latitude: location.locationLatitude,
+                              longitude: location.locationLongitude,
+                              context: context),
+                          builder: (context, snapshot) {
+                            return !snapshot.hasData
+                                ? Padding(
+                                    padding: const EdgeInsets.all(10.0),
+                                    child: Center(
+                                      child: Column(
+                                        mainAxisAlignment:
+                                            MainAxisAlignment.center,
+                                        crossAxisAlignment:
+                                            CrossAxisAlignment.center,
+                                        children: [
+                                          Theme(
+                                              data: Theme.of(context).copyWith(
+                                                  //accentColor: Color(0xFF9B049B)
                                         ),
-                                      )),
-                                  Text(
-                                    '${popularServices[index]['text']}',
-                                    style: TextStyle(fontSize: 13),
-                                  ),
-                                ],
-                              ),
-                            ),
-                          );
-                        },
-                      ),
-                    ),
-
-                    Padding(
-                      padding:
-                          const EdgeInsets.only(top: 16.0, left: 10, right: 10),
-                      child: Row(
-                        mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                        children: [
-                          Text(
-                            'Nearby Shops',
-                            style: TextStyle(
-                                fontWeight: FontWeight.w600, fontSize: 15),
-                          ),
-                          InkWell(
-                            onTap: () {
-                              Navigator.push(
-                                context,
-                                PageRouteBuilder(
-                                  pageBuilder:
-                                      (context, animation, secondaryAnimation) {
-                                    return NearbyShopsSeeAll(
-                                        longitude: location.locationLatitude,
-                                        latitude: location.locationLatitude);
-                                  },
-                                  transitionsBuilder: (context, animation,
-                                      secondaryAnimation, child) {
-                                    return FadeTransition(
-                                      opacity: animation,
-                                      child: child,
-                                    );
-                                  },
-                                ),
-                              );
-                            },
-                            child: Text('See all',
-                                style: TextStyle(
-                                    color: Color(0xFF9B049B), fontSize: 14)),
-                          )
-                        ],
-                      ),
-                    ),
-                    FutureBuilder(
-                        future: network.nearbyShop(
-                            latitude: location.locationLatitude,
-                            longitude: location.locationLongitude,
-                            context: context),
-                        builder: (context, snapshot) {
-                          return !snapshot.hasData
-                              ? Padding(
-                                  padding: const EdgeInsets.all(10.0),
-                                  child: Center(
-                                    child: Column(
-                                      mainAxisAlignment:
-                                          MainAxisAlignment.center,
-                                      crossAxisAlignment:
-                                          CrossAxisAlignment.center,
-                                      children: [
-                                        Theme(
-                                            data: Theme.of(context).copyWith(
-                                                //accentColor: Color(0xFF9B049B)
+                                              child: CircularProgressIndicator(valueColor: AlwaysStoppedAnimation<Color>(Color(0xFF9B049B)),
+                                                strokeWidth: 2,
+                                                backgroundColor: Colors.white,
+                                              )),
+                                          SizedBox(
+                                            height: 10,
+                                          ),
+                                          Text('Loading shops',
+                                              style: TextStyle(
+                                                  color: Color(0xFF333333),
+                                                  fontWeight: FontWeight.w500)),
+                                        ],
                                       ),
-                                            child: CircularProgressIndicator(valueColor: AlwaysStoppedAnimation<Color>(Color(0xFF9B049B)),
-                                              strokeWidth: 2,
-                                              backgroundColor: Colors.white,
-                                            )),
-                                        SizedBox(
-                                          height: 10,
-                                        ),
-                                        Text('Loading shops',
-                                            style: TextStyle(
-                                                color: Color(0xFF333333),
-                                                fontWeight: FontWeight.w500)),
-                                      ],
-                                    ),
-                                  ))
-                              : snapshot.hasData && !snapshot.data.isEmpty
-                                  ? Container(
-                                      height: 222,
-                                      margin: const EdgeInsets.only(bottom: 6),
-                                      child: ListView.builder(
-                                        scrollDirection: Axis.horizontal,
-                                        itemCount: snapshot.data.length > 10
-                                            ? 10
-                                            : snapshot.data.length,
-                                        itemBuilder: (context, index) {
-                                          String distance = getDistance(
-                                              rawDistance:
-                                                  '${snapshot.data[index].distance}');
-                                          return InkWell(
-                                            onTap: () {
-                                              network.postViewed(snapshot.data[index].id);
-                                              Navigator.push(
-                                                context,
-                                                PageRouteBuilder(
-                                                  pageBuilder: (context,
-                                                      animation,
-                                                      secondaryAnimation) {
-                                                    return ArtisanPageNew(
-                                                        snapshot.data[index]);
-                                                  },
-                                                  transitionsBuilder: (context,
-                                                      animation,
-                                                      secondaryAnimation,
-                                                      child) {
-                                                    return FadeTransition(
-                                                      opacity: animation,
-                                                      child: child,
-                                                    );
-                                                  },
-                                                ),
-                                              );
-                                            },
-                                            child: GridTile(
-                                              child: Container(
-                                                // width: 150,
-                                                margin: const EdgeInsets.only(
-                                                  left: 10,
-                                                  top: 12,
-                                                ),
-                                                decoration: BoxDecoration(
-                                                    color: Color(0xFFFFFFFF),
-                                                    border: Border.all(
-                                                        color: Color(0xFFF1F1FD)),
-                                                    boxShadow: [
-                                                      BoxShadow(
-                                                          color:
-                                                              Color(0xFFF1F1F6),
-                                                          blurRadius: 10.0,
-                                                          offset:
-                                                              Offset(0.3, 4.0))
-                                                    ],
-                                                    borderRadius:
-                                                        BorderRadius.all(
-                                                            Radius.circular(7))),
-                                                child: Column(
-                                                  children: [
-                                                    Stack(
-                                                      children: [
-                                                        Padding(
-                                                            padding:
-                                                                const EdgeInsets
-                                                                        .only(
-                                                                    bottom: 4.0),
-                                                            child: Container(
-                                                              height: 90,
-                                                              width: 150,
-                                                              clipBehavior: Clip
-                                                                  .antiAliasWithSaveLayer,
-                                                              decoration: BoxDecoration(
-                                                                  borderRadius: BorderRadius.only(
-                                                                      topLeft: Radius
-                                                                          .circular(
-                                                                              7),
-                                                                      topRight: Radius
-                                                                          .circular(
-                                                                              7))),
-                                                              child:
-                                                                  Image.network(
-                                                                snapshot.data[index].urlAvatar ==
-                                                                            'no_picture_upload' ||
-                                                                        snapshot.data[index]
-                                                                                .urlAvatar ==
-                                                                            null
-                                                                    ? 'https://uploads.fixme.ng/thumbnails/no_picture_upload'
-                                                                    : 'https://uploads.fixme.ng/thumbnails/${snapshot.data[index].urlAvatar}',
-                                                                fit: BoxFit.cover,
-                                                              ),
-                                                            )),
-                                                        Positioned(
-                                                          bottom: 4,
-                                                          child: Container(
-                                                            height: 20,
-                                                            width: 150,
-                                                            padding:
-                                                                const EdgeInsets
-                                                                        .only(
-                                                                    left: 5),
-                                                            color: Colors.black
-                                                                .withOpacity(0.5),
-                                                            child: Row(
-                                                              mainAxisAlignment: MainAxisAlignment.center,
-                                                              children: [
-                                                                Icon(
-                                                                  Icons
-                                                                      .location_on,
-                                                                  color: Colors
-                                                                      .white,
-                                                                  size: 14,
-                                                                ),
-                                                                Text(
-                                                                  '$distance away',
-                                                                  style: TextStyle(
-                                                                      color: Colors
-                                                                          .white,
-                                                                      fontSize:
-                                                                          12,
-                                                                      fontWeight:
-                                                                          FontWeight
-                                                                              .w500),
-                                                                ),
-                                                              ],
-                                                            ),
-                                                          ),
-                                                        ),
+                                    ))
+                                : snapshot.hasData && !snapshot.data.isEmpty
+                                    ? Container(
+                                        height: 222,
+                                        margin: const EdgeInsets.only(bottom: 6),
+                                        child: ListView.builder(
+                                          scrollDirection: Axis.horizontal,
+                                          itemCount: snapshot.data.length > 10
+                                              ? 10
+                                              : snapshot.data.length,
+                                          itemBuilder: (context, index) {
+                                            String distance = getDistance(
+                                                rawDistance:
+                                                    '${snapshot.data[index].distance}');
+                                            return InkWell(
+                                              onTap: () {
+                                                network.postViewed(snapshot.data[index].id);
+                                                Navigator.push(
+                                                  context,
+                                                  PageRouteBuilder(
+                                                    pageBuilder: (context,
+                                                        animation,
+                                                        secondaryAnimation) {
+                                                      return ArtisanPageNew(
+                                                          snapshot.data[index]);
+                                                    },
+                                                    transitionsBuilder: (context,
+                                                        animation,
+                                                        secondaryAnimation,
+                                                        child) {
+                                                      return FadeTransition(
+                                                        opacity: animation,
+                                                        child: child,
+                                                      );
+                                                    },
+                                                  ),
+                                                );
+                                              },
+                                              child: GridTile(
+                                                child: Container(
+                                                  // width: 150,
+                                                  margin: const EdgeInsets.only(
+                                                    left: 10,
+                                                    top: 12,
+                                                  ),
+                                                  decoration: BoxDecoration(
+                                                      color: Color(0xFFFFFFFF),
+                                                      border: Border.all(
+                                                          color: Color(0xFFF1F1FD)),
+                                                      boxShadow: [
+                                                        BoxShadow(
+                                                            color:
+                                                                Color(0xFFF1F1F6),
+                                                            blurRadius: 10.0,
+                                                            offset:
+                                                                Offset(0.3, 4.0))
                                                       ],
-                                                    ),
-                                                    Align(
-                                                        alignment:
-                                                            Alignment.bottomLeft,
-                                                        child: Padding(
-                                                          padding:
-                                                              const EdgeInsets
-                                                                      .only(
-                                                                  left: 0.0,
-                                                                  right: 0.0),
-                                                          child: Wrap(
-                                                            children: [
-                                                              Container(
-                                                               // width:140,
-                                                                child: Padding(
-                                                                  padding: const EdgeInsets.only(top:8.0),
-                                                                  child: Text(
-                                                                    snapshot
-                                                                                .data[
-                                                                                    index]
-                                                                                .businessName
-                                                                                .isEmpty ||
-                                                                            snapshot.data[index].businessName ==
-                                                                                ''
-                                                                        ? '${snapshot.data[index].name}\'s shop '
-                                                                            .capitalizeFirstOfEach
-                                                                        : '${snapshot.data[index].businessName}'
-                                                                            .capitalizeFirstOfEach,
-                                                                    style: TextStyle(
-                                                                      fontSize: 13,
-                                                                    ),
-                                                                    maxLines: 1,
-                                                                    textAlign: TextAlign.center,
-                                                                  ),
-                                                                ),
-                                                              ),
-                                                            ],
-                                                          ),
-                                                        )),
-                                                    Container(
-                                                      width: 150,
-                                                      child: Column(
-                                                        mainAxisAlignment: MainAxisAlignment.center,
+                                                      borderRadius:
+                                                          BorderRadius.all(
+                                                              Radius.circular(7))),
+                                                  child: Column(
+                                                    children: [
+                                                      Stack(
                                                         children: [
-                                                          Align(
-                                                            alignment:
-                                                            Alignment.center,
-                                                            child: Padding(
+                                                          Padding(
                                                               padding:
-                                                              const EdgeInsets.only(
-                                                                  left: 8.0,
-                                                                  right: 8.0, top:2),
-                                                              child: Wrap(
+                                                                  const EdgeInsets
+                                                                          .only(
+                                                                      bottom: 4.0),
+                                                              child: Container(
+                                                                height: 90,
+                                                                width: 150,
+                                                                clipBehavior: Clip
+                                                                    .antiAliasWithSaveLayer,
+                                                                decoration: BoxDecoration(
+                                                                    borderRadius: BorderRadius.only(
+                                                                        topLeft: Radius
+                                                                            .circular(
+                                                                                7),
+                                                                        topRight: Radius
+                                                                            .circular(
+                                                                                7))),
+                                                                child:
+                                                                    Image.network(
+                                                                  snapshot.data[index].urlAvatar ==
+                                                                              'no_picture_upload' ||
+                                                                          snapshot.data[index]
+                                                                                  .urlAvatar ==
+                                                                              null
+                                                                      ? 'https://uploads.fixme.ng/thumbnails/no_picture_upload'
+                                                                      : 'https://uploads.fixme.ng/thumbnails/${snapshot.data[index].urlAvatar}',
+                                                                  fit: BoxFit.cover,
+                                                                ),
+                                                              )),
+                                                          Positioned(
+                                                            bottom: 4,
+                                                            child: Container(
+                                                              height: 20,
+                                                              width: 150,
+                                                              padding:
+                                                                  const EdgeInsets
+                                                                          .only(
+                                                                      left: 5),
+                                                              color: Colors.black
+                                                                  .withOpacity(0.5),
+                                                              child: Row(
+                                                                mainAxisAlignment: MainAxisAlignment.center,
                                                                 children: [
+                                                                  Icon(
+                                                                    Icons
+                                                                        .location_on,
+                                                                    color: Colors
+                                                                        .white,
+                                                                    size: 14,
+                                                                  ),
                                                                   Text(
-                                                                    '${snapshot.data[index].serviceArea}',
+                                                                    '$distance away',
                                                                     style: TextStyle(
-                                                                        fontSize: 13,
+                                                                        color: Colors
+                                                                            .white,
+                                                                        fontSize:
+                                                                            12,
                                                                         fontWeight:
-                                                                        FontWeight
-                                                                            .w600),
-                                                                    textAlign: TextAlign.center,
+                                                                            FontWeight
+                                                                                .w500),
                                                                   ),
                                                                 ],
                                                               ),
                                                             ),
                                                           ),
-                                                          Row(
-                                                            mainAxisAlignment: MainAxisAlignment.center,
-                                                            children: [
-                                                              Padding(
+                                                        ],
+                                                      ),
+                                                      Align(
+                                                          alignment:
+                                                              Alignment.bottomLeft,
+                                                          child: Padding(
+                                                            padding:
+                                                                const EdgeInsets
+                                                                        .only(
+                                                                    left: 0.0,
+                                                                    right: 0.0),
+                                                            child: Wrap(
+                                                              children: [
+                                                                Container(
+                                                                 // width:140,
+                                                                  child: Padding(
+                                                                    padding: const EdgeInsets.only(top:8.0),
+                                                                    child: Text(
+                                                                      snapshot
+                                                                                  .data[
+                                                                                      index]
+                                                                                  .businessName
+                                                                                  .isEmpty ||
+                                                                              snapshot.data[index].businessName ==
+                                                                                  ''
+                                                                          ? '${snapshot.data[index].name}\'s shop '
+                                                                              .capitalizeFirstOfEach
+                                                                          : '${snapshot.data[index].businessName}'
+                                                                              .capitalizeFirstOfEach,
+                                                                      style: TextStyle(
+                                                                        fontSize: 13,
+                                                                      ),
+                                                                      maxLines: 1,
+                                                                      textAlign: TextAlign.center,
+                                                                    ),
+                                                                  ),
+                                                                ),
+                                                              ],
+                                                            ),
+                                                          )),
+                                                      Container(
+                                                        width: 150,
+                                                        child: Column(
+                                                          mainAxisAlignment: MainAxisAlignment.center,
+                                                          children: [
+                                                            Align(
+                                                              alignment:
+                                                              Alignment.center,
+                                                              child: Padding(
                                                                 padding:
                                                                 const EdgeInsets.only(
-                                                                  bottom: 2, top:4),
-                                                                child: Center(
-                                                                  child: StarRating(
-                                                                      rating: double.parse(
-                                                                          snapshot.data[index]
-                                                                              .userRating
-                                                                              .toString())),
+                                                                    left: 8.0,
+                                                                    right: 8.0, top:2),
+                                                                child: Wrap(
+                                                                  children: [
+                                                                    Text(
+                                                                      '${snapshot.data[index].serviceArea}',
+                                                                      style: TextStyle(
+                                                                          fontSize: 13,
+                                                                          fontWeight:
+                                                                          FontWeight
+                                                                              .w600),
+                                                                      textAlign: TextAlign.center,
+                                                                    ),
+                                                                  ],
                                                                 ),
                                                               ),
-                                                            ],
+                                                            ),
+                                                            Row(
+                                                              mainAxisAlignment: MainAxisAlignment.center,
+                                                              children: [
+                                                                Padding(
+                                                                  padding:
+                                                                  const EdgeInsets.only(
+                                                                    bottom: 2, top:4),
+                                                                  child: Center(
+                                                                    child: StarRating(
+                                                                        rating: double.parse(
+                                                                            snapshot.data[index]
+                                                                                .userRating
+                                                                                .toString())),
+                                                                  ),
+                                                                ),
+                                                              ],
+                                                            ),
+                                                          ],
+                                                        ),
+                                                      )
+
+                                                    ],
+                                                  ),
+                                                ),
+                                              ),
+                                            );
+                                          },
+                                        ),
+                                      )
+                                    : snapshot.data.isEmpty
+                                        ? Padding(
+                                            padding: const EdgeInsets.all(18.0),
+                                            child: Container(
+                                              color: Color(0xFFBBBBBB),
+                                              padding: const EdgeInsets.all(4),
+                                              child: Text(
+                                                'No Nearby Shops',
+                                                style: TextStyle(
+                                                    color: Colors.white,
+                                                    fontWeight: FontWeight.w500),
+                                              ),
+                                            ),
+                                          )
+                                        : Container();
+                          }),
+                      Padding(
+                        padding:
+                            const EdgeInsets.only(left: 10, right: 10, top: 10),
+                        child: Row(
+                          mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                          children: [
+                            Text(
+                              'Nearby Service Provider',
+                              style: TextStyle(
+                                  fontWeight: FontWeight.w600, fontSize: 15),
+                            ),
+                            InkWell(
+                              onTap: () {
+                                Navigator.push(
+                                  context,
+                                  PageRouteBuilder(
+                                    pageBuilder:
+                                        (context, animation, secondaryAnimation) {
+                                      return NearbyArtisansSeeAll(
+                                          longitude: location.locationLatitude,
+                                          latitude: location.locationLatitude);
+                                    },
+                                    transitionsBuilder: (context, animation,
+                                        secondaryAnimation, child) {
+                                      return FadeTransition(
+                                        opacity: animation,
+                                        child: child,
+                                      );
+                                    },
+                                  ),
+                                );
+                              },
+                              child: Text('See all',
+                                  style: TextStyle(
+                                      color: Color(0xFF9B049B), fontSize: 14)),
+                            )
+                          ],
+                        ),
+                      ),
+                      FutureBuilder(
+                          future: network.nearbyArtisans(
+                              latitude: location.locationLatitude,
+                              longitude: location.locationLongitude,
+                              context:context
+                          ),
+                          builder: (context, snapshot) {
+                            return !snapshot.hasData
+                                ? Padding(
+                                    padding: const EdgeInsets.all(10.0),
+                                    child: Center(
+                                      child: Column(
+                                        mainAxisAlignment:
+                                            MainAxisAlignment.center,
+                                        crossAxisAlignment:
+                                            CrossAxisAlignment.center,
+                                        children: [
+                                          Theme(
+                                              data: Theme.of(context).copyWith(
+                                                 accentColor: Color(0xFF9B049B)
+                                        ),
+                                              child: CircularProgressIndicator(valueColor: AlwaysStoppedAnimation<Color>(Color(0xFF9B049B)),
+
+                                                strokeWidth: 2,
+                                                backgroundColor: Colors.white,
+                                              )),
+                                          SizedBox(
+                                            height: 10,
+                                          ),
+                                          Text('Loading Service Provider',
+                                              style: TextStyle(
+                                                  color: Color(0xFF333333),
+                                                  fontWeight: FontWeight.w500)),
+                                        ],
+                                      ),
+                                    ))
+                                : snapshot.hasData && !snapshot.data.isEmpty
+                                    ?
+
+                            Container(
+                              height: 222,
+                              margin: const EdgeInsets.only(bottom: 6),
+                              child: ListView.builder(
+                                scrollDirection: Axis.horizontal,
+                                itemCount: snapshot.data.length > 10
+                                                    ? 10
+                                                    : snapshot.data.length,
+                                itemBuilder: (context, index) {
+                                  String distance = getDistance(
+                                      rawDistance:
+                                      '${snapshot.data[index].distance}');
+                                  return InkWell(
+                                    onTap: () {
+                                      network.postViewed(snapshot.data[index].id);
+                                      Navigator.push(
+                                        context,
+                                        PageRouteBuilder(
+                                          pageBuilder: (context,
+                                              animation,
+                                              secondaryAnimation) {
+                                            return ArtisanPageNew(
+                                                snapshot.data[index]);
+                                          },
+                                          transitionsBuilder: (context,
+                                              animation,
+                                              secondaryAnimation,
+                                              child) {
+                                            return FadeTransition(
+                                              opacity: animation,
+                                              child: child,
+                                            );
+                                          },
+                                        ),
+                                      );
+                                    },
+                                    child: GridTile(
+                                      child: Container(
+                                        // width: 150,
+                                        margin: const EdgeInsets.only(
+                                          left: 10,
+                                          top: 12,
+                                        ),
+                                        decoration: BoxDecoration(
+                                            color: Color(0xFFFFFFFF),
+                                            border: Border.all(
+                                                color: Color(0xFFF1F1FD)),
+                                            boxShadow: [
+                                              BoxShadow(
+                                                  color:
+                                                  Color(0xFFF1F1F6),
+                                                  blurRadius: 10.0,
+                                                  offset:
+                                                  Offset(0.3, 4.0))
+                                            ],
+                                            borderRadius:
+                                            BorderRadius.all(
+                                                Radius.circular(7))),
+                                        child: Column(
+                                          children: [
+                                            Stack(
+                                              children: [
+                                                Padding(
+                                                    padding:
+                                                    const EdgeInsets
+                                                        .only(
+                                                        bottom: 4.0),
+                                                    child: Container(
+                                                      height: 90,
+                                                      width: 150,
+                                                      clipBehavior: Clip
+                                                          .antiAliasWithSaveLayer,
+                                                      decoration: BoxDecoration(
+                                                          borderRadius: BorderRadius.only(
+                                                              topLeft: Radius
+                                                                  .circular(
+                                                                  7),
+                                                              topRight: Radius
+                                                                  .circular(
+                                                                  7))),
+                                                      child:
+                                                      Image.network(
+                                                        snapshot.data[index].urlAvatar ==
+                                                            'no_picture_upload' ||
+                                                            snapshot.data[index]
+                                                                .urlAvatar ==
+                                                                null
+                                                            ? 'https://uploads.fixme.ng/thumbnails/no_picture_upload'
+                                                            : 'https://uploads.fixme.ng/thumbnails/${snapshot.data[index].urlAvatar}',
+                                                        fit: BoxFit.cover,
+                                                      ),
+                                                    )),
+                                                Positioned(
+                                                  bottom: 4,
+                                                  child: Container(
+                                                    height: 20,
+                                                    width: 150,
+                                                    padding:
+                                                    const EdgeInsets
+                                                        .only(
+                                                        left: 5),
+                                                    color: Colors.black
+                                                        .withOpacity(0.5),
+                                                    child: Row(
+                                                      mainAxisAlignment: MainAxisAlignment.center,
+                                                      children: [
+                                                        Icon(
+                                                          Icons
+                                                              .location_on,
+                                                          color: Colors
+                                                              .white,
+                                                          size: 14,
+                                                        ),
+                                                        Text(
+                                                          '$distance away',
+                                                          style: TextStyle(
+                                                              color: Colors
+                                                                  .white,
+                                                              fontSize:
+                                                              12,
+                                                              fontWeight:
+                                                              FontWeight
+                                                                  .w500),
+                                                        ),
+                                                      ],
+                                                    ),
+                                                  ),
+                                                ),
+                                              ],
+                                            ),
+                                            Align(
+                                                alignment:
+                                                Alignment.bottomLeft,
+                                                child: Padding(
+                                                  padding:
+                                                  const EdgeInsets
+                                                      .only(
+                                                      left: 0.0,
+                                                      right: 0.0),
+                                                  child: Wrap(
+                                                    children: [
+                                                      Container(
+                                                        // width:140,
+                                                        child: Padding(
+                                                          padding: const EdgeInsets.only(top:8.0),
+                                                          child: Text(
+                                                            snapshot
+                                                                .data[
+                                                            index]
+                                                                .businessName
+                                                                .isEmpty ||
+                                                                snapshot.data[index].businessName ==
+                                                                    ''
+                                                                ? '${snapshot.data[index].name}\'s shop '
+                                                                .capitalizeFirstOfEach
+                                                                : '${snapshot.data[index].businessName}'
+                                                                .capitalizeFirstOfEach,
+                                                            style: TextStyle(
+                                                              fontSize: 13,
+                                                            ),
+                                                            maxLines: 1,
+                                                            textAlign: TextAlign.center,
+                                                          ),
+                                                        ),
+                                                      ),
+                                                    ],
+                                                  ),
+                                                )),
+                                            Container(
+                                              width: 150,
+                                              child: Column(
+                                                mainAxisAlignment: MainAxisAlignment.center,
+                                                children: [
+                                                  Align(
+                                                    alignment:
+                                                    Alignment.center,
+                                                    child: Padding(
+                                                      padding:
+                                                      const EdgeInsets.only(
+                                                          left: 8.0,
+                                                          right: 8.0, top:2),
+                                                      child: Wrap(
+                                                        children: [
+                                                          Text(
+                                                            '${snapshot.data[index].serviceArea}',
+                                                            style: TextStyle(
+                                                                fontSize: 13,
+                                                                fontWeight:
+                                                                FontWeight
+                                                                    .w600),
+                                                            textAlign: TextAlign.center,
                                                           ),
                                                         ],
                                                       ),
-                                                    )
+                                                    ),
+                                                  ),
+                                                  Row(
+                                                    mainAxisAlignment: MainAxisAlignment.center,
+                                                    children: [
+                                                      Padding(
+                                                        padding:
+                                                        const EdgeInsets.only(
+                                                            bottom: 2, top:4),
+                                                        child: Center(
+                                                          child: StarRating(
+                                                              rating: double.parse(
+                                                                  snapshot.data[index]
+                                                                      .userRating
+                                                                      .toString())),
+                                                        ),
+                                                      ),
+                                                    ],
+                                                  ),
+                                                ],
+                                              ),
+                                            )
 
-                                                  ],
-                                                ),
+                                          ],
+                                        ),
+                                      ),
+                                    ),
+                                  );
+                                },
+                              ),
+                            )
+
+                                    : snapshot.data.isEmpty
+                                        ? Padding(
+                                            padding: const EdgeInsets.all(18.0),
+                                            child: Container(
+                                              color: Color(0xFFBBBBBB),
+                                              padding: const EdgeInsets.all(4),
+                                              child: Text(
+                                                'No Nearby Service Provider',
+                                                style: TextStyle(
+                                                    color: Colors.white,
+                                                    fontWeight: FontWeight.w500),
                                               ),
                                             ),
-                                          );
-                                        },
-                                      ),
-                                    )
-                                  : snapshot.data.isEmpty
-                                      ? Padding(
-                                          padding: const EdgeInsets.all(18.0),
-                                          child: Container(
-                                            color: Color(0xFFBBBBBB),
-                                            padding: const EdgeInsets.all(4),
-                                            child: Text(
-                                              'No Nearby Shops',
-                                              style: TextStyle(
-                                                  color: Colors.white,
-                                                  fontWeight: FontWeight.w500),
-                                            ),
-                                          ),
-                                        )
-                                      : Container();
-                        }),
-                    Padding(
-                      padding:
-                          const EdgeInsets.only(left: 10, right: 10, top: 10),
-                      child: Row(
-                        mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                        children: [
-                          Text(
-                            'Nearby Service Provider',
-                            style: TextStyle(
-                                fontWeight: FontWeight.w600, fontSize: 15),
-                          ),
-                          InkWell(
-                            onTap: () {
-                              Navigator.push(
+                                          )
+                                        : Container();
+                          }),
+                      Divider(),
+                      Align(
+                        alignment: Alignment.center,
+                        child: Container(
+                          padding: EdgeInsets.only(top: 8, bottom: 10),
+                          decoration: BoxDecoration(
+                              borderRadius: BorderRadius.circular(7)),
+                          child: FlatButton(
+                            onPressed: () {
+                              network.role == 'artisan' || network.role == 'business'
+                                  ? Navigator.push(
                                 context,
                                 PageRouteBuilder(
                                   pageBuilder:
                                       (context, animation, secondaryAnimation) {
-                                    return NearbyArtisansSeeAll(
-                                        longitude: location.locationLatitude,
-                                        latitude: location.locationLatitude);
+                                    return ProfilePageNew();
                                   },
-                                  transitionsBuilder: (context, animation,
-                                      secondaryAnimation, child) {
+                                  transitionsBuilder:
+                                      (context, animation, secondaryAnimation, child) {
+                                    return FadeTransition(
+                                      opacity: animation,
+                                      child: child,
+                                    );
+                                  },
+                                ),
+                              )
+                                  : Navigator.push(
+                                context,
+                                PageRouteBuilder(
+                                  pageBuilder:
+                                      (context, animation, secondaryAnimation) {
+                                    return SignThankyou();
+                                  },
+                                  transitionsBuilder:
+                                      (context, animation, secondaryAnimation, child) {
                                     return FadeTransition(
                                       opacity: animation,
                                       child: child,
@@ -1263,408 +1600,9 @@ class _HomeState extends State<Home> {
                                 ),
                               );
                             },
-                            child: Text('See all',
-                                style: TextStyle(
-                                    color: Color(0xFF9B049B), fontSize: 14)),
-                          )
-                        ],
-                      ),
-                    ),
-                    FutureBuilder(
-                        future: network.nearbyArtisans(
-                            latitude: location.locationLatitude,
-                            longitude: location.locationLongitude,
-                            context:context
-                        ),
-                        builder: (context, snapshot) {
-                          return !snapshot.hasData
-                              ? Padding(
-                                  padding: const EdgeInsets.all(10.0),
-                                  child: Center(
-                                    child: Column(
-                                      mainAxisAlignment:
-                                          MainAxisAlignment.center,
-                                      crossAxisAlignment:
-                                          CrossAxisAlignment.center,
-                                      children: [
-                                        Theme(
-                                            data: Theme.of(context).copyWith(
-                                               accentColor: Color(0xFF9B049B)
-                                      ),
-                                            child: CircularProgressIndicator(valueColor: AlwaysStoppedAnimation<Color>(Color(0xFF9B049B)),
-
-                                              strokeWidth: 2,
-                                              backgroundColor: Colors.white,
-                                            )),
-                                        SizedBox(
-                                          height: 10,
-                                        ),
-                                        Text('Loading Service Provider',
-                                            style: TextStyle(
-                                                color: Color(0xFF333333),
-                                                fontWeight: FontWeight.w500)),
-                                      ],
-                                    ),
-                                  ))
-                              : snapshot.hasData && !snapshot.data.isEmpty
-                                  ?
-
-                          Container(
-                            height: 222,
-                            margin: const EdgeInsets.only(bottom: 6),
-                            child: ListView.builder(
-                              scrollDirection: Axis.horizontal,
-                              itemCount: snapshot.data.length > 10
-                                                  ? 10
-                                                  : snapshot.data.length,
-                              itemBuilder: (context, index) {
-                                String distance = getDistance(
-                                    rawDistance:
-                                    '${snapshot.data[index].distance}');
-                                return InkWell(
-                                  onTap: () {
-                                    network.postViewed(snapshot.data[index].id);
-                                    Navigator.push(
-                                      context,
-                                      PageRouteBuilder(
-                                        pageBuilder: (context,
-                                            animation,
-                                            secondaryAnimation) {
-                                          return ArtisanPageNew(
-                                              snapshot.data[index]);
-                                        },
-                                        transitionsBuilder: (context,
-                                            animation,
-                                            secondaryAnimation,
-                                            child) {
-                                          return FadeTransition(
-                                            opacity: animation,
-                                            child: child,
-                                          );
-                                        },
-                                      ),
-                                    );
-                                  },
-                                  child: GridTile(
-                                    child: Container(
-                                      // width: 150,
-                                      margin: const EdgeInsets.only(
-                                        left: 10,
-                                        top: 12,
-                                      ),
-                                      decoration: BoxDecoration(
-                                          color: Color(0xFFFFFFFF),
-                                          border: Border.all(
-                                              color: Color(0xFFF1F1FD)),
-                                          boxShadow: [
-                                            BoxShadow(
-                                                color:
-                                                Color(0xFFF1F1F6),
-                                                blurRadius: 10.0,
-                                                offset:
-                                                Offset(0.3, 4.0))
-                                          ],
-                                          borderRadius:
-                                          BorderRadius.all(
-                                              Radius.circular(7))),
-                                      child: Column(
-                                        children: [
-                                          Stack(
-                                            children: [
-                                              Padding(
-                                                  padding:
-                                                  const EdgeInsets
-                                                      .only(
-                                                      bottom: 4.0),
-                                                  child: Container(
-                                                    height: 90,
-                                                    width: 150,
-                                                    clipBehavior: Clip
-                                                        .antiAliasWithSaveLayer,
-                                                    decoration: BoxDecoration(
-                                                        borderRadius: BorderRadius.only(
-                                                            topLeft: Radius
-                                                                .circular(
-                                                                7),
-                                                            topRight: Radius
-                                                                .circular(
-                                                                7))),
-                                                    child:
-                                                    Image.network(
-                                                      snapshot.data[index].urlAvatar ==
-                                                          'no_picture_upload' ||
-                                                          snapshot.data[index]
-                                                              .urlAvatar ==
-                                                              null
-                                                          ? 'https://uploads.fixme.ng/thumbnails/no_picture_upload'
-                                                          : 'https://uploads.fixme.ng/thumbnails/${snapshot.data[index].urlAvatar}',
-                                                      fit: BoxFit.cover,
-                                                    ),
-                                                  )),
-                                              Positioned(
-                                                bottom: 4,
-                                                child: Container(
-                                                  height: 20,
-                                                  width: 150,
-                                                  padding:
-                                                  const EdgeInsets
-                                                      .only(
-                                                      left: 5),
-                                                  color: Colors.black
-                                                      .withOpacity(0.5),
-                                                  child: Row(
-                                                    mainAxisAlignment: MainAxisAlignment.center,
-                                                    children: [
-                                                      Icon(
-                                                        Icons
-                                                            .location_on,
-                                                        color: Colors
-                                                            .white,
-                                                        size: 14,
-                                                      ),
-                                                      Text(
-                                                        '$distance away',
-                                                        style: TextStyle(
-                                                            color: Colors
-                                                                .white,
-                                                            fontSize:
-                                                            12,
-                                                            fontWeight:
-                                                            FontWeight
-                                                                .w500),
-                                                      ),
-                                                    ],
-                                                  ),
-                                                ),
-                                              ),
-                                            ],
-                                          ),
-                                          Align(
-                                              alignment:
-                                              Alignment.bottomLeft,
-                                              child: Padding(
-                                                padding:
-                                                const EdgeInsets
-                                                    .only(
-                                                    left: 0.0,
-                                                    right: 0.0),
-                                                child: Wrap(
-                                                  children: [
-                                                    Container(
-                                                      // width:140,
-                                                      child: Padding(
-                                                        padding: const EdgeInsets.only(top:8.0),
-                                                        child: Text(
-                                                          snapshot
-                                                              .data[
-                                                          index]
-                                                              .businessName
-                                                              .isEmpty ||
-                                                              snapshot.data[index].businessName ==
-                                                                  ''
-                                                              ? '${snapshot.data[index].name}\'s shop '
-                                                              .capitalizeFirstOfEach
-                                                              : '${snapshot.data[index].businessName}'
-                                                              .capitalizeFirstOfEach,
-                                                          style: TextStyle(
-                                                            fontSize: 13,
-                                                          ),
-                                                          maxLines: 1,
-                                                          textAlign: TextAlign.center,
-                                                        ),
-                                                      ),
-                                                    ),
-                                                  ],
-                                                ),
-                                              )),
-                                          Container(
-                                            width: 150,
-                                            child: Column(
-                                              mainAxisAlignment: MainAxisAlignment.center,
-                                              children: [
-                                                Align(
-                                                  alignment:
-                                                  Alignment.center,
-                                                  child: Padding(
-                                                    padding:
-                                                    const EdgeInsets.only(
-                                                        left: 8.0,
-                                                        right: 8.0, top:2),
-                                                    child: Wrap(
-                                                      children: [
-                                                        Text(
-                                                          '${snapshot.data[index].serviceArea}',
-                                                          style: TextStyle(
-                                                              fontSize: 13,
-                                                              fontWeight:
-                                                              FontWeight
-                                                                  .w600),
-                                                          textAlign: TextAlign.center,
-                                                        ),
-                                                      ],
-                                                    ),
-                                                  ),
-                                                ),
-                                                Row(
-                                                  mainAxisAlignment: MainAxisAlignment.center,
-                                                  children: [
-                                                    Padding(
-                                                      padding:
-                                                      const EdgeInsets.only(
-                                                          bottom: 2, top:4),
-                                                      child: Center(
-                                                        child: StarRating(
-                                                            rating: double.parse(
-                                                                snapshot.data[index]
-                                                                    .userRating
-                                                                    .toString())),
-                                                      ),
-                                                    ),
-                                                  ],
-                                                ),
-                                              ],
-                                            ),
-                                          )
-
-                                        ],
-                                      ),
-                                    ),
-                                  ),
-                                );
-                              },
-                            ),
-                          )
-
-                                  : snapshot.data.isEmpty
-                                      ? Padding(
-                                          padding: const EdgeInsets.all(18.0),
-                                          child: Container(
-                                            color: Color(0xFFBBBBBB),
-                                            padding: const EdgeInsets.all(4),
-                                            child: Text(
-                                              'No Nearby Service Provider',
-                                              style: TextStyle(
-                                                  color: Colors.white,
-                                                  fontWeight: FontWeight.w500),
-                                            ),
-                                          ),
-                                        )
-                                      : Container();
-                        }),
-                    Divider(),
-                    Align(
-                      alignment: Alignment.center,
-                      child: Container(
-                        padding: EdgeInsets.only(top: 8, bottom: 10),
-                        decoration: BoxDecoration(
-                            borderRadius: BorderRadius.circular(7)),
-                        child: FlatButton(
-                          onPressed: () {
-                            network.role == 'artisan' || network.role == 'business'
-                                ? Navigator.push(
-                              context,
-                              PageRouteBuilder(
-                                pageBuilder:
-                                    (context, animation, secondaryAnimation) {
-                                  return ProfilePageNew();
-                                },
-                                transitionsBuilder:
-                                    (context, animation, secondaryAnimation, child) {
-                                  return FadeTransition(
-                                    opacity: animation,
-                                    child: child,
-                                  );
-                                },
-                              ),
-                            )
-                                : Navigator.push(
-                              context,
-                              PageRouteBuilder(
-                                pageBuilder:
-                                    (context, animation, secondaryAnimation) {
-                                  return SignThankyou();
-                                },
-                                transitionsBuilder:
-                                    (context, animation, secondaryAnimation, child) {
-                                  return FadeTransition(
-                                    opacity: animation,
-                                    child: child,
-                                  );
-                                },
-                              ),
-                            );
-                          },
-                          color: Color(0xFF9B049B),
-                          shape: RoundedRectangleBorder(
-                              borderRadius: BorderRadius.circular(7)),
-                          padding: EdgeInsets.all(0.0),
-                          child: Ink(
-                            decoration: BoxDecoration(
-                                borderRadius: BorderRadius.circular(7)),
-                            child: Container(
-                              constraints: BoxConstraints(
-                                  maxWidth:
-                                      MediaQuery.of(context).size.width / 1.3,
-                                  minHeight: 45.0),
-                              alignment: Alignment.center,
-                              child: Text('${network.role == 'artisan' || network.role == 'business'
-                                  ? 'View Business Profile':'Change to Business Account'}',
-                                textAlign: TextAlign.center,
-                                style: TextStyle(
-                                    color: Colors.white,
-                                    fontWeight: FontWeight.w500,
-                                    fontSize: 16),
-                              ),
-                            ),
-                          ),
-                        ),
-                      ),
-                    ),
-                    Container(
-                      child:Text(''),
-                      height:80,
-                    )
-                  ],
-                ),
-              ),
-            ),
-          ],
-        ),
-       Align(
-                alignment: Alignment.bottomCenter,
-                child: Container(
-                  height: 80,
-                  decoration: BoxDecoration(
-                      color: Color(0xFFFFFFFF),
-                      boxShadow: [
-                        BoxShadow(
-                            color: Colors.black38,
-                            blurRadius: 10.0,
-                            offset: Offset(5, 4.0))
-                      ],
-                      border: Border.all(color: Color(0xFFD0D0D0)),
-                      borderRadius: BorderRadius.only(
-                          topLeft: Radius.circular(15),
-                          topRight: Radius.circular(15))),
-                  child: Column(
-                    children: [
-                      Align(
-                        alignment: Alignment.center,
-                        child: Container(
-                          padding: EdgeInsets.only(
-                            top: 14,
-                          ),
-                          decoration: BoxDecoration(
-                              borderRadius: BorderRadius.circular(7)),
-                          child: FlatButton(
-                            onPressed: () {
-                              data.setCallToActionStatus = false;
-                              widget.controller.jumpToPage(2);
-                              data.setSelectedBottomNavBar(2);
-                            },
                             color: Color(0xFF9B049B),
                             shape: RoundedRectangleBorder(
-                                borderRadius: BorderRadius.circular(10)),
+                                borderRadius: BorderRadius.circular(7)),
                             padding: EdgeInsets.all(0.0),
                             child: Ink(
                               decoration: BoxDecoration(
@@ -1672,28 +1610,97 @@ class _HomeState extends State<Home> {
                               child: Container(
                                 constraints: BoxConstraints(
                                     maxWidth:
-                                        MediaQuery.of(context).size.width / 1.1,
+                                        MediaQuery.of(context).size.width / 1.3,
                                     minHeight: 45.0),
                                 alignment: Alignment.center,
-                                child: Text(
-                                  "Get a job done",
+                                child: Text('${network.role == 'artisan' || network.role == 'business'
+                                    ? 'View Business Profile':'Change to Business Account'}',
                                   textAlign: TextAlign.center,
                                   style: TextStyle(
                                       color: Colors.white,
                                       fontWeight: FontWeight.w500,
-                                      fontSize: 18),
+                                      fontSize: 16),
                                 ),
                               ),
                             ),
                           ),
                         ),
                       ),
+                      Container(
+                        child:Text(''),
+                        height:80,
+                      )
                     ],
                   ),
                 ),
-              )
+              ),
+            ],
+          ),
+         Align(
+                  alignment: Alignment.bottomCenter,
+                  child: Container(
+                    height: 80,
+                    decoration: BoxDecoration(
+                        color: Color(0xFFFFFFFF),
+                        boxShadow: [
+                          BoxShadow(
+                              color: Colors.black38,
+                              blurRadius: 10.0,
+                              offset: Offset(5, 4.0))
+                        ],
+                        border: Border.all(color: Color(0xFFD0D0D0)),
+                        borderRadius: BorderRadius.only(
+                            topLeft: Radius.circular(15),
+                            topRight: Radius.circular(15))),
+                    child: Column(
+                      children: [
+                        Align(
+                          alignment: Alignment.center,
+                          child: Container(
+                            padding: EdgeInsets.only(
+                              top: 14,
+                            ),
+                            decoration: BoxDecoration(
+                                borderRadius: BorderRadius.circular(7)),
+                            child: FlatButton(
+                              onPressed: () {
+                                data.setCallToActionStatus = false;
+                                widget.controller.jumpToPage(2);
+                                data.setSelectedBottomNavBar(2);
+                              },
+                              color: Color(0xFF9B049B),
+                              shape: RoundedRectangleBorder(
+                                  borderRadius: BorderRadius.circular(10)),
+                              padding: EdgeInsets.all(0.0),
+                              child: Ink(
+                                decoration: BoxDecoration(
+                                    borderRadius: BorderRadius.circular(7)),
+                                child: Container(
+                                  constraints: BoxConstraints(
+                                      maxWidth:
+                                          MediaQuery.of(context).size.width / 1.1,
+                                      minHeight: 45.0),
+                                  alignment: Alignment.center,
+                                  child: Text(
+                                    "Get a job done",
+                                    textAlign: TextAlign.center,
+                                    style: TextStyle(
+                                        color: Colors.white,
+                                        fontWeight: FontWeight.w500,
+                                        fontSize: 18),
+                                  ),
+                                ),
+                              ),
+                            ),
+                          ),
+                        ),
+                      ],
+                    ),
+                  ),
+                )
 
-      ],
+        ],
+      ),
     );
   }
 }

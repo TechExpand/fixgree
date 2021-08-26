@@ -87,7 +87,7 @@ class PostRequestProvider with ChangeNotifier {
   }
 
   Future<dynamic> getServices() async {
-    isLoading(true);
+   // isLoading(true);
     SharedPreferences prefs = await SharedPreferences.getInstance();
     String bearer = prefs.getString('Bearer');
     String userId = prefs.getString('user_id');
@@ -118,7 +118,7 @@ class PostRequestProvider with ChangeNotifier {
       print(e);
       print('na error b tat');
     }
-    isLoading(false);
+    //isLoading(false);
   }
 
   Future<dynamic> getAllServices() async {

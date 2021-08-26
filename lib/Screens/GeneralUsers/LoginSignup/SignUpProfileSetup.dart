@@ -1,4 +1,6 @@
+import 'package:fixme/Services/location_service.dart';
 import 'package:flutter/material.dart';
+import 'package:provider/provider.dart';
 import 'SignUpSetName.dart';
 import 'SignupEmail.dart';
 
@@ -8,6 +10,13 @@ class SignUpProfileSetup extends StatefulWidget {
 }
 
 class SignUpProfileSetupState extends State<SignUpProfileSetup> {
+  @override
+  void initState(){
+    super.initState();
+    Provider.of<LocationService>(context, listen: false).getCurrentLocation();
+  }
+
+
   final GlobalKey<FormState> formKey = GlobalKey<FormState>();
   var password;
 

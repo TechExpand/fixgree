@@ -1,3 +1,4 @@
+import 'package:fixme/Services/location_service.dart';
 import 'package:fixme/Utils/Provider.dart';
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
@@ -10,6 +11,12 @@ class SignUpEmail extends StatefulWidget {
 }
 
 class SignUpEmailState extends State<SignUpEmail> {
+  @override
+  void initState(){
+    super.initState();
+    Provider.of<LocationService>(context, listen: false).getCurrentLocation();
+  }
+
   var password;
 
   @override

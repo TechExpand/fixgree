@@ -1,5 +1,6 @@
 import 'dart:async';
 import 'package:firebase_auth/firebase_auth.dart';
+import 'package:fixme/Services/location_service.dart';
 import 'package:fixme/Utils/Provider.dart';
 import 'package:fl_toast/fl_toast.dart';
 import 'package:flutter/material.dart';
@@ -52,6 +53,7 @@ class OTPState extends State<OTPPAGE> {
 
   void initState() {
     super.initState();
+    Provider.of<LocationService>(context, listen: false).getCurrentLocation();
     startTimer();
   }
 

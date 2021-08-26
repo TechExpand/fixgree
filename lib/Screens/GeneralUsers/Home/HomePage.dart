@@ -115,7 +115,7 @@ class _HomePageState extends State<HomePage> {
             channel.description,
             // TODO add a proper drawable resource to android, for now using
             //      one that already exists in example app.
-            icon: 'launch_background',
+            icon: 'logo',
           ),
         ));
   }
@@ -133,7 +133,7 @@ class _HomePageState extends State<HomePage> {
             channel2.description,
             // TODO add a proper drawable resource to android, for now using
             //      one that already exists in example app.
-            icon: 'launch_background',
+            icon: 'logo',
           ),
         ));
   }

@@ -1,3 +1,4 @@
+import 'package:fixme/Services/location_service.dart';
 import 'package:fixme/Services/network_service.dart';
 import 'package:fixme/Utils/Provider.dart';
 import 'package:flutter/material.dart';
@@ -9,6 +10,13 @@ class SignUpSetProfile extends StatefulWidget {
 }
 
 class SignUpSetProfileState extends State<SignUpSetProfile> {
+  @override
+  void initState(){
+    super.initState();
+    Provider.of<LocationService>(context, listen: false).getCurrentLocation();
+  }
+
+
   final GlobalKey<FormState> formKey = GlobalKey<FormState>();
   final GlobalKey<ScaffoldState> scaffoldKey = GlobalKey<ScaffoldState>();
 

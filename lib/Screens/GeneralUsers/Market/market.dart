@@ -20,6 +20,7 @@ import 'package:flutter_staggered_grid_view/flutter_staggered_grid_view.dart';
 import 'package:google_fonts/google_fonts.dart';
 import 'package:provider/provider.dart';
 import 'package:transparent_image/transparent_image.dart';
+import 'package:upgrader/upgrader.dart';
 
 import '../../../strings.dart';
 
@@ -299,131 +300,143 @@ class _MarketPageState extends State<MarketPage> {
           ],
         ),
       ),
-      body: market==null?Center(child: Column(
-        mainAxisAlignment: MainAxisAlignment.center,
-        crossAxisAlignment: CrossAxisAlignment.center,
-        children: [
-          Theme(
-              data: Theme.of(context).copyWith(
-                accentColor: Color(0xFF9B049B),),
-              child: CircularProgressIndicator(valueColor: AlwaysStoppedAnimation<Color>(Color(0xFF9B049B)),
-                strokeWidth: 2,
-                backgroundColor: Colors.white,
-                //  valueColor: new AlwaysStoppedAnimation<Color>(color: Color(0xFF9B049B)),
-              )),
-          SizedBox(
-            height: 10,
-          ),
-          Text('Loading',
-              style: TextStyle(
-                  color: Color(0xFF333333),
-                  fontSize: 18,
-                  fontWeight: FontWeight.w600)),
-        ],
-      )):market.isEmpty? Column(
-        mainAxisAlignment: MainAxisAlignment.center,
-        children: [
-          Center(child: Text("No Product Available", style: TextStyle(
-              color: Colors.black,
-              fontSize: 21,
-              height: 1.4,
-              fontWeight: FontWeight.w500)),),
-        ],
-      ):Consumer<Utils>(
-        builder: (context, utils, child) {
-          return Container(
-            padding: EdgeInsets.all(5),
-            child:  Container(
-              child: Stack(
-                children: [
-                  StaggeredGridView.countBuilder(
-                      controller: scrollController,
-                      crossAxisCount: 2,
-                      crossAxisSpacing: 4,
-                      mainAxisSpacing: 4,
-                      itemCount: market.length,
-                      itemBuilder: (context, index) {
-                        return InkWell(
-                          onTap: (){
-                            _viewProduct(market[index].user, data: market[index]);
-                          },
-                          child: Container(
-                           // height: 100,
-                            decoration: BoxDecoration(
-                                color: Colors.transparent,
+      body: market==null?UpgradeAlert(
+        canDismissDialog: false,
+        showLater: false,
+        showIgnore: false,
+        dialogStyle: UpgradeDialogStyle.cupertino,
+        child: Center(child: Column(
+          mainAxisAlignment: MainAxisAlignment.center,
+          crossAxisAlignment: CrossAxisAlignment.center,
+          children: [
+            Theme(
+                data: Theme.of(context).copyWith(
+                  accentColor: Color(0xFF9B049B),),
+                child: CircularProgressIndicator(valueColor: AlwaysStoppedAnimation<Color>(Color(0xFF9B049B)),
+                  strokeWidth: 2,
+                  backgroundColor: Colors.white,
+                  //  valueColor: new AlwaysStoppedAnimation<Color>(color: Color(0xFF9B049B)),
+                )),
+            SizedBox(
+              height: 10,
+            ),
+            Text('Loading',
+                style: TextStyle(
+                    color: Color(0xFF333333),
+                    fontSize: 18,
+                    fontWeight: FontWeight.w600)),
+          ],
+        )),
+      ):market.isEmpty? UpgradeAlert(
+        dialogStyle: UpgradeDialogStyle.cupertino,
+        child: Column(
+          mainAxisAlignment: MainAxisAlignment.center,
+          children: [
+            Center(child: Text("No Product Available", style: TextStyle(
+                color: Colors.black,
+                fontSize: 21,
+                height: 1.4,
+                fontWeight: FontWeight.w500)),),
+          ],
+        ),
+      ):UpgradeAlert(
+        dialogStyle: UpgradeDialogStyle.cupertino,
+        child: Consumer<Utils>(
+          builder: (context, utils, child) {
+            return Container(
+              padding: EdgeInsets.all(5),
+              child:  Container(
+                child: Stack(
+                  children: [
+                    StaggeredGridView.countBuilder(
+                        controller: scrollController,
+                        crossAxisCount: 2,
+                        crossAxisSpacing: 4,
+                        mainAxisSpacing: 4,
+                        itemCount: market.length,
+                        itemBuilder: (context, index) {
+                          return InkWell(
+                            onTap: (){
+                              _viewProduct(market[index].user, data: market[index]);
+                            },
+                            child: Container(
+                             // height: 100,
+                              decoration: BoxDecoration(
+                                  color: Colors.transparent,
+                                  borderRadius: BorderRadius.all(
+                                      Radius.circular(18))
+                              ),
+                              child: ClipRRect(
                                 borderRadius: BorderRadius.all(
-                                    Radius.circular(18))
-                            ),
-                            child: ClipRRect(
-                              borderRadius: BorderRadius.all(
-                                  Radius.circular(18)),
-                              child: Card(
-                                child: GridTile(
-                                  child: FadeInImage.memoryNetwork(
-                                    placeholder: kTransparentImage,
-                                    image: market[index].productImages==null?'':"https://uploads.fixme.ng/thumbnails/${market[index].productImages[0]['imageFileName']}",fit: BoxFit.cover,),
-                                  footer: Container(
-                                    decoration: BoxDecoration(
-                                      color: Colors.black38,
-                                    ),
-                                    child: Padding(
-                                      padding: const EdgeInsets.all(3.0),
-                                      child: Column(
-                                        children: [
-                                          Text("${market[index].product_name}",
-                                            style: TextStyle(
+                                    Radius.circular(18)),
+                                child: Card(
+                                  child: GridTile(
+                                    child: FadeInImage.memoryNetwork(
+                                      placeholder: kTransparentImage,
+                                      image: market[index].productImages==null?'':"https://uploads.fixme.ng/thumbnails/${market[index].productImages[0]['imageFileName']}",fit: BoxFit.cover,),
+                                    footer: Container(
+                                      decoration: BoxDecoration(
+                                        color: Colors.black38,
+                                      ),
+                                      child: Padding(
+                                        padding: const EdgeInsets.all(3.0),
+                                        child: Column(
+                                          children: [
+                                            Text("${market[index].product_name}",
+                                              style: TextStyle(
+                                                  color: Colors.white,
+                                                  fontWeight: FontWeight.bold),
+                                              maxLines: 2,
+                                             softWrap: true,
+                                              overflow: TextOverflow.ellipsis,
+                                            ),
+                                            Text("₦${market[index].price}", style: TextStyle(
                                                 color: Colors.white,
+                                                fontFamily: 'Roboto',
+                                                fontSize: 17,
                                                 fontWeight: FontWeight.bold),
-                                            maxLines: 2,
-                                           softWrap: true,
-                                            overflow: TextOverflow.ellipsis,
-                                          ),
-                                          Text("₦${market[index].price}", style: TextStyle(
-                                              color: Colors.white,
-                                              fontFamily: 'Roboto',
-                                              fontSize: 17,
-                                              fontWeight: FontWeight.bold),
-                                            maxLines: 1,
-                                            softWrap: true,
-                                            overflow: TextOverflow.ellipsis,
-                                          ),
-                                        ],
+                                              maxLines: 1,
+                                              softWrap: true,
+                                              overflow: TextOverflow.ellipsis,
+                                            ),
+                                          ],
+                                        ),
                                       ),
                                     ),
                                   ),
                                 ),
                               ),
                             ),
-                          ),
-                        );
-                      },
-                      staggeredTileBuilder: (index) {
-                        return StaggeredTile.count(1, index.isEven ? 1.2 : 1.8);
-                      }),
-                  utils.isLoading?Padding(
-                    padding: const EdgeInsets.all(8.0),
-                    child: Align(
-                      alignment: Alignment.bottomCenter,
-                      child: Theme(
-                          data: Theme.of(context).copyWith(
-                            accentColor: Color(0xFF9B049B),),
-                          child: SizedBox(
-                            height: 20,
-                            width: 20,
-                            child: CircularProgressIndicator(
-                              valueColor: AlwaysStoppedAnimation<Color>(Color(0xFF9B049B)),
-                              strokeWidth: 2,
-                              backgroundColor: Colors.white,
-                              //  valueColor: new AlwaysStoppedAnimation<Color>(color: Color(0xFF9B049B)),
-                            ),
-                          )),
-                    ),
-                  ):Container()
-                ],
+                          );
+                        },
+                        staggeredTileBuilder: (index) {
+                          return StaggeredTile.count(1, index.isEven ? 1.2 : 1.8);
+                        }),
+                    utils.isLoading?Padding(
+                      padding: const EdgeInsets.all(8.0),
+                      child: Align(
+                        alignment: Alignment.bottomCenter,
+                        child: Theme(
+                            data: Theme.of(context).copyWith(
+                              accentColor: Color(0xFF9B049B),),
+                            child: SizedBox(
+                              height: 20,
+                              width: 20,
+                              child: CircularProgressIndicator(
+                                valueColor: AlwaysStoppedAnimation<Color>(Color(0xFF9B049B)),
+                                strokeWidth: 2,
+                                backgroundColor: Colors.white,
+                                //  valueColor: new AlwaysStoppedAnimation<Color>(color: Color(0xFF9B049B)),
+                              ),
+                            )),
+                      ),
+                    ):Container()
+                  ],
+                ),
               ),
-            ),
-          );
-        }
+            );
+          }
+        ),
       ),
     );
   }
