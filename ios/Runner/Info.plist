@@ -46,9 +46,9 @@
 	<key>NSContactsUsageDescription</key>
 	<string>Fixme needs to access your contacts for this service.</string>
 	<key>NSLocationAlwaysUsageDescription</key>
-	<string>Fixme requires location services to work</string>
+	<string>Fixme requires access to your location to display products and services closest to you. Fixme cannot work without your location.</string>
 	<key>NSLocationWhenInUseUsageDescription</key>
-	<string>Fixme requires location services to work</string>
+	<string>Fixme requires access to your location to display products and services closest to you. Fixme cannot work without your location.</string>
 	<key>NSMicrophoneUsageDescription</key>
 	<string>Fixme requires microphone access for voice notes to work.</string>
 	<key>NSMotionUsageDescription</key>
