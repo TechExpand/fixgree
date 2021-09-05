@@ -7,6 +7,7 @@ import 'package:firebase_core/firebase_core.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 import 'package:google_fonts/google_fonts.dart';
 import 'package:user_experior/user_experior.dart';
+import 'DummyData.dart';
 import 'Screens/ArtisanUser/Profile/ArtisanProvider.dart';
 import 'Screens/GeneralUsers/Home/HomePage.dart';
 import 'Screens/GeneralUsers/Wallet/Providers/PinProvider.dart';
@@ -135,6 +136,9 @@ void main() async {
     ),
     ChangeNotifierProvider<WebServices>(
       create: (context) => WebServices(),
+    ),
+    ChangeNotifierProvider<LgaProvider>(
+      create: (context) => LgaProvider(),
     ),
     ChangeNotifierProvider<LocationService>(
       create: (context) => LocationService(),

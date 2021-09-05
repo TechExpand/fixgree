@@ -1,5 +1,7 @@
-Map<String, String> data = {'': ''};
 
+import 'package:flutter/foundation.dart';
+
+Map<String, String> data = {'': ''};
 List<Map<String, String>> popularServices = [
   {'text': 'Food Vendor', 'image': 'assets/images/pp1.jpg', 'id': '122'},
   {'text': 'Web Designer', 'image': 'assets/images/pp2.jpg', 'id': '68'},
@@ -31,3 +33,73 @@ List<Map<String, String>> featuredServices = [
     'price': '3000'
   },
 ];
+
+
+
+
+
+
+
+
+
+class StateInfo{
+  String name;
+  int id;
+  StateInfo(this.name, this.id);
+}
+
+List<StateInfo> datas = [
+  StateInfo('Abia', 1),
+  StateInfo('Adamawa', 2),
+  StateInfo('Akwa Ibom', 3),
+  StateInfo('Anambra', 4),
+  StateInfo('Bauchi', 5),
+  StateInfo('Bayelsa', 6),
+  StateInfo('Benue', 7),
+  StateInfo('Borno', 8),
+  StateInfo('Cross River', 9),
+  StateInfo('Delta', 10),
+  StateInfo('Ebonyi', 11),
+  StateInfo('Edo',12),
+  StateInfo('Ekiti', 13),
+  StateInfo('Enugu', 14),
+  StateInfo('Gombe', 15),
+  StateInfo('Imo', 16),
+  StateInfo('Jigawa', 17),
+  StateInfo('Kaduna', 18),
+  StateInfo('Kano', 19),
+  StateInfo('Katsina', 20),
+  StateInfo('Kebbi', 21),
+  StateInfo('Kogi', 22),
+  StateInfo('Kwara', 23),
+  StateInfo('Lagos', 24),
+  StateInfo('Nasarawa', 25),
+  StateInfo('Niger', 26),
+  StateInfo('Ogun', 27),
+  StateInfo('Ondo', 28),
+  StateInfo('Osun', 29),
+  StateInfo('Oyo', 30),
+  StateInfo('Plateau', 31),
+  StateInfo('Rivers', 32),
+  StateInfo('Sokoto', 33),
+  StateInfo('Taraba', 34),
+  StateInfo('Yobe', 35),
+  StateInfo('Zamfara', 36),
+  StateInfo('Abuja', 37),
+
+];
+
+class LgaProvider with ChangeNotifier {
+  List<StateInfo> allLgaList = datas;
+
+  StateInfo seletedinfo;
+
+  changeSelectedLGA(value){
+    seletedinfo = value;
+    notifyListeners();
+  }
+
+
+}
+
+

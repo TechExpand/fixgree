@@ -21,6 +21,7 @@ import 'package:http/http.dart' as http;
 import 'package:provider/provider.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 import 'package:url_encoder/url_encoder.dart';
+import '../DummyData.dart';
 import 'Firebase_service.dart';
 
 class WebServices extends ChangeNotifier {
@@ -94,6 +95,7 @@ class WebServices extends ChangeNotifier {
   Future<dynamic> register({context, scaffoldKey}) async {
     var data = Provider.of<DataProvider>(context, listen: false);
     var datas = Provider.of<Utils>(context, listen: false);
+    LgaProvider state =  Provider.of<LgaProvider>(context, listen: false);
     var location = Provider.of<LocationService>(context, listen: false);
     try {
       var response = await http.post(Uri.parse('$mainUrl/create-user'), body: {
@@ -104,7 +106,7 @@ class WebServices extends ChangeNotifier {
         'referral_Id': data.referalId.isEmpty ? '0' : data.referalId,
         'device_token': datas.fcmToken.toString() ?? '',
         'device_os': os.toString(),
-        'state': data.state.toString(),
+        'state': state.seletedinfo.name.toString(),
         'city': data.city.toString(),
         'address': data.adress.toString(),
         'longitude': location.locationLongitude.toString(),

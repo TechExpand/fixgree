@@ -3,6 +3,7 @@ import 'package:fixme/Utils/Provider.dart';
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 
+import '../../../DummyData.dart';
 import 'SignUpSetName.dart';
 
 class SignUpEmail extends StatefulWidget {
@@ -22,6 +23,9 @@ class SignUpEmailState extends State<SignUpEmail> {
   @override
   Widget build(BuildContext context) {
     var data = Provider.of<DataProvider>(context, listen: false);
+    LgaProvider state =  Provider.of<LgaProvider>(context, listen: false);
+
+    result = state.allLgaList;
     return Scaffold(
       appBar: AppBar(
         elevation: 0,
@@ -79,7 +83,7 @@ class SignUpEmailState extends State<SignUpEmail> {
             Padding(
               padding: const EdgeInsets.only(top:15.0),
               child: Container(
-                margin: EdgeInsets.only(bottom: 15),
+                margin: EdgeInsets.only(bottom: 7),
                 width: MediaQuery.of(context).size.width / 0.2,
                 height: 55,
                 child: TextFormField(
@@ -149,40 +153,90 @@ class SignUpEmailState extends State<SignUpEmail> {
             //     ),
             //   ),
             // ),
+
             Padding(
-              padding: const EdgeInsets.only(top:7.0),
+              padding: const EdgeInsets.only(top:0.0),
               child: Row(
                 children: [
-                  Container(
-                    padding: EdgeInsets.only(right: 20),
-                    width: 140,
-                    height: 40,
-                    child: TextFormField(
-                        onChanged: (value) {
-                          data.setStateName(value);
+                  // InkWell(
+                  //   onTap: (){
+                  // bankDialog(context, setState);
+                  //   },
+                  //   child: Container(
+                  //     padding: EdgeInsets.only(right: 20),
+                  //     width: 140,
+                  //     height: 40,
+                  //     child: TextFormField(
+                  //       enabled: false,
+                  //         // onChanged: (value) {
+                  //         //   data.setStateName(value);
+                  //         // },
+                  //         initialValue: state.seletedinfo==null?'Select State':state.seletedinfo.name,
+                  //         style: TextStyle(color: Colors.black),
+                  //         cursorColor: Colors.black,
+                  //         decoration: InputDecoration(
+                  //           labelStyle: TextStyle(color: Colors.black38),
+                  //           labelText: 'State',
+                  //           enabledBorder: OutlineInputBorder(
+                  //               borderSide: const BorderSide(
+                  //                   color: Color(0xFF9B049B), width: 0.0),
+                  //               borderRadius:
+                  //               BorderRadius.all(Radius.circular(16))),
+                  //           focusedBorder: OutlineInputBorder(
+                  //               borderSide: const BorderSide(
+                  //                   color: Color(0xFF9B049B), width: 0.0),
+                  //               borderRadius:
+                  //               BorderRadius.all(Radius.circular(16))),
+                  //           border: OutlineInputBorder(
+                  //               borderSide: const BorderSide(
+                  //                   color: Color(0xFF9B049B), width: 0.0),
+                  //               borderRadius:
+                  //               BorderRadius.all(Radius.circular(16))),
+                  //         )),
+                  //   ),
+                  // ),
+                  // Padding(
+                  //   padding: const EdgeInsets.only(bottom: 20),
+                  //   child: TextButton(
+                  //     onPressed: (){
+                  //       bankDialog(context, setState);
+                  //     },
+                  //     child: Container(
+                  //       margin: const EdgeInsets.symmetric(horizontal: 14,),
+                  //       child: Row(
+                  //         children: [
+                  //           Container(
+                  //             child: Text('Local Government Area :', style: TextStyle(color: Colors.black38, fontSize: 15),),
+                  //           ),
+                  //           Expanded(
+                  //             child: Text(" ${lga.seletedinfo==null?'select l.g.a':lga.seletedinfo!.name}". toUpperCase(), style: TextStyle(color: Color(0xFF00A85A)),),
+                  //           ),
+                  //         ],
+                  //       ),
+                  //     ),
+                  //   ),
+                  // ),
+
+
+
+
+
+                 Container(
+                      decoration: BoxDecoration(
+                          borderRadius:
+                          BorderRadius.all(Radius.circular(16)),
+                        border: Border.all(color: Color(0xFF9B049B), width: 0.0)
+                      ),
+                      width: 140,
+                           height: 40,
+                      child: TextButton(
+                        onPressed: (){
+                          bankDialog(context, setState);
                         },
-                        style: TextStyle(color: Colors.black),
-                        cursorColor: Colors.black,
-                        decoration: InputDecoration(
-                          labelStyle: TextStyle(color: Colors.black38),
-                          labelText: 'State',
-                          enabledBorder: OutlineInputBorder(
-                              borderSide: const BorderSide(
-                                  color: Color(0xFF9B049B), width: 0.0),
-                              borderRadius:
-                              BorderRadius.all(Radius.circular(16))),
-                          focusedBorder: OutlineInputBorder(
-                              borderSide: const BorderSide(
-                                  color: Color(0xFF9B049B), width: 0.0),
-                              borderRadius:
-                              BorderRadius.all(Radius.circular(16))),
-                          border: OutlineInputBorder(
-                              borderSide: const BorderSide(
-                                  color: Color(0xFF9B049B), width: 0.0),
-                              borderRadius:
-                              BorderRadius.all(Radius.circular(16))),
-                        )),
-                  ),
+                        child: Text(" ${state.seletedinfo==null?'Select ':state.seletedinfo.name}". toUpperCase(), style: TextStyle(color: Colors.black38)),
+                      ),
+                    ),
+
                   Padding(
                     padding: const EdgeInsets.all(8.0),
                     child: Container(
@@ -234,7 +288,7 @@ class SignUpEmailState extends State<SignUpEmail> {
                 child: FlatButton(
                   disabledColor: Color(0x909B049B),
                   onPressed: conData.emails.isEmpty ||conData.adress.isEmpty ||
-                      conData.state.isEmpty || conData.city.isEmpty
+                      state.seletedinfo==null|| conData.city.isEmpty
                       ? null
                       : () {
                           Navigator.push(
@@ -286,4 +340,116 @@ class SignUpEmailState extends State<SignUpEmail> {
       ),
     );
   }
+
+
+
+
+
+
+
+List<StateInfo> result = [];
+
+void searchLga(userInputValue) {
+  LgaProvider postRequestProvider =
+  Provider.of<LgaProvider>(context, listen: false);
+  result = postRequestProvider.allLgaList
+      .where((lga) => lga.name.toString()
+      .toLowerCase()
+      .contains(userInputValue.toLowerCase()))
+      .toList();
+}
+
+
+bankDialog(ctx, set) {
+  LgaProvider postRequestProvider =
+  Provider.of<LgaProvider>(context, listen: false);
+  showDialog(
+      context: context,
+      builder: (ctx) {
+        return StatefulBuilder(
+          builder: (BuildContext context, StateSetter setStates) {
+
+
+            return AlertDialog(
+              title: TextFormField(
+                onChanged: (value) {
+                  setStates(() {
+                    searchLga(value);
+                  });
+                },
+                style: TextStyle(color: Colors.black),
+                decoration: InputDecoration(
+                  labelText: 'Search State',
+                  labelStyle: TextStyle(color: Colors.black),
+                  disabledBorder: OutlineInputBorder(
+                      borderSide: const BorderSide(width: 0.0),
+                      borderRadius: BorderRadius.all(Radius.circular(12))),
+                  focusedBorder: OutlineInputBorder(
+                      borderSide: const BorderSide(width: 0.0),
+                      borderRadius: BorderRadius.all(Radius.circular(12))),
+                  border: OutlineInputBorder(
+                      borderSide: const BorderSide(width: 0.0),
+                      borderRadius: BorderRadius.all(Radius.circular(12))),
+                ),
+              ),
+              content: Container(
+                decoration: BoxDecoration(
+                  borderRadius: BorderRadius.all(new Radius.circular(50.0)),
+                ),
+                height: 500,
+                child: SingleChildScrollView(
+                  child: Column(
+                    children: <Widget>[
+                      Container(
+                        width: 300,
+                        height: 500,
+                        child: ListView.builder(
+                          itemCount:  result.length,
+                          itemBuilder: (context, index) {
+                            result.sort((a, b) {
+                              var ad = a.name;
+                              var bd = b.name;
+                              var s = ad.compareTo(bd);
+                              return s;
+                            });
+
+                            return InkWell(
+                              onTap: () {
+                                Navigator.pop(context);
+                                postRequestProvider.changeSelectedLGA(result[index]);
+                              },
+                              child: ListTile(
+                                leading: CircleAvatar(
+                                  backgroundColor: Color(0xFF270F33)
+                                      .withOpacity(0.6),
+                                  child: Text(
+                                      result[index]
+                                          .name.toString()
+                                          .substring(0, 2),
+                                      style: TextStyle(
+                                          color: Colors.white,
+                                          fontSize: 16,
+                                          fontWeight: FontWeight.w600)),
+                                ),
+                                title: Text('${result[index].name}',  style: TextStyle(
+                                    color: Color(0xFF333333),
+                                    fontSize: 16,
+                                    fontWeight: FontWeight.w600),),
+                              ),
+                            );
+                          },
+                        ),
+                      )
+                    ],
+                  ),
+                ),
+              ),
+            );
+          },
+        );
+      }).then((v) {
+    set(() {});
+  });
+}
+
 }
