@@ -103,33 +103,33 @@ class SignUpProfileSetupState extends State<SignUpProfileSetup> {
                 ),
               ),
             ),
-            Spacer(),
-            Align(
-              alignment: Alignment.bottomRight,
-              child: Container(
-                padding: EdgeInsets.only(
-                  bottom: 40,
-                ),
-                child: InkWell(
-                    onTap: (){
-                      Navigator.push(
-                        context,
-                        PageRouteBuilder(
-                          pageBuilder: (context, animation, secondaryAnimation) {
-                            return SignUpSetProfile();
-                          },
-                          transitionsBuilder: (context, animation, secondaryAnimation, child) {
-                            return FadeTransition(
-                              opacity: animation,
-                              child: child,
-                            );
-                          },
-                        ),
-                      );
-                    },
-                    child: Text('Skip')),
-              ),
-            ),
+            //Spacer(),
+            // Align(
+            //   alignment: Alignment.bottomRight,
+            //   child: Container(
+            //     padding: EdgeInsets.only(
+            //       bottom: 40,
+            //     ),
+            //     child: InkWell(
+            //         onTap: (){
+            //           Navigator.push(
+            //             context,
+            //             PageRouteBuilder(
+            //               pageBuilder: (context, animation, secondaryAnimation) {
+            //                 return SignUpSetProfile();
+            //               },
+            //               transitionsBuilder: (context, animation, secondaryAnimation, child) {
+            //                 return FadeTransition(
+            //                   opacity: animation,
+            //                   child: child,
+            //                 );
+            //               },
+            //             ),
+            //           );
+            //         },
+            //         child: Text('Skip')),
+            //   ),
+            // ),
           ],
         ),
       ),

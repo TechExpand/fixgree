@@ -1,8 +1,11 @@
 import 'dart:convert';
+import 'dart:io';
+import 'dart:ui';
 
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:fixme/Model/Notify.dart';
 import 'package:fixme/Model/Product.dart';
+import 'package:fixme/Screens/GeneralUsers/Home/Search.dart';
 import 'package:fixme/Screens/GeneralUsers/Notification/Notification.dart';
 import 'package:fixme/Widgets/photoView.dart';
 import 'package:http/http.dart' as http;
@@ -18,7 +21,9 @@ import 'package:flutter/material.dart';
 import 'package:flutter_feather_icons/flutter_feather_icons.dart';
 import 'package:flutter_staggered_grid_view/flutter_staggered_grid_view.dart';
 import 'package:google_fonts/google_fonts.dart';
+import 'package:permission_handler/permission_handler.dart';
 import 'package:provider/provider.dart';
+import 'package:shared_preferences/shared_preferences.dart';
 import 'package:transparent_image/transparent_image.dart';
 import 'package:upgrader/upgrader.dart';
 
@@ -37,6 +42,157 @@ class MarketPage extends StatefulWidget {
 class _MarketPageState extends State<MarketPage> {
   List<Product> market;
   ScrollController scrollController = ScrollController();
+
+
+  checkLocationPermission()async{
+    SharedPreferences prefs = await SharedPreferences.getInstance();
+    var permission = prefs.getBool('permission');
+
+ return   permission == null || permission == false?showDialog(
+        barrierDismissible: false,
+        context: context, builder: (context){
+      return WillPopScope(
+        onWillPop: (){},
+        child: BackdropFilter(
+          filter: ImageFilter.blur(sigmaX: 8, sigmaY: 8),
+          child: AlertDialog(
+            elevation: 6,
+            shape: RoundedRectangleBorder(
+                borderRadius: BorderRadius.all(Radius.circular(32.0))),
+            content: Container(
+              height: 200,
+              child: Column(
+                crossAxisAlignment: CrossAxisAlignment.center,
+                mainAxisAlignment: MainAxisAlignment.center,
+                children: <Widget>[
+                  Text(
+                    'Notice',
+                    style: TextStyle(
+                        fontSize: 20,
+                        color: Color(0xFF9B049B),
+                        fontWeight: FontWeight.bold),
+                  ),
+                  Row(
+                    children: [
+                      Container(
+                        width: 250,
+                        padding: EdgeInsets.only(top: 15, bottom: 15),
+                        child: Center(
+                          child: Text(
+                          'Accepting location permission is neccessary for the app to function',
+                            style: TextStyle(
+                              fontSize: 14,
+                              fontWeight: FontWeight.bold,
+                              color: Colors.black54,
+                            ),
+                            textAlign: TextAlign.center,
+                          ),
+                        ),
+                      ),
+                    ],
+                  ),
+                  ButtonBar(
+                      alignment: MainAxisAlignment.center,
+                      children: [
+                        Material(
+                          borderRadius: BorderRadius.circular(26),
+                          elevation: 2,
+                          child: Container(
+                            height: 35,
+                            width: 100,
+                            decoration: BoxDecoration(
+                                border: Border.all(
+                                    color: Color(0xFF9B049B)),
+                                borderRadius:
+                                BorderRadius.circular(26)),
+                            child: FlatButton(
+                              onPressed: () {
+                                return exit(0);
+                              },
+                              color: Color(0xFF9B049B),
+                              shape: RoundedRectangleBorder(
+                                  borderRadius:
+                                  BorderRadius.circular(26)),
+                              padding: EdgeInsets.all(0.0),
+                              child: Ink(
+                                decoration: BoxDecoration(
+                                    borderRadius:
+                                    BorderRadius.circular(26)),
+                                child: Container(
+                                  constraints: BoxConstraints(
+                                      maxWidth: 190.0, minHeight: 53.0),
+                                  alignment: Alignment.center,
+                                  child: Text(
+                                    "Exit",
+                                    textAlign: TextAlign.center,
+                                    style: TextStyle(
+                                        fontSize: 12,
+                                        fontWeight: FontWeight.bold,
+                                        color: Colors.white),
+                                  ),
+                                ),
+                              ),
+                            ),
+                          ),
+                        ),
+                        Material(
+                          borderRadius: BorderRadius.circular(26),
+                          elevation: 2,
+                          child: Container(
+                            height: 35,
+                            width: 100,
+                            decoration: BoxDecoration(
+                                border: Border.all(
+                                    color: Color(0xFF9B049B)),
+                                borderRadius:
+                                BorderRadius.circular(26)),
+                            child: FlatButton(
+                              onPressed:() async{
+                                Map<Permission, PermissionStatus> statuses = await [
+                                  Permission.notification,
+                                  Permission.accessNotificationPolicy,
+                                  Permission.locationAlways,
+                                ].request().then((value){
+                                  Navigator.pop(context);
+                                  prefs.setBool('permission', true);
+                                });
+                              },
+                              color: Color(0xFF9B049B),
+                              shape: RoundedRectangleBorder(
+                                  borderRadius:
+                                  BorderRadius.circular(26)),
+                              padding: EdgeInsets.all(0.0),
+                              child: Ink(
+                                decoration: BoxDecoration(
+                                    borderRadius:
+                                    BorderRadius.circular(26)),
+                                child: Container(
+                                  constraints: BoxConstraints(
+                                      maxWidth: 190.0, minHeight: 53.0),
+                                  alignment: Alignment.center,
+                                  child: Text(
+                                    "Grant Access",
+                                    textAlign: TextAlign.center,
+                                    style: TextStyle(
+                                        fontSize: 12,
+                                        fontWeight: FontWeight.bold,
+                                        color: Colors.white),
+                                  ),
+                                ),
+                              ),
+                            ),
+                          ),
+                        ),
+                      ]),
+                ],
+              ),
+            ),
+          ),
+        ),
+      );
+    }):null;
+  }
+
 
   callmarket(context)async{
     var network = Provider.of<WebServices>(context, listen: false);
@@ -91,6 +247,7 @@ class _MarketPageState extends State<MarketPage> {
   void initState() {
     // TODO: implement initState
     super.initState();
+    checkLocationPermission();
     var utils = Provider.of<Utils>(context, listen: false);
     utils.setLoading(false);
     scrollController.addListener(()async{
@@ -137,87 +294,136 @@ class _MarketPageState extends State<MarketPage> {
               ),
             ),
             Spacer(),
-            Image.asset(
-              'assets/images/fixme1.png',
-              height: 70,
-              width: 70,
-            ),
-            Spacer(),
-            InkWell(
-              onTap: (){
-                Navigator.push(
-                  context,
-                  PageRouteBuilder(
-                    pageBuilder:
-                        (context, animation, secondaryAnimation) {
-                      return NotificationPage(widget.scafoldKey, widget.control);
-                    },
-                    transitionsBuilder:
-                        (context, animation, secondaryAnimation, child) {
-                      return FadeTransition(
-                        opacity: animation,
-                        child: child,
-                      );
-                    },
-                  ),
-                );
-              },
-              child: Padding(
-                padding: const EdgeInsets.only(top: 5,right: 10, left:5),
-                child: Stack(
-                  children: [
-                    Icon(
-                      MyFlutterApp.vector_4,
-                      color:  Color(0xF0A40C85),
-                      size: 24,),
-                    StreamBuilder(
-                        stream: FirebaseApi.userCheckNotifyStream(
-                            network.userId.toString()),
-                        builder:
-                            (context, AsyncSnapshot<QuerySnapshot> snapshot) {
-                          if (snapshot.hasData) {
-                            notify = snapshot.data.docs
-                                .map((doc) =>
-                                Notify.fromMap(doc.data(), doc.id))
-                                .toList();
-
-                            switch (snapshot.connectionState) {
-                              case ConnectionState.waiting:
-                                return Positioned(
-                                    left: 12,
-                                    child: Container());
-                              default:
-                                if (snapshot.hasError) {
-                                  return Positioned(
-                                      left: 12,
-                                      child: Container());
-                                } else {
-                                  final users = notify;
-                                  if (users.isEmpty || users == null) {
-                                    return Positioned(
-                                        left: 12,
-                                        child: Container());
-                                  } else {
-                                    return Positioned(
-                                        left: 12,
-                                        child: Icon(
-                                          Icons.circle,
-                                          color: Colors.red,
-                                          size: 12,
-                                        ));
-                                  }
-                                }
-                            }
-                          } else {
-                            return Positioned(
-                                left: 12,
-                                child: Container());
-                          }
-                        }),
-                  ],
-                ),
+            Container(
+              margin: EdgeInsets.only(top: 5, left: 1),
+              width: MediaQuery.of(context).size.width / 1.5,
+              height: 35,
+              child: InkWell(
+                splashColor: Colors.transparent,
+                hoverColor: Colors.transparent,
+                focusColor: Colors.transparent,
+                highlightColor: Colors.transparent,
+                onTap: () {
+                  Navigator.push(
+                    context,
+                    PageRouteBuilder(
+                      pageBuilder:
+                          (context, animation, secondaryAnimation) {
+                        return SearchPage();
+                      },
+                      transitionsBuilder: (context, animation,
+                          secondaryAnimation, child) {
+                        return FadeTransition(
+                          opacity: animation,
+                          child: child,
+                        );
+                      },
+                    ),
+                  );
+                },
+                child: TextFormField(
+                    obscureText: true,
+                    enabled: false,
+                    style: TextStyle(color: Colors.black),
+                    cursorColor: Colors.black,
+                    decoration: InputDecoration(
+                      prefixIcon: Icon(Icons.search),
+                      labelStyle: TextStyle(color: Colors.black38),
+                      labelText: 'What are you looking for?',
+                      enabledBorder: OutlineInputBorder(
+                          borderSide: const BorderSide(
+                              color: Colors.black38, width: 0.0),
+                          borderRadius:
+                          BorderRadius.all(Radius.circular(4))),
+                      focusedBorder: OutlineInputBorder(
+                          borderSide: const BorderSide(
+                              color: Colors.black38, width: 0.0),
+                          borderRadius:
+                          BorderRadius.all(Radius.circular(4))),
+                      border: OutlineInputBorder(
+                          borderSide: const BorderSide(
+                              color: Colors.black38, width: 0.0),
+                          borderRadius:
+                          BorderRadius.all(Radius.circular(4))),
+                    )),
               ),
             ),
+            Spacer(),
+            // InkWell(
+            //   onTap: (){
+            //     Navigator.push(
+            //       context,
+            //       PageRouteBuilder(
+            //         pageBuilder:
+            //             (context, animation, secondaryAnimation) {
+            //           return NotificationPage(widget.scafoldKey, widget.control);
+            //         },
+            //         transitionsBuilder:
+            //             (context, animation, secondaryAnimation, child) {
+            //           return FadeTransition(
+            //             opacity: animation,
+            //             child: child,
+            //           );
+            //         },
+            //       ),
+            //     );
+            //   },
+            //   child: Padding(
+            //     padding: const EdgeInsets.only(top: 5,right: 10, left:5),
+            //     child: Stack(
+            //       children: [
+            //         Icon(
+            //           MyFlutterApp.vector_4,
+            //           color:  Color(0xF0A40C85),
+            //           size: 24,),
+            //         StreamBuilder(
+            //             stream: FirebaseApi.userCheckNotifyStream(
+            //                 network.userId.toString()),
+            //             builder:
+            //                 (context, AsyncSnapshot<QuerySnapshot> snapshot) {
+            //               if (snapshot.hasData) {
+            //                 notify = snapshot.data.docs
+            //                     .map((doc) =>
+            //                     Notify.fromMap(doc.data(), doc.id))
+            //                     .toList();
+            //
+            //                 switch (snapshot.connectionState) {
+            //                   case ConnectionState.waiting:
+            //                     return Positioned(
+            //                         left: 12,
+            //                         child: Container());
+            //                   default:
+            //                     if (snapshot.hasError) {
+            //                       return Positioned(
+            //                           left: 12,
+            //                           child: Container());
+            //                     } else {
+            //                       final users = notify;
+            //                       if (users.isEmpty || users == null) {
+            //                         return Positioned(
+            //                             left: 12,
+            //                             child: Container());
+            //                       } else {
+            //                         return Positioned(
+            //                             left: 12,
+            //                             child: Icon(
+            //                               Icons.circle,
+            //                               color: Colors.red,
+            //                               size: 12,
+            //                             ));
+            //                       }
+            //                     }
+            //                 }
+            //               } else {
+            //                 return Positioned(
+            //                     left: 12,
+            //                     child: Container());
+            //               }
+            //             }),
+            //       ],
+            //     ),
+            //   ),
+            // ),
 
             InkWell(
               onTap: () {
@@ -343,97 +549,108 @@ class _MarketPageState extends State<MarketPage> {
         dialogStyle: UpgradeDialogStyle.cupertino,
         child: Consumer<Utils>(
           builder: (context, utils, child) {
-            return Container(
-              padding: EdgeInsets.all(5),
-              child:  Container(
-                child: Stack(
-                  children: [
-                    StaggeredGridView.countBuilder(
-                        controller: scrollController,
-                        crossAxisCount: 2,
-                        crossAxisSpacing: 4,
-                        mainAxisSpacing: 4,
-                        itemCount: market.length,
-                        itemBuilder: (context, index) {
-                          return InkWell(
-                            onTap: (){
-                              _viewProduct(market[index].user, data: market[index]);
-                            },
-                            child: Container(
-                             // height: 100,
-                              decoration: BoxDecoration(
-                                  color: Colors.transparent,
-                                  borderRadius: BorderRadius.all(
-                                      Radius.circular(18))
-                              ),
-                              child: ClipRRect(
-                                borderRadius: BorderRadius.all(
-                                    Radius.circular(18)),
-                                child: Card(
-                                  child: GridTile(
-                                    child: FadeInImage.memoryNetwork(
-                                      placeholder: kTransparentImage,
-                                      image: market[index].productImages==null?'':"https://uploads.fixme.ng/thumbnails/${market[index].productImages[0]['imageFileName']}",fit: BoxFit.cover,),
-                                    footer: Container(
-                                      decoration: BoxDecoration(
-                                        color: Colors.black38,
-                                      ),
-                                      child: Padding(
-                                        padding: const EdgeInsets.all(3.0),
-                                        child: Column(
-                                          children: [
-                                            Text("${market[index].product_name}",
-                                              style: TextStyle(
-                                                  color: Colors.white,
-                                                  fontWeight: FontWeight.bold),
-                                              maxLines: 2,
-                                             softWrap: true,
-                                              overflow: TextOverflow.ellipsis,
+            return Builder(
+              builder: (context) {
+                Map<int, Product> mp = {};
+                for (var item in market) {
+                  for(var items in item.productImages){
+                      mp[items['productId']] = item;
+                  }
+                }
+                var filteredList = mp.values.toList();
+                return Container(
+                  padding: EdgeInsets.all(5),
+                  child:  Container(
+                    child: Stack(
+                      children: [
+                        StaggeredGridView.countBuilder(
+                            controller: scrollController,
+                            crossAxisCount: 2,
+                            crossAxisSpacing: 4,
+                            mainAxisSpacing: 4,
+                            itemCount: filteredList.length,
+                            itemBuilder: (context, index) {
+                              return InkWell(
+                                onTap: (){
+                                  _viewProduct(filteredList[index].user, data: filteredList[index]);
+                                },
+                                child: Container(
+                                 // height: 100,
+                                  decoration: BoxDecoration(
+                                      color: Colors.transparent,
+                                      borderRadius: BorderRadius.all(
+                                          Radius.circular(18))
+                                  ),
+                                  child: ClipRRect(
+                                    borderRadius: BorderRadius.all(
+                                        Radius.circular(18)),
+                                    child: Card(
+                                      child: GridTile(
+                                        child: FadeInImage.memoryNetwork(
+                                          placeholder: kTransparentImage,
+                                          image: filteredList[index].productImages==null?'':"https://uploads.fixme.ng/thumbnails/${filteredList[index].productImages[0]['imageFileName']}",fit: BoxFit.cover,),
+                                        footer: Container(
+                                          decoration: BoxDecoration(
+                                            color: Colors.black38,
+                                          ),
+                                          child: Padding(
+                                            padding: const EdgeInsets.all(3.0),
+                                            child: Column(
+                                              children: [
+                                                Text("${filteredList[index].product_name}",
+                                                  style: TextStyle(
+                                                      color: Colors.white,
+                                                      fontWeight: FontWeight.bold),
+                                                  maxLines: 2,
+                                                 softWrap: true,
+                                                  overflow: TextOverflow.ellipsis,
+                                                ),
+                                                Text("₦${filteredList[index].price}", style: TextStyle(
+                                                    color: Colors.white,
+                                                    fontFamily: 'Roboto',
+                                                    fontSize: 17,
+                                                    fontWeight: FontWeight.bold),
+                                                  maxLines: 1,
+                                                  softWrap: true,
+                                                  overflow: TextOverflow.ellipsis,
+                                                ),
+                                              ],
                                             ),
-                                            Text("₦${market[index].price}", style: TextStyle(
-                                                color: Colors.white,
-                                                fontFamily: 'Roboto',
-                                                fontSize: 17,
-                                                fontWeight: FontWeight.bold),
-                                              maxLines: 1,
-                                              softWrap: true,
-                                              overflow: TextOverflow.ellipsis,
-                                            ),
-                                          ],
+                                          ),
                                         ),
                                       ),
                                     ),
                                   ),
                                 ),
-                              ),
-                            ),
-                          );
-                        },
-                        staggeredTileBuilder: (index) {
-                          return StaggeredTile.count(1, index.isEven ? 1.2 : 1.8);
-                        }),
-                    utils.isLoading?Padding(
-                      padding: const EdgeInsets.all(8.0),
-                      child: Align(
-                        alignment: Alignment.bottomCenter,
-                        child: Theme(
-                            data: Theme.of(context).copyWith(
-                              accentColor: Color(0xFF9B049B),),
-                            child: SizedBox(
-                              height: 20,
-                              width: 20,
-                              child: CircularProgressIndicator(
-                                valueColor: AlwaysStoppedAnimation<Color>(Color(0xFF9B049B)),
-                                strokeWidth: 2,
-                                backgroundColor: Colors.white,
-                                //  valueColor: new AlwaysStoppedAnimation<Color>(color: Color(0xFF9B049B)),
-                              ),
-                            )),
-                      ),
-                    ):Container()
-                  ],
-                ),
-              ),
+                              );
+                            },
+                            staggeredTileBuilder: (index) {
+                              return StaggeredTile.count(1, index.isEven ? 1.2 : 1.8);
+                            }),
+                        utils.isLoading?Padding(
+                          padding: const EdgeInsets.all(8.0),
+                          child: Align(
+                            alignment: Alignment.bottomCenter,
+                            child: Theme(
+                                data: Theme.of(context).copyWith(
+                                  accentColor: Color(0xFF9B049B),),
+                                child: SizedBox(
+                                  height: 20,
+                                  width: 20,
+                                  child: CircularProgressIndicator(
+                                    valueColor: AlwaysStoppedAnimation<Color>(Color(0xFF9B049B)),
+                                    strokeWidth: 2,
+                                    backgroundColor: Colors.white,
+                                    //  valueColor: new AlwaysStoppedAnimation<Color>(color: Color(0xFF9B049B)),
+                                  ),
+                                )),
+                          ),
+                        ):Container()
+                      ],
+                    ),
+                  ),
+                );
+              }
             );
           }
         ),
@@ -702,7 +919,7 @@ class _MarketPageState extends State<MarketPage> {
                             'https://uploads.fixme.ng/thumbnails/${userData.urlAvatar}',
                             name: userData.name,
                           );
-
+                         network.sendSms(price:data.price ,product_name: data.product_name, phone:userData.userMobile.toString(),context: context);
                           Navigator.push(
                             context,
                             PageRouteBuilder(

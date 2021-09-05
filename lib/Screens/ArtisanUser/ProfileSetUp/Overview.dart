@@ -26,6 +26,12 @@ class OverviewPageState extends State<OverviewPage> {
                   style: TextStyle(fontWeight: FontWeight.w600)),
             ),
             TextFormField(
+              onFieldSubmitted: (v){
+                FocusScopeNode currentFocus = FocusScope.of(context);
+                if (!currentFocus.hasPrimaryFocus) {
+                  currentFocus.unfocus();
+                }
+              },
               controller: jobdescriptionController,
               keyboardType: TextInputType.multiline,
               maxLines: 6,

@@ -139,8 +139,6 @@ class _HomePageState extends State<HomePage> {
   }
 
 
-
-
   @override
   void initState() {
     var network = Provider.of<WebServices>(context, listen: false);
@@ -189,7 +187,7 @@ class _HomePageState extends State<HomePage> {
         message.data["notification_type"].toString()=='new_project'?showNotification(notification):
         showNotification2(notification);
 
-        FirebaseApi.uploadNotification(
+        message.notification.title=='You Have a Message'?null:FirebaseApi.uploadNotification(
             network.userId.toString(),
             message.notification.title,
             message.data["notification_type"],

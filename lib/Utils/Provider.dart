@@ -1,4 +1,5 @@
 import 'dart:async';
+import 'dart:math';
 import 'package:fixme/Model/service.dart';
 import 'package:fixme/Services/call_service.dart';
 import 'package:flutter/foundation.dart';
@@ -10,7 +11,7 @@ class DataProvider extends ChangeNotifier {
   PhoneNumber number = PhoneNumber(isoCode: 'NG');
   String password = '';
   int count = 10;
-  String firebaseUserId = '';
+  //String firebaseUserId = '';
   String overview = '';
   bool focusValue = false;
   String description = '';
@@ -18,6 +19,9 @@ class DataProvider extends ChangeNotifier {
   bool splash = false;
   String productName = '';
   String productBio = '';
+  String state = '';
+  String adress = '';
+  String city = '';
   String referalId = '';
   String productPrice = '';
   List<Services> servicesList = [];
@@ -50,6 +54,24 @@ class DataProvider extends ChangeNotifier {
     notifyListeners();
   }
 
+  setStateName(value){
+    state = value;
+    notifyListeners();
+  }
+
+
+  setCityName(value){
+    city = value;
+    notifyListeners();
+  }
+
+
+
+
+  setAddress(value){
+    adress = value;
+    notifyListeners();
+  }
 
   setreferalId(value){
     referalId =  value;
@@ -195,11 +217,17 @@ class DataProvider extends ChangeNotifier {
 //end of **of otp textfield** function
 
 //otp count down
+  static const _chars = 'AaBbCcDdEeFfGgHhIiJjKkLlMmNnOoPpQqRrSsTtUuVvWwXxYyZz1234567890';
+  Random _rnd = Random();
 
-  void setUserID(id) {
-    firebaseUserId = id;
-    notifyListeners();
-  }
+  String getRandomString(int length) => String.fromCharCodes(Iterable.generate(
+      length, (_) => _chars.codeUnitAt(_rnd.nextInt(_chars.length))));
+
+
+  // void setUserID() {
+  //   firebaseUserId = getRandomString(28);
+  //   notifyListeners();
+  // }
 
   Future<void> onJoin(
       {channelID,

@@ -598,9 +598,9 @@ class _NotificationState extends State<NotificationPage> {
   dialog(index) {
     WebServices network = Provider.of<WebServices>(context, listen: false);
     return RatingDialog(
-      title: 'Rate this Artisan/Vendor',
+      title: 'RATE THIS SERVICE',
       message:
-          'Tap a star to set your rating. Write review on this user(optional).',
+          'Tap a star to set your rating. Write review on this service(optional).',
       image: Container(
           width: 120,
           height: 120,

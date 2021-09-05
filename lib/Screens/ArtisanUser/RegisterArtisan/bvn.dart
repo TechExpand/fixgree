@@ -47,6 +47,12 @@ class SignUpBvnState extends State<SignUpBvn> {
               width: MediaQuery.of(context).size.width / 0.2,
               height: 55,
               child: TextFormField(
+                onFieldSubmitted: (v){
+                  FocusScopeNode currentFocus = FocusScope.of(context);
+                  if (!currentFocus.hasPrimaryFocus) {
+                    currentFocus.unfocus();
+                  }
+                },
                 controller: bvn,
                 onChanged: (value) {
                   setState(() {

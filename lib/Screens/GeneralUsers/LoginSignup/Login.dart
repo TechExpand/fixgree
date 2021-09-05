@@ -72,7 +72,7 @@ class LoginState extends State<Login> {
                       page: 'Login');
                 },
                 transitionsBuilder:
-                    (context, animation, secondaryAnimation, child) {
+                    (context, animation, secondaryAnimation, child){
                   return FadeTransition(
                     opacity: animation,
                     child: child,
@@ -132,8 +132,16 @@ class LoginState extends State<Login> {
                     child: InternationalPhoneNumberInput(
                       textStyle: TextStyle(fontSize: 17, color: Colors.black),
                       inputBorder: InputBorder.none,
+                      onFieldSubmitted: (v){
+                        FocusScopeNode currentFocus = FocusScope.of(context);
+                        if (!currentFocus.hasPrimaryFocus) {
+                          currentFocus.unfocus();
+                        }
+                      },
                       onInputChanged: (PhoneNumber num) {
-                        data.setNumber(num);
+                        setState(() {
+                          data.setNumber(num);
+                        });
                       },
                       onInputValidated: (bool value) {},
                       selectorConfig: SelectorConfig(

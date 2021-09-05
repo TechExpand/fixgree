@@ -76,6 +76,148 @@ class SignUpEmailState extends State<SignUpEmail> {
                 ),
               ),
             ),
+            Padding(
+              padding: const EdgeInsets.only(top:15.0),
+              child: Container(
+                margin: EdgeInsets.only(bottom: 15),
+                width: MediaQuery.of(context).size.width / 0.2,
+                height: 55,
+                child: TextFormField(
+                  onFieldSubmitted: (v){
+                    FocusScopeNode currentFocus = FocusScope.of(context);
+                    if (!currentFocus.hasPrimaryFocus) {
+                      currentFocus.unfocus();
+                    }
+                  },
+                  textCapitalization:
+                  TextCapitalization.sentences,
+                  autocorrect: true,
+                  enableSuggestions: true,
+                  maxLines: null,
+                  onChanged: (value) {
+                    data.setAddress(value);
+                  },
+                  style: TextStyle(color: Colors.black),
+                  cursorColor: Colors.black,
+                  decoration: InputDecoration(
+                    isDense: true,
+                    labelStyle: TextStyle(color: Colors.black38),
+                    labelText: 'Address',
+                    enabledBorder: OutlineInputBorder(
+                        borderSide: const BorderSide(
+                            color: Color(0xFF9B049B), width: 0.0),
+                        borderRadius: BorderRadius.all(Radius.circular(16))),
+                    focusedBorder: OutlineInputBorder(
+                        borderSide: const BorderSide(
+                            color: Color(0xFF9B049B), width: 0.0),
+                        borderRadius: BorderRadius.all(Radius.circular(16))),
+                    border: OutlineInputBorder(
+                        borderSide: const BorderSide(
+                            color: Color(0xFF9B049B), width: 0.0),
+                        borderRadius: BorderRadius.all(Radius.circular(16))),
+                  ),
+                ),
+              ),
+            ),
+            // Padding(
+            //   padding: const EdgeInsets.only(top:15.0),
+            //   child: Container(
+            //     width: MediaQuery.of(context).size.width / 0.2,
+            //     height: 50,
+            //     child: TextFormField(
+            //       onChanged: (value) {
+            //         data.setAddress(value);
+            //       },
+            //       style: TextStyle(color: Colors.black),
+            //       cursorColor: Colors.black,
+            //       decoration: InputDecoration(
+            //         labelStyle: TextStyle(color: Colors.black38),
+            //         labelText: 'Address',
+            //         enabledBorder: OutlineInputBorder(
+            //             borderSide: const BorderSide(
+            //                 color: Color(0xFF9B049B), width: 0.0),
+            //             borderRadius: BorderRadius.all(Radius.circular(16))),
+            //         focusedBorder: OutlineInputBorder(
+            //             borderSide: const BorderSide(
+            //                 color: Color(0xFF9B049B), width: 0.0),
+            //             borderRadius: BorderRadius.all(Radius.circular(16))),
+            //         border: OutlineInputBorder(
+            //             borderSide: const BorderSide(
+            //                 color: Color(0xFF9B049B), width: 0.0),
+            //             borderRadius: BorderRadius.all(Radius.circular(16))),
+            //       ),
+            //     ),
+            //   ),
+            // ),
+            Padding(
+              padding: const EdgeInsets.only(top:7.0),
+              child: Row(
+                children: [
+                  Container(
+                    padding: EdgeInsets.only(right: 20),
+                    width: 140,
+                    height: 40,
+                    child: TextFormField(
+                        onChanged: (value) {
+                          data.setStateName(value);
+                        },
+                        style: TextStyle(color: Colors.black),
+                        cursorColor: Colors.black,
+                        decoration: InputDecoration(
+                          labelStyle: TextStyle(color: Colors.black38),
+                          labelText: 'State',
+                          enabledBorder: OutlineInputBorder(
+                              borderSide: const BorderSide(
+                                  color: Color(0xFF9B049B), width: 0.0),
+                              borderRadius:
+                              BorderRadius.all(Radius.circular(16))),
+                          focusedBorder: OutlineInputBorder(
+                              borderSide: const BorderSide(
+                                  color: Color(0xFF9B049B), width: 0.0),
+                              borderRadius:
+                              BorderRadius.all(Radius.circular(16))),
+                          border: OutlineInputBorder(
+                              borderSide: const BorderSide(
+                                  color: Color(0xFF9B049B), width: 0.0),
+                              borderRadius:
+                              BorderRadius.all(Radius.circular(16))),
+                        )),
+                  ),
+                  Padding(
+                    padding: const EdgeInsets.all(8.0),
+                    child: Container(
+                      width: 140,
+                      height: 40,
+                      child: TextFormField(
+                          onChanged: (value) {
+                            data.setCityName(value);
+                          },
+                          style: TextStyle(color: Colors.black),
+                          cursorColor: Colors.black,
+                          decoration: InputDecoration(
+                            labelStyle: TextStyle(color: Colors.black38),
+                            labelText: 'City',
+                            enabledBorder: OutlineInputBorder(
+                                borderSide: const BorderSide(
+                                    color: Color(0xFF9B049B), width: 0.0),
+                                borderRadius:
+                                BorderRadius.all(Radius.circular(16))),
+                            focusedBorder: OutlineInputBorder(
+                                borderSide: const BorderSide(
+                                    color: Color(0xFF9B049B), width: 0.0),
+                                borderRadius:
+                                BorderRadius.all(Radius.circular(16))),
+                            border: OutlineInputBorder(
+                                borderSide: const BorderSide(
+                                    color: Color(0xFF9B049B), width: 0.0),
+                                borderRadius:
+                                BorderRadius.all(Radius.circular(16))),
+                          )),
+                    ),
+                  ),
+                ],
+              ),
+            ),
             Spacer(),
     Consumer<DataProvider>(
     builder: (context, conData, child) {
@@ -91,7 +233,8 @@ class SignUpEmailState extends State<SignUpEmail> {
                     borderRadius: BorderRadius.circular(26)),
                 child: FlatButton(
                   disabledColor: Color(0x909B049B),
-                  onPressed: conData.emails.isEmpty
+                  onPressed: conData.emails.isEmpty ||conData.adress.isEmpty ||
+                      conData.state.isEmpty || conData.city.isEmpty
                       ? null
                       : () {
                           Navigator.push(

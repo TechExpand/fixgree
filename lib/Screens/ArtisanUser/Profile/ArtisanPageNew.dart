@@ -2,6 +2,7 @@ import 'package:fixme/Screens/ArtisanUser/Profile/ArtisanProvider.dart';
 import 'package:fixme/Screens/GeneralUsers/Chat/Chat.dart';
 import 'package:fixme/Services/Firebase_service.dart';
 import 'package:fixme/Services/location_service.dart';
+import 'package:transparent_image/transparent_image.dart';
 import 'package:url_launcher/url_launcher.dart' as UrlLauncher;
 import 'package:fixme/Services/network_service.dart';
 import 'package:fixme/Utils/utils.dart';
@@ -811,150 +812,217 @@ class _ArtisanPageNewState extends State<ArtisanPageNew> with SingleTickerProvid
                                                           int index) {
                                                         return
 
+
+
+
                                                           InkWell(
                                                             onTap: (){
-                                                              _viewProduct(
-                                                                  location,
-                                                                  data: snapshot
-                                                                      .data[
-                                                                  index]);
+                                                                  _viewProduct(
+                                                                      location,
+                                                                      data: snapshot
+                                                                          .data[
+                                                                      index]);
                                                             },
                                                             child: Container(
-                                                            decoration:  BoxDecoration(
-                                                                  color: Color(0xFFFFFFFF),
-                                                                  border: Border.all(
-                                                                      color: Color(0xFFF1F1FD)),
-                                                                  boxShadow: [
-                                                                    BoxShadow(
-                                                                        color:
-                                                                        Color(0xFFF1F1F6),
-                                                                        blurRadius: 10.0,
-                                                                        offset:
-                                                                        Offset(0.3, 4.0))
-                                                                  ],
-                                                                  borderRadius:
-                                                                  BorderRadius.all(
-                                                                      Radius.circular(7))),
-                                                              child: GridTile(
-                                                                footer: Column(
-                                                                  children: [
-                                                                    SizedBox(
-                                                                      height: 20,
-                                                                    ),
-                                                                    Container(
-                                                                      width: 150,
-                                                                      child: Column(
-                                                                        mainAxisAlignment: MainAxisAlignment.center,
-                                                                        children: [
-                                                                          Align(
-                                                                            alignment:
-                                                                            Alignment.center,
-                                                                            child: Padding(
-                                                                              padding:
-                                                                              const EdgeInsets.only(
-                                                                                  left: 8.0,
-                                                                                  right: 8.0, top:0),
-                                                                              child: Wrap(
-                                                                                children: [
-                                                                                  Text(
-                                                                                    "${snapshot.data[index]['product_name']}"
-                                                                                        .capitalizeFirstOfEach,
-                                                                                    style: TextStyle(
-                                                                                        fontSize: 13,
-                                                                                        fontWeight:
-                                                                                        FontWeight
-                                                                                            .w500),
-                                                                                    textAlign: TextAlign.center,
-                                                                                    maxLines: 1,
-                                                                                  ),
-                                                                                ],
-                                                                              ),
+                                                              // height: 100,
+                                                              decoration: BoxDecoration(
+                                                                  color: Colors.transparent,
+                                                                  borderRadius: BorderRadius.all(
+                                                                      Radius.circular(18))
+                                                              ),
+                                                              child: ClipRRect(
+                                                                borderRadius: BorderRadius.all(
+                                                                    Radius.circular(18)),
+                                                                child: Card(
+                                                                  child: GridTile(
+                                                                    child: FadeInImage.memoryNetwork(
+                                                                      placeholder: kTransparentImage,
+                                                                      image: 'https://uploads.fixme.ng/thumbnails/${snapshot.data[index]['productImages'][0]['imageFileName']}',fit: BoxFit.cover,),
+                                                                    footer: Container(
+                                                                      decoration: BoxDecoration(
+                                                                        color: Colors.black38,
+                                                                      ),
+                                                                      child: Padding(
+                                                                        padding: const EdgeInsets.all(3.0),
+                                                                        child: Column(
+                                                                          children: [
+                                                                            Text( "${snapshot.data[index]['product_name']}".capitalizeFirstOfEach,
+                                                                              style: TextStyle(
+                                                                                  color: Colors.white,
+                                                                                  fontWeight: FontWeight.bold),
+                                                                              maxLines: 2,
+                                                                              softWrap: true,
+                                                                              overflow: TextOverflow.ellipsis,
                                                                             ),
-                                                                          ),
-
-                                                                        ],
+                                                                            Text('\u{20A6}'+"${snapshot.data[index]['price']}", style: TextStyle(
+                                                                                color: Colors.white,
+                                                                                fontFamily: 'Roboto',
+                                                                                fontSize: 17,
+                                                                                fontWeight: FontWeight.bold),
+                                                                              maxLines: 1,
+                                                                              softWrap: true,
+                                                                              overflow: TextOverflow.ellipsis,
+                                                                            ),
+                                                                          ],
+                                                                        ),
                                                                       ),
                                                                     ),
-                                                                    Align(
-                                                                        alignment:
-                                                                        Alignment.center,
-                                                                        child: Padding(
-                                                                          padding:
-                                                                          const EdgeInsets
-                                                                              .only(
-                                                                              left: 0.0,
-                                                                              right: 0.0),
-                                                                          child: Wrap(
-                                                                            children: [
-                                                                              Container(
-                                                                                // width:140,
-                                                                                margin: const EdgeInsets.only(top:5.0),
-                                                                                child: Text(
-                                                                                    '\u{20A6}'+"${snapshot.data[index]['price']}",
-                                                                                    style: TextStyle(
-                                                                                        fontFamily: 'Roboto',
-                                                                                            fontWeight: FontWeight.bold,
-                                                                                    )),
-
-                                                                              ),
-                                                                            ],
-                                                                          ),
-                                                                        )),
-                                                                    SizedBox(
-                                                                      height: 20,
-                                                                    )
-                                                                  ],
-                                                                ),
-                                                                header:  Container(
-                                                                  decoration:  BoxDecoration(
-                                                                      color: Color(0xFFFFFFFF),
-                                                                      border: Border.all(
-                                                                          color: Color(0xFFF1F1FD)),
-                                                                      boxShadow: [
-                                                                        BoxShadow(
-                                                                            color:
-                                                                            Colors.black26,
-                                                                            blurRadius: 3.0,
-                                                                            offset:
-                                                                            Offset(0.3, 0.3))
-                                                                      ],
-                                                                      borderRadius:
-                                                                      BorderRadius.all(
-                                                                          Radius.circular(7))),
-                                                                  child: Stack(
-                                                                    children: [
-                                                                      Padding(
-                                                                          padding:
-                                                                          const EdgeInsets
-                                                                              .only(
-                                                                              bottom: 0.0),
-                                                                          child: Container(
-                                                                            height: 110,
-                                                                            width: 180,
-                                                                            clipBehavior: Clip
-                                                                                .antiAliasWithSaveLayer,
-                                                                            decoration: BoxDecoration(
-                                                                                borderRadius: BorderRadius.only(
-                                                                                    topLeft: Radius
-                                                                                        .circular(
-                                                                                        7),
-                                                                                    topRight: Radius
-                                                                                        .circular(
-                                                                                        7))),
-                                                                            child:
-                                                                            Image.network(
-                                                                              'https://uploads.fixme.ng/thumbnails/${snapshot.data[index]['productImages'][0]['imageFileName']}',
-                                                                              fit: BoxFit.cover,
-                                                                            ),
-                                                                          )),
-
-                                                                    ],
                                                                   ),
                                                                 ),
-                                                                child: Text(''),
-                                                                ),
+                                                              ),
                                                             ),
                                                           );
+
+                                                          // InkWell(
+                                                          //   onTap: (){
+                                                          //     _viewProduct(
+                                                          //         location,
+                                                          //         data: snapshot
+                                                          //             .data[
+                                                          //         index]);
+                                                          //   },
+                                                          //   child: Container(
+                                                          //   decoration:  BoxDecoration(
+                                                          //         color: Color(0xFFFFFFFF),
+                                                          //         border: Border.all(
+                                                          //             color: Color(0xFFF1F1FD)),
+                                                          //         boxShadow: [
+                                                          //           BoxShadow(
+                                                          //               color:
+                                                          //               Color(0xFFF1F1F6),
+                                                          //               blurRadius: 10.0,
+                                                          //               offset:
+                                                          //               Offset(0.3, 4.0))
+                                                          //         ],
+                                                          //         borderRadius:
+                                                          //         BorderRadius.all(
+                                                          //             Radius.circular(7))),
+                                                          //     child: GridTile(
+                                                          //       footer: Column(
+                                                          //         children: [
+                                                          //           SizedBox(
+                                                          //             height: 20,
+                                                          //           ),
+                                                          //           Container(
+                                                          //             width: 150,
+                                                          //             child: Column(
+                                                          //               mainAxisAlignment: MainAxisAlignment.center,
+                                                          //               children: [
+                                                          //                 Align(
+                                                          //                   alignment:
+                                                          //                   Alignment.center,
+                                                          //                   child: Padding(
+                                                          //                     padding:
+                                                          //                     const EdgeInsets.only(
+                                                          //                         left: 8.0,
+                                                          //                         right: 8.0, top:0),
+                                                          //                     child: Wrap(
+                                                          //                       children: [
+                                                          //                         Text(
+                                                          //                           "${snapshot.data[index]['product_name']}"
+                                                          //                               .capitalizeFirstOfEach,
+                                                          //                           style: TextStyle(
+                                                          //                               fontSize: 13,
+                                                          //                               fontWeight:
+                                                          //                               FontWeight
+                                                          //                                   .w500),
+                                                          //                           textAlign: TextAlign.center,
+                                                          //                           maxLines: 1,
+                                                          //                         ),
+                                                          //                       ],
+                                                          //                     ),
+                                                          //                   ),
+                                                          //                 ),
+                                                          //
+                                                          //               ],
+                                                          //             ),
+                                                          //           ),
+                                                          //           Align(
+                                                          //               alignment:
+                                                          //               Alignment.center,
+                                                          //               child: Padding(
+                                                          //                 padding:
+                                                          //                 const EdgeInsets
+                                                          //                     .only(
+                                                          //                     left: 0.0,
+                                                          //                     right: 0.0),
+                                                          //                 child: Wrap(
+                                                          //                   children: [
+                                                          //                     Container(
+                                                          //                       // width:140,
+                                                          //                       margin: const EdgeInsets.only(top:5.0),
+                                                          //                       child: Text(
+                                                          //                           '\u{20A6}'+"${snapshot.data[index]['price']}",
+                                                          //                           style: TextStyle(
+                                                          //                               fontFamily: 'Roboto',
+                                                          //                                   fontWeight: FontWeight.bold,
+                                                          //                           )),
+                                                          //
+                                                          //                     ),
+                                                          //                   ],
+                                                          //                 ),
+                                                          //               )),
+                                                          //           SizedBox(
+                                                          //             height: 20,
+                                                          //           )
+                                                          //         ],
+                                                          //       ),
+                                                          //       header:  Container(
+                                                          //         decoration:  BoxDecoration(
+                                                          //             color: Color(0xFFFFFFFF),
+                                                          //             border: Border.all(
+                                                          //                 color: Color(0xFFF1F1FD)),
+                                                          //             boxShadow: [
+                                                          //               BoxShadow(
+                                                          //                   color:
+                                                          //                   Colors.black26,
+                                                          //                   blurRadius: 3.0,
+                                                          //                   offset:
+                                                          //                   Offset(0.3, 0.3))
+                                                          //             ],
+                                                          //             borderRadius:
+                                                          //             BorderRadius.all(
+                                                          //                 Radius.circular(7))),
+                                                          //         child: Stack(
+                                                          //           children: [
+                                                          //             Padding(
+                                                          //                 padding:
+                                                          //                 const EdgeInsets
+                                                          //                     .only(
+                                                          //                     bottom: 0.0),
+                                                          //                 child: Container(
+                                                          //                   height: 110,
+                                                          //                   width: 180,
+                                                          //                   clipBehavior: Clip
+                                                          //                       .antiAliasWithSaveLayer,
+                                                          //                   decoration: BoxDecoration(
+                                                          //                       borderRadius: BorderRadius.only(
+                                                          //                           topLeft: Radius
+                                                          //                               .circular(
+                                                          //                               7),
+                                                          //                           topRight: Radius
+                                                          //                               .circular(
+                                                          //                               7))),
+                                                          //                   child:
+                                                          //                   Image.network(
+                                                          //                     'https://uploads.fixme.ng/thumbnails/${snapshot.data[index]['productImages'][0]['imageFileName']}',
+                                                          //                     fit: BoxFit.cover,
+                                                          //                   ),
+                                                          //                 )),
+                                                          //
+                                                          //           ],
+                                                          //         ),
+                                                          //       ),
+                                                          //       child: Text(''),
+                                                          //       ),
+                                                          //   ),
+                                                          // );
+
+
+
+
+
+
                                                       },
                                                     ));
                                               }
@@ -1445,6 +1513,7 @@ Divider(),
                                   'https://uploads.fixme.ng/thumbnails/${widget.userData.urlAvatar}',
                                   name: widget.userData.name,
                                 );
+                                network.sendSms(product_name:data['product_name'], price: data['price'] ,phone:widget.userData.userMobile.toString(),context: context);
 
                                 Navigator.push(
                                   context,

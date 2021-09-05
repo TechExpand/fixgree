@@ -98,13 +98,13 @@ class _ProfilePageNewState extends State<ProfilePageNew> {
                   },
                   icon: Icon(FeatherIcons.arrowLeft, color: Colors.white),
                 ),
-                actions: [
-                  IconButton(
-                    onPressed: () {},
-                    icon: Icon(FeatherIcons.moreHorizontal,
-                        color: Colors.white),
-                  ),
-                ],
+                // actions: [
+                //   IconButton(
+                //     onPressed: () {},
+                //     icon: Icon(FeatherIcons.moreHorizontal,
+                //         color: Colors.white),
+                //   ),
+                // ],
                 elevation: 3,
               ),
               body: WillPopScope(
@@ -234,75 +234,80 @@ class _ProfilePageNewState extends State<ProfilePageNew> {
                                                   ],
                                                 ),
                                                 SizedBox(height: 5),
-                                                Container(
-                                                  margin:
+
+                                                Row(
+                                                  children: [
+                                                    Container(
+                                                      margin:
                                                       EdgeInsets.only(left: 5),
-                                                  height: 35,
-                                                  decoration: BoxDecoration(
-                                                      border: Border.all(
-                                                          color:
+                                                      height: 35,
+                                                      decoration: BoxDecoration(
+                                                          border: Border.all(
+                                                              color:
                                                               Color(0xFFE9E9E9),
-                                                          width: 1),
-                                                      borderRadius:
+                                                              width: 1),
+                                                          borderRadius:
                                                           BorderRadius.circular(
                                                               5)),
-                                                  child: FlatButton(
-                                                    disabledColor:
+                                                      child: FlatButton(
+                                                        disabledColor:
                                                         Color(0x909B049B),
-                                                    onPressed: () {
-                                                      Navigator.push(
-                                                        context,
-                                                        PageRouteBuilder(
-                                                          pageBuilder: (context,
-                                                              animation,
-                                                              secondaryAnimation) {
-                                                            return EditProfilePage();
-                                                          },
-                                                          transitionsBuilder:
-                                                              (context,
+                                                        onPressed: () {
+                                                          Navigator.push(
+                                                            context,
+                                                            PageRouteBuilder(
+                                                              pageBuilder: (context,
+                                                                  animation,
+                                                                  secondaryAnimation) {
+                                                                return EditProfilePage();
+                                                              },
+                                                              transitionsBuilder:
+                                                                  (context,
                                                                   animation,
                                                                   secondaryAnimation,
                                                                   child) {
-                                                            return FadeTransition(
-                                                              opacity: animation,
-                                                              child: child,
-                                                            );
-                                                          },
-                                                        ),
-                                                      );
-                                                    },
-                                                    color: Colors.transparent,
-                                                    shape: RoundedRectangleBorder(
-                                                        borderRadius:
+                                                                return FadeTransition(
+                                                                  opacity: animation,
+                                                                  child: child,
+                                                                );
+                                                              },
+                                                            ),
+                                                          );
+                                                        },
+                                                        color: Colors.transparent,
+                                                        shape: RoundedRectangleBorder(
+                                                            borderRadius:
                                                             BorderRadius.circular(
                                                                 5)),
-                                                    padding: EdgeInsets.all(0.0),
-                                                    child: Ink(
-                                                      decoration: BoxDecoration(
-                                                          borderRadius:
+                                                        padding: EdgeInsets.all(0.0),
+                                                        child: Ink(
+                                                          decoration: BoxDecoration(
+                                                              borderRadius:
                                                               BorderRadius
                                                                   .circular(5)),
-                                                      child: Container(
-                                                        constraints:
+                                                          child: Container(
+                                                            constraints:
                                                             BoxConstraints(
                                                                 maxWidth: 100,
                                                                 minHeight: 35.0),
-                                                        alignment:
+                                                            alignment:
                                                             Alignment.center,
-                                                        child: Text(
-                                                          "Edit profile",
-                                                          textAlign:
+                                                            child: Text(
+                                                              "Edit profile",
+                                                              textAlign:
                                                               TextAlign.center,
-                                                          style: TextStyle(
-                                                              color:
+                                                              style: TextStyle(
+                                                                  color:
                                                                   Colors.black87,
-                                                              fontWeight:
+                                                                  fontWeight:
                                                                   FontWeight
                                                                       .w600),
+                                                            ),
+                                                          ),
                                                         ),
                                                       ),
                                                     ),
-                                                  ),
+                                                  ],
                                                 ),
                                               ],
                                             ),
@@ -375,6 +380,84 @@ class _ProfilePageNewState extends State<ProfilePageNew> {
                                               // ),
                                             ],
                                           ),
+                                          // Align(
+                                          //   alignment: Alignment.topLeft,
+                                          //   child: Padding(
+                                          //     padding: const EdgeInsets.all(8.0),
+                                          //     child: Container(
+                                          //       height: 35,
+                                          //       decoration: BoxDecoration(
+                                          //           border: Border.all(
+                                          //               color:
+                                          //               Color(0xFFE9E9E9),
+                                          //               width: 1),
+                                          //           borderRadius:
+                                          //           BorderRadius.circular(
+                                          //               5)),
+                                          //       child: FlatButton(
+                                          //         disabledColor:
+                                          //         Color(0x909B049B),
+                                          //         onPressed: () {
+                                          //           var role = network.role == 'artisan'? "business": "artisan";
+                                          //
+                                          //           network.changeAccRole(role, context).then((value){
+                                          //             network.getUserInfo(network.userId);
+                                          //             if(value == true){
+                                          //               Navigator.pushReplacement(
+                                          //                 context,
+                                          //                 PageRouteBuilder(
+                                          //                   pageBuilder:
+                                          //                       (context, animation, secondaryAnimation) {
+                                          //                     return ProfilePageNew();
+                                          //                   },
+                                          //                   transitionsBuilder:
+                                          //                       (context, animation, secondaryAnimation, child) {
+                                          //                     return FadeTransition(
+                                          //                       opacity: animation,
+                                          //                       child: child,
+                                          //                     );
+                                          //                   },
+                                          //                 ),
+                                          //               );
+                                          //             }
+                                          //           });
+                                          //         },
+                                          //         color: Colors.transparent,
+                                          //         shape: RoundedRectangleBorder(
+                                          //             borderRadius:
+                                          //             BorderRadius.circular(
+                                          //                 5)),
+                                          //         padding: EdgeInsets.all(0.0),
+                                          //         child: Ink(
+                                          //           decoration: BoxDecoration(
+                                          //               borderRadius:
+                                          //               BorderRadius
+                                          //                   .circular(5)),
+                                          //           child: Container(
+                                          //             constraints:
+                                          //             BoxConstraints(
+                                          //                 maxWidth:200,
+                                          //                 minHeight: 35.0),
+                                          //             alignment:
+                                          //             Alignment.center,
+                                          //             child: Text(
+                                          //               network.role == 'artisan'? "Change to Product Seller":"Change to Service Provider",
+                                          //               textAlign:
+                                          //               TextAlign.center,
+                                          //               style: TextStyle(
+                                          //                   color:
+                                          //                   Colors.black87,
+                                          //                   fontWeight:
+                                          //                   FontWeight
+                                          //                       .w600),
+                                          //             ),
+                                          //           ),
+                                          //         ),
+                                          //       ),
+                                          //     ),
+                                          //   ),
+                                          // ),
+
                                           snapshot.data['bio'] == null ||
                                                   snapshot.data['bio'] == ''
                                               ? SizedBox()
@@ -424,7 +507,7 @@ class _ProfilePageNewState extends State<ProfilePageNew> {
                                               Row(
                                                 children: [
                                                   Text(
-                                                    'Business Name',
+                                                    'Business Name ${snapshot.data['role']}',
                                                     style: TextStyle(
                                                         color: Color(
                                                             0xFF333333),
@@ -1257,7 +1340,13 @@ class _ProfilePageNewState extends State<ProfilePageNew> {
                             color: Color(0xFFFFFFFF),
                             border: Border.all(color: Color(0xFFF1F1FD)),
                             borderRadius: BorderRadius.all(Radius.circular(7))),
-                        child: TextField(
+                        child: TextFormField(
+                          onFieldSubmitted: (v){
+                            FocusScopeNode currentFocus = FocusScope.of(context);
+                            if (!currentFocus.hasPrimaryFocus) {
+                              currentFocus.unfocus();
+                            }
+                          },
                           controller: _controller,
                           decoration: InputDecoration.collapsed(
                             hintText: 'Product Name',
@@ -1285,7 +1374,13 @@ class _ProfilePageNewState extends State<ProfilePageNew> {
                             color: Color(0xFFFFFFFF),
                             border: Border.all(color: Color(0xFFF1F1FD)),
                             borderRadius: BorderRadius.all(Radius.circular(7))),
-                        child: TextField(
+                        child: TextFormField(
+                          onFieldSubmitted: (v){
+                            FocusScopeNode currentFocus = FocusScope.of(context);
+                            if (!currentFocus.hasPrimaryFocus) {
+                              currentFocus.unfocus();
+                            }
+                          },
                           controller: _controller1,
                           keyboardType: TextInputType.number,
                           decoration: InputDecoration.collapsed(
@@ -1314,7 +1409,13 @@ class _ProfilePageNewState extends State<ProfilePageNew> {
                             color: Color(0xFFFFFFFF),
                             border: Border.all(color: Color(0xFFF1F1FD)),
                             borderRadius: BorderRadius.all(Radius.circular(7))),
-                        child: TextField(
+                        child: TextFormField(
+                          onFieldSubmitted: (v){
+                            FocusScopeNode currentFocus = FocusScope.of(context);
+                            if (!currentFocus.hasPrimaryFocus) {
+                              currentFocus.unfocus();
+                            }
+                          },
                           controller: _controller2,
                           decoration: InputDecoration.collapsed(
                             hintText: 'Product Description',

@@ -1,6 +1,7 @@
 import 'dart:async';
 import 'dart:convert';
 import 'dart:io';
+import 'package:intl/intl.dart';
 import 'package:fixme/Model/Product.dart';
 import 'package:fixme/Model/UserSearch.dart';
 import 'package:device_info/device_info.dart';
@@ -19,6 +20,7 @@ import 'package:flutter/material.dart';
 import 'package:http/http.dart' as http;
 import 'package:provider/provider.dart';
 import 'package:shared_preferences/shared_preferences.dart';
+import 'package:url_encoder/url_encoder.dart';
 import 'Firebase_service.dart';
 
 class WebServices extends ChangeNotifier {
@@ -102,11 +104,14 @@ class WebServices extends ChangeNotifier {
         'referral_Id': data.referalId.isEmpty ? '0' : data.referalId,
         'device_token': datas.fcmToken.toString() ?? '',
         'device_os': os.toString(),
+        'state': data.state.toString(),
+        'city': data.city.toString(),
+        'address': data.adress.toString(),
         'longitude': location.locationLongitude.toString(),
         'latitude': location.locationLatitude.toString(),
         'device_type': info.toString(),
         'password': data.password.toString(),
-        'firebaseId': data.firebaseUserId.toString(),
+        'firebaseId': data.getRandomString(28).toString(),
         'email':
             data.emails.toString() == null || data.emails.toString().isEmpty
                 ? data.firstName + '@Fixme.com'
@@ -166,7 +171,7 @@ class WebServices extends ChangeNotifier {
     } catch (e) {
       loginSetState();
       await showTextToast(
-        text: e,
+        text: e.toString(),
         context: context,
       );
     }
@@ -270,6 +275,36 @@ class WebServices extends ChangeNotifier {
     lastName = prefs.getString('lastName');
     notifyListeners();
   }
+
+
+
+  Future sendSms({product_name, price, phone,context}) async {
+   String message = """Fixme: Hey, i would love to get this product from you!.Product Name: ${product_name.toString()} Product Price: ₦${price.toString()}""";
+   Locale locale = Localizations.localeOf(context);
+   var format = NumberFormat.simpleCurrency(locale: locale.toString());
+   print(format.currencySymbol);
+   String password = urlEncode(text: format.currencySymbol+"Password##");
+   String phoneNumber = urlEncode(text: '+234'+phone);
+   print(phoneNumber);
+   print(phoneNumber);
+   String url = "https://account.kudisms.net/api/?username=ayez1389@yahoo.com&password=$password&message=$message&sender=Fixme&mobiles=$phoneNumber";
+    var response = await http.get(
+        Uri.parse(
+            url),
+        headers: {
+          "Content-type": "application/json",
+          //'Authorization': 'Bearer $bearer',
+        });
+    var body = json.decode(response.body);
+    if (response.statusCode >= 200) {
+      print(response.body);
+      print(response.body);
+    } else  {
+      print('falseeeeee');
+    }
+  }
+
+
 
   Future<dynamic> initiateProject(mainserviceId, projectOwnerUserId, bidId,
       projectId, serviceId, budget, context, setStates) async {
@@ -616,6 +651,7 @@ class WebServices extends ChangeNotifier {
     var body = json.decode(response.body);
     notifyListeners();
     if (body['reqRes'] == 'true') {
+      print(body);
       return body;
     } else if (body['reqRes'] == 'false') {
       print(body['message']);
@@ -780,34 +816,24 @@ class WebServices extends ChangeNotifier {
       controlName,
       controlPrice}) async {
     try {
-      var res =
-          await http.post(Uri.parse('$mainUrl/save-catlog-product'), body: {
-        'product_name': controlName.toString() ?? '',
-        'price': controlPrice.toString() ?? '',
-        'product_description': controlDes.toString() ?? '',
-        'user_id': '$userId',
-      }, headers: {
-        "Content-type": "application/x-www-form-urlencoded",
-        'Authorization': 'Bearer $bearer',
-      });
-
-      var body = jsonDecode(res.body);
-      notifyListeners();
-      if (body['reqRes'] == 'true') {
         var upload = http.MultipartRequest(
-            'POST', Uri.parse('https://uploads.fixme.ng/product-image-upload'));
+            'POST', Uri.parse('https://uploads.fixme.ng/product-upload'));
         var file = await http.MultipartFile.fromPath('file', path);
         upload.files.add(file);
-        upload.fields['product_id'] = body['productId'].toString();
+        upload.fields['product_description'] = controlDes.toString();
         upload.fields['product_name'] = controlName.toString();
+        upload.fields['price'] = controlPrice.toString();
         upload.fields['user_id'] = userId.toString();
         upload.headers['authorization'] = 'Bearer $bearer';
 
         final stream = await upload.send();
         var resp = await http.Response.fromStream(stream);
+        print(resp.body);
+        print(resp.body);
+        print(resp.body);
         var bodys = jsonDecode(resp.body);
 
-        if (bodys['upldRes'] == 'true') {
+        if (bodys['reqRes'] == 'true') {
           loginSetState();
           showDialog(
               barrierDismissible: false,
@@ -954,7 +980,7 @@ class WebServices extends ChangeNotifier {
               },
               context: context);
           return bodys;
-        } else if (bodys['upldRes'] == 'false') {
+        } else if (bodys['reqRes'] == 'false') {
           loginSetState();
           showDialog(
               builder: (ctx) {
@@ -967,19 +993,19 @@ class WebServices extends ChangeNotifier {
               },
               context: context);
         }
-      } else if (body['reqRes'] == 'false') {
-        loginSetState();
-        showDialog(
-            builder: (ctx) {
-              return AlertDialog(
-                title: Center(
-                  child: Text('There was a Problem Working on it!',
-                      style: TextStyle(color: Colors.blue)),
-                ),
-              );
-            },
-            context: context);
-      }
+      // } else if (body['reqRes'] == 'false') {
+      //   loginSetState();
+      //   showDialog(
+      //       builder: (ctx) {
+      //         return AlertDialog(
+      //           title: Center(
+      //             child: Text('There was a Problem Working on it!',
+      //                 style: TextStyle(color: Colors.blue)),
+      //           ),
+      //         );
+      //       },
+      //       context: context);
+      // }
     } catch (e) {
       showDialog(
           builder: (ctx) {
@@ -1056,39 +1082,24 @@ class WebServices extends ChangeNotifier {
 
   Future addProductCatalog(
       {bio, productName, price, scaffoldKey, path, context}) async {
-    var res = await http.post(Uri.parse('$mainUrl/save-catlog-product'), body: {
-      'product_name': productName.toString() ?? '',
-      'price': price.toString() ?? '',
-      'product_description': bio.toString() ?? '',
-      'user_id': '$userId',
-    }, headers: {
-      "Content-type": "application/x-www-form-urlencoded",
-      'Authorization': 'Bearer $bearer',
-    });
-
-    var body = jsonDecode(res.body);
-    print(body);
-    notifyListeners();
-    if (body['reqRes'] == 'true') {
-      var upload = http.MultipartRequest(
-          'POST', Uri.parse('https://uploads.fixme.ng/product-image-upload'));
-      var file = await http.MultipartFile.fromPath('file', path);
-      upload.files.add(file);
-      upload.fields['product_id'] = body['productId'].toString();
-      upload.fields['product_name'] = productName.toString();
-      upload.fields['user_id'] = userId.toString();
-      upload.headers['authorization'] = 'Bearer $bearer';
-
-      final stream = await upload.send();
-      var resp = await http.Response.fromStream(stream);
-      var bodys = jsonDecode(resp.body);
-
-      if (bodys['upldRes'] == 'true') {
+    try{
+    var upload = http.MultipartRequest(
+        'POST', Uri.parse('https://uploads.fixme.ng/product-upload'));
+    var file = await http.MultipartFile.fromPath('file', path);
+    upload.files.add(file);
+    upload.fields['product_description'] = bio.toString();
+    upload.fields['product_name'] = productName.toString();
+    upload.fields['price'] = price.toString();
+    upload.fields['user_id'] = userId.toString();
+    upload.headers['authorization'] = 'Bearer $bearer';
+    final stream = await upload.send();
+    var resp = await http.Response.fromStream(stream);
+    var bodys = jsonDecode(resp.body);
+      if (bodys['reqRes'] == 'true') {
         return true;
-      } else if (bodys['upldRes'] == 'false') {
+      } else if (bodys['reqRes'] == 'false') {
         return false;
-      }
-    } else if (body['reqRes'] == 'false') {
+      }}catch(e){
       return false;
     }
   }
@@ -1457,6 +1468,39 @@ class WebServices extends ChangeNotifier {
     }
   }
 
+
+
+
+
+  Future<dynamic> changeAccRole(roles,context) async {
+    var response =
+    await http.post(Uri.parse('$mainUrl/mtk-details-update'), body: {
+      'user_id': userId.toString(),
+      'user_role': roles.toString(),
+    }, headers: {
+      "Content-type": "application/x-www-form-urlencoded",
+      'Authorization': 'Bearer $bearer',
+    });
+    var body = json.decode(response.body);
+    notifyListeners();
+    if (body['reqRes'] == 'true') {
+      var datas = Provider.of<Utils>(context, listen: false);
+      SharedPreferences prefs = await SharedPreferences.getInstance();
+      datas.storeData('role', roles);
+      role = prefs.getString('role');
+      return true;
+    } else if (body['reqRes'] == 'false') {
+      print(body);
+      return false;
+    }
+  }
+
+
+
+
+
+
+
   Future<dynamic> updateFCMToken(userId, fcmToken) async {
     var response =
         await http.post(Uri.parse('$mainUrl/mtk-details-update'), body: {
@@ -1471,11 +1515,6 @@ class WebServices extends ChangeNotifier {
     var body = json.decode(response.body);
     notifyListeners();
     if (body['reqRes'] == 'true') {
-      print(body.toString() + "I don update ooooo");
-      print(body.toString() + "I don update ooooo");
-      print(body.toString() + "I don update ooooo");
-      print(body.toString() + "I don update ooooo");
-
       return body;
     } else if (body['reqRes'] == 'false') {
       print(body);
@@ -1635,7 +1674,7 @@ class WebServices extends ChangeNotifier {
   }
 
   Future<dynamic> getUndoneProject(context) async {
-    var response = await http.post(Uri.parse('$mainUrl/user-projects'), body: {
+    var response = await http.post(Uri.parse('$mainUrl/get-all-bid-task-list'), body: {
       'user_id': userId.toString(),
     }, headers: {
       "Content-type": "application/x-www-form-urlencoded",
@@ -1652,6 +1691,7 @@ class WebServices extends ChangeNotifier {
       return response.statusCode;
     } else {
       var body1 = json.decode(response.body);
+      print(body1);
       List body = body1['projects'];
       List<Project> projects = body
           .map((data) {
@@ -1662,6 +1702,9 @@ class WebServices extends ChangeNotifier {
 
       notifyListeners();
       if (body1['reqRes'] == 'true') {
+        print(projects.length);
+        print(projects.length);
+        print(projects.length);
         return projects;
       } else if (body1['reqRes'] == 'false') {}
     }

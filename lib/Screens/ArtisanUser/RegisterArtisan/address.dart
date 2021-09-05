@@ -51,6 +51,12 @@ TextEditingController businessName = TextEditingController();
               width: MediaQuery.of(context).size.width / 0.2,
               height: 55,
               child: TextFormField(
+                onFieldSubmitted: (v){
+                  FocusScopeNode currentFocus = FocusScope.of(context);
+                  if (!currentFocus.hasPrimaryFocus) {
+                    currentFocus.unfocus();
+                  }
+                },
                 textCapitalization:
                 TextCapitalization.sentences,
                 autocorrect: true,
@@ -88,6 +94,12 @@ TextEditingController businessName = TextEditingController();
               width: MediaQuery.of(context).size.width / 0.2,
               height: 55,
               child: TextFormField(
+                onFieldSubmitted: (v){
+                  FocusScopeNode currentFocus = FocusScope.of(context);
+                  if (!currentFocus.hasPrimaryFocus) {
+                    currentFocus.unfocus();
+                  }
+                },
                 textCapitalization:
                 TextCapitalization.sentences,
                 autocorrect: true,
@@ -137,6 +149,12 @@ TextEditingController businessName = TextEditingController();
               width: MediaQuery.of(context).size.width / 0.2,
               height: 55,
               child: TextFormField(
+                onFieldSubmitted: (v){
+                  FocusScopeNode currentFocus = FocusScope.of(context);
+                  if (!currentFocus.hasPrimaryFocus) {
+                    currentFocus.unfocus();
+                  }
+                },
                 textCapitalization:
                 TextCapitalization.sentences,
                 autocorrect: true,
@@ -144,7 +162,9 @@ TextEditingController businessName = TextEditingController();
                 maxLines: null,
                 controller: businessName,
                 onChanged: (value) {
-                  data.setBusinessName(value);
+                  setState(() {
+                    data.setBusinessName(value);
+                  });
                 },
                 style: TextStyle(color: Colors.black),
                 cursorColor: Colors.black,

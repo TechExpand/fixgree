@@ -155,7 +155,9 @@ class SignUpState extends State<SignUp> {
                       textStyle: TextStyle(fontSize: 17, color: Colors.black),
                       inputBorder: InputBorder.none,
                       onInputChanged: (PhoneNumber num) {
-                        data.setNumber(num);
+                        setState(() {
+                          data.setNumber(num);
+                        });
                       },
 
                       onInputValidated: (bool value) {},
@@ -163,6 +165,12 @@ class SignUpState extends State<SignUp> {
                         selectorType: PhoneInputSelectorType.DIALOG,
 //                backgroundColor: Colors.black,
                       ),
+                      onFieldSubmitted: (v){
+                        FocusScopeNode currentFocus = FocusScope.of(context);
+                        if (!currentFocus.hasPrimaryFocus) {
+                          currentFocus.unfocus();
+                        }
+                      },
                       ignoreBlank: false,
 //              autoValidateMode: AutovalidateMode.disabled,
                       selectorTextStyle: TextStyle(color: Colors.black),

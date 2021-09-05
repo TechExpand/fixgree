@@ -77,423 +77,423 @@ class _HomeState extends State<Home> {
 
 
 
-
-  Future<Widget> checkConnection()async{
-    var locationStatus = await Permission.location.status;
-    var notificationStatus = await Permission.notification.status;
-    // var connectivityResult = await (Connectivity().checkConnectivity());
-    if (_connectionStatus == ConnectivityResult.mobile) {
-      if(locationStatus.isDenied && notificationStatus.isDenied){
-        print(locationStatus.isGranted);
-        print(notificationStatus.isGranted);
-        print(locationStatus.isGranted);
-        print(notificationStatus.isGranted);
-        showDialog(
-            barrierDismissible: false,
-            context: context, builder: (context){
-          return WillPopScope(
-            onWillPop: (){},
-            child: BackdropFilter(
-              filter: ImageFilter.blur(sigmaX: 8, sigmaY: 8),
-              child: AlertDialog(
-                elevation: 6,
-                shape: RoundedRectangleBorder(
-                    borderRadius: BorderRadius.all(Radius.circular(32.0))),
-                content: Container(
-                  height: 200,
-                  child: Column(
-                    crossAxisAlignment: CrossAxisAlignment.center,
-                    mainAxisAlignment: MainAxisAlignment.center,
-                    children: <Widget>[
-                      Text(
-                        'Notice',
-                        style: TextStyle(
-                            fontSize: 20,
-                            color: Color(0xFF9B049B),
-                            fontWeight: FontWeight.bold),
-                      ),
-                      Row(
-                        children: [
-                          Container(
-                            width: 250,
-                            padding: EdgeInsets.only(top: 15, bottom: 15),
-                            child: Center(
-                              child: Text(
-                                locationStatus.isDenied?'Accepting location permission is neccessary for the app to function': 'Accepting notification permission is neccessary for the app to function',
-                                style: TextStyle(
-                                  fontSize: 14,
-                                  fontWeight: FontWeight.bold,
-                                  color: Colors.black54,
-                                ),
-                                textAlign: TextAlign.center,
-                              ),
-                            ),
-                          ),
-                        ],
-                      ),
-                      ButtonBar(
-                          alignment: MainAxisAlignment.center,
-                          children: [
-                            Material(
-                              borderRadius: BorderRadius.circular(26),
-                              elevation: 2,
-                              child: Container(
-                                height: 35,
-                                width: 100,
-                                decoration: BoxDecoration(
-                                    border: Border.all(
-                                        color: Color(0xFF9B049B)),
-                                    borderRadius:
-                                    BorderRadius.circular(26)),
-                                child: FlatButton(
-                                  onPressed: () {
-                                    return exit(0);
-                                  },
-                                  color: Color(0xFF9B049B),
-                                  shape: RoundedRectangleBorder(
-                                      borderRadius:
-                                      BorderRadius.circular(26)),
-                                  padding: EdgeInsets.all(0.0),
-                                  child: Ink(
-                                    decoration: BoxDecoration(
-                                        borderRadius:
-                                        BorderRadius.circular(26)),
-                                    child: Container(
-                                      constraints: BoxConstraints(
-                                          maxWidth: 190.0, minHeight: 53.0),
-                                      alignment: Alignment.center,
-                                      child: Text(
-                                        "Exit",
-                                        textAlign: TextAlign.center,
-                                        style: TextStyle(
-                                            fontSize: 12,
-                                            fontWeight: FontWeight.bold,
-                                            color: Colors.white),
-                                      ),
-                                    ),
-                                  ),
-                                ),
-                              ),
-                            ),
-                            Material(
-                              borderRadius: BorderRadius.circular(26),
-                              elevation: 2,
-                              child: Container(
-                                height: 35,
-                                width: 100,
-                                decoration: BoxDecoration(
-                                    border: Border.all(
-                                        color: Color(0xFF9B049B)),
-                                    borderRadius:
-                                    BorderRadius.circular(26)),
-                                child: FlatButton(
-                                  onPressed:Platform.isAndroid? () async{
-                                    Navigator.pop(context);
-                                    Map<Permission, PermissionStatus> statuses = await [
-                                      Permission.notification,
-                                      Permission.accessNotificationPolicy,
-                                      Permission.locationAlways,
-                                    ].request();
-                                  }:(){
-                                    Navigator.pop(context);
-                                    note();
-                                  },
-                                  color: Color(0xFF9B049B),
-                                  shape: RoundedRectangleBorder(
-                                      borderRadius:
-                                      BorderRadius.circular(26)),
-                                  padding: EdgeInsets.all(0.0),
-                                  child: Ink(
-                                    decoration: BoxDecoration(
-                                        borderRadius:
-                                        BorderRadius.circular(26)),
-                                    child: Container(
-                                      constraints: BoxConstraints(
-                                          maxWidth: 190.0, minHeight: 53.0),
-                                      alignment: Alignment.center,
-                                      child: Text(
-                                        "Grant Access",
-                                        textAlign: TextAlign.center,
-                                        style: TextStyle(
-                                            fontSize: 12,
-                                            fontWeight: FontWeight.bold,
-                                            color: Colors.white),
-                                      ),
-                                    ),
-                                  ),
-                                ),
-                              ),
-                            ),
-                          ]),
-                    ],
-                  ),
-                ),
-              ),
-            ),
-          );
-        });
-      }else{
-
-      }
-    } else if (_connectionStatus == ConnectivityResult.wifi) {
-      if(locationStatus.isDenied && notificationStatus.isDenied){
-        print('isGranted locationStatus ' + locationStatus.isGranted.toString());
-        print('isLimited locationStatus '+locationStatus.isLimited.toString());
-        print('isDenied locationStatus'+locationStatus.isDenied.toString());
-        print('isRestricted locationStatus'+locationStatus.isRestricted.toString());
-        print('isPermanentlyDenied locationStatus'+locationStatus.isPermanentlyDenied.toString());
-
-
-
-        print('isGranted notificationStatus ' + notificationStatus.isGranted.toString());
-        print('isLimited notificationStatus '+notificationStatus.isLimited.toString());
-        print('isDenied notificationStatus'+notificationStatus.isDenied.toString());
-        print('isRestricted notificationStatus'+notificationStatus.isRestricted.toString());
-        print('isPermanentlyDenied notificationStatus'+notificationStatus.isPermanentlyDenied.toString());
-        showDialog(
-            barrierDismissible: false,
-            context: context, builder: (context){
-          return WillPopScope(
-            onWillPop: (){},
-            child:BackdropFilter(
-              filter: ImageFilter.blur(sigmaX: 8, sigmaY: 8),
-              child: AlertDialog(
-                elevation: 6,
-                shape: RoundedRectangleBorder(
-                    borderRadius: BorderRadius.all(Radius.circular(32.0))),
-                content: Container(
-                  height: 200,
-                  child: Column(
-                    crossAxisAlignment: CrossAxisAlignment.center,
-                    mainAxisAlignment: MainAxisAlignment.center,
-                    children: <Widget>[
-                      Text(
-                        'Notice',
-                        style: TextStyle(
-                            fontSize: 20,
-                            color: Color(0xFF9B049B),
-                            fontWeight: FontWeight.bold),
-                      ),
-                      Row(
-                        children: [
-                          Container(
-                            width: 250,
-                            padding: EdgeInsets.only(top: 15, bottom: 15),
-                            child: Center(
-                              child: Text(
-                                locationStatus.isDenied?'Accepting location permission is neccessary for the app to function': 'Accepting notification permission is neccessary for the app to function',
-                                style: TextStyle(
-                                  fontSize: 14,
-                                  fontWeight: FontWeight.bold,
-                                  color: Colors.black54,
-                                ),
-                                textAlign: TextAlign.center,
-                              ),
-                            ),
-                          ),
-                        ],
-                      ),
-                      ButtonBar(
-                          alignment: MainAxisAlignment.center,
-                          children: [
-                            Material(
-                              borderRadius: BorderRadius.circular(26),
-                              elevation: 2,
-                              child: Container(
-                                height: 35,
-                                width: 100,
-                                decoration: BoxDecoration(
-                                    border: Border.all(
-                                        color: Color(0xFF9B049B)),
-                                    borderRadius:
-                                    BorderRadius.circular(26)),
-                                child: FlatButton(
-                                  onPressed: () {
-                                    return exit(0);
-                                  },
-                                  color: Color(0xFF9B049B),
-                                  shape: RoundedRectangleBorder(
-                                      borderRadius:
-                                      BorderRadius.circular(26)),
-                                  padding: EdgeInsets.all(0.0),
-                                  child: Ink(
-                                    decoration: BoxDecoration(
-                                        borderRadius:
-                                        BorderRadius.circular(26)),
-                                    child: Container(
-                                      constraints: BoxConstraints(
-                                          maxWidth: 190.0, minHeight: 53.0),
-                                      alignment: Alignment.center,
-                                      child: Text(
-                                        "Exit",
-                                        textAlign: TextAlign.center,
-                                        style: TextStyle(
-                                            fontSize: 12,
-                                            fontWeight: FontWeight.bold,
-                                            color: Colors.white),
-                                      ),
-                                    ),
-                                  ),
-                                ),
-                              ),
-                            ),
-                            Material(
-                              borderRadius: BorderRadius.circular(26),
-                              elevation: 2,
-                              child: Container(
-                                height: 35,
-                                width: 100,
-                                decoration: BoxDecoration(
-                                    border: Border.all(
-                                        color: Color(0xFF9B049B)),
-                                    borderRadius:
-                                    BorderRadius.circular(26)),
-                                child: FlatButton(
-                                  onPressed: Platform.isAndroid? () async{
-                                    Navigator.pop(context);
-                                    Map<Permission, PermissionStatus> statuses = await [
-                                      Permission.notification,
-                                      Permission.accessNotificationPolicy,
-                                      Permission.locationAlways,
-                                    ].request();
-                                  }: (){
-                                    Navigator.pop(context);
-                                    note();
-                                  },
-                                  color: Color(0xFF9B049B),
-                                  shape: RoundedRectangleBorder(
-                                      borderRadius:
-                                      BorderRadius.circular(26)),
-                                  padding: EdgeInsets.all(0.0),
-                                  child: Ink(
-                                    decoration: BoxDecoration(
-                                        borderRadius:
-                                        BorderRadius.circular(26)),
-                                    child: Container(
-                                      constraints: BoxConstraints(
-                                          maxWidth: 190.0, minHeight: 53.0),
-                                      alignment: Alignment.center,
-                                      child: Text(
-                                        "Grant Access",
-                                        textAlign: TextAlign.center,
-                                        style: TextStyle(
-                                            fontSize: 12,
-                                            fontWeight: FontWeight.bold,
-                                            color: Colors.white),
-                                      ),
-                                    ),
-                                  ),
-                                ),
-                              ),
-                            ),
-                          ]),
-                    ],
-                  ),
-                ),
-              ),
-            ),
-          );
-        });
-      }else{
-
-      }
-    }else{
-      showDialog(context: context, builder: (context){
-        return WillPopScope(
-          onWillPop: (){},
-          child: BackdropFilter(
-            filter: ImageFilter.blur(sigmaX: 8, sigmaY: 8),
-            child: AlertDialog(
-              elevation: 6,
-              shape: RoundedRectangleBorder(
-                  borderRadius: BorderRadius.all(Radius.circular(32.0))),
-              content: Container(
-                height: 150,
-                child: Column(
-                  crossAxisAlignment: CrossAxisAlignment.center,
-                  mainAxisAlignment: MainAxisAlignment.center,
-                  children: <Widget>[
-                    Text(
-                      'Oops!!',
-                      style: TextStyle(
-                          fontSize: 20,
-                          color: Color(0xFF9B049B),
-                          fontWeight: FontWeight.bold),
-                    ),
-                    Row(
-                      children: [
-                        Container(
-                          width:250,
-                          padding: EdgeInsets.only(top: 15, bottom: 15),
-                          child: Center(
-                            child: Text(
-                              'No Network Activity Found',
-                              style: TextStyle(
-                                fontSize: 14,
-                                fontWeight: FontWeight.bold,
-                                color: Colors.black54,
-                              ),
-                              textAlign: TextAlign.center,
-                            ),
-                          ),
-                        ),
-                      ],
-                    ),
-                    ButtonBar(
-                        alignment: MainAxisAlignment.center,
-                        children: [
-                          Material(
-                            borderRadius: BorderRadius.circular(26),
-                            elevation: 2,
-                            child: Container(
-                              height: 35,
-                              width: 100,
-                              decoration: BoxDecoration(
-                                  border: Border.all(
-                                      color: Color(0xFF9B049B)),
-                                  borderRadius:
-                                  BorderRadius.circular(26)),
-                              child: FlatButton(
-                                onPressed: () {
-                                  Navigator.pop(context);
-                                },
-                                color: Color(0xFF9B049B),
-                                shape: RoundedRectangleBorder(
-                                    borderRadius:
-                                    BorderRadius.circular(26)),
-                                padding: EdgeInsets.all(0.0),
-                                child: Ink(
-                                  decoration: BoxDecoration(
-                                      borderRadius:
-                                      BorderRadius.circular(26)),
-                                  child: Container(
-                                    constraints: BoxConstraints(
-                                        maxWidth: 190.0, minHeight: 53.0),
-                                    alignment: Alignment.center,
-                                    child: Text(
-                                      "Exit",
-                                      textAlign: TextAlign.center,
-                                      style: TextStyle(
-                                          fontSize: 16,
-                                          fontWeight: FontWeight.bold,
-                                          color: Colors.white),
-                                    ),
-                                  ),
-                                ),
-                              ),
-                            ),
-                          ),
-
-                        ]),
-                  ],
-                ),
-              ),
-            ),
-          ),
-        );
-      });
-    }
-  }
+  //
+  // Future<Widget> checkConnection()async{
+  //   var locationStatus = await Permission.location.status;
+  //   var notificationStatus = await Permission.notification.status;
+  //   // var connectivityResult = await (Connectivity().checkConnectivity());
+  //   if (_connectionStatus == ConnectivityResult.mobile) {
+  //     if(locationStatus.isDenied && notificationStatus.isDenied){
+  //       print(locationStatus.isGranted);
+  //       print(notificationStatus.isGranted);
+  //       print(locationStatus.isGranted);
+  //       print(notificationStatus.isGranted);
+  //       showDialog(
+  //           barrierDismissible: false,
+  //           context: context, builder: (context){
+  //         return WillPopScope(
+  //           onWillPop: (){},
+  //           child: BackdropFilter(
+  //             filter: ImageFilter.blur(sigmaX: 8, sigmaY: 8),
+  //             child: AlertDialog(
+  //               elevation: 6,
+  //               shape: RoundedRectangleBorder(
+  //                   borderRadius: BorderRadius.all(Radius.circular(32.0))),
+  //               content: Container(
+  //                 height: 200,
+  //                 child: Column(
+  //                   crossAxisAlignment: CrossAxisAlignment.center,
+  //                   mainAxisAlignment: MainAxisAlignment.center,
+  //                   children: <Widget>[
+  //                     Text(
+  //                       'Notice',
+  //                       style: TextStyle(
+  //                           fontSize: 20,
+  //                           color: Color(0xFF9B049B),
+  //                           fontWeight: FontWeight.bold),
+  //                     ),
+  //                     Row(
+  //                       children: [
+  //                         Container(
+  //                           width: 250,
+  //                           padding: EdgeInsets.only(top: 15, bottom: 15),
+  //                           child: Center(
+  //                             child: Text(
+  //                               locationStatus.isDenied?'Accepting location permission is neccessary for the app to function': 'Accepting notification permission is neccessary for the app to function',
+  //                               style: TextStyle(
+  //                                 fontSize: 14,
+  //                                 fontWeight: FontWeight.bold,
+  //                                 color: Colors.black54,
+  //                               ),
+  //                               textAlign: TextAlign.center,
+  //                             ),
+  //                           ),
+  //                         ),
+  //                       ],
+  //                     ),
+  //                     ButtonBar(
+  //                         alignment: MainAxisAlignment.center,
+  //                         children: [
+  //                           Material(
+  //                             borderRadius: BorderRadius.circular(26),
+  //                             elevation: 2,
+  //                             child: Container(
+  //                               height: 35,
+  //                               width: 100,
+  //                               decoration: BoxDecoration(
+  //                                   border: Border.all(
+  //                                       color: Color(0xFF9B049B)),
+  //                                   borderRadius:
+  //                                   BorderRadius.circular(26)),
+  //                               child: FlatButton(
+  //                                 onPressed: () {
+  //                                   return exit(0);
+  //                                 },
+  //                                 color: Color(0xFF9B049B),
+  //                                 shape: RoundedRectangleBorder(
+  //                                     borderRadius:
+  //                                     BorderRadius.circular(26)),
+  //                                 padding: EdgeInsets.all(0.0),
+  //                                 child: Ink(
+  //                                   decoration: BoxDecoration(
+  //                                       borderRadius:
+  //                                       BorderRadius.circular(26)),
+  //                                   child: Container(
+  //                                     constraints: BoxConstraints(
+  //                                         maxWidth: 190.0, minHeight: 53.0),
+  //                                     alignment: Alignment.center,
+  //                                     child: Text(
+  //                                       "Exit",
+  //                                       textAlign: TextAlign.center,
+  //                                       style: TextStyle(
+  //                                           fontSize: 12,
+  //                                           fontWeight: FontWeight.bold,
+  //                                           color: Colors.white),
+  //                                     ),
+  //                                   ),
+  //                                 ),
+  //                               ),
+  //                             ),
+  //                           ),
+  //                           Material(
+  //                             borderRadius: BorderRadius.circular(26),
+  //                             elevation: 2,
+  //                             child: Container(
+  //                               height: 35,
+  //                               width: 100,
+  //                               decoration: BoxDecoration(
+  //                                   border: Border.all(
+  //                                       color: Color(0xFF9B049B)),
+  //                                   borderRadius:
+  //                                   BorderRadius.circular(26)),
+  //                               child: FlatButton(
+  //                                 onPressed:Platform.isAndroid? () async{
+  //                                   Navigator.pop(context);
+  //                                   Map<Permission, PermissionStatus> statuses = await [
+  //                                     Permission.notification,
+  //                                     Permission.accessNotificationPolicy,
+  //                                     Permission.locationAlways,
+  //                                   ].request();
+  //                                 }:(){
+  //                                   Navigator.pop(context);
+  //                                   note();
+  //                                 },
+  //                                 color: Color(0xFF9B049B),
+  //                                 shape: RoundedRectangleBorder(
+  //                                     borderRadius:
+  //                                     BorderRadius.circular(26)),
+  //                                 padding: EdgeInsets.all(0.0),
+  //                                 child: Ink(
+  //                                   decoration: BoxDecoration(
+  //                                       borderRadius:
+  //                                       BorderRadius.circular(26)),
+  //                                   child: Container(
+  //                                     constraints: BoxConstraints(
+  //                                         maxWidth: 190.0, minHeight: 53.0),
+  //                                     alignment: Alignment.center,
+  //                                     child: Text(
+  //                                       "Grant Access",
+  //                                       textAlign: TextAlign.center,
+  //                                       style: TextStyle(
+  //                                           fontSize: 12,
+  //                                           fontWeight: FontWeight.bold,
+  //                                           color: Colors.white),
+  //                                     ),
+  //                                   ),
+  //                                 ),
+  //                               ),
+  //                             ),
+  //                           ),
+  //                         ]),
+  //                   ],
+  //                 ),
+  //               ),
+  //             ),
+  //           ),
+  //         );
+  //       });
+  //     }else{
+  //
+  //     }
+  //   } else if (_connectionStatus == ConnectivityResult.wifi) {
+  //     if(locationStatus.isDenied && notificationStatus.isDenied){
+  //       print('isGranted locationStatus ' + locationStatus.isGranted.toString());
+  //       print('isLimited locationStatus '+locationStatus.isLimited.toString());
+  //       print('isDenied locationStatus'+locationStatus.isDenied.toString());
+  //       print('isRestricted locationStatus'+locationStatus.isRestricted.toString());
+  //       print('isPermanentlyDenied locationStatus'+locationStatus.isPermanentlyDenied.toString());
+  //
+  //
+  //
+  //       print('isGranted notificationStatus ' + notificationStatus.isGranted.toString());
+  //       print('isLimited notificationStatus '+notificationStatus.isLimited.toString());
+  //       print('isDenied notificationStatus'+notificationStatus.isDenied.toString());
+  //       print('isRestricted notificationStatus'+notificationStatus.isRestricted.toString());
+  //       print('isPermanentlyDenied notificationStatus'+notificationStatus.isPermanentlyDenied.toString());
+  //       showDialog(
+  //           barrierDismissible: false,
+  //           context: context, builder: (context){
+  //         return WillPopScope(
+  //           onWillPop: (){},
+  //           child:BackdropFilter(
+  //             filter: ImageFilter.blur(sigmaX: 8, sigmaY: 8),
+  //             child: AlertDialog(
+  //               elevation: 6,
+  //               shape: RoundedRectangleBorder(
+  //                   borderRadius: BorderRadius.all(Radius.circular(32.0))),
+  //               content: Container(
+  //                 height: 200,
+  //                 child: Column(
+  //                   crossAxisAlignment: CrossAxisAlignment.center,
+  //                   mainAxisAlignment: MainAxisAlignment.center,
+  //                   children: <Widget>[
+  //                     Text(
+  //                       'Notice',
+  //                       style: TextStyle(
+  //                           fontSize: 20,
+  //                           color: Color(0xFF9B049B),
+  //                           fontWeight: FontWeight.bold),
+  //                     ),
+  //                     Row(
+  //                       children: [
+  //                         Container(
+  //                           width: 250,
+  //                           padding: EdgeInsets.only(top: 15, bottom: 15),
+  //                           child: Center(
+  //                             child: Text(
+  //                               locationStatus.isDenied?'Accepting location permission is neccessary for the app to function': 'Accepting notification permission is neccessary for the app to function',
+  //                               style: TextStyle(
+  //                                 fontSize: 14,
+  //                                 fontWeight: FontWeight.bold,
+  //                                 color: Colors.black54,
+  //                               ),
+  //                               textAlign: TextAlign.center,
+  //                             ),
+  //                           ),
+  //                         ),
+  //                       ],
+  //                     ),
+  //                     ButtonBar(
+  //                         alignment: MainAxisAlignment.center,
+  //                         children: [
+  //                           Material(
+  //                             borderRadius: BorderRadius.circular(26),
+  //                             elevation: 2,
+  //                             child: Container(
+  //                               height: 35,
+  //                               width: 100,
+  //                               decoration: BoxDecoration(
+  //                                   border: Border.all(
+  //                                       color: Color(0xFF9B049B)),
+  //                                   borderRadius:
+  //                                   BorderRadius.circular(26)),
+  //                               child: FlatButton(
+  //                                 onPressed: () {
+  //                                   return exit(0);
+  //                                 },
+  //                                 color: Color(0xFF9B049B),
+  //                                 shape: RoundedRectangleBorder(
+  //                                     borderRadius:
+  //                                     BorderRadius.circular(26)),
+  //                                 padding: EdgeInsets.all(0.0),
+  //                                 child: Ink(
+  //                                   decoration: BoxDecoration(
+  //                                       borderRadius:
+  //                                       BorderRadius.circular(26)),
+  //                                   child: Container(
+  //                                     constraints: BoxConstraints(
+  //                                         maxWidth: 190.0, minHeight: 53.0),
+  //                                     alignment: Alignment.center,
+  //                                     child: Text(
+  //                                       "Exit",
+  //                                       textAlign: TextAlign.center,
+  //                                       style: TextStyle(
+  //                                           fontSize: 12,
+  //                                           fontWeight: FontWeight.bold,
+  //                                           color: Colors.white),
+  //                                     ),
+  //                                   ),
+  //                                 ),
+  //                               ),
+  //                             ),
+  //                           ),
+  //                           Material(
+  //                             borderRadius: BorderRadius.circular(26),
+  //                             elevation: 2,
+  //                             child: Container(
+  //                               height: 35,
+  //                               width: 100,
+  //                               decoration: BoxDecoration(
+  //                                   border: Border.all(
+  //                                       color: Color(0xFF9B049B)),
+  //                                   borderRadius:
+  //                                   BorderRadius.circular(26)),
+  //                               child: FlatButton(
+  //                                 onPressed: Platform.isAndroid? () async{
+  //                                   Navigator.pop(context);
+  //                                   Map<Permission, PermissionStatus> statuses = await [
+  //                                     Permission.notification,
+  //                                     Permission.accessNotificationPolicy,
+  //                                     Permission.locationAlways,
+  //                                   ].request();
+  //                                 }: (){
+  //                                   Navigator.pop(context);
+  //                                   note();
+  //                                 },
+  //                                 color: Color(0xFF9B049B),
+  //                                 shape: RoundedRectangleBorder(
+  //                                     borderRadius:
+  //                                     BorderRadius.circular(26)),
+  //                                 padding: EdgeInsets.all(0.0),
+  //                                 child: Ink(
+  //                                   decoration: BoxDecoration(
+  //                                       borderRadius:
+  //                                       BorderRadius.circular(26)),
+  //                                   child: Container(
+  //                                     constraints: BoxConstraints(
+  //                                         maxWidth: 190.0, minHeight: 53.0),
+  //                                     alignment: Alignment.center,
+  //                                     child: Text(
+  //                                       "Grant Access",
+  //                                       textAlign: TextAlign.center,
+  //                                       style: TextStyle(
+  //                                           fontSize: 12,
+  //                                           fontWeight: FontWeight.bold,
+  //                                           color: Colors.white),
+  //                                     ),
+  //                                   ),
+  //                                 ),
+  //                               ),
+  //                             ),
+  //                           ),
+  //                         ]),
+  //                   ],
+  //                 ),
+  //               ),
+  //             ),
+  //           ),
+  //         );
+  //       });
+  //     }else{
+  //
+  //     }
+  //   }else{
+  //     showDialog(context: context, builder: (context){
+  //       return WillPopScope(
+  //         onWillPop: (){},
+  //         child: BackdropFilter(
+  //           filter: ImageFilter.blur(sigmaX: 8, sigmaY: 8),
+  //           child: AlertDialog(
+  //             elevation: 6,
+  //             shape: RoundedRectangleBorder(
+  //                 borderRadius: BorderRadius.all(Radius.circular(32.0))),
+  //             content: Container(
+  //               height: 150,
+  //               child: Column(
+  //                 crossAxisAlignment: CrossAxisAlignment.center,
+  //                 mainAxisAlignment: MainAxisAlignment.center,
+  //                 children: <Widget>[
+  //                   Text(
+  //                     'Oops!!',
+  //                     style: TextStyle(
+  //                         fontSize: 20,
+  //                         color: Color(0xFF9B049B),
+  //                         fontWeight: FontWeight.bold),
+  //                   ),
+  //                   Row(
+  //                     children: [
+  //                       Container(
+  //                         width:250,
+  //                         padding: EdgeInsets.only(top: 15, bottom: 15),
+  //                         child: Center(
+  //                           child: Text(
+  //                             'No Network Activity Found',
+  //                             style: TextStyle(
+  //                               fontSize: 14,
+  //                               fontWeight: FontWeight.bold,
+  //                               color: Colors.black54,
+  //                             ),
+  //                             textAlign: TextAlign.center,
+  //                           ),
+  //                         ),
+  //                       ),
+  //                     ],
+  //                   ),
+  //                   ButtonBar(
+  //                       alignment: MainAxisAlignment.center,
+  //                       children: [
+  //                         Material(
+  //                           borderRadius: BorderRadius.circular(26),
+  //                           elevation: 2,
+  //                           child: Container(
+  //                             height: 35,
+  //                             width: 100,
+  //                             decoration: BoxDecoration(
+  //                                 border: Border.all(
+  //                                     color: Color(0xFF9B049B)),
+  //                                 borderRadius:
+  //                                 BorderRadius.circular(26)),
+  //                             child: FlatButton(
+  //                               onPressed: () {
+  //                                 Navigator.pop(context);
+  //                               },
+  //                               color: Color(0xFF9B049B),
+  //                               shape: RoundedRectangleBorder(
+  //                                   borderRadius:
+  //                                   BorderRadius.circular(26)),
+  //                               padding: EdgeInsets.all(0.0),
+  //                               child: Ink(
+  //                                 decoration: BoxDecoration(
+  //                                     borderRadius:
+  //                                     BorderRadius.circular(26)),
+  //                                 child: Container(
+  //                                   constraints: BoxConstraints(
+  //                                       maxWidth: 190.0, minHeight: 53.0),
+  //                                   alignment: Alignment.center,
+  //                                   child: Text(
+  //                                     "Exit",
+  //                                     textAlign: TextAlign.center,
+  //                                     style: TextStyle(
+  //                                         fontSize: 16,
+  //                                         fontWeight: FontWeight.bold,
+  //                                         color: Colors.white),
+  //                                   ),
+  //                                 ),
+  //                               ),
+  //                             ),
+  //                           ),
+  //                         ),
+  //
+  //                       ]),
+  //                 ],
+  //               ),
+  //             ),
+  //           ),
+  //         ),
+  //       );
+  //     });
+  //   }
+  // }
 
 
   note()async{

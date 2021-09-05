@@ -91,13 +91,7 @@ class OTPState extends State<OTPPAGE> {
         final User user =
             (await FirebaseAuth.instance.signInWithCredential(authcred)).user;
         if (user != null) {
-          data.setUserID(user.uid);
-          print(user.uid);
-          print(user.uid);
-          print(user.uid);
-          print(user.uid);
-          print(user.uid);
-          print(user.uid);
+          //data.setUserID(user.uid);
         }
         //otpTimer.cancel();
         widget.page == "SignUp"
