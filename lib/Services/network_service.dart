@@ -281,7 +281,7 @@ class WebServices extends ChangeNotifier {
 
 
   Future sendSms({product_name, price, phone,context}) async {
-   String message = """Fixme: You Have a purchase request in your inbox. Product Name: ${product_name.toString()}, Product Price: ₦${price.toString()}. Quickly check your inbox to complete this sale""";
+   String message = """Fixme: You Have a purchase request in your inbox. Product Name: ${product_name.toString()}, Product Price: ₦${price.toString()}. Quickly check your inbox to complete this sale \n\n Tip: Click the 3 dots to the top right of your chat screen to send cost to your customer.""";
    Locale locale = Localizations.localeOf(context);
    var format = NumberFormat.simpleCurrency(locale: locale.toString());
    print(format.currencySymbol);
