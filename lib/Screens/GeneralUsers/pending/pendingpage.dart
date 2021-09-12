@@ -4,6 +4,8 @@ import 'package:fixme/Model/Project.dart';
 import 'package:fixme/Screens/GeneralUsers/Chat/Chat.dart';
 import 'package:fixme/Screens/GeneralUsers/Chat/Chats.dart';
 import 'package:fixme/Screens/GeneralUsers/Home/Search.dart';
+import 'package:fixme/Screens/GeneralUsers/Notification/Notification.dart';
+import 'package:fixme/Utils/Provider.dart';
 import 'package:url_launcher/url_launcher.dart' as UrlLauncher;
 import 'package:fixme/Services/Firebase_service.dart';
 import 'package:fixme/Services/network_service.dart';
@@ -18,8 +20,9 @@ import 'package:provider/provider.dart';
 class PendingScreen extends StatefulWidget {
   final scafoldKey;
   final paymentPush;
+  final control;
 
-  PendingScreen({this.scafoldKey, this.paymentPush});
+  PendingScreen({this.scafoldKey, this.paymentPush, this.control});
 
   @override
   _PendingScreenState createState() => _PendingScreenState();
@@ -66,79 +69,87 @@ class _PendingScreenState extends State<PendingScreen> {
                     width: 70,
                   ),
                   Spacer(),
-                  // Container(
-                  //   margin: EdgeInsets.only(top: 4, left: 1),
-                  //   width: MediaQuery.of(context).size.width / 1.5,
-                  //   height: 35,
-                  //   child: InkWell(
-                  //     splashColor: Colors.transparent,
-                  //     hoverColor: Colors.transparent,
-                  //     focusColor: Colors.transparent,
-                  //     highlightColor: Colors.transparent,
-                  //     onTap: () {
-                  //       Navigator.push(
-                  //         context,
-                  //         PageRouteBuilder(
-                  //           pageBuilder:
-                  //               (context, animation, secondaryAnimation) {
-                  //             return SearchPage();
-                  //           },
-                  //           transitionsBuilder: (context, animation,
-                  //               secondaryAnimation, child) {
-                  //             return FadeTransition(
-                  //               opacity: animation,
-                  //               child: child,
-                  //             );
-                  //           },
-                  //         ),
-                  //       );
-                  //     },
-                  //     child: TextFormField(
-                  //         obscureText: true,
-                  //         enabled: false,
-                  //         style: TextStyle(color: Colors.black),
-                  //         cursorColor: Colors.black,
-                  //         decoration: InputDecoration(
-                  //           prefixIcon: Icon(Icons.search),
-                  //           labelStyle: TextStyle(color: Colors.black38),
-                  //           labelText: 'What are you looking for?',
-                  //           enabledBorder: OutlineInputBorder(
-                  //               borderSide: const BorderSide(
-                  //                   color: Colors.black38, width: 0.0),
-                  //               borderRadius:
-                  //                   BorderRadius.all(Radius.circular(4))),
-                  //           focusedBorder: OutlineInputBorder(
-                  //               borderSide: const BorderSide(
-                  //                   color: Colors.black38, width: 0.0),
-                  //               borderRadius:
-                  //                   BorderRadius.all(Radius.circular(4))),
-                  //           border: OutlineInputBorder(
-                  //               borderSide: const BorderSide(
-                  //                   color: Colors.black38, width: 0.0),
-                  //               borderRadius:
-                  //                   BorderRadius.all(Radius.circular(4))),
-                  //         )),
-                  //   ),
-                  // ),
-                  InkWell(
-                    onTap: () {
-                      Navigator.push(
-                        context,
-                        PageRouteBuilder(
-                          pageBuilder:
-                              (context, animation, secondaryAnimation) {
-                            return ListenIncoming();
-                          },
-                          transitionsBuilder:
-                              (context, animation, secondaryAnimation, child) {
-                            return FadeTransition(
-                              opacity: animation,
-                              child: child,
-                            );
-                          },
+                  Padding(
+                    padding: const EdgeInsets.only(right:8.0),
+                    child: InkWell(
+                      onTap: (){
+                        Navigator.push(
+                          context,
+                          PageRouteBuilder(
+                            pageBuilder:
+                                (context, animation, secondaryAnimation) {
+                              return NotificationPage(widget.scafoldKey, widget.control);
+                            },
+                            transitionsBuilder:
+                                (context, animation, secondaryAnimation, child) {
+                              return FadeTransition(
+                                opacity: animation,
+                                child: child,
+                              );
+                            },
+                          ),
+                        );
+                      },
+                      child: Padding(
+                        padding: const EdgeInsets.only(top: 5,right: 10, left:5),
+                        child: Stack(
+                          children: [
+                            Icon(
+                              MyFlutterApp.vector_4,
+                              color:  Color(0xF0A40C85),
+                              size: 24,),
+                            StreamBuilder(
+                                stream: FirebaseApi.userCheckNotifyStream(
+                                    network.userId.toString()),
+                                builder:
+                                    (context, AsyncSnapshot<QuerySnapshot> snapshot) {
+                                  if (snapshot.hasData) {
+                                    notify = snapshot.data.docs
+                                        .map((doc) =>
+                                        Notify.fromMap(doc.data(), doc.id))
+                                        .toList();
+
+                                    switch (snapshot.connectionState) {
+                                      case ConnectionState.waiting:
+                                        return Positioned(
+                                            left: 12,
+                                            child: Container());
+                                      default:
+                                        if (snapshot.hasError) {
+                                          return Positioned(
+                                              left: 12,
+                                              child: Container());
+                                        } else {
+                                          final users = notify;
+                                          if (users.isEmpty || users == null) {
+                                            return Positioned(
+                                                left: 12,
+                                                child: Container());
+                                          } else {
+                                            return Positioned(
+                                                left: 12,
+                                                child: Icon(
+                                                  Icons.circle,
+                                                  color: Colors.red,
+                                                  size: 12,
+                                                ));
+                                          }
+                                        }
+                                    }
+                                  } else {
+                                    return Positioned(
+                                        left: 12,
+                                        child: Container());
+                                  }
+                                }),
+                          ],
                         ),
-                      );
-                    },
+                      ),
+                    ),
+                  ),
+
+                  Padding(
+                    padding: const EdgeInsets.only(right:8.0),
                     child: InkWell(
                       onTap: () {
                         Navigator.push(
@@ -148,8 +159,8 @@ class _PendingScreenState extends State<PendingScreen> {
                                 (context, animation, secondaryAnimation) {
                               return ListenIncoming();
                             },
-                            transitionsBuilder: (context, animation,
-                                secondaryAnimation, child) {
+                            transitionsBuilder:
+                                (context, animation, secondaryAnimation, child) {
                               return FadeTransition(
                                 opacity: animation,
                                 child: child,
@@ -157,69 +168,89 @@ class _PendingScreenState extends State<PendingScreen> {
                             },
                           ),
                         );
-                        FirebaseApi.clearCheckChat(
-                          network.mobileDeviceToken.toString(),
-                        );
                       },
-                      child: Padding(
-                        padding: const EdgeInsets.all(8.0),
-                        child: Stack(
-                          children: [
-                            Stack(
-                              children: [
-                                Icon(MyFlutterApp.fill_1,
-                                    size: 23, color: Color(0xF0A40C85)),
-                                Icon(
-                                  Icons.more_horiz,
-                                  size: 23,
-                                  color: Colors.white,
-                                ),
-                              ],
+                      child: InkWell(
+                        onTap: () {
+                          Navigator.push(
+                            context,
+                            PageRouteBuilder(
+                              pageBuilder:
+                                  (context, animation, secondaryAnimation) {
+                                return ListenIncoming();
+                              },
+                              transitionsBuilder: (context, animation,
+                                  secondaryAnimation, child) {
+                                return FadeTransition(
+                                  opacity: animation,
+                                  child: child,
+                                );
+                              },
                             ),
-                            StreamBuilder(
-                                stream: FirebaseApi.userCheckChatStream(
-                                    network.mobileDeviceToken.toString()),
-                                builder: (context,
-                                    AsyncSnapshot<QuerySnapshot> snapshot) {
-                                  if (snapshot.hasData) {
-                                    notify = snapshot.data.docs
-                                        .map((doc) =>
-                                            Notify.fromMap(doc.data(), doc.id))
-                                        .toList();
+                          );
+                          FirebaseApi.clearCheckChat(
+                            network.mobileDeviceToken.toString(),
+                          );
+                        },
+                        child: Padding(
+                          padding: const EdgeInsets.all(8.0),
+                          child: Stack(
+                            children: [
+                              Stack(
+                                children: [
+                                  Icon(MyFlutterApp.fill_1,
+                                      size: 23, color: Color(0xF0A40C85)),
+                                  Icon(
+                                    Icons.more_horiz,
+                                    size: 23,
+                                    color: Colors.white,
+                                  ),
+                                ],
+                              ),
+                              StreamBuilder(
+                                  stream: FirebaseApi.userCheckChatStream(
+                                      network.mobileDeviceToken.toString()),
+                                  builder: (context,
+                                      AsyncSnapshot<QuerySnapshot> snapshot) {
+                                    if (snapshot.hasData) {
+                                      notify = snapshot.data.docs
+                                          .map((doc) =>
+                                              Notify.fromMap(doc.data(), doc.id))
+                                          .toList();
 
-                                    switch (snapshot.connectionState) {
-                                      case ConnectionState.waiting:
-                                        return Positioned(
-                                            left: 12, child: Container());
-                                      default:
-                                        if (snapshot.hasError) {
+                                      switch (snapshot.connectionState) {
+                                        case ConnectionState.waiting:
                                           return Positioned(
                                               left: 12, child: Container());
-                                        } else {
-                                          final users = notify;
-                                          if (users.isEmpty || users == null) {
+                                        default:
+                                          if (snapshot.hasError) {
                                             return Positioned(
                                                 left: 12, child: Container());
                                           } else {
-                                            return Container(
-                                              margin: EdgeInsets.only(left: 12),
-                                              height: 12,
-                                              width: 12,
-                                              decoration: BoxDecoration(
-                                                  color: Colors.red,
-                                                  borderRadius:
-                                                      BorderRadius.circular(
-                                                          100)),
-                                            );
+                                            final users = notify;
+                                            if (users.isEmpty || users == null) {
+                                              return Positioned(
+                                                  left: 12, child: Container());
+                                            } else {
+                                              return Container(
+                                                margin: EdgeInsets.only(left: 12),
+                                                height: 12,
+                                                width: 12,
+                                                decoration: BoxDecoration(
+                                                    color: Colors.red,
+                                                    borderRadius:
+                                                        BorderRadius.circular(
+                                                            100)),
+                                              );
+                                            }
                                           }
-                                        }
+                                      }
+                                    } else {
+                                      return Positioned(
+                                          left: 12, child: Container());
                                     }
-                                  } else {
-                                    return Positioned(
-                                        left: 12, child: Container());
-                                  }
-                                }),
-                          ],
+                                  }),
+                            ],
+                          ),
                         ),
                       ),
                     ),
@@ -361,1330 +392,7 @@ class _PendingScreenState extends State<PendingScreen> {
               ),
             ),
             undoneProject(),
-//                                   snapshot.data[index].status ==
-//                                     'pending'
-//                                     ? Padding(
-//                                   padding:
-//                                   const EdgeInsets.only(
-//                                       left: 20,
-//                                       right: 20,
-//                                       bottom: 14),
-//                                   child: Row(
-//                                     children: [
-//                                       Container(
-//                                           margin:
-//                                           const EdgeInsets
-//                                               .only(
-//                                               top: 10),
-//                                           height: 25,
-//                                           child: Center(
-//                                               child: Text(
-//                                                 '${snapshot.data[index].jobTitle}',
-//                                                 style: TextStyle(
-//                                                     color: Color(
-//                                                         0xFF9B049B),
-//                                                     fontWeight:
-//                                                     FontWeight
-//                                                         .bold,
-//                                                     fontSize: 9.5),
-//                                                 textAlign: TextAlign
-//                                                     .center,
-//                                               )),
-//                                           width: 73,
-//                                           decoration:
-//                                           BoxDecoration(
-//                                             borderRadius:
-//                                             BorderRadius
-//                                                 .circular(
-//                                                 30),
-//                                             color: Color(
-//                                                 0xFFA40C85)
-//                                                 .withOpacity(
-//                                                 0.35),
-//                                           )),
-//                                       Padding(
-//                                         padding:
-//                                         const EdgeInsets
-//                                             .only(
-//                                             left: 10.0),
-//                                         child: Column(
-//                                           crossAxisAlignment:
-//                                           CrossAxisAlignment
-//                                               .start,
-//                                           children: [
-//                                             Padding(
-//                                               padding:
-//                                               const EdgeInsets
-//                                                   .only(
-//                                                   bottom:
-//                                                   4.0),
-//                                               child: Text(
-//                                                   '${snapshot.data[index].jobDescription}'
-//                                                       .isEmpty
-//                                                       ? 'No Desription'
-//                                                       : '${snapshot.data[index].jobDescription}',
-//                                                   style: TextStyle(
-//                                                       color: Colors
-//                                                           .black)),
-//                                             ),
-//                                             Text(
-//                                                 '${snapshot.data[index].status}',
-//                                                 style: TextStyle(
-//                                                     color: Colors
-//                                                         .black,
-//                                                     fontSize:
-//                                                     13)),
-//                                           ],
-//                                         ),
-//                                       ),
-//                                       Spacer(),
-//                                       Column(
-//                                         mainAxisAlignment:
-//                                         MainAxisAlignment
-//                                             .end,
-//                                         crossAxisAlignment:
-//                                         CrossAxisAlignment
-//                                             .end,
-//                                         children: [
-//                                           Padding(
-//                                               padding:
-//                                               const EdgeInsets.only(
-//                                                   bottom:
-//                                                   3.0),
-//                                               child:
-//                                               PopupMenuButton(
-//                                                   offset:
-//                                                   const Offset(
-//                                                       0,
-//                                                       1),
-//                                                   elevation:
-//                                                   0.1,
-//                                                   color: Color(
-//                                                       0xFFF6F6F6),
-//                                                   shape: RoundedRectangleBorder(
-//                                                       borderRadius: BorderRadius.circular(
-//                                                           5)),
-//                                                   icon: Icon(
-//                                                       FeatherIcons
-//                                                           .moreHorizontal,
-//                                                       color: Color(
-//                                                           0xFF9B049B)),
-//                                                   itemBuilder:
-//                                                       (context) =>
-//                                                   [
-//                                                     PopupMenuItem(
-//                                                         value: 1,
-//                                                         child: InkWell(
-//                                                           onTap: () {
-// //                                                                    network.requestPayment(network.user_id, bid_id);
-// //                                                                    Navigator.pop(context);
-//                                                           },
-//                                                           child: Padding(
-//                                                             padding: const EdgeInsets.all(8),
-//                                                             child: Text('Project still pending'),
-//                                                           ),
-//                                                         )),
-//                                                   ])),
-//                                           Text(
-//                                             '${DateFormat('MMM dd, y').format(DateTime.parse(snapshot.data[index].dateOpen))}',
-//                                             style: TextStyle(
-//                                                 color: Colors
-//                                                     .black38),
-//                                           )
-//                                         ],
-//                                       ),
-//                                     ],
-//                                   ),
-//                                 )
-//                                     : Container();
-
-          ],
-        ),
-      ),
-
-//
-//       DefaultTabController(
-//         length: 3,
-//         initialIndex: 0,
-//         child:  Container(
-//           child: TabBarView(
-//             children: [
-//               FutureBuilder(
-//                   future: network.getUndoneProject(context),
-//                   builder: (context, snapshot) {
-//                     return snapshot.hasData
-//                         ? ListView(
-//                         padding: EdgeInsets.only(top: 2),
-//                         physics: ScrollPhysics(),
-//                         shrinkWrap: true,
-//                         children: [
-//                           Column(children: [
-//                             Container(
-//                               height: 67,
-//                               width: MediaQuery.of(context).size.width *
-//                                   0.92,
-//                               child: Card(
-//                                 color: Color(0xFF9B049B),
-//                                 child: Center(
-//                                   child: FutureBuilder(
-//                                     future: network
-//                                         .getUserInfo(network.userId),
-//                                     builder: (context, snapshot) {
-//                                       return snapshot.data == null
-//                                           ? RichText(
-//                                           text: TextSpan(children: [
-//                                             TextSpan(
-//                                                 text:
-//                                                 'Wallet  Balance ',
-//                                                 style: TextStyle(
-//                                                     fontWeight:
-//                                                     FontWeight
-//                                                         .bold,
-//                                                     color: Colors
-//                                                         .white)),
-//                                             TextSpan(
-//                                                 text: '₦0.00',
-//                                                 style: TextStyle(
-//                                                     fontWeight:
-//                                                     FontWeight
-//                                                         .bold,
-//                                                     fontSize: 19,
-//                                                     color: Colors
-//                                                         .white)),
-//                                           ]))
-//                                           : RichText(
-//                                           text: TextSpan(children: [
-//                                             TextSpan(
-//                                                 text:
-//                                                 'Wallet  Balance ',
-//                                                 style: TextStyle(
-//                                                     fontWeight:
-//                                                     FontWeight
-//                                                         .bold,
-//                                                     color: Colors
-//                                                         .white)),
-//                                             TextSpan(
-//                                                 text:
-//                                                 '₦${double.parse(snapshot.data['balance'].toString()).toStringAsFixed(2)}',
-//                                                 style: TextStyle(
-//                                                     fontWeight:
-//                                                     FontWeight
-//                                                         .bold,
-//                                                     fontSize: 19,
-//                                                     color: Colors
-//                                                         .white)),
-//                                           ]));
-//                                     },
-//                                   ),
-//                                 ),
-//                               ),
-//                             ),
-//                             ListView.builder(
-//                                 physics: NeverScrollableScrollPhysics(),
-//                                 shrinkWrap: true,
-//                                 itemCount: snapshot.data.length,
-//                                 padding: EdgeInsets.only(top: 2),
-//                                 itemBuilder: (context, index) {
-//                                   return snapshot.data[index].status ==
-//                                       'pending'
-//                                       ? Padding(
-//                                     padding:
-//                                     const EdgeInsets.only(
-//                                         left: 20,
-//                                         right: 20,
-//                                         bottom: 14),
-//                                     child: Row(
-//                                       children: [
-//                                         Container(
-//                                             margin:
-//                                             const EdgeInsets
-//                                                 .only(
-//                                                 top: 10),
-//                                             height: 25,
-//                                             child: Center(
-//                                                 child: Text(
-//                                                   '${snapshot.data[index].jobTitle}',
-//                                                   style: TextStyle(
-//                                                       color: Color(
-//                                                           0xFF9B049B),
-//                                                       fontWeight:
-//                                                       FontWeight
-//                                                           .bold,
-//                                                       fontSize: 9.5),
-//                                                   textAlign: TextAlign
-//                                                       .center,
-//                                                 )),
-//                                             width: 73,
-//                                             decoration:
-//                                             BoxDecoration(
-//                                               borderRadius:
-//                                               BorderRadius
-//                                                   .circular(
-//                                                   30),
-//                                               color: Color(
-//                                                   0xFFA40C85)
-//                                                   .withOpacity(
-//                                                   0.35),
-//                                             )),
-//                                         Padding(
-//                                           padding:
-//                                           const EdgeInsets
-//                                               .only(
-//                                               left: 10.0),
-//                                           child: Column(
-//                                             crossAxisAlignment:
-//                                             CrossAxisAlignment
-//                                                 .start,
-//                                             children: [
-//                                               Padding(
-//                                                 padding:
-//                                                 const EdgeInsets
-//                                                     .only(
-//                                                     bottom:
-//                                                     4.0),
-//                                                 child: Text(
-//                                                     '${snapshot.data[index].jobDescription}'
-//                                                         .isEmpty
-//                                                         ? 'No Desription'
-//                                                         : '${snapshot.data[index].jobDescription}',
-//                                                     style: TextStyle(
-//                                                         color: Colors
-//                                                             .black)),
-//                                               ),
-//                                               Text(
-//                                                   '${snapshot.data[index].status}',
-//                                                   style: TextStyle(
-//                                                       color: Colors
-//                                                           .black,
-//                                                       fontSize:
-//                                                       13)),
-//                                             ],
-//                                           ),
-//                                         ),
-//                                         Spacer(),
-//                                         Column(
-//                                           mainAxisAlignment:
-//                                           MainAxisAlignment
-//                                               .end,
-//                                           crossAxisAlignment:
-//                                           CrossAxisAlignment
-//                                               .end,
-//                                           children: [
-//                                             Padding(
-//                                                 padding:
-//                                                 const EdgeInsets.only(
-//                                                     bottom:
-//                                                     3.0),
-//                                                 child:
-//                                                 PopupMenuButton(
-//                                                     offset:
-//                                                     const Offset(
-//                                                         0,
-//                                                         1),
-//                                                     elevation:
-//                                                     0.1,
-//                                                     color: Color(
-//                                                         0xFFF6F6F6),
-//                                                     shape: RoundedRectangleBorder(
-//                                                         borderRadius: BorderRadius.circular(
-//                                                             5)),
-//                                                     icon: Icon(
-//                                                         FeatherIcons
-//                                                             .moreHorizontal,
-//                                                         color: Color(
-//                                                             0xFF9B049B)),
-//                                                     itemBuilder:
-//                                                         (context) =>
-//                                                     [
-//                                                       PopupMenuItem(
-//                                                           value: 1,
-//                                                           child: InkWell(
-//                                                             onTap: () {
-// //                                                                    network.requestPayment(network.user_id, bid_id);
-// //                                                                    Navigator.pop(context);
-//                                                             },
-//                                                             child: Padding(
-//                                                               padding: const EdgeInsets.all(8),
-//                                                               child: Text('Project still pending'),
-//                                                             ),
-//                                                           )),
-//                                                     ])),
-//                                             Text(
-//                                               '${DateFormat('MMM dd, y').format(DateTime.parse(snapshot.data[index].dateOpen))}',
-//                                               style: TextStyle(
-//                                                   color: Colors
-//                                                       .black38),
-//                                             )
-//                                           ],
-//                                         ),
-//                                       ],
-//                                     ),
-//                                   )
-//                                       : Container();
-//                                 }),
-//                           ]),
-//                         ])
-//                         : Center(
-//                       child: Column(
-//                         mainAxisAlignment: MainAxisAlignment.center,
-//                         children: [
-//                           Theme(
-//                               data: Theme.of(context).copyWith(
-//                                   accentColor: Color(0xFF9B049B)),
-//                               child: CircularProgressIndicator(valueColor: AlwaysStoppedAnimation<Color>(Color(0xFF9B049B)),
-//                                 strokeWidth: 2,
-//                                 backgroundColor: Colors.white,
-//                               )),
-//                           Text(
-//                             'Loading',
-//                             style: TextStyle(
-//                                 fontSize: 18, color: Colors.black38),
-//                             textAlign: TextAlign.center,
-//                           ),
-//                         ],
-//                       ),
-//                     );
-//                   }),
-//               DefaultTabController(
-//                   length: 2,
-//                   child: Scaffold(
-//                       appBar: TabBar(
-//                         unselectedLabelColor: Colors.black38,
-//                         labelColor: Colors.black,
-//                         indicatorColor: Color(0xFF9B049B),
-//                         tabs: [
-//                           Tab(
-//                               child: Text('Ongoing Posted Job',
-//                                   style: GoogleFonts.poppins(
-//                                       fontSize: 14,
-//                                       fontWeight: FontWeight.w600))),
-//                           Tab(
-//                               child: Text('Ongoing Received Job',
-//                                   style: GoogleFonts.poppins(
-//                                       fontSize: 14,
-//                                       fontWeight: FontWeight.w600))),
-//                         ],
-//                       ),
-//
-// //
-//                       body: TabBarView(children: [
-//                         FutureBuilder(
-//                             future: network.getUndoneProject(context),
-//                             builder: (context, snapshot) {
-//                               return snapshot.hasData
-//                                   ? ListView(
-//                                   padding: EdgeInsets.only(top: 2),
-//                                   physics: ScrollPhysics(),
-//                                   shrinkWrap: true,
-//                                   children: [
-//                                     Column(children: [
-//                                       Container(
-//                                         height: 67,
-//                                         width: MediaQuery.of(context)
-//                                             .size
-//                                             .width *
-//                                             0.92,
-//                                         child: Card(
-//                                           color: Color(0xFF9B049B),
-//                                           child: Center(
-//                                             child: FutureBuilder(
-//                                               future:
-//                                               network.getUserInfo(
-//                                                   network.userId),
-//                                               builder:
-//                                                   (context, snapshot) {
-//                                                 return snapshot.data ==
-//                                                     null
-//                                                     ? RichText(
-//                                                     text: TextSpan(
-//                                                         children: [
-//                                                           TextSpan(
-//                                                               text:
-//                                                               'Wallet  Balance ',
-//                                                               style: TextStyle(
-//                                                                   fontWeight:
-//                                                                   FontWeight.bold,
-//                                                                   color: Colors.white)),
-//                                                           TextSpan(
-//                                                               text:
-//                                                               '₦0.00',
-//                                                               style: TextStyle(
-//                                                                   fontWeight: FontWeight
-//                                                                       .bold,
-//                                                                   fontSize:
-//                                                                   19,
-//                                                                   color:
-//                                                                   Colors.white)),
-//                                                         ]))
-//                                                     : RichText(
-//                                                     text: TextSpan(
-//                                                         children: [
-//                                                           TextSpan(
-//                                                               text:
-//                                                               'Wallet  Balance ',
-//                                                               style: TextStyle(
-//                                                                   fontWeight:
-//                                                                   FontWeight.bold,
-//                                                                   color: Colors.white)),
-//                                                           TextSpan(
-//                                                               text:
-//                                                               '₦${double.parse(snapshot.data['balance'].toString()).toStringAsFixed(2)}',
-//                                                               style: TextStyle(
-//                                                                   fontWeight: FontWeight
-//                                                                       .bold,
-//                                                                   fontSize:
-//                                                                   19,
-//                                                                   color:
-//                                                                   Colors.white)),
-//                                                         ]));
-//                                               },
-//                                             ),
-//                                           ),
-//                                         ),
-//                                       ),
-//                                       ListView.builder(
-//                                           physics:
-//                                           NeverScrollableScrollPhysics(),
-//                                           shrinkWrap: true,
-//                                           itemCount:
-//                                           snapshot.data.length,
-//                                           padding:
-//                                           EdgeInsets.only(top: 2),
-//                                           itemBuilder:
-//                                               (context, index) {
-//                                             return snapshot.data[index]
-//                                                 .status ==
-//                                                 'ongoing'
-//                                                 ? Padding(
-//                                               padding:
-//                                               const EdgeInsets
-//                                                   .only(
-//                                                   left: 20,
-//                                                   right: 20,
-//                                                   bottom: 14),
-//                                               child: Row(
-//                                                 children: [
-//                                                   Container(
-//                                                       height: 25,
-//                                                       child:
-//                                                       Center(
-//                                                           child:
-//                                                           Text(
-//                                                             '${snapshot.data[index].jobTitle}',
-//                                                             style: TextStyle(
-//                                                                 color: Color(
-//                                                                     0xFF9B049B),
-//                                                                 fontWeight: FontWeight
-//                                                                     .bold,
-//                                                                 fontSize:
-//                                                                 9.5),
-//                                                             textAlign:
-//                                                             TextAlign
-//                                                                 .center,
-//                                                           )),
-//                                                       width: 73,
-//                                                       decoration:
-//                                                       BoxDecoration(
-//                                                         borderRadius:
-//                                                         BorderRadius.circular(
-//                                                             30),
-//                                                         color: Color(
-//                                                             0xFFA40C85)
-//                                                             .withOpacity(
-//                                                             0.35),
-//                                                       )),
-//                                                   Padding(
-//                                                     padding: const EdgeInsets
-//                                                         .only(
-//                                                         left:
-//                                                         10.0),
-//                                                     child: Column(
-//                                                       crossAxisAlignment:
-//                                                       CrossAxisAlignment
-//                                                           .start,
-//                                                       children: [
-//                                                         Padding(
-//                                                           padding:
-//                                                           const EdgeInsets.only(bottom: 4.0),
-//                                                           child: Text(
-//                                                               '${snapshot.data[index].jobDescription}'.isEmpty
-//                                                                   ? 'No Desription'
-//                                                                   : '${snapshot.data[index].jobDescription}',
-//                                                               style:
-//                                                               TextStyle(color: Colors.black)),
-//                                                         ),
-//                                                         Text(
-//                                                             '${snapshot.data[index].status}',
-//                                                             style: TextStyle(
-//                                                                 color: Colors.black,
-//                                                                 fontSize: 13)),
-//                                                       ],
-//                                                     ),
-//                                                   ),
-//                                                   Spacer(),
-//                                                   Column(
-//                                                     children: [
-//                                                       Padding(
-//                                                           padding:
-//                                                           const EdgeInsets.only(bottom: 3.0),
-//                                                           child: PopupMenuButton(
-//                                                               offset: const Offset(0, 1),
-//                                                               elevation: 5,
-//                                                               icon: Icon(
-//                                                                 Icons.more_vert,
-//                                                                 size: 22,
-//                                                               ),
-//                                                               itemBuilder: (context) => [
-//                                                                 PopupMenuItem(
-//                                                                   value: 1,
-//                                                                   child: Padding(
-//                                                                     padding: const EdgeInsets.all(8),
-//                                                                     child: Text('Project is currently on going'),
-//                                                                   ),
-//                                                                 ),
-//                                                               ])),
-//                                                       Text(
-//                                                         '${snapshot.data[index].dateOpen.toString().substring(0, 10)}',
-//                                                         style: TextStyle(
-//                                                             color:
-//                                                             Colors.black38),
-//                                                       )
-//                                                     ],
-//                                                   ),
-//                                                 ],
-//                                               ),
-//                                             )
-//                                                 : Container();
-//                                           }),
-//                                     ]),
-//                                   ])
-//                                   : Center(
-//                                 child: Column(
-//                                   mainAxisAlignment:
-//                                   MainAxisAlignment.center,
-//                                   children: [
-//                                     Theme(
-//                                         data: Theme.of(context)
-//                                             .copyWith(
-//                                             accentColor:
-//                                             Color(0xFF9B049B)),
-//                                         child:
-//                                         CircularProgressIndicator(valueColor: AlwaysStoppedAnimation<Color>(Color(0xFF9B049B)),
-//                                           strokeWidth: 2,
-//                                           backgroundColor: Colors.white,
-//                                         )),
-//                                     Text(
-//                                       'Loading',
-//                                       style: TextStyle(
-//                                           fontSize: 18,
-//                                           color: Colors.black38),
-//                                       textAlign: TextAlign.center,
-//                                     ),
-//                                   ],
-//                                 ),
-//                               );
-//                             }),
-//                         FutureBuilder(
-//                             future: network.getBiddedJobs(context),
-//                             builder: (context, snapshot) {
-//                               return snapshot.hasData
-//                                   ? ListView(
-//                                   padding: EdgeInsets.only(top: 2),
-//                                   physics: ScrollPhysics(),
-//                                   shrinkWrap: true,
-//                                   children: [
-//                                     Column(children: [
-//                                       Container(
-//                                         height: 67,
-//                                         width: MediaQuery.of(context)
-//                                             .size
-//                                             .width *
-//                                             0.92,
-//                                         child: Card(
-//                                           color: Color(0xFF9B049B),
-//                                           child: Center(
-//                                             child: FutureBuilder(
-//                                               future:
-//                                               network.getUserInfo(
-//                                                   network.userId),
-//                                               builder:
-//                                                   (context, snapshot) {
-//                                                 return snapshot.data ==
-//                                                     null
-//                                                     ? RichText(
-//                                                     text: TextSpan(
-//                                                         children: [
-//                                                           TextSpan(
-//                                                               text:
-//                                                               'Wallet  Balance ',
-//                                                               style: TextStyle(
-//                                                                   fontWeight:
-//                                                                   FontWeight.bold,
-//                                                                   color: Colors.white)),
-//                                                           TextSpan(
-//                                                               text:
-//                                                               '₦0.00',
-//                                                               style: TextStyle(
-//                                                                   fontWeight: FontWeight
-//                                                                       .bold,
-//                                                                   fontSize:
-//                                                                   19,
-//                                                                   color:
-//                                                                   Colors.white)),
-//                                                         ]))
-//                                                     : RichText(
-//                                                     text: TextSpan(
-//                                                         children: [
-//                                                           TextSpan(
-//                                                               text:
-//                                                               'Wallet  Balance ',
-//                                                               style: TextStyle(
-//                                                                   fontWeight:
-//                                                                   FontWeight.bold,
-//                                                                   color: Colors.white)),
-//                                                           TextSpan(
-//                                                               text:
-//                                                               '₦${double.parse(snapshot.data['balance'].toString()).toStringAsFixed(2)}',
-//                                                               style: TextStyle(
-//                                                                   fontWeight: FontWeight
-//                                                                       .bold,
-//                                                                   fontSize:
-//                                                                   19,
-//                                                                   color:
-//                                                                   Colors.white)),
-//                                                         ]));
-//                                               },
-//                                             ),
-//                                           ),
-//                                         ),
-//                                       ),
-//                                       ListView.builder(
-//                                           physics:
-//                                           NeverScrollableScrollPhysics(),
-//                                           shrinkWrap: true,
-//                                           itemCount:
-//                                           snapshot.data.length,
-//                                           padding:
-//                                           EdgeInsets.only(top: 2),
-//                                           itemBuilder:
-//                                               (context, index) {
-//                                             return snapshot.data[index]
-//                                                 .status ==
-//                                                 'ongoing'
-//                                                 ? PopupMenuButton(
-//                                                 offset: const Offset(0, 1),
-//                                                 elevation: 5,
-//                                                 child:     Padding(
-//                                                   padding:
-//                                                   const EdgeInsets
-//                                                       .only(
-//                                                       left: 20,
-//                                                       right: 20,
-//                                                       bottom: 14),
-//                                                   child:  Row(
-//                                                     children: [
-//                                                       Container(
-//                                                           height: 25,
-//                                                           child:
-//                                                           Center(
-//                                                               child:
-//                                                               Text(
-//                                                                 '${snapshot.data[index].jobTitle}',
-//                                                                 style: TextStyle(
-//                                                                     color: Color(
-//                                                                         0xFF9B049B),
-//                                                                     fontWeight: FontWeight
-//                                                                         .bold,
-//                                                                     fontSize:
-//                                                                     9.5),
-//                                                                 textAlign:
-//                                                                 TextAlign
-//                                                                     .center,
-//                                                               )),
-//                                                           width: 73,
-//                                                           decoration:
-//                                                           BoxDecoration(
-//                                                             borderRadius:
-//                                                             BorderRadius.circular(
-//                                                                 30),
-//                                                             color: Color(
-//                                                                 0xFFA40C85)
-//                                                                 .withOpacity(
-//                                                                 0.35),
-//                                                           )),
-//                                                       Padding(
-//                                                         padding: const EdgeInsets
-//                                                             .only(
-//                                                             left:
-//                                                             10.0),
-//                                                         child: Column(
-//                                                           children: [
-//                                                             Column(
-//                                                               crossAxisAlignment:
-//                                                               CrossAxisAlignment
-//                                                                   .start,
-//                                                               children: [
-//                                                                 Padding(
-//                                                                   padding:
-//                                                                   const EdgeInsets.only(bottom: 4.0),
-//                                                                   child: Text(
-//                                                                       '${snapshot.data[index].jobDescription}'.isEmpty
-//                                                                           ? 'No Desription'
-//                                                                           : '${snapshot.data[index].jobDescription}',
-//                                                                       style:
-//                                                                       TextStyle(color: Colors.black)),
-//                                                                 ),
-//                                                                 Text(
-//                                                                     '${snapshot.data[index].status}',
-//                                                                     style: TextStyle(
-//                                                                         color: Colors.black,
-//                                                                         fontSize: 13)),
-//                                                               ],
-//                                                             ),
-//                                                           ],
-//                                                         ),
-//                                                       ),
-//                                                       Spacer(),
-//                                                       Column(
-//                                                         children: [
-//                                                           Padding(
-//                                                               padding:
-//                                                               const EdgeInsets.only(bottom: 3.0),
-//                                                               child: Icon(Icons.more_vert)),
-//                                                           Text(
-//                                                             '${snapshot.data[index].dateOpen.toString().substring(0, 10)}',
-//                                                             style: TextStyle(
-//                                                                 color:
-//                                                                 Colors.black38),
-//                                                           )
-//                                                         ],
-//                                                       ),
-//                                                     ],
-//                                                   ),
-//                                                 ),
-//                                                 // icon: Icon(
-//                                                 //   Icons.more_vert,
-//                                                 //   size: 22,
-//                                                 // ),
-//                                                 itemBuilder: (context) => [
-//                                                   PopupMenuItem(
-//                                                       value: 1,
-//                                                       child: InkWell(
-//                                                         onTap: () {
-//                                                           network.requestPayment(
-//                                                               snapshot.data[index].sn.toString(),
-//                                                               snapshot.data[index].projectBid.toString()
-//
-//                                                           ).then((value) {
-//                                                             setState(() {
-//                                                               print('done');
-//                                                             });
-//                                                           });
-//                                                           Navigator.pop(context);
-//                                                         },
-//                                                         child: Padding(
-//                                                           padding: const EdgeInsets.all(8),
-//                                                           child: Text('Mark This Task as Completed'),
-//                                                         ),
-//                                                       )),
-//                                                 ])
-//                                                 : Container();
-//                                           }),
-//                                     ]),
-//                                   ])
-//                                   : Center(
-//                                 child: Column(
-//                                   mainAxisAlignment:
-//                                   MainAxisAlignment.center,
-//                                   children: [
-//                                     Theme(
-//                                         data: Theme.of(context)
-//                                             .copyWith(
-//                                             accentColor:
-//                                             Color(0xFF9B049B)),
-//                                         child:
-//                                         CircularProgressIndicator(valueColor: AlwaysStoppedAnimation<Color>(Color(0xFF9B049B)),
-//                                           strokeWidth: 2,
-//                                           backgroundColor: Colors.white,
-//                                         )),
-//                                     Text(
-//                                       'Loading',
-//                                       style: TextStyle(
-//                                           fontSize: 18,
-//                                           color: Colors.black38),
-//                                       textAlign: TextAlign.center,
-//                                     ),
-//                                   ],
-//                                 ),
-//                               );
-//                             }),
-//                       ]))),
-//               DefaultTabController(
-//                   length: 2,
-//                   child: Scaffold(
-//                       appBar: TabBar(
-//                         unselectedLabelColor: Colors.black38,
-//                         labelColor: Colors.black,
-//                         indicatorColor: Color(0xFF9B049B),
-//                         tabs: [
-//                           Tab(
-//                               child: Text('Completed Posted Job',
-//                                   style: GoogleFonts.poppins(
-//                                       fontSize: 14,
-//                                       fontWeight: FontWeight.w600))),
-//                           Tab(
-//                               child: Text('Completed Received Job',
-//                                   style: GoogleFonts.poppins(
-//                                       fontSize: 14,
-//                                       fontWeight: FontWeight.w600))),
-//                         ],
-//                       ),
-//
-// //
-//                       body: TabBarView(children: [
-//                         FutureBuilder(
-//                             future: network.getUndoneProject(context),
-//                             builder: (context, snapshot) {
-//                               return snapshot.hasData
-//                                   ? ListView(
-//                                   padding: EdgeInsets.only(top: 2),
-//                                   physics: ScrollPhysics(),
-//                                   shrinkWrap: true,
-//                                   children: [
-//                                     Column(children: [
-//                                       Container(
-//                                         height: 67,
-//                                         width: MediaQuery.of(context)
-//                                             .size
-//                                             .width *
-//                                             0.92,
-//                                         child: Card(
-//                                           color: Color(0xFF9B049B),
-//                                           child: Center(
-//                                             child: FutureBuilder(
-//                                               future:
-//                                               network.getUserInfo(
-//                                                   network.userId),
-//                                               builder:
-//                                                   (context, snapshot) {
-//                                                 return snapshot.data ==
-//                                                     null
-//                                                     ? RichText(
-//                                                     text: TextSpan(
-//                                                         children: [
-//                                                           TextSpan(
-//                                                               text:
-//                                                               'Wallet  Balance ',
-//                                                               style: TextStyle(
-//                                                                   fontWeight:
-//                                                                   FontWeight.bold,
-//                                                                   color: Colors.white)),
-//                                                           TextSpan(
-//                                                               text:
-//                                                               '₦0',
-//                                                               style: TextStyle(
-//                                                                   fontWeight: FontWeight
-//                                                                       .bold,
-//                                                                   fontSize:
-//                                                                   19,
-//                                                                   color:
-//                                                                   Colors.white)),
-//                                                         ]))
-//                                                     : RichText(
-//                                                     text: TextSpan(
-//                                                         children: [
-//                                                           TextSpan(
-//                                                               text:
-//                                                               'Wallet  Balance ',
-//                                                               style: TextStyle(
-//                                                                   fontWeight:
-//                                                                   FontWeight.bold,
-//                                                                   color: Colors.white)),
-//                                                           TextSpan(
-//                                                               text:
-//                                                               '₦${snapshot.data['balance']}',
-//                                                               style: TextStyle(
-//                                                                   fontWeight: FontWeight
-//                                                                       .bold,
-//                                                                   fontSize:
-//                                                                   19,
-//                                                                   color:
-//                                                                   Colors.white)),
-//                                                         ]));
-//                                               },
-//                                             ),
-//                                           ),
-//                                         ),
-//                                       ),
-//                                       ListView.builder(
-//                                           physics:
-//                                           NeverScrollableScrollPhysics(),
-//                                           shrinkWrap: true,
-//                                           itemCount:
-//                                           snapshot.data.length,
-//                                           padding:
-//                                           EdgeInsets.only(top: 2),
-//                                           itemBuilder:
-//                                               (context, index) {
-//                                             return snapshot.data[index]
-//                                                 .status ==
-//                                                 'completed'
-//                                                 ? Padding(
-//                                               padding:
-//                                               const EdgeInsets
-//                                                   .only(
-//                                                   left: 20,
-//                                                   right: 20,
-//                                                   bottom: 14),
-//                                               child: Row(
-//                                                 children: [
-//                                                   Container(
-//                                                       height: 25,
-//                                                       child:
-//                                                       Center(
-//                                                           child:
-//                                                           Text(
-//                                                             '${snapshot.data[index].jobTitle}',
-//                                                             style: TextStyle(
-//                                                                 color: Color(
-//                                                                     0xFF9B049B),
-//                                                                 fontWeight: FontWeight
-//                                                                     .bold,
-//                                                                 fontSize:
-//                                                                 9.5),
-//                                                             textAlign:
-//                                                             TextAlign
-//                                                                 .center,
-//                                                           )),
-//                                                       width: 73,
-//                                                       decoration:
-//                                                       BoxDecoration(
-//                                                         borderRadius:
-//                                                         BorderRadius.circular(
-//                                                             30),
-//                                                         color: Color(
-//                                                             0xFFA40C85)
-//                                                             .withOpacity(
-//                                                             0.35),
-//                                                       )),
-//                                                   Padding(
-//                                                     padding: const EdgeInsets
-//                                                         .only(
-//                                                         left:
-//                                                         10.0),
-//                                                     child: Column(
-//                                                       crossAxisAlignment:
-//                                                       CrossAxisAlignment
-//                                                           .start,
-//                                                       children: [
-//                                                         Padding(
-//                                                           padding:
-//                                                           const EdgeInsets.only(bottom: 4.0),
-//                                                           child: Text(
-//                                                               '${snapshot.data[index].jobDescription}'.isEmpty
-//                                                                   ? 'No Desription'
-//                                                                   : '${snapshot.data[index].jobDescription}',
-//                                                               style:
-//                                                               TextStyle(color: Colors.black)),
-//                                                         ),
-//                                                         Text(
-//                                                             '${snapshot.data[index].status}',
-//                                                             style: TextStyle(
-//                                                                 color: Colors.black,
-//                                                                 fontSize: 13)),
-//                                                       ],
-//                                                     ),
-//                                                   ),
-//                                                   Spacer(),
-//                                                   Column(
-//                                                     children: [
-//                                                       Padding(
-//                                                           padding:
-//                                                           const EdgeInsets.only(bottom: 3.0),
-//                                                           child: PopupMenuButton(
-//                                                               offset: const Offset(0, 1),
-//                                                               elevation: 5,
-//                                                               icon: Icon(
-//                                                                 Icons.more_vert,
-//                                                                 size: 22,
-//                                                               ),
-//                                                               itemBuilder: (context) => [
-//                                                                 PopupMenuItem(
-//                                                                     value: 1,
-//                                                                     child: InkWell(
-//                                                                       onTap: () {
-// //                                                                    network.requestPayment(network.user_id, bid_id);
-// //                                                                    Navigator.pop(context);
-//                                                                       },
-//                                                                       child: Padding(
-//                                                                         padding: const EdgeInsets.all(8),
-//                                                                         child: Text('Project Has Been Completed'),
-//                                                                       ),
-//                                                                     )),
-//                                                               ])),
-//                                                       Text(
-//                                                         '${snapshot.data[index].dateOpen.toString().substring(0, 10)}',
-//                                                         style: TextStyle(
-//                                                             color:
-//                                                             Colors.black38),
-//                                                       )
-//                                                     ],
-//                                                   ),
-//                                                 ],
-//                                               ),
-//                                             )
-//                                                 : Container();
-//                                           }),
-//                                     ]),
-//                                   ])
-//                                   : Center(
-//                                 child: Column(
-//                                   mainAxisAlignment:
-//                                   MainAxisAlignment.center,
-//                                   children: [
-//                                     Theme(
-//                                         data: Theme.of(context)
-//                                             .copyWith(
-//                                             accentColor:
-//                                             Color(0xFF9B049B)),
-//                                         child:
-//                                         CircularProgressIndicator(valueColor: AlwaysStoppedAnimation<Color>(Color(0xFF9B049B)),
-//                                           strokeWidth: 2,
-//                                           backgroundColor: Colors.white,
-//                                         )),
-//                                     Text(
-//                                       'Loading',
-//                                       style: TextStyle(
-//                                           fontSize: 18,
-//                                           color: Colors.black38),
-//                                       textAlign: TextAlign.center,
-//                                     ),
-//                                   ],
-//                                 ),
-//                               );
-//                             }),
-//                         FutureBuilder(
-//                             future: network.getBiddedJobs(context),
-//                             builder: (context, snapshot) {
-//                               return snapshot.hasData
-//                                   ? ListView(
-//                                   padding: EdgeInsets.only(top: 2),
-//                                   physics: ScrollPhysics(),
-//                                   shrinkWrap: true,
-//                                   children: [
-//                                     Column(children: [
-//                                       Container(
-//                                         height: 67,
-//                                         width: MediaQuery.of(context)
-//                                             .size
-//                                             .width *
-//                                             0.92,
-//                                         child: Card(
-//                                           color: Color(0xFF9B049B),
-//                                           child: Center(
-//                                             child: FutureBuilder(
-//                                               future:
-//                                               network.getUserInfo(
-//                                                   network.userId),
-//                                               builder:
-//                                                   (context, snapshot) {
-//                                                 return snapshot.data ==
-//                                                     null
-//                                                     ? RichText(
-//                                                     text: TextSpan(
-//                                                         children: [
-//                                                           TextSpan(
-//                                                               text:
-//                                                               'Wallet  Balance ',
-//                                                               style: TextStyle(
-//                                                                   fontWeight:
-//                                                                   FontWeight.bold,
-//                                                                   color: Colors.white)),
-//                                                           TextSpan(
-//                                                               text:
-//                                                               '₦0',
-//                                                               style: TextStyle(
-//                                                                   fontWeight: FontWeight
-//                                                                       .bold,
-//                                                                   fontSize:
-//                                                                   19,
-//                                                                   color:
-//                                                                   Colors.white)),
-//                                                         ]))
-//                                                     : RichText(
-//                                                     text: TextSpan(
-//                                                         children: [
-//                                                           TextSpan(
-//                                                               text:
-//                                                               'Wallet  Balance ',
-//                                                               style: TextStyle(
-//                                                                   fontWeight:
-//                                                                   FontWeight.bold,
-//                                                                   color: Colors.white)),
-//                                                           TextSpan(
-//                                                               text:
-//                                                               '₦${snapshot.data['balance']}',
-//                                                               style: TextStyle(
-//                                                                   fontWeight: FontWeight
-//                                                                       .bold,
-//                                                                   fontSize:
-//                                                                   19,
-//                                                                   color:
-//                                                                   Colors.white)),
-//                                                         ]));
-//                                               },
-//                                             ),
-//                                           ),
-//                                         ),
-//                                       ),
-//                                       ListView.builder(
-//                                           physics:
-//                                           NeverScrollableScrollPhysics(),
-//                                           shrinkWrap: true,
-//                                           itemCount:
-//                                           snapshot.data.length,
-//                                           padding:
-//                                           EdgeInsets.only(top: 2),
-//                                           itemBuilder:
-//                                               (context, index) {
-//                                             return snapshot.data[index]
-//                                                 .status ==
-//                                                 'completed'
-//                                                 ? Padding(
-//                                               padding:
-//                                               const EdgeInsets
-//                                                   .only(
-//                                                   left: 20,
-//                                                   right: 20,
-//                                                   bottom: 14),
-//                                               child: Row(
-//                                                 children: [
-//                                                   Container(
-//                                                       height: 25,
-//                                                       child:
-//                                                       Center(
-//                                                           child:
-//                                                           Text(
-//                                                             '${snapshot.data[index].jobTitle}',
-//                                                             style: TextStyle(
-//                                                                 color: Color(
-//                                                                     0xFF9B049B),
-//                                                                 fontWeight: FontWeight
-//                                                                     .bold,
-//                                                                 fontSize:
-//                                                                 9.5),
-//                                                             textAlign:
-//                                                             TextAlign
-//                                                                 .center,
-//                                                           )),
-//                                                       width: 73,
-//                                                       decoration:
-//                                                       BoxDecoration(
-//                                                         borderRadius:
-//                                                         BorderRadius.circular(
-//                                                             30),
-//                                                         color: Color(
-//                                                             0xFFA40C85)
-//                                                             .withOpacity(
-//                                                             0.35),
-//                                                       )),
-//                                                   Padding(
-//                                                     padding: const EdgeInsets
-//                                                         .only(
-//                                                         left:
-//                                                         10.0),
-//                                                     child: Column(
-//                                                       crossAxisAlignment:
-//                                                       CrossAxisAlignment
-//                                                           .start,
-//                                                       children: [
-//                                                         Padding(
-//                                                           padding:
-//                                                           const EdgeInsets.only(bottom: 4.0),
-//                                                           child: Text(
-//                                                               '${snapshot.data[index].jobDescription}'.isEmpty
-//                                                                   ? 'No Desription'
-//                                                                   : '${snapshot.data[index].jobDescription}',
-//                                                               style:
-//                                                               TextStyle(color: Colors.black)),
-//                                                         ),
-//                                                         Text(
-//                                                             '${snapshot.data[index].status}',
-//                                                             style: TextStyle(
-//                                                                 color: Colors.black,
-//                                                                 fontSize: 13)),
-//                                                       ],
-//                                                     ),
-//                                                   ),
-//                                                   Spacer(),
-//                                                   Column(
-//                                                     children: [
-//                                                       Padding(
-//                                                           padding:
-//                                                           const EdgeInsets.only(bottom: 3.0),
-//                                                           child: PopupMenuButton(
-//                                                               offset: const Offset(0, 1),
-//                                                               elevation: 5,
-//                                                               icon: Icon(
-//                                                                 Icons.more_vert,
-//                                                                 size: 22,
-//                                                               ),
-//                                                               itemBuilder: (context) => [
-//                                                                 PopupMenuItem(
-//                                                                   value: 1,
-//                                                                   child: Padding(
-//                                                                     padding: const EdgeInsets.all(8),
-//                                                                     child: Text('Congratulation you are done with this project'),
-//                                                                   ),
-//                                                                 ),
-//                                                               ])),
-//                                                       Text(
-//                                                         '${snapshot.data[index].dateOpen.toString().substring(0, 10)}',
-//                                                         style: TextStyle(
-//                                                             color:
-//                                                             Colors.black38),
-//                                                       )
-//                                                     ],
-//                                                   ),
-//                                                 ],
-//                                               ),
-//                                             )
-//                                                 : Container();
-//                                           }),
-//                                     ]),
-//                                   ])
-//                                   : Center(
-//                                 child: Column(
-//                                   mainAxisAlignment:
-//                                   MainAxisAlignment.center,
-//                                   children: [
-//                                     Theme(
-//                                         data: Theme.of(context)
-//                                             .copyWith(
-//                                             accentColor:
-//                                             Color(0xFF9B049B)),
-//                                         child:
-//                                         CircularProgressIndicator(valueColor: AlwaysStoppedAnimation<Color>(Color(0xFF9B049B)),
-//                                           strokeWidth: 2,
-//                                           backgroundColor: Colors.white,
-//                                         )),
-//                                     Text(
-//                                       'Loading',
-//                                       style: TextStyle(
-//                                           fontSize: 18,
-//                                           color: Colors.black38),
-//                                       textAlign: TextAlign.center,
-//                                     ),
-//                                   ],
-//                                 ),
-//                               );
-//                             }),
-//                       ]))),
-//             ],
-//           ),
-//         ),
-//       ),
-    );
+    ])));
   }
 
 
@@ -1757,29 +465,31 @@ class _PendingScreenState extends State<PendingScreen> {
                       shrinkWrap: true,
                       itemCount: snapshot.data.length,
                       padding: EdgeInsets.only(top: 2),
-                      itemBuilder: (context, index) {
+                      itemBuilder: (context, index){
                         List<Project> sortedList = snapshot.data;
+                        sortedList.sort((a,b) {
+                          return b.dateOpen.compareTo(a.dateOpen);
+                        });
+
                         sorted() {
                           List<Project> pending = [];
                           List<Project> completed = [];
-                          List<Project> ongoing = [];
+                          List<Project> accepted = [];
                           for (var projects in sortedList) {
                             if (projects.status == 'pending') {
                               pending.add(projects);
-                              print(pending.length);
                             } else if (projects.status ==
                                 "completed") {
                               completed.add(projects);
-                              print(completed.length);
                             } else if (projects.status ==
+                                "accepted" || projects.status ==
                                 "ongoing") {
-                              ongoing.add(projects);
-                              print(ongoing.length);
+                              accepted.add(projects);
                             }
                           }
                           // setState(() {
                           sortedList =
-                              completed + ongoing + pending;
+                              completed + accepted + pending;
                           // });
                         }
 
@@ -1790,14 +500,11 @@ class _PendingScreenState extends State<PendingScreen> {
                           child: InkWell(
                             onTap: () {
                               sortedList[index].status ==
-                                  'ongoing' &&  sortedList[index].projectType!='posted'
+                                  'accepted'  &&  sortedList[index].projectType!='posted'
                                   ? _completeTask(
-                                  data: sortedList[index]):
-                              sortedList[index].status ==
-                                  'completed'?_completed(
-                                  data: sortedList[index]):
+                                  data: sortedList[index], user:sortedList[index].user,user2:sortedList[index].user2,projectType: sortedList[index].projectType):
                               _viewTask(
-                                  data: sortedList[index]);
+                                  data: sortedList[index], user:sortedList[index].user,user2:sortedList[index].user2,projectType: sortedList[index].projectType);
                             },
                             child: Container(
                               child: Row(
@@ -1838,7 +545,7 @@ class _PendingScreenState extends State<PendingScreen> {
                                     child: Column(
                                       children: [
                                         Text(
-                                          '${DateFormat('dd').format(DateTime.parse(sortedList[index].dateOpen))}',
+                                          '${DateFormat('dd').format(sortedList[index].dateOpen)}',
                                           style: TextStyle(
                                               color: Color(
                                                   0xFF6F6F6F),
@@ -1848,7 +555,7 @@ class _PendingScreenState extends State<PendingScreen> {
                                                   .bold),
                                         ),
                                         Text(
-                                          '${DateFormat('MMM').format(DateTime.parse(sortedList[index].dateOpen))}',
+                                          '${DateFormat('MMM').format(sortedList[index].dateOpen)}',
                                           style: TextStyle(
                                               color: Colors.grey,
                                               fontSize: 13,
@@ -1942,7 +649,15 @@ class _PendingScreenState extends State<PendingScreen> {
                                     const EdgeInsets.only(
                                         right: 19.0),
                                     child: Text(
-                                      '${sortedList[index].status}',
+                                      '${sortedList[index]
+                                          .status ==
+                                          'pending'
+                                          ? 'pending'
+                                          : sortedList[index]
+                                          .status ==
+                                          'completed'
+                                          ? 'completed'
+                                          : 'ongoing'}',
                                       style: TextStyle(
                                           color: sortedList[index]
                                               .status ==
@@ -2003,7 +718,8 @@ class _PendingScreenState extends State<PendingScreen> {
   }
 
 
-  _viewTask({data}) {
+  _viewTask({data, user, user2, projectType}) {
+    var datas = Provider.of<Utils>(context, listen: false);
     var network = Provider.of<WebServices>(context, listen: false);
     showModalBottomSheet(
         backgroundColor: Colors.transparent,
@@ -2076,7 +792,7 @@ class _PendingScreenState extends State<PendingScreen> {
                               left: 18,
                             ),
                             child: Text(
-                              '${DateFormat('dd').format(DateTime.parse(data.dateOpen))} ${DateFormat('MMMM').format(DateTime.parse(data.dateOpen))}, ${DateFormat('yyyy').format(DateTime.parse(data.dateOpen))}',
+                              '${DateFormat('dd').format(data.dateOpen)} ${DateFormat('MMMM').format(data.dateOpen)}, ${DateFormat('yyyy').format(data.dateOpen)}',
                               style: TextStyle(
                                   color: Colors.grey,
                                   fontSize: 13,
@@ -2090,7 +806,7 @@ class _PendingScreenState extends State<PendingScreen> {
                           Padding(
                             padding: const EdgeInsets.only(
                                 left: 18, right: 18, top: 7),
-                            child: Text('Service Provider:'),
+                            child: Text(projectType=='posted'?'Service Provider:':'Service Reciever:'),
                           ),
                           Padding(
                             padding: const EdgeInsets.only(
@@ -2106,7 +822,7 @@ class _PendingScreenState extends State<PendingScreen> {
                                                   'no_picture_upload' ||
                                           data.user.urlAvatar == null
                                           ? 'https://uploads.fixme.ng/thumbnails/no_picture_upload'
-                                          : 'https://uploads.fixme.ng/thumbnails/${data.user.urlAvatar}',
+                                          : 'https://uploads.fixme.ng/thumbnails/${projectType=='posted'?user.urlAvatar:user2.urlAvatar}',
                                     ),
                                     foregroundColor: Colors.white,
                                     backgroundColor: Colors.white,
@@ -2125,7 +841,7 @@ class _PendingScreenState extends State<PendingScreen> {
                                             padding:
                                                 const EdgeInsets.only(left: 0),
                                             child: Text(
-                                              '${data.user.name} ${data.user.userLastName}'
+                                              projectType=='posted'?'${user.name} ${user.userLastName}':'${user2.name} ${user2.userLastName}'
                                                   .capitalizeFirstOfEach,
                                               style: TextStyle(
                                                   color: Color(0xFF333333),
@@ -2135,10 +851,18 @@ class _PendingScreenState extends State<PendingScreen> {
                                           ),
                                         ],
                                       ),
-                                      Align(
+                                      projectType=='posted'?  Align(
                                         alignment: Alignment.bottomRight,
                                         child: Text(
-                                          '${data.user.serviceArea}'.toUpperCase(),
+                                          '${user.serviceArea}'.toUpperCase(),
+                                          style: TextStyle(
+                                            color: Color(0xFF333333),
+                                            fontSize: 16,
+                                          ),
+                                        ),
+                                      ):Container(
+                                        child:  Text(
+                                          'completed task'.toUpperCase(),
                                           style: TextStyle(
                                             color: Color(0xFF333333),
                                             fontSize: 16,
@@ -2146,10 +870,10 @@ class _PendingScreenState extends State<PendingScreen> {
                                         ),
                                       ),
                                       SizedBox(height: 2),
-                                      Row(
+                                      projectType=='posted'? Row(
                                         children: [
                                           Text(
-                                            '${data.user.userRating}',
+                                            '${user.userRating}',
                                             style: TextStyle(
                                               color: Color(0xFF333333),
                                               fontSize: 16,
@@ -2166,8 +890,8 @@ class _PendingScreenState extends State<PendingScreen> {
                                           SizedBox(
                                             width: 3,
                                           ),
-                                          Text(
-                                            '(${data.user.reviews} reviews)',
+                                         Text(
+                                            '(${user.reviews} reviews)',
                                             style: TextStyle(
                                               color: Color(0xFF333333),
                                               fontSize: 16,
@@ -2178,7 +902,7 @@ class _PendingScreenState extends State<PendingScreen> {
                                           //       widget.userData.userRating.toString()),
                                           // ),
                                         ],
-                                      ),
+                                      ):Container()
                                     ],
                                   ),
                                 )
@@ -2197,227 +921,22 @@ class _PendingScreenState extends State<PendingScreen> {
                                   child: FlatButton(
                                     onPressed: () {
                                       FirebaseApi.addUserChat(
-                                        token2: data.user.fcmToken,
-                                        token: data.user.fcmToken,
+                                        token2: datas.fcmToken,
+                                        token: projectType=='posted'?user.fcmToken:user2.fcmToken,
                                         recieveruserId2: network.userId,
-                                        recieveruserId: data.user.id,
-                                        serviceId: data.user.serviceId,
-                                        serviceId2: network.serviceId,
-                                        urlAvatar2:
-                                            'https://uploads.fixme.ng/thumbnails/${network.profilePicFileName}',
-                                        name2: network.firstName,
-                                        idArtisan: network.mobileDeviceToken,
-                                        artisanMobile: network.phoneNum,
-                                        userMobile: data.user.userMobile,
-                                        idUser: data.user.idUser,
-                                        urlAvatar:
-                                            'https://uploads.fixme.ng/thumbnails/${data.user.urlAvatar}',
-                                        name: data.user.name,
-                                      );
-
-                                      Navigator.push(
-                                        context,
-                                        PageRouteBuilder(
-                                          pageBuilder: (context, animation,
-                                              secondaryAnimation) {
-                                            return ChatPage(
-                                                user:  data.user);
-                                          },
-                                          transitionsBuilder: (context,
-                                              animation,
-                                              secondaryAnimation,
-                                              child) {
-                                            return FadeTransition(
-                                              opacity: animation,
-                                              child: child,
-                                            );
-                                          },
-                                        ),
-                                      );
-                                    },
-                                    color: Color(0xFF9B049B),
-                                    shape: RoundedRectangleBorder(
-                                        borderRadius: BorderRadius.circular(5)),
-                                    padding: EdgeInsets.all(0.0),
-                                    child: Ink(
-                                      decoration: BoxDecoration(
-                                          borderRadius:
-                                              BorderRadius.circular(5)),
-                                      child: Container(
-                                        constraints: BoxConstraints(
-                                            maxWidth: 120, minHeight: 35.0),
-                                        alignment: Alignment.center,
-                                        child: Text(
-                                          "Message",
-                                          textAlign: TextAlign.center,
-                                          style: TextStyle(
-                                              color: Colors.white,
-                                              fontWeight: FontWeight.w600),
-                                        ),
-                                      ),
-                                    ),
-                                  ),
-                                ),
-                                Container(
-                                  margin: EdgeInsets.only(left: 10),
-                                  height: 35,
-                                  decoration: BoxDecoration(
-                                      border: Border.all(
-                                          color: Color(0xFFE9E9E9), width: 1),
-                                      borderRadius: BorderRadius.circular(5)),
-                                  child: FlatButton(
-                                    disabledColor: Color(0x909B049B),
-                                    onPressed: () async {
-                                      await UrlLauncher.launch("tel://${data.user.fullNumber}");
-                                    },
-                                    // full_number
-                                    color: Colors.transparent,
-                                    shape: RoundedRectangleBorder(
-                                        borderRadius: BorderRadius.circular(5)),
-                                    padding: EdgeInsets.all(0.0),
-                                    child: Ink(
-                                      decoration: BoxDecoration(
-                                          borderRadius:
-                                              BorderRadius.circular(5)),
-                                      child: Container(
-                                        constraints: BoxConstraints(
-                                            maxWidth: 100, minHeight: 35.0),
-                                        alignment: Alignment.center,
-                                        child: Text(
-                                          "Call",
-                                          textAlign: TextAlign.center,
-                                          style: TextStyle(
-                                              color: Colors.black,
-                                              fontWeight: FontWeight.w600),
-                                        ),
-                                      ),
-                                    ),
-                                  ),
-                                ),
-                              ],
-                            ),
-                          ),
-                        ],
-                      ),
-                    )),
-              ],
-            ),
-          );
-        });
-  }
-
-
-
-
-
-
-  _completed({data}) {
-    var network = Provider.of<WebServices>(context, listen: false);
-    showModalBottomSheet(
-        backgroundColor: Colors.transparent,
-        context: context,
-        isScrollControlled: true,
-        builder: (builder) {
-          return Container(
-            height: MediaQuery.of(context).size.height * 0.6,
-            color: Colors.transparent,
-            child: Stack(
-              children: [
-                Container(
-                  padding: const EdgeInsets.only(bottom: 50.0),
-                  color: Colors.transparent,
-                  height: 100,
-                  child: Center(
-                    child: IconButton(
-                      onPressed: () {
-                        Navigator.pop(context);
-                      },
-                      icon: Icon(
-                        Icons.cancel,
-                        size: 40,
-                        color: Color(0xFFC7C7C7),
-                      ),
-                    ),
-                  ),
-                ),
-                Container(
-                  margin: EdgeInsets.only(top: 55),
-                  width: MediaQuery.of(context).size.width,
-                  height: MediaQuery.of(context).size.height * 0.52,
-                  decoration: BoxDecoration(
-                    borderRadius: BorderRadius.only(
-                        topLeft: Radius.circular(16),
-                        topRight: Radius.circular(16)),
-                    color: Color(0xFFFFBD00),
-                  ),
-                  child: Text(''),
-                ),
-                Container(
-                    margin: EdgeInsets.only(top: 60),
-                    height: MediaQuery.of(context).size.height * 0.50,
-                    decoration: BoxDecoration(
-                      borderRadius: BorderRadius.only(
-                          topLeft: Radius.circular(16),
-                          topRight: Radius.circular(16)),
-                      color: Colors.white,
-                    ),
-                    child: Container(
-                      child: ListView(
-                        physics: BouncingScrollPhysics(),
-                        padding: EdgeInsets.all(0),
-                        children: [
-                          Padding(
-                            padding: const EdgeInsets.only(left: 18, top: 18),
-                            child: Text(
-                              data.jobDescription.toString().isEmpty
-                                  ? 'No Description'
-                                  : '${data.jobDescription}'
-                                  .capitalizeFirstOfEach,
-                              style: TextStyle(
-                                  color: Color(0xFF333333),
-                                  fontSize: 18,
-                                  fontWeight: FontWeight.w600),
-                            ),
-                          ),
-                          Padding(
-                            padding: const EdgeInsets.only(
-                              left: 18,
-                            ),
-                            child: Text(
-                              '${DateFormat('dd').format(DateTime.parse(data.dateOpen))} ${DateFormat('MMMM').format(DateTime.parse(data.dateOpen))}, ${DateFormat('yyyy').format(DateTime.parse(data.dateOpen))}',
-                              style: TextStyle(
-                                  color: Colors.grey,
-                                  fontSize: 13,
-                                  fontWeight: FontWeight.w400),
-                            ),
-                          ),
-                          Padding(
-                            padding: const EdgeInsets.only(
-                                left: 18, right: 18, top: 5),
-                            child:Row(
-                              children: [
-                                Container(
-                                  decoration: BoxDecoration(
-                                      borderRadius: BorderRadius.circular(5)),
-                                  child: FlatButton(
-                                    onPressed: () {
-                                      FirebaseApi.addUserChat(
-                                        token2: data.user.fcmToken,
-                                        token: data.user.fcmToken,
-                                        recieveruserId2: network.userId,
-                                        recieveruserId: data.user.id,
-                                        serviceId: data.user.serviceId,
+                                        recieveruserId: projectType=='posted'?user.id:user2.id,
+                                        serviceId: projectType=='posted'?user.serviceId:user2.serviceId,
                                         serviceId2: network.serviceId,
                                         urlAvatar2:
                                         'https://uploads.fixme.ng/thumbnails/${network.profilePicFileName}',
                                         name2: network.firstName,
                                         idArtisan: network.mobileDeviceToken,
                                         artisanMobile: network.phoneNum,
-                                        userMobile: data.user.userMobile,
-                                        idUser: data.user.idUser,
+                                        userMobile: projectType=='posted'?user.userMobile:user2.userMobile,
+                                        idUser:  projectType=='posted'?user.idUser:user2.idUser,
                                         urlAvatar:
-                                        'https://uploads.fixme.ng/thumbnails/${data.user.urlAvatar}',
-                                        name: data.user.name,
+                                        'https://uploads.fixme.ng/thumbnails/${ projectType=='posted'?user.urlAvatar:user2.urlAvatar}',
+                                        name: projectType=='posted'?user.name:user2.name,
                                       );
 
                                       Navigator.push(
@@ -2426,7 +945,7 @@ class _PendingScreenState extends State<PendingScreen> {
                                           pageBuilder: (context, animation,
                                               secondaryAnimation) {
                                             return ChatPage(
-                                                user:  data.user);
+                                                user:  projectType=='posted'?user:user2);
                                           },
                                           transitionsBuilder: (context,
                                               animation,
@@ -2447,7 +966,7 @@ class _PendingScreenState extends State<PendingScreen> {
                                     child: Ink(
                                       decoration: BoxDecoration(
                                           borderRadius:
-                                          BorderRadius.circular(5)),
+                                              BorderRadius.circular(5)),
                                       child: Container(
                                         constraints: BoxConstraints(
                                             maxWidth: 120, minHeight: 35.0),
@@ -2473,7 +992,7 @@ class _PendingScreenState extends State<PendingScreen> {
                                   child: FlatButton(
                                     disabledColor: Color(0x909B049B),
                                     onPressed: () async {
-                                      await UrlLauncher.launch("tel://${data.user.fullNumber}");
+                                      await UrlLauncher.launch("tel://${projectType=='posted'?user.fullNumber:user2.fullNumber}");
                                     },
                                     // full_number
                                     color: Colors.transparent,
@@ -2483,7 +1002,7 @@ class _PendingScreenState extends State<PendingScreen> {
                                     child: Ink(
                                       decoration: BoxDecoration(
                                           borderRadius:
-                                          BorderRadius.circular(5)),
+                                              BorderRadius.circular(5)),
                                       child: Container(
                                         constraints: BoxConstraints(
                                             maxWidth: 100, minHeight: 35.0),
@@ -2502,113 +1021,6 @@ class _PendingScreenState extends State<PendingScreen> {
                               ],
                             ),
                           ),
-                          Padding(
-                            padding: const EdgeInsets.only(top: 0),
-                            child: Divider(),
-                          ),
-                          Stack(
-                            children: [
-                              Container(
-                                width: MediaQuery.of(context).size.width,
-                                height: 7,
-                                margin: const EdgeInsets.only(
-                                    left: 18, right: 18, top: 25),
-                                decoration: BoxDecoration(
-                                    borderRadius: BorderRadius.circular(16),
-                                    gradient: LinearGradient(colors: [
-                                      Color(0xFF6f6f6f),
-                                      Color(0xFFC4C4C4)
-                                    ])),
-                              ),
-                              Container(
-                                width: MediaQuery.of(context).size.width,
-                                margin: const EdgeInsets.only(
-                                    left: 18, right: 18, top: 10),
-                                child: Row(
-                                  mainAxisAlignment:
-                                  MainAxisAlignment.spaceEvenly,
-                                  children: [
-                                    Tab(
-                                        icon: Container(
-                                            width: 35,
-                                            height: 35,
-                                            decoration: BoxDecoration(
-                                                color: Color(0xFF6F6F6F),
-                                                shape: BoxShape.circle),
-                                            child: Icon(
-                                              Icons.done,
-                                              color: Colors.white,
-                                            )),
-                                        text: 'Pending'),
-                                    Tab(
-                                        icon:  Container(
-                                            width: 35,
-                                            height: 35,
-                                            decoration: BoxDecoration(
-                                                color: Color(0xFF6F6F6F),
-                                                shape: BoxShape.circle),
-                                            child: Icon(
-                                              Icons.done,
-                                              color: Colors.white,
-                                            )),
-                                        text: 'Started'),
-                                    Tab(
-                                        icon:  Container(
-                                            width: 35,
-                                            height: 35,
-                                            decoration: BoxDecoration(
-                                                color: Colors.orangeAccent,
-                                                shape: BoxShape.circle),
-                                            child: Icon(
-                                              Icons.done,
-                                              color: Colors.white,
-                                            )),
-                                        text: 'Complete'),
-                                  ],
-                                ),
-                              )
-                            ],
-                          ),
-                          Padding(
-                            padding: const EdgeInsets.only(top: 0),
-                            child: Divider(),
-                          ),
-                          Container(
-                            margin: const EdgeInsets.only(
-                              left: 18,
-                              right: 18,
-                            ),
-                            child: FlatButton(
-                              onPressed: () {
-                                Navigator.pop(context);
-                              },
-                              color: Color(0xFF9B049B),
-                              disabledColor: Color(0x909B049B),
-                              shape: RoundedRectangleBorder(
-                                  borderRadius: BorderRadius.circular(26)),
-                              padding: EdgeInsets.all(0.0),
-                              child: Ink(
-                                decoration: BoxDecoration(
-                                    borderRadius: BorderRadius.circular(26)),
-                                child: Container(
-                                  constraints: BoxConstraints(
-                                      maxWidth:
-                                      MediaQuery.of(context).size.width /
-                                          1.3,
-                                      minHeight: 45.0),
-                                  alignment: Alignment.center,
-                                  child: Text(
-                                    "COMPLETED",
-                                    textAlign: TextAlign.center,
-                                    style: TextStyle(
-                                      color: Colors.white,
-                                      fontWeight: FontWeight.w500,
-                                    ),
-                                  ),
-                                ),
-                              ),
-                            ),
-                          )
                         ],
                       ),
                     )),
@@ -2620,9 +1032,324 @@ class _PendingScreenState extends State<PendingScreen> {
 
 
 
+  //
+  //
+  //
+  // _completed({data, user, user2, projectType}) {
+  //   var network = Provider.of<WebServices>(context, listen: false);
+  //   var datas = Provider.of<Utils>(context, listen: false);
+  //   showModalBottomSheet(
+  //       backgroundColor: Colors.transparent,
+  //       context: context,
+  //       isScrollControlled: true,
+  //       builder: (builder) {
+  //         return Container(
+  //           height: MediaQuery.of(context).size.height * 0.6,
+  //           color: Colors.transparent,
+  //           child: Stack(
+  //             children: [
+  //               Container(
+  //                 padding: const EdgeInsets.only(bottom: 50.0),
+  //                 color: Colors.transparent,
+  //                 height: 100,
+  //                 child: Center(
+  //                   child: IconButton(
+  //                     onPressed: () {
+  //                       Navigator.pop(context);
+  //                     },
+  //                     icon: Icon(
+  //                       Icons.cancel,
+  //                       size: 40,
+  //                       color: Color(0xFFC7C7C7),
+  //                     ),
+  //                   ),
+  //                 ),
+  //               ),
+  //               Container(
+  //                 margin: EdgeInsets.only(top: 55),
+  //                 width: MediaQuery.of(context).size.width,
+  //                 height: MediaQuery.of(context).size.height * 0.52,
+  //                 decoration: BoxDecoration(
+  //                   borderRadius: BorderRadius.only(
+  //                       topLeft: Radius.circular(16),
+  //                       topRight: Radius.circular(16)),
+  //                   color: Color(0xFFFFBD00),
+  //                 ),
+  //                 child: Text(''),
+  //               ),
+  //               Container(
+  //                   margin: EdgeInsets.only(top: 60),
+  //                   height: MediaQuery.of(context).size.height * 0.50,
+  //                   decoration: BoxDecoration(
+  //                     borderRadius: BorderRadius.only(
+  //                         topLeft: Radius.circular(16),
+  //                         topRight: Radius.circular(16)),
+  //                     color: Colors.white,
+  //                   ),
+  //                   child: Container(
+  //                     child: ListView(
+  //                       physics: BouncingScrollPhysics(),
+  //                       padding: EdgeInsets.all(0),
+  //                       children: [
+  //                         Padding(
+  //                           padding: const EdgeInsets.only(left: 18, top: 18),
+  //                           child: Text(
+  //                             data.jobDescription.toString().isEmpty
+  //                                 ? 'No Description'
+  //                                 : '${data.jobDescription}'
+  //                                 .capitalizeFirstOfEach,
+  //                             style: TextStyle(
+  //                                 color: Color(0xFF333333),
+  //                                 fontSize: 18,
+  //                                 fontWeight: FontWeight.w600),
+  //                           ),
+  //                         ),
+  //                         Padding(
+  //                           padding: const EdgeInsets.only(
+  //                             left: 18,
+  //                           ),
+  //                           child: Text(
+  //                             '${DateFormat('dd').format(DateTime.parse(data.dateOpen))} ${DateFormat('MMMM').format(DateTime.parse(data.dateOpen))}, ${DateFormat('yyyy').format(DateTime.parse(data.dateOpen))}',
+  //                             style: TextStyle(
+  //                                 color: Colors.grey,
+  //                                 fontSize: 13,
+  //                                 fontWeight: FontWeight.w400),
+  //                           ),
+  //                         ),
+  //                         Padding(
+  //                           padding: const EdgeInsets.only(
+  //                               left: 18, right: 18, top: 5),
+  //                           child:Row(
+  //                             children: [
+  //                               Container(
+  //                                 decoration: BoxDecoration(
+  //                                     borderRadius: BorderRadius.circular(5)),
+  //                                 child: FlatButton(
+  //                                   onPressed: () {
+  //                                     FirebaseApi.addUserChat(
+  //                                       token2: datas.fcmToken,
+  //                                       token: projectType=='posted'?user.fcmToken:user2.fcmToken,
+  //                                       recieveruserId2: network.userId,
+  //                                       recieveruserId: projectType=='posted'?user.id:user2.id,
+  //                                       serviceId: projectType=='posted'?user.serviceId:user2.serviceId,
+  //                                       serviceId2: network.serviceId,
+  //                                       urlAvatar2:
+  //                                       'https://uploads.fixme.ng/thumbnails/${network.profilePicFileName}',
+  //                                       name2: network.firstName,
+  //                                       idArtisan: network.mobileDeviceToken,
+  //                                       artisanMobile: network.phoneNum,
+  //                                       userMobile: projectType=='posted'?user.userMobile:user2.userMobile,
+  //                                       idUser:  projectType=='posted'?user.idUser:user2.idUser,
+  //                                       urlAvatar:
+  //                                       'https://uploads.fixme.ng/thumbnails/${ projectType=='posted'?user.urlAvatar:user2.urlAvatar}',
+  //                                       name: projectType=='posted'?user.name:user2.name,
+  //                                     );
+  //
+  //                                     Navigator.push(
+  //                                       context,
+  //                                       PageRouteBuilder(
+  //                                         pageBuilder: (context, animation,
+  //                                             secondaryAnimation) {
+  //                                           return ChatPage(
+  //                                               user:  projectType=='posted'?user:user2);
+  //                                         },
+  //                                         transitionsBuilder: (context,
+  //                                             animation,
+  //                                             secondaryAnimation,
+  //                                             child) {
+  //                                           return FadeTransition(
+  //                                             opacity: animation,
+  //                                             child: child,
+  //                                           );
+  //                                         },
+  //                                       ),
+  //                                     );
+  //                                   },
+  //                                   color: Color(0xFF9B049B),
+  //                                   shape: RoundedRectangleBorder(
+  //                                       borderRadius: BorderRadius.circular(5)),
+  //                                   padding: EdgeInsets.all(0.0),
+  //                                   child: Ink(
+  //                                     decoration: BoxDecoration(
+  //                                         borderRadius:
+  //                                         BorderRadius.circular(5)),
+  //                                     child: Container(
+  //                                       constraints: BoxConstraints(
+  //                                           maxWidth: 120, minHeight: 35.0),
+  //                                       alignment: Alignment.center,
+  //                                       child: Text(
+  //                                         "Message",
+  //                                         textAlign: TextAlign.center,
+  //                                         style: TextStyle(
+  //                                             color: Colors.white,
+  //                                             fontWeight: FontWeight.w600),
+  //                                       ),
+  //                                     ),
+  //                                   ),
+  //                                 ),
+  //                               ),
+  //                               Container(
+  //                                 margin: EdgeInsets.only(left: 10),
+  //                                 height: 35,
+  //                                 decoration: BoxDecoration(
+  //                                     border: Border.all(
+  //                                         color: Color(0xFFE9E9E9), width: 1),
+  //                                     borderRadius: BorderRadius.circular(5)),
+  //                                 child: FlatButton(
+  //                                   disabledColor: Color(0x909B049B),
+  //                                   onPressed: () async {
+  //                                     await UrlLauncher.launch("tel://${projectType=='posted'?user.fullNumber:user2.fullNumber}");
+  //                                   },
+  //                                   // full_number
+  //                                   color: Colors.transparent,
+  //                                   shape: RoundedRectangleBorder(
+  //                                       borderRadius: BorderRadius.circular(5)),
+  //                                   padding: EdgeInsets.all(0.0),
+  //                                   child: Ink(
+  //                                     decoration: BoxDecoration(
+  //                                         borderRadius:
+  //                                         BorderRadius.circular(5)),
+  //                                     child: Container(
+  //                                       constraints: BoxConstraints(
+  //                                           maxWidth: 100, minHeight: 35.0),
+  //                                       alignment: Alignment.center,
+  //                                       child: Text(
+  //                                         "Call",
+  //                                         textAlign: TextAlign.center,
+  //                                         style: TextStyle(
+  //                                             color: Colors.black,
+  //                                             fontWeight: FontWeight.w600),
+  //                                       ),
+  //                                     ),
+  //                                   ),
+  //                                 ),
+  //                               ),
+  //                             ],
+  //                           ),
+  //                         ),
+  //                         Padding(
+  //                           padding: const EdgeInsets.only(top: 0),
+  //                           child: Divider(),
+  //                         ),
+  //                         Stack(
+  //                           children: [
+  //                             Container(
+  //                               width: MediaQuery.of(context).size.width,
+  //                               height: 7,
+  //                               margin: const EdgeInsets.only(
+  //                                   left: 18, right: 18, top: 25),
+  //                               decoration: BoxDecoration(
+  //                                   borderRadius: BorderRadius.circular(16),
+  //                                   gradient: LinearGradient(colors: [
+  //                                     Color(0xFF6f6f6f),
+  //                                     Color(0xFFC4C4C4)
+  //                                   ])),
+  //                             ),
+  //                             Container(
+  //                               width: MediaQuery.of(context).size.width,
+  //                               margin: const EdgeInsets.only(
+  //                                   left: 18, right: 18, top: 10),
+  //                               child: Row(
+  //                                 mainAxisAlignment:
+  //                                 MainAxisAlignment.spaceEvenly,
+  //                                 children: [
+  //                                   Tab(
+  //                                       icon: Container(
+  //                                           width: 35,
+  //                                           height: 35,
+  //                                           decoration: BoxDecoration(
+  //                                               color: Color(0xFF6F6F6F),
+  //                                               shape: BoxShape.circle),
+  //                                           child: Icon(
+  //                                             Icons.done,
+  //                                             color: Colors.white,
+  //                                           )),
+  //                                       text: 'Pending'),
+  //                                   Tab(
+  //                                       icon:  Container(
+  //                                           width: 35,
+  //                                           height: 35,
+  //                                           decoration: BoxDecoration(
+  //                                               color: Color(0xFF6F6F6F),
+  //                                               shape: BoxShape.circle),
+  //                                           child: Icon(
+  //                                             Icons.done,
+  //                                             color: Colors.white,
+  //                                           )),
+  //                                       text: 'Started'),
+  //                                   Tab(
+  //                                       icon:  Container(
+  //                                           width: 35,
+  //                                           height: 35,
+  //                                           decoration: BoxDecoration(
+  //                                               color: Colors.orangeAccent,
+  //                                               shape: BoxShape.circle),
+  //                                           child: Icon(
+  //                                             Icons.done,
+  //                                             color: Colors.white,
+  //                                           )),
+  //                                       text: 'Complete'),
+  //                                 ],
+  //                               ),
+  //                             )
+  //                           ],
+  //                         ),
+  //                         Padding(
+  //                           padding: const EdgeInsets.only(top: 0),
+  //                           child: Divider(),
+  //                         ),
+  //                         Container(
+  //                           margin: const EdgeInsets.only(
+  //                             left: 18,
+  //                             right: 18,
+  //                           ),
+  //                           child: FlatButton(
+  //                             onPressed: () {
+  //                               Navigator.pop(context);
+  //                             },
+  //                             color: Color(0xFF9B049B),
+  //                             disabledColor: Color(0x909B049B),
+  //                             shape: RoundedRectangleBorder(
+  //                                 borderRadius: BorderRadius.circular(26)),
+  //                             padding: EdgeInsets.all(0.0),
+  //                             child: Ink(
+  //                               decoration: BoxDecoration(
+  //                                   borderRadius: BorderRadius.circular(26)),
+  //                               child: Container(
+  //                                 constraints: BoxConstraints(
+  //                                     maxWidth:
+  //                                     MediaQuery.of(context).size.width /
+  //                                         1.3,
+  //                                     minHeight: 45.0),
+  //                                 alignment: Alignment.center,
+  //                                 child: Text(
+  //                                   "COMPLETED",
+  //                                   textAlign: TextAlign.center,
+  //                                   style: TextStyle(
+  //                                     color: Colors.white,
+  //                                     fontWeight: FontWeight.w500,
+  //                                   ),
+  //                                 ),
+  //                               ),
+  //                             ),
+  //                           ),
+  //                         )
+  //                       ],
+  //                     ),
+  //                   )),
+  //             ],
+  //           ),
+  //         );
+  //       });
+  // }
+  //
 
 
-  _completeTask({data}) {
+
+
+
+  _completeTask({data, user, user2, projectType}) {
+    var datas = Provider.of<Utils>(context, listen: false);
     var network = Provider.of<WebServices>(context, listen: false);
     showModalBottomSheet(
         backgroundColor: Colors.transparent,
@@ -2695,7 +1422,7 @@ class _PendingScreenState extends State<PendingScreen> {
                               left: 18,
                             ),
                             child: Text(
-                              '${DateFormat('dd').format(DateTime.parse(data.dateOpen))} ${DateFormat('MMMM').format(DateTime.parse(data.dateOpen))}, ${DateFormat('yyyy').format(DateTime.parse(data.dateOpen))}',
+                              '${DateFormat('dd').format(data.dateOpen)} ${DateFormat('MMMM').format(data.dateOpen)}, ${DateFormat('yyyy').format(data.dateOpen)}',
                               style: TextStyle(
                                   color: Colors.grey,
                                   fontSize: 13,
@@ -2713,22 +1440,22 @@ class _PendingScreenState extends State<PendingScreen> {
                                   child: FlatButton(
                                     onPressed: () {
                                       FirebaseApi.addUserChat(
-                                        token2: data.user.fcmToken,
-                                        token: data.user.fcmToken,
+                                        token2: datas.fcmToken,
+                                        token: projectType=='posted'?user.fcmToken:user2.fcmToken,
                                         recieveruserId2: network.userId,
-                                        recieveruserId: data.user.id,
-                                        serviceId: data.user.serviceId,
+                                        recieveruserId: projectType=='posted'?user.id:user2.id,
+                                        serviceId: projectType=='posted'?user.serviceId:user2.serviceId,
                                         serviceId2: network.serviceId,
                                         urlAvatar2:
                                         'https://uploads.fixme.ng/thumbnails/${network.profilePicFileName}',
                                         name2: network.firstName,
                                         idArtisan: network.mobileDeviceToken,
                                         artisanMobile: network.phoneNum,
-                                        userMobile: data.user.userMobile,
-                                        idUser: data.user.idUser,
+                                        userMobile: projectType=='posted'?user.userMobile:user2.userMobile,
+                                        idUser:  projectType=='posted'?user.idUser:user2.idUser,
                                         urlAvatar:
-                                        'https://uploads.fixme.ng/thumbnails/${data.user.urlAvatar}',
-                                        name: data.user.name,
+                                        'https://uploads.fixme.ng/thumbnails/${ projectType=='posted'?user.urlAvatar:user2.urlAvatar}',
+                                        name: projectType=='posted'?user.name:user2.name,
                                       );
 
                                       Navigator.push(
@@ -2737,7 +1464,7 @@ class _PendingScreenState extends State<PendingScreen> {
                                           pageBuilder: (context, animation,
                                               secondaryAnimation) {
                                             return ChatPage(
-                                                user:  data.user);
+                                                user:  projectType=='posted'?user:user2);
                                           },
                                           transitionsBuilder: (context,
                                               animation,
@@ -2784,7 +1511,7 @@ class _PendingScreenState extends State<PendingScreen> {
                                   child: FlatButton(
                                     disabledColor: Color(0x909B049B),
                                     onPressed: () async {
-                                      await UrlLauncher.launch("tel://${data.user.fullNumber}");
+                                      await UrlLauncher.launch("tel://${projectType=='posted'?user.fullNumber:user2.fullNumber}");
                                     },
                                     // full_number
                                     color: Colors.transparent,
@@ -2899,8 +1626,17 @@ class _PendingScreenState extends State<PendingScreen> {
                                 Navigator.pop(context);
                                 setState(() {
                                   network.requestPayment(
-                                      data.sn.toString(),
+                                      data.jobId.toString(),
                                       data.projectBid.toString()).then((value){
+                                    FirebaseApi.sendJobCompleted(
+                                      serviceId: data.serviceId.toString(),
+                                      project_owner_user_id: data.user2.id.toString(),
+                                      jobid: data.jobId.toString(),
+                                      bidder_id: network.userId.toString(),
+                                      bidid: data.projectBid.toString(),
+                                      message: """${data.user.name} Completed task ${data.user.serviceArea} and a payment approval request has been made to you.""",
+                                    );
+
                                         setState(() {
                                           undoneProject();
                                         });

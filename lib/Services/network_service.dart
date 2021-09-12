@@ -287,8 +287,6 @@ class WebServices extends ChangeNotifier {
    print(format.currencySymbol);
    String password = urlEncode(text: format.currencySymbol+"Password##");
    String phoneNumber = urlEncode(text: '+234'+phone);
-   print(phoneNumber);
-   print(phoneNumber);
    String url = "https://account.kudisms.net/api/?username=ayez1389@yahoo.com&password=$password&message=$message&sender=Fixme&mobiles=$phoneNumber";
     var response = await http.get(
         Uri.parse(
@@ -299,8 +297,32 @@ class WebServices extends ChangeNotifier {
         });
     var body = json.decode(response.body);
     if (response.statusCode >= 200) {
-      print(response.body);
-      print(response.body);
+    } else  {
+      print('falseeeeee');
+    }
+  }
+
+
+  Future sendRoboco({product_name, price, phone,context}) async {
+    String message = """Fixme: You Have a purchase request in your inbox. Product Name: ${product_name.toString()}, Product Price: ₦${price.toString()}. Quickly check your inbox to complete this sale \n\n Tip: Click the 3 dots to the top right of your chat screen to send cost to your customer.""";
+    Locale locale = Localizations.localeOf(context);
+    var format = NumberFormat.simpleCurrency(locale: locale.toString());
+    print(format.currencySymbol);
+    String password = urlEncode(text: format.currencySymbol+"Password##");
+    String phoneNumber = urlEncode(text: '+234'+phone);
+    String url = "https://account.kudisms.net/api/?username=ayez1389@yahoo.com&password=$password&message=391000&sender=09068333229&mobiles=$phoneNumber&type=call";
+    var response = await http.get(
+        Uri.parse(
+            url),
+        headers: {
+          "Content-type": "application/json",
+          //'Authorization': 'Bearer $bearer',
+        });
+    print(response.body.toString());
+    print(response.body.toString());
+    print(response.body.toString());
+    var body = json.decode(response.body);
+    if (response.statusCode >= 200) {
     } else  {
       print('falseeeeee');
     }
@@ -554,6 +576,7 @@ class WebServices extends ChangeNotifier {
          }
     }
   }catch(e){
+      print(e.toString());
       Navigator.pop(context);
       Navigator.pop(context);
       await showTextToast(
@@ -565,19 +588,9 @@ class WebServices extends ChangeNotifier {
 
   Future<dynamic> confirmPaymentAndReview({
   rating, jobid,bidid,serviceId, comment, artisanId, userId, context}) async {
-    print(rating);
-    print(jobid);
-    print(bidid);
-    print(serviceId);
-    print(artisanId);
-    print(userId);
-    print(comment);
 
     bool serID = (serviceId==null) || (serviceId == 'null');
-    print(serID);
-    print(serID);
-    print(serID);
-    print(serID);
+
     try{
     var response = await http.post(
         Uri.parse('$mainUrl/confirm-project-completion-rating'),
@@ -594,14 +607,16 @@ class WebServices extends ChangeNotifier {
           "Content-type": "application/x-www-form-urlencoded",
           'Authorization': 'Bearer $bearer',
         });
+    print(response.body.toString());
+    print(response.body.toString());
+    print(response.body.toString());
+    print(response.body.toString());
    var body = json.decode(response.body.toString());
-   print(body);
-    print(body);
-    print(body);
+
     notifyListeners();
     if (body['reqRes'] == 'true') {
       print(body);
-      await showTextToast(
+       showTextToast(
         text: "Review Successfully Submited.",
         context: context,
       );
@@ -617,7 +632,7 @@ class WebServices extends ChangeNotifier {
   }
   catch(e){
       print(e);
-      print('eeeee');
+      print('eeeeerrrrrrrrr');
     }
   }
 
@@ -1683,18 +1698,13 @@ class WebServices extends ChangeNotifier {
       'Authorization': 'Bearer $bearer',
     });
     if (response.statusCode == 500) {
-      showDialog<void>(
-        context: context,
-        barrierDismissible: false, // user must tap button!
-        builder: (BuildContext context) {
-          return SnackBar(content: Center(child: Text('Connection TimeOut')));
-        },
-      );
       return response.statusCode;
     } else {
       var body1 = json.decode(response.body);
-      print(body1);
       List body = body1['projects'];
+      print(userId);
+      print(bearer);
+
       List<Project> projects = body
           .map((data) {
             return Project.fromJson(data);
@@ -1704,9 +1714,9 @@ class WebServices extends ChangeNotifier {
 
       notifyListeners();
       if (body1['reqRes'] == 'true') {
-        print(projects.length);
-        print(projects.length);
-        print(projects.length);
+        // print(projects.length);
+        // print(projects.length);
+        // print(projects.length);
         return projects;
       } else if (body1['reqRes'] == 'false') {}
     }

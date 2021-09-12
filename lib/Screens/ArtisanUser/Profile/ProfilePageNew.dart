@@ -1157,7 +1157,7 @@ class _ProfilePageNewState extends State<ProfilePageNew> {
                                                                               network.profilePicFileName ==
                                                                                   null
                                                                           ? 'https://uploads.fixme.ng/thumbnails/no_picture_upload'
-                                                                          : 'https://uploads.fixme.ng/thumbnails/${network.profilePicFileName}',
+                                                                          : 'https://uploads.fixme.ng/thumbnails/${snapshot.data[index]['reviewer']['profile_pic_file_name'].toString()}',
                                                                     ),
                                                                     foregroundColor:
                                                                         Colors

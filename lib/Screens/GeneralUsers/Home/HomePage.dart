@@ -485,7 +485,7 @@ class _HomePageState extends State<HomePage> {
                 PostScreen(),
                 Wallet(),
                // NotificationPage(scafoldKey,  _myPage),
-                PendingScreen(scafoldKey:scafoldKey),
+                PendingScreen(scafoldKey:scafoldKey, control: _myPage,),
               ],
             );
           }

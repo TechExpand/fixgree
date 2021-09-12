@@ -100,7 +100,8 @@ class _NotificationState extends State<NotificationPage> {
                             const EdgeInsets.only(top: 4.0, bottom: 4, left: 0),
                         child: IconButton(
                           onPressed: (){
-                            Navigator.pop(context);
+                            // Navigator.popUntil(context, (route) => false);
+                            Navigator.of(context).pop();
                           },
                           icon: Icon(Icons.keyboard_backspace,
                               size: 17, color: Colors.black),
@@ -478,7 +479,27 @@ class _NotificationState extends State<NotificationPage> {
                                                                                   Border.all(color: Color(0xFFA40C85)),
                                                                               borderRadius: BorderRadius.circular(4)),
                                                                         ),
-                                                                      )
+                                                                      ):users[index]
+                                                    .type ==
+                                                    'reject'
+                                                    ? Container(
+                                                    margin: EdgeInsets.only(
+                                                        top:
+                                                        15,
+                                                        bottom:
+                                                        5),
+                                                    width:
+                                                    170,
+                                                    height:
+                                                    28,
+                                                    child: Center(
+                                                        child:
+                                                        Text('REJECTED COMPLETION', style: TextStyle(fontSize: 13, color: Color(0xFFA40C85), fontWeight: FontWeight.w500))),
+                                                    decoration: BoxDecoration(
+                                                        border:
+                                                        Border.all(color: Color(0xFFA40C85)),
+                                                        borderRadius: BorderRadius.circular(4)),
+                                                )
                                                                     : users[index]
                                                                                 .type ==
                                                                             'bid_approval'
@@ -617,8 +638,9 @@ class _NotificationState extends State<NotificationPage> {
             userId: network.userId,
             bidid:  index.bidId,
             serviceId:  index.servicerequestId,
-          context:  context,
+            context:  context,
           );
+          FirebaseApi.deleteNotificationBid(index.bidId,index.jobid);
         });
       },
     );

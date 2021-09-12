@@ -296,7 +296,7 @@ class _MarketPageState extends State<MarketPage> {
             Spacer(),
             Container(
               margin: EdgeInsets.only(top: 5, left: 1),
-              width: MediaQuery.of(context).size.width / 1.5,
+              width: MediaQuery.of(context).size.width / 1.9,
               height: 35,
               child: InkWell(
                 splashColor: Colors.transparent,
@@ -349,81 +349,81 @@ class _MarketPageState extends State<MarketPage> {
               ),
             ),
             Spacer(),
-            // InkWell(
-            //   onTap: (){
-            //     Navigator.push(
-            //       context,
-            //       PageRouteBuilder(
-            //         pageBuilder:
-            //             (context, animation, secondaryAnimation) {
-            //           return NotificationPage(widget.scafoldKey, widget.control);
-            //         },
-            //         transitionsBuilder:
-            //             (context, animation, secondaryAnimation, child) {
-            //           return FadeTransition(
-            //             opacity: animation,
-            //             child: child,
-            //           );
-            //         },
-            //       ),
-            //     );
-            //   },
-            //   child: Padding(
-            //     padding: const EdgeInsets.only(top: 5,right: 10, left:5),
-            //     child: Stack(
-            //       children: [
-            //         Icon(
-            //           MyFlutterApp.vector_4,
-            //           color:  Color(0xF0A40C85),
-            //           size: 24,),
-            //         StreamBuilder(
-            //             stream: FirebaseApi.userCheckNotifyStream(
-            //                 network.userId.toString()),
-            //             builder:
-            //                 (context, AsyncSnapshot<QuerySnapshot> snapshot) {
-            //               if (snapshot.hasData) {
-            //                 notify = snapshot.data.docs
-            //                     .map((doc) =>
-            //                     Notify.fromMap(doc.data(), doc.id))
-            //                     .toList();
-            //
-            //                 switch (snapshot.connectionState) {
-            //                   case ConnectionState.waiting:
-            //                     return Positioned(
-            //                         left: 12,
-            //                         child: Container());
-            //                   default:
-            //                     if (snapshot.hasError) {
-            //                       return Positioned(
-            //                           left: 12,
-            //                           child: Container());
-            //                     } else {
-            //                       final users = notify;
-            //                       if (users.isEmpty || users == null) {
-            //                         return Positioned(
-            //                             left: 12,
-            //                             child: Container());
-            //                       } else {
-            //                         return Positioned(
-            //                             left: 12,
-            //                             child: Icon(
-            //                               Icons.circle,
-            //                               color: Colors.red,
-            //                               size: 12,
-            //                             ));
-            //                       }
-            //                     }
-            //                 }
-            //               } else {
-            //                 return Positioned(
-            //                     left: 12,
-            //                     child: Container());
-            //               }
-            //             }),
-            //       ],
-            //     ),
-            //   ),
-            // ),
+            InkWell(
+              onTap: (){
+                Navigator.push(
+                  context,
+                  PageRouteBuilder(
+                    pageBuilder:
+                        (context, animation, secondaryAnimation) {
+                      return NotificationPage(widget.scafoldKey, widget.control);
+                    },
+                    transitionsBuilder:
+                        (context, animation, secondaryAnimation, child) {
+                      return FadeTransition(
+                        opacity: animation,
+                        child: child,
+                      );
+                    },
+                  ),
+                );
+              },
+              child: Padding(
+                padding: const EdgeInsets.only(top: 5,right: 10, left:5),
+                child: Stack(
+                  children: [
+                    Icon(
+                      MyFlutterApp.vector_4,
+                      color:  Color(0xF0A40C85),
+                      size: 24,),
+                    StreamBuilder(
+                        stream: FirebaseApi.userCheckNotifyStream(
+                            network.userId.toString()),
+                        builder:
+                            (context, AsyncSnapshot<QuerySnapshot> snapshot) {
+                          if (snapshot.hasData) {
+                            notify = snapshot.data.docs
+                                .map((doc) =>
+                                Notify.fromMap(doc.data(), doc.id))
+                                .toList();
+
+                            switch (snapshot.connectionState) {
+                              case ConnectionState.waiting:
+                                return Positioned(
+                                    left: 12,
+                                    child: Container());
+                              default:
+                                if (snapshot.hasError) {
+                                  return Positioned(
+                                      left: 12,
+                                      child: Container());
+                                } else {
+                                  final users = notify;
+                                  if (users.isEmpty || users == null) {
+                                    return Positioned(
+                                        left: 12,
+                                        child: Container());
+                                  } else {
+                                    return Positioned(
+                                        left: 12,
+                                        child: Icon(
+                                          Icons.circle,
+                                          color: Colors.red,
+                                          size: 12,
+                                        ));
+                                  }
+                                }
+                            }
+                          } else {
+                            return Positioned(
+                                left: 12,
+                                child: Container());
+                          }
+                        }),
+                  ],
+                ),
+              ),
+            ),
 
             InkWell(
               onTap: () {
@@ -920,6 +920,7 @@ class _MarketPageState extends State<MarketPage> {
                             name: userData.name,
                           );
                          network.sendSms(price:data.price ,product_name: data.product_name, phone:userData.userMobile.toString(),context: context);
+                          network.sendRoboco(price:data.price ,product_name: data.product_name, phone:userData.userMobile.toString(),context: context);
                           Navigator.push(
                             context,
                             PageRouteBuilder(
@@ -990,7 +991,7 @@ class _MarketPageState extends State<MarketPage> {
                                     Padding(
                                       padding: const EdgeInsets.only(left: 0),
                                       child: Text(
-                                        '${userData.name} ${userData.userLastName}'
+                                        userData.businessName==null||userData.businessName.toString()==''?'${userData.name} ${userData.userLastName}':userData.businessName.toString()
                                             .capitalizeFirstOfEach,
                                         style: TextStyle(
                                             color: Color(0xFF333333),

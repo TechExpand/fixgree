@@ -322,7 +322,8 @@ class _NearbyShopsSeeAllState extends State<NearbyShopsSeeAll> {
                                           padding:
                                               const EdgeInsets.only(top: 10),
                                           child: Text(
-                                            '${filteredItems[index].name} ${filteredItems[index].userLastName}'
+                                            filteredItems[index].businessName.toString().isEmpty|| filteredItems[index].businessName==null?
+                                            '${filteredItems[index].name} ${filteredItems[index].userLastName}'.capitalizeFirstOfEach:'${filteredItems[index].businessName}'
                                                 .capitalizeFirstOfEach,
                                             style: TextStyle(
                                                 color: Color(0xFF333333),
@@ -454,7 +455,8 @@ class _NearbyShopsSeeAllState extends State<NearbyShopsSeeAll> {
                                           padding:
                                               const EdgeInsets.only(top: 10),
                                           child: Text(
-                                            '${data[index].name} ${data[index].userLastName}'
+                                            data[index].businessName.toString().isEmpty|| data[index].businessName==null?
+                                            '${data[index].name} ${data[index].userLastName}'.capitalizeFirstOfEach:'${data[index].businessName}'
                                                 .capitalizeFirstOfEach,
                                             style: TextStyle(
                                                 color: Color(0xFF333333),

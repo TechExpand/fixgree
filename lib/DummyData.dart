@@ -4,6 +4,7 @@ import 'package:flutter/foundation.dart';
 Map<String, String> data = {'': ''};
 List<Map<String, String>> popularServices = [
   {'text': 'Food Vendor', 'image': 'assets/images/pp1.jpg', 'id': '122'},
+  {'text': 'Dispatch Rider', 'image': 'assets/images/p6.jpg', 'id': '155'},
   {'text': 'Web Designer', 'image': 'assets/images/pp2.jpg', 'id': '68'},
   {'text': 'Graphic', 'image': 'assets/images/pp3.jpg', 'id': '169'},
   {'text': 'Electrician', 'image': 'assets/images/pp4.png', 'id': '1'},
@@ -96,8 +97,17 @@ class LgaProvider with ChangeNotifier {
 
   changeSelectedLGA(value){
     seletedinfo = value;
+    print(seletedinfo.name);
+    print(seletedinfo.name);
     notifyListeners();
   }
+
+
+  // changeLGA(StateInfo services) {
+  //   seletedinfo = services;
+  //   print(seletedinfo.name);
+  //   notifyListeners();
+  // }
 
 
 }

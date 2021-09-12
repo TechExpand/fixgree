@@ -178,9 +178,17 @@ final newMessage = {
 
     documentReference.get().then((querySnapshot) {
       querySnapshot.docs.forEach((doc) {
-        doc.reference.delete();
+        print(doc.data().toString().contains('bidder_name'));
+        if(doc.data().toString().contains('bidder_name') == true){
+          doc.reference.delete();
+        }
       });
     });
+  }
+
+  static clearSingleJobBids(String docid) {
+    FirebaseFirestore.instance
+        .collection('JOB_BIDS').doc(docid).delete();
   }
 
   static Future addUserChat({
@@ -423,6 +431,27 @@ final newMessage = {
     });
   }
 
+
+
+
+  static Future sendJobCompleted({
+      String jobid, String bidder_id,
+    project_owner_user_id, bidid, serviceId, message}) async {
+    final refMessages = FirebaseFirestore.instance.collection('JOB_BIDS');
+
+    await refMessages.doc().set({
+      'job_id': jobid,
+      'project_owner_user_id': project_owner_user_id,
+      'bidder_id': bidder_id,
+      'bid_id': bidid,
+      'service_id': serviceId,
+      'message':message,
+    });
+  }
+
+
+
+
   static Future deleteNotification(String id) async {
     final refMessages = FirebaseFirestore.instance.collection('Notification');
     await refMessages.doc(id).delete();
@@ -435,6 +464,43 @@ final newMessage = {
       'type': message,
       'createdAt': DateTime.now(),
     });
+  }
+
+
+
+
+  static Future deleteNotificationBid(String bid_id,job_id) async {
+    final refMessages = FirebaseFirestore.instance.collection('JOB_BIDS');
+
+    await refMessages.where('job_id', isEqualTo: job_id.toString())
+        .where('bid_id', isEqualTo: bid_id.toString()).snapshots().forEach((element) {
+      print(
+          element.docs.map((e) {
+            refMessages.doc(e.id.toString()).delete();
+          })
+      );
+    });
+  }
+
+
+
+  static Future updateNotificationBid(String id,status, message) async {
+    final refMessages = FirebaseFirestore.instance.collection('Notification');
+
+    await refMessages.where('type', isEqualTo: status.toString())
+        .where('bidId', isEqualTo: id.toString()).snapshots().forEach((element) {
+          print(
+              element.docs.map((e) {
+           updateNotification(e.id.toString(), message);
+           print(e.id +"llll");
+           print(e.id +"llll");
+          }));
+    });
+
+    //     .update({
+    //   'type': message,
+    //   'createdAt': DateTime.now(),
+    // });
   }
 
   static Stream<QuerySnapshot> userChatStreamUnread(chatid) {

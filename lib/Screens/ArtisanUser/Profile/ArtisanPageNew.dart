@@ -1174,7 +1174,7 @@ class _ArtisanPageNewState extends State<ArtisanPageNew> with SingleTickerProvid
                                                                           network.profilePicFileName ==
                                                                               null
                                                                           ? 'https://uploads.fixme.ng/thumbnails/no_picture_upload'
-                                                                          : 'https://uploads.fixme.ng/thumbnails/${network.profilePicFileName}',
+                                                                          : 'https://uploads.fixme.ng/thumbnails/${snapshot.data[index]['reviewer']['profile_pic_file_name'].toString()}',
                                                                     ),
                                                                     foregroundColor:
                                                                     Colors.white,
@@ -1198,6 +1198,9 @@ class _ArtisanPageNewState extends State<ArtisanPageNew> with SingleTickerProvid
                                                                           '${snapshot.data[index]['rating']}'),
                                                                     ),
                                                                   ),
+                                                                  onTap: (){
+                                                                    print(snapshot.data[index]);
+                                                                  },
                                                                 )
                                                               ],
                                                             );
@@ -1586,7 +1589,7 @@ Divider(),
                                       Padding(
                                         padding: const EdgeInsets.only(left: 0),
                                         child: Text(
-                                          '${widget.userData.name} ${widget.userData.userLastName}'
+                                        widget.userData.businessName==null||widget.userData.businessName.toString()==''?'${widget.userData.name} ${widget.userData.userLastName}':widget.userData.businessName.toString()
                                               .capitalizeFirstOfEach,
                                           style: TextStyle(
                                               color: Color(0xFF333333),
