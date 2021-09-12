@@ -122,44 +122,44 @@ class _BidPageState extends State<BidPage> {
 
 
 
-                                                    Padding(
-                                                      padding: const EdgeInsets.all(8.0),
-                                                      child: InkWell(
-                                                        onTap: () {
-
-                                                          // dialog
-
-                                                          showDialog(
-                                                            barrierDismissible:
-                                                            false,
-                                                            context:
-                                                            context,
-                                                            builder: (context) =>
-                                                                dialogReject(users[index],users[index].id),
-                                                          );
-                                                        },
-                                                        child: Padding(
-                                                          padding: const EdgeInsets.all(8.0),
-                                                          child: Container(
-                                                              width: 180,
-                                                              height: 40,
-                                                              decoration: BoxDecoration(
-                                                                border: Border.all(color: Colors.black),
-                                                                borderRadius: BorderRadius.all(Radius.circular(6)),
-                                                              ),
-                                                              alignment:
-                                                              Alignment
-                                                                  .center,
-                                                              child: Text(
-                                                                  'REJECT COMPLETION',
-                                                                  style: TextStyle(
-                                                                      fontWeight:
-                                                                      FontWeight.bold))),
-                                                        ),
-                                                      ),
-                                                    ),
-
-
+                                                    // Padding(
+                                                    //   padding: const EdgeInsets.all(8.0),
+                                                    //   child: InkWell(
+                                                    //     onTap: () {
+                                                    //
+                                                    //       // dialog
+                                                    //
+                                                    //       showDialog(
+                                                    //         barrierDismissible:
+                                                    //         false,
+                                                    //         context:
+                                                    //         context,
+                                                    //         builder: (context) =>
+                                                    //             dialogReject(users[index],users[index].id),
+                                                    //       );
+                                                    //     },
+                                                    //     child: Padding(
+                                                    //       padding: const EdgeInsets.all(8.0),
+                                                    //       child: Container(
+                                                    //           width: 180,
+                                                    //           height: 40,
+                                                    //           decoration: BoxDecoration(
+                                                    //             border: Border.all(color: Colors.black),
+                                                    //             borderRadius: BorderRadius.all(Radius.circular(6)),
+                                                    //           ),
+                                                    //           alignment:
+                                                    //           Alignment
+                                                    //               .center,
+                                                    //           child: Text(
+                                                    //               'REJECT COMPLETION',
+                                                    //               style: TextStyle(
+                                                    //                   fontWeight:
+                                                    //                   FontWeight.bold))),
+                                                    //     ),
+                                                    //   ),
+                                                    // ),
+                                                    //
+                                                    //
 
 
                                                     users[index].bidder_name==''?Container(): InkWell(
