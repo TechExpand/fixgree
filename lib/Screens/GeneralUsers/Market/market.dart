@@ -7,6 +7,7 @@ import 'package:fixme/Model/Notify.dart';
 import 'package:fixme/Model/Product.dart';
 import 'package:fixme/Screens/GeneralUsers/Home/Search.dart';
 import 'package:fixme/Screens/GeneralUsers/Notification/Notification.dart';
+import 'package:fixme/Widgets/GeneralGuild.dart';
 import 'package:fixme/Widgets/photoView.dart';
 import 'package:http/http.dart' as http;
 import 'package:fixme/Screens/ArtisanUser/Profile/ArtisanPageNew.dart';
@@ -247,11 +248,11 @@ class _MarketPageState extends State<MarketPage> {
   void initState() {
     // TODO: implement initState
     super.initState();
+    //generalGuild(context);
     checkLocationPermission();
     var utils = Provider.of<Utils>(context, listen: false);
     utils.setLoading(false);
     scrollController.addListener(()async{
-
       if (scrollController.position.maxScrollExtent ==
           scrollController.position.pixels){
         var utils = Provider.of<Utils>(context, listen: false);
@@ -564,6 +565,8 @@ class _MarketPageState extends State<MarketPage> {
                     child: Stack(
                       children: [
                         StaggeredGridView.countBuilder(
+                         //   itemExtent: 2000,
+                            physics: BouncingScrollPhysics(),
                             controller: scrollController,
                             crossAxisCount: 2,
                             crossAxisSpacing: 4,

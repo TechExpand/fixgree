@@ -233,7 +233,7 @@ class SignUpEmailState extends State<SignUpEmail> {
                         onPressed: (){
                           bankDialog(context, setState);
                         },
-                        child: Text(" ${state.seletedinfo==null?'Select ':state.seletedinfo.name}". toUpperCase(), style: TextStyle(color: Colors.black38)),
+                        child: Text(" ${state.seletedinfo==null?'State ':state.seletedinfo.name}". toUpperCase(), style: TextStyle(color: Colors.black38)),
                       ),
                     ),
 

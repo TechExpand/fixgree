@@ -14,10 +14,10 @@ import 'package:provider/provider.dart';
 
 
 class Pay extends StatelessWidget{
-  var controller;
+ // var controller;
   var data;
 //
-  Pay({@required this.controller, @required this.data});
+  Pay({@required this.data});
   var transferModes = ['Direct \n Transfer', 'Wallet \n Transfer'];
 
   TextEditingController accountNo = new TextEditingController();

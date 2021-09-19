@@ -499,6 +499,26 @@ class _NotificationState extends State<NotificationPage> {
                                                         border:
                                                         Border.all(color: Color(0xFFA40C85)),
                                                         borderRadius: BorderRadius.circular(4)),
+                                                ):users[index]
+                                                    .type ==
+                                                    'rejectbids'
+                                                    ? Container(
+                                                  margin: EdgeInsets.only(
+                                                      top:
+                                                      15,
+                                                      bottom:
+                                                      5),
+                                                  width:
+                                                  110,
+                                                  height:
+                                                  28,
+                                                  child: Center(
+                                                      child:
+                                                      Text('DECLINED BID', style: TextStyle(fontSize: 13, color: Color(0xFFA40C85), fontWeight: FontWeight.w500))),
+                                                  decoration: BoxDecoration(
+                                                      border:
+                                                      Border.all(color: Color(0xFFA40C85)),
+                                                      borderRadius: BorderRadius.circular(4)),
                                                 )
                                                                     : users[index]
                                                                                 .type ==
@@ -718,7 +738,7 @@ class _NotificationState extends State<NotificationPage> {
                             invoceId: data.invoice_id,
                             paymentMethod: 'wallet',
                             data: data,
-                            myPage: widget.myPage);
+                        );
                       },
                       child: Tab(
                         child: Text('Wallet'),
@@ -759,7 +779,7 @@ class _NotificationState extends State<NotificationPage> {
                               invoceId: data.invoice_id,
                               paymentMethod: 'card',
                               data: data,
-                              myPage: widget.myPage);
+                          );
                         } },
                       child: Tab(
                         child: Text('Card'),

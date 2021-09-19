@@ -316,7 +316,7 @@ class SearchResultState extends State<SearchResult> {
                                 child: Center(
                                     child: Padding(
                                       padding: const EdgeInsets.all(8.0),
-                                      child: Text('Artisans/Service Not Found', style: TextStyle(
+                                      child: Text('Item/Service Not Found', style: TextStyle(
                                           color: Color(0xFF333333),
                                           fontSize: 18,
                                           fontWeight: FontWeight.w600)),

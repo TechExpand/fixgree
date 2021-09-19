@@ -2,6 +2,7 @@ import 'package:fixme/Screens/GeneralUsers/Chat/ChatFiles.dart';
 import 'package:fixme/Services/Firebase_service.dart';
 import 'package:fixme/Services/network_service.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter/services.dart';
 import 'package:provider/provider.dart';
 
 class PopUpMenu extends StatelessWidget {
@@ -39,6 +40,7 @@ class PopUpMenu extends StatelessWidget {
                       value: 1,
                       child: TextButton(
                         onPressed: () {
+                          Navigator.pop(context);
                           dialogPage(context);
                         },
                           child: Text('Send Cost/Budget', style: TextStyle(color:Colors.black),),
@@ -47,6 +49,7 @@ class PopUpMenu extends StatelessWidget {
                   value: 2,
                   child: TextButton(
                     onPressed: () {
+                      Navigator.pop(context);
                       FirebaseApi.clearMessage(
                           idUser,
                           '${network.userId}-${user.id}',
@@ -58,6 +61,7 @@ class PopUpMenu extends StatelessWidget {
                   value: 3,
                   child: TextButton(
                     onPressed: () {
+                      Navigator.pop(context);
                       Navigator.push(
                         context,
                         PageRouteBuilder(
@@ -91,7 +95,8 @@ class PopUpMenu extends StatelessWidget {
             builder: (BuildContext context, StateSetter setStates) {
               return AlertDialog(
                 title: TextFormField(
-                  keyboardType: TextInputType.number,
+                  keyboardType: TextInputType.phone,
+                  inputFormatters: [FilteringTextInputFormatter.digitsOnly],
                   controller: _controller,
                   style: TextStyle(color: Colors.black),
                   decoration: InputDecoration(
@@ -141,7 +146,7 @@ class PopUpMenu extends StatelessWidget {
                                     user.bid_id,
                                     user.job_id,
                                     user.service_id,
-                                    _controller.text,
+                                    _controller.text.toString(),
                                     context,
                                     setStates)
                                 .then((v) {

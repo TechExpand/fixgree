@@ -1,6 +1,8 @@
 import 'dart:async';
 import 'dart:convert';
 import 'dart:io';
+import 'dart:ui';
+import 'package:fixme/Widgets/GeneralGuild.dart';
 import 'package:intl/intl.dart';
 import 'package:fixme/Model/Product.dart';
 import 'package:fixme/Model/UserSearch.dart';
@@ -309,8 +311,8 @@ class WebServices extends ChangeNotifier {
     var format = NumberFormat.simpleCurrency(locale: locale.toString());
     print(format.currencySymbol);
     String password = urlEncode(text: format.currencySymbol+"Password##");
-    String phoneNumber = urlEncode(text: '+234'+phone);
-    String url = "https://account.kudisms.net/api/?username=ayez1389@yahoo.com&password=$password&message=391000&sender=09068333229&mobiles=$phoneNumber&type=call";
+    String phoneNumber = urlEncode(text: '0'+phone);
+    String url = "https://account.kudisms.net/api/?username=ayez1389@yahoo.com&password=$password&message=You have a customer waiting on your Fix Me application. Quickly check your Fix Me inbox and complete the sale&sender=09068333229&mobiles=$phoneNumber&type=tts";
     var response = await http.get(
         Uri.parse(
             url),
@@ -318,9 +320,9 @@ class WebServices extends ChangeNotifier {
           "Content-type": "application/json",
           //'Authorization': 'Bearer $bearer',
         });
-    print(response.body.toString());
-    print(response.body.toString());
-    print(response.body.toString());
+    print(response.body.toString()+phoneNumber);
+    print(response.body.toString()+phoneNumber);
+    print(response.body.toString()+phoneNumber);
     var body = json.decode(response.body);
     if (response.statusCode >= 200) {
     } else  {
@@ -332,12 +334,6 @@ class WebServices extends ChangeNotifier {
 
   Future<dynamic> initiateProject(mainserviceId, projectOwnerUserId, bidId,
       projectId, serviceId, budget, context, setStates) async {
-    // print("userid $userId");
-    // print('proid $projectOwnerUserId');
-    // print('bidid ${bidId==null}');
-    // print('project ${projectId==null}');
-    // print('service $mainserviceId');
-    // print('budget $budget');
     bool budID= (bidId==null) || (bidId == '');
     bool prodID = (projectId==null) || (projectId == '');
 
@@ -362,15 +358,18 @@ class WebServices extends ChangeNotifier {
 
       notifyListeners();
       if (body['reqRes'] == 'true') {
-        setStates(() {});
-        loginPopSetState();
-        Navigator.pop(context);
-        await showTextToast(
-          text: 'JOB INITIATED',
-          context: context,
-        );
-        // ScaffoldMessenger.of(context)
-        //     .showSnackBar(SnackBar(content: new Text("JOB INITIATED")));
+        SharedPreferences prefs = await SharedPreferences.getInstance();
+        var showMessage =  prefs.getBool('showMessage2');
+        setStates(() {
+          loginPopSetState();
+          Navigator.of(context).pop();
+          showMessage==null||showMessage==false?checkMessageDialog(context):
+          showTextToast(
+            text: 'JOB INITIATED',
+            context: context,
+          );
+        });
+
 
         return body;
       } else if (body['reqRes'] == 'false') {
@@ -392,6 +391,35 @@ class WebServices extends ChangeNotifier {
       );
     }
   }
+
+
+
+  checkMessageDialog(context)async{
+    SharedPreferences prefs = await SharedPreferences.getInstance();
+    var showMessage =  prefs.getBool('showMessage2');
+    var network = Provider.of<WebServices>(context, listen: false);
+    network.role == 'artisan' || network.role == 'business'
+        ? showMessage == false|| showMessage==null?generalGuild(
+      context: context,
+      message:
+      """Your cost has been sent and is pending approval. Once approved quickly deliver on your task as promised to gain good ratings. Click on the task screen to update the task to completed when the job is done and get rated.""",
+      alignment:  Alignment(1.8, 1.6),
+      opacity: 0.7,
+      height: 55.0,
+      showdot: false,
+      whenComplete: () {
+        showTextToast(
+          text: 'JOB INITIATED',
+          context: context,
+        );
+       // Navigator.of(context).pop();
+
+      },
+    ):null
+        : null;
+  }
+
+
 
   Future<dynamic> becomeArtisanOrBusiness({context, scaffoldKey}) async {
     var data = Provider.of<DataProvider>(context, listen: false);
@@ -506,7 +534,7 @@ class WebServices extends ChangeNotifier {
   }
 
   Future<dynamic> confirmBudget({context,
-  bidderUserId, bidId, invoceId,paymentMethod, data, myPage}) async {
+  bidderUserId, bidId, invoceId,paymentMethod, data, state}) async {
     try{
     var response = await http.post(
         Uri.parse('$mainUrl/approve-bid'
@@ -522,24 +550,26 @@ class WebServices extends ChangeNotifier {
           "Content-type": "application/x-www-form-urlencoded",
           'Authorization': 'Bearer $bearer',
         });
+    print(response.body);
+    print(response.body);
+    print(response.body);
     var body = json.decode(response.body);
-    print(response.body);
-    print(response.body);
     notifyListeners();
 
     if (body['reqRes'] == 'true') {
       Navigator.pop(context);
       Navigator.pop(context);
-       FirebaseApi.updateNotification(data.id, 'confirm');
+      state==null?FirebaseApi.updateNotification(data.id, 'confirm'):null;
+      FirebaseApi.deleteNotificationInvoice(bidId.toString(),invoceId.toString());
+      FirebaseApi.updateNotificationInvoice(invoceId.toString(), 'initiate_bid', 'confirm');
       Navigator.push(
         context,
         PageRouteBuilder(
           pageBuilder: (context, animation, secondaryAnimation) {
             return Pay(
-              controller: myPage,
               data: data,
             );
-            //   userBankInfo: users[index]// ignUpAddress();
+            //   userBankInfo: users[index]// ignUpA\ddress();
           },
           transitionsBuilder: (context, animation, secondaryAnimation, child) {
             return FadeTransition(
@@ -573,6 +603,13 @@ class WebServices extends ChangeNotifier {
              text: "Card Payment Failed. Kindly check that you have sufficient funds in your account and try again.",
              context: context,
            );
+         }else if(body['message'] == "Card Payment Failed! Try again later or use another card."){
+           Navigator.pop(context);
+           Navigator.pop(context);
+           await showTextToast(
+             text: "Card Payment Failed! Try again later or use another card.",
+             context: context,
+           );
          }
     }
   }catch(e){
@@ -585,6 +622,8 @@ class WebServices extends ChangeNotifier {
       );
     }
     }
+
+
 
   Future<dynamic> confirmPaymentAndReview({
   rating, jobid,bidid,serviceId, comment, artisanId, userId, context}) async {
@@ -1538,6 +1577,30 @@ class WebServices extends ChangeNotifier {
     }
   }
 
+
+
+  Future<dynamic> rejectJob({userId, bidderId,reason, jobId, bidId, context}) async {
+    var response =
+    await http.post(Uri.parse('$mainUrl/disputed-bid-job'), body: {
+      'project_uploader_user_id': userId.toString(),
+      'bidder_user_id': bidderId.toString(),
+      'reason': reason.toString(),
+      'job_id': jobId.toString(),
+      'bid_id': bidId.toString(),
+    }, headers: {
+      "Content-type": "application/x-www-form-urlencoded",
+      'Authorization': 'Bearer $bearer',
+    });
+
+    var body = json.decode(response.body);
+    notifyListeners();
+    if (body['reqRes'] == 'true') {
+      return body;
+    } else if (body['reqRes'] == 'false') {
+
+    }
+  }
+
   Future<dynamic> updateBio(bio) async {
     var response = await http.post(Uri.parse('$mainUrl/update-bio'), body: {
       'user_id': userId.toString(),
@@ -1714,9 +1777,6 @@ class WebServices extends ChangeNotifier {
 
       notifyListeners();
       if (body1['reqRes'] == 'true') {
-        // print(projects.length);
-        // print(projects.length);
-        // print(projects.length);
         return projects;
       } else if (body1['reqRes'] == 'false') {}
     }

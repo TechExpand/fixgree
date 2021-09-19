@@ -238,45 +238,45 @@ class _WalletState extends State<Wallet> {
                 child: Row(
                   mainAxisAlignment: MainAxisAlignment.spaceAround,
                   children: [
-                    Column(
-                      mainAxisAlignment: MainAxisAlignment.center,
-                      children: [
-                        FloatingActionButton(
-                          child: Icon(FeatherIcons.refreshCcw,
-                              color: Color(0xFF9B049B)),
-                          backgroundColor: Colors.white,
-                          heroTag: null,
-                          onPressed: () {
-                            if (walletProvider.getUserBankInfo == null) {
-                            } else {
-                              Navigator.of(context).push(
-                                PageRouteBuilder(
-                                  pageBuilder:
-                                      (context, animation, secondaryAnimation) {
-                                    return WalletPay(
-                                        userBankInfo: model.userBankInfo);
-                                  },
-                                  transitionsBuilder: (context, animation,
-                                      secondaryAnimation, child) {
-                                    return FadeTransition(
-                                      opacity: animation,
-                                      child: child,
-                                    );
-                                  },
-                                ),
-                              );
-                            }
-                          },
-                          elevation: 0,
-                        ),
-                        Text('Pay',
-                            style: TextStyle(
-                                color: Colors.white,
-                                fontSize: 16,
-                                height: 1.4,
-                                fontWeight: FontWeight.w500)),
-                      ],
-                    ),
+                    // Column(
+                    //   mainAxisAlignment: MainAxisAlignment.center,
+                    //   children: [
+                        // FloatingActionButton(
+                        //   child: Icon(FeatherIcons.refreshCcw,
+                        //       color: Color(0xFF9B049B)),
+                        //   backgroundColor: Colors.white,
+                        //   heroTag: null,
+                        //   onPressed: () {
+                        //     if (walletProvider.getUserBankInfo == null) {
+                        //     } else {
+                        //       Navigator.of(context).push(
+                        //         PageRouteBuilder(
+                        //           pageBuilder:
+                        //               (context, animation, secondaryAnimation) {
+                        //             return WalletPay(
+                        //                 userBankInfo: model.userBankInfo);
+                        //           },
+                        //           transitionsBuilder: (context, animation,
+                        //               secondaryAnimation, child) {
+                        //             return FadeTransition(
+                        //               opacity: animation,
+                        //               child: child,
+                        //             );
+                        //           },
+                        //         ),
+                        //       );
+                        //     }
+                        //   },
+                        //   elevation: 0,
+                        // ),
+                        // Text('Pay',
+                        //     style: TextStyle(
+                        //         color: Colors.white,
+                        //         fontSize: 16,
+                        //         height: 1.4,
+                        //         fontWeight: FontWeight.w500)),
+                    //   ],
+                    // ),
                     Column(
                       mainAxisAlignment: MainAxisAlignment.center,
                       children: [

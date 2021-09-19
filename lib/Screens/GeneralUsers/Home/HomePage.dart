@@ -181,9 +181,6 @@ class _HomePageState extends State<HomePage> {
      // notification != null && android != null
       if (notification != null) {
         print(message.data);
-        print(message.data);
-        print(message.data);
-
         message.data["notification_type"].toString()=='new_project'?showNotification(notification):
         showNotification2(notification);
 
@@ -191,7 +188,7 @@ class _HomePageState extends State<HomePage> {
             network.userId.toString(),
             message.notification.title,
             message.data["notification_type"],
-            '${message.data["lastName"]} ${message.data["firstName"]}',
+           message.data['businessName']==null||message.data['businessName']==''?'${message.data["lastName"]} ${message.data["firstName"]}':message.data['businessName'],
             '${message.data["jobId"]}',
             '${message.data["bidId"]}',
             '${message.data["bidderId"]}',
@@ -511,7 +508,7 @@ handlebackgrundMessage(message)async{
       userid.newid.toString(),
       message.notification.title,
       message.data["notification_type"],
-      '${message.data["lastName"]} ${message.data["firstName"]}',
+      message.data['businessName']==null||message.data['businessName']==''?'${message.data["lastName"]} ${message.data["firstName"]}':message.data['businessName'],
       '${message.data["jobId"]}',
       '${message.data["bidId"]}',
       '${message.data["bidderId"]}',

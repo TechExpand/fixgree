@@ -257,26 +257,7 @@ class _PendingScreenState extends State<PendingScreen> {
                   ),
                 ])),
         backgroundColor: Colors.white,
-        //forceElevated: true,
-        // bottom: TabBar(
-        //   unselectedLabelColor: Colors.black38,
-        //   labelColor: Colors.black,
-        //   indicatorColor: Color(0xFF9B049B),
-        //   tabs: [
-        //     Tab(
-        //         child: Text('Pending',
-        //             style: GoogleFonts.poppins(
-        //                 fontSize: 15, fontWeight: FontWeight.w600))),
-        //     Tab(
-        //         child: Text('Started',
-        //             style: GoogleFonts.poppins(
-        //                 fontSize: 15, fontWeight: FontWeight.w600))),
-        //     Tab(
-        //         child: Text('Completed',
-        //             style: GoogleFonts.poppins(
-        //                 fontSize: 15, fontWeight: FontWeight.w600))),
-        //   ],
-        // ),
+
       ),
       backgroundColor: Colors.white,
       body: Container(
@@ -527,7 +508,10 @@ class _PendingScreenState extends State<PendingScreen> {
                                           : sortedList[index]
                                           .status ==
                                           'completed'
-                                          ? Colors.green
+                                          ? Colors.green:sortedList[index]
+                                          .status ==
+                                          'rejected'
+                                          ? Colors.red
                                           : Colors.grey,
                                     ),
                                     child: Text(''),
@@ -656,7 +640,9 @@ class _PendingScreenState extends State<PendingScreen> {
                                           : sortedList[index]
                                           .status ==
                                           'completed'
-                                          ? 'completed'
+                                          ? 'completed':sortedList[index]
+                                          .status ==
+                                          'rejected'?'rejected'
                                           : 'ongoing'}',
                                       style: TextStyle(
                                           color: sortedList[index]
@@ -666,7 +652,10 @@ class _PendingScreenState extends State<PendingScreen> {
                                               : sortedList[index]
                                               .status ==
                                               'completed'
-                                              ? Colors.green
+                                              ? Colors.green:sortedList[index]
+                                              .status ==
+                                              'rejected'
+                                              ? Colors.red
                                               : Colors.grey,
                                           fontSize: 13,
                                           fontWeight:
@@ -862,7 +851,8 @@ class _PendingScreenState extends State<PendingScreen> {
                                         ),
                                       ):Container(
                                         child:  Text(
-                                          'completed task'.toUpperCase(),
+                                          data.status ==
+                                              'rejected'?'rejected task'.toUpperCase():'completed task'.toUpperCase(),
                                           style: TextStyle(
                                             color: Color(0xFF333333),
                                             fontSize: 16,
@@ -1029,322 +1019,6 @@ class _PendingScreenState extends State<PendingScreen> {
           );
         });
   }
-
-
-
-  //
-  //
-  //
-  // _completed({data, user, user2, projectType}) {
-  //   var network = Provider.of<WebServices>(context, listen: false);
-  //   var datas = Provider.of<Utils>(context, listen: false);
-  //   showModalBottomSheet(
-  //       backgroundColor: Colors.transparent,
-  //       context: context,
-  //       isScrollControlled: true,
-  //       builder: (builder) {
-  //         return Container(
-  //           height: MediaQuery.of(context).size.height * 0.6,
-  //           color: Colors.transparent,
-  //           child: Stack(
-  //             children: [
-  //               Container(
-  //                 padding: const EdgeInsets.only(bottom: 50.0),
-  //                 color: Colors.transparent,
-  //                 height: 100,
-  //                 child: Center(
-  //                   child: IconButton(
-  //                     onPressed: () {
-  //                       Navigator.pop(context);
-  //                     },
-  //                     icon: Icon(
-  //                       Icons.cancel,
-  //                       size: 40,
-  //                       color: Color(0xFFC7C7C7),
-  //                     ),
-  //                   ),
-  //                 ),
-  //               ),
-  //               Container(
-  //                 margin: EdgeInsets.only(top: 55),
-  //                 width: MediaQuery.of(context).size.width,
-  //                 height: MediaQuery.of(context).size.height * 0.52,
-  //                 decoration: BoxDecoration(
-  //                   borderRadius: BorderRadius.only(
-  //                       topLeft: Radius.circular(16),
-  //                       topRight: Radius.circular(16)),
-  //                   color: Color(0xFFFFBD00),
-  //                 ),
-  //                 child: Text(''),
-  //               ),
-  //               Container(
-  //                   margin: EdgeInsets.only(top: 60),
-  //                   height: MediaQuery.of(context).size.height * 0.50,
-  //                   decoration: BoxDecoration(
-  //                     borderRadius: BorderRadius.only(
-  //                         topLeft: Radius.circular(16),
-  //                         topRight: Radius.circular(16)),
-  //                     color: Colors.white,
-  //                   ),
-  //                   child: Container(
-  //                     child: ListView(
-  //                       physics: BouncingScrollPhysics(),
-  //                       padding: EdgeInsets.all(0),
-  //                       children: [
-  //                         Padding(
-  //                           padding: const EdgeInsets.only(left: 18, top: 18),
-  //                           child: Text(
-  //                             data.jobDescription.toString().isEmpty
-  //                                 ? 'No Description'
-  //                                 : '${data.jobDescription}'
-  //                                 .capitalizeFirstOfEach,
-  //                             style: TextStyle(
-  //                                 color: Color(0xFF333333),
-  //                                 fontSize: 18,
-  //                                 fontWeight: FontWeight.w600),
-  //                           ),
-  //                         ),
-  //                         Padding(
-  //                           padding: const EdgeInsets.only(
-  //                             left: 18,
-  //                           ),
-  //                           child: Text(
-  //                             '${DateFormat('dd').format(DateTime.parse(data.dateOpen))} ${DateFormat('MMMM').format(DateTime.parse(data.dateOpen))}, ${DateFormat('yyyy').format(DateTime.parse(data.dateOpen))}',
-  //                             style: TextStyle(
-  //                                 color: Colors.grey,
-  //                                 fontSize: 13,
-  //                                 fontWeight: FontWeight.w400),
-  //                           ),
-  //                         ),
-  //                         Padding(
-  //                           padding: const EdgeInsets.only(
-  //                               left: 18, right: 18, top: 5),
-  //                           child:Row(
-  //                             children: [
-  //                               Container(
-  //                                 decoration: BoxDecoration(
-  //                                     borderRadius: BorderRadius.circular(5)),
-  //                                 child: FlatButton(
-  //                                   onPressed: () {
-  //                                     FirebaseApi.addUserChat(
-  //                                       token2: datas.fcmToken,
-  //                                       token: projectType=='posted'?user.fcmToken:user2.fcmToken,
-  //                                       recieveruserId2: network.userId,
-  //                                       recieveruserId: projectType=='posted'?user.id:user2.id,
-  //                                       serviceId: projectType=='posted'?user.serviceId:user2.serviceId,
-  //                                       serviceId2: network.serviceId,
-  //                                       urlAvatar2:
-  //                                       'https://uploads.fixme.ng/thumbnails/${network.profilePicFileName}',
-  //                                       name2: network.firstName,
-  //                                       idArtisan: network.mobileDeviceToken,
-  //                                       artisanMobile: network.phoneNum,
-  //                                       userMobile: projectType=='posted'?user.userMobile:user2.userMobile,
-  //                                       idUser:  projectType=='posted'?user.idUser:user2.idUser,
-  //                                       urlAvatar:
-  //                                       'https://uploads.fixme.ng/thumbnails/${ projectType=='posted'?user.urlAvatar:user2.urlAvatar}',
-  //                                       name: projectType=='posted'?user.name:user2.name,
-  //                                     );
-  //
-  //                                     Navigator.push(
-  //                                       context,
-  //                                       PageRouteBuilder(
-  //                                         pageBuilder: (context, animation,
-  //                                             secondaryAnimation) {
-  //                                           return ChatPage(
-  //                                               user:  projectType=='posted'?user:user2);
-  //                                         },
-  //                                         transitionsBuilder: (context,
-  //                                             animation,
-  //                                             secondaryAnimation,
-  //                                             child) {
-  //                                           return FadeTransition(
-  //                                             opacity: animation,
-  //                                             child: child,
-  //                                           );
-  //                                         },
-  //                                       ),
-  //                                     );
-  //                                   },
-  //                                   color: Color(0xFF9B049B),
-  //                                   shape: RoundedRectangleBorder(
-  //                                       borderRadius: BorderRadius.circular(5)),
-  //                                   padding: EdgeInsets.all(0.0),
-  //                                   child: Ink(
-  //                                     decoration: BoxDecoration(
-  //                                         borderRadius:
-  //                                         BorderRadius.circular(5)),
-  //                                     child: Container(
-  //                                       constraints: BoxConstraints(
-  //                                           maxWidth: 120, minHeight: 35.0),
-  //                                       alignment: Alignment.center,
-  //                                       child: Text(
-  //                                         "Message",
-  //                                         textAlign: TextAlign.center,
-  //                                         style: TextStyle(
-  //                                             color: Colors.white,
-  //                                             fontWeight: FontWeight.w600),
-  //                                       ),
-  //                                     ),
-  //                                   ),
-  //                                 ),
-  //                               ),
-  //                               Container(
-  //                                 margin: EdgeInsets.only(left: 10),
-  //                                 height: 35,
-  //                                 decoration: BoxDecoration(
-  //                                     border: Border.all(
-  //                                         color: Color(0xFFE9E9E9), width: 1),
-  //                                     borderRadius: BorderRadius.circular(5)),
-  //                                 child: FlatButton(
-  //                                   disabledColor: Color(0x909B049B),
-  //                                   onPressed: () async {
-  //                                     await UrlLauncher.launch("tel://${projectType=='posted'?user.fullNumber:user2.fullNumber}");
-  //                                   },
-  //                                   // full_number
-  //                                   color: Colors.transparent,
-  //                                   shape: RoundedRectangleBorder(
-  //                                       borderRadius: BorderRadius.circular(5)),
-  //                                   padding: EdgeInsets.all(0.0),
-  //                                   child: Ink(
-  //                                     decoration: BoxDecoration(
-  //                                         borderRadius:
-  //                                         BorderRadius.circular(5)),
-  //                                     child: Container(
-  //                                       constraints: BoxConstraints(
-  //                                           maxWidth: 100, minHeight: 35.0),
-  //                                       alignment: Alignment.center,
-  //                                       child: Text(
-  //                                         "Call",
-  //                                         textAlign: TextAlign.center,
-  //                                         style: TextStyle(
-  //                                             color: Colors.black,
-  //                                             fontWeight: FontWeight.w600),
-  //                                       ),
-  //                                     ),
-  //                                   ),
-  //                                 ),
-  //                               ),
-  //                             ],
-  //                           ),
-  //                         ),
-  //                         Padding(
-  //                           padding: const EdgeInsets.only(top: 0),
-  //                           child: Divider(),
-  //                         ),
-  //                         Stack(
-  //                           children: [
-  //                             Container(
-  //                               width: MediaQuery.of(context).size.width,
-  //                               height: 7,
-  //                               margin: const EdgeInsets.only(
-  //                                   left: 18, right: 18, top: 25),
-  //                               decoration: BoxDecoration(
-  //                                   borderRadius: BorderRadius.circular(16),
-  //                                   gradient: LinearGradient(colors: [
-  //                                     Color(0xFF6f6f6f),
-  //                                     Color(0xFFC4C4C4)
-  //                                   ])),
-  //                             ),
-  //                             Container(
-  //                               width: MediaQuery.of(context).size.width,
-  //                               margin: const EdgeInsets.only(
-  //                                   left: 18, right: 18, top: 10),
-  //                               child: Row(
-  //                                 mainAxisAlignment:
-  //                                 MainAxisAlignment.spaceEvenly,
-  //                                 children: [
-  //                                   Tab(
-  //                                       icon: Container(
-  //                                           width: 35,
-  //                                           height: 35,
-  //                                           decoration: BoxDecoration(
-  //                                               color: Color(0xFF6F6F6F),
-  //                                               shape: BoxShape.circle),
-  //                                           child: Icon(
-  //                                             Icons.done,
-  //                                             color: Colors.white,
-  //                                           )),
-  //                                       text: 'Pending'),
-  //                                   Tab(
-  //                                       icon:  Container(
-  //                                           width: 35,
-  //                                           height: 35,
-  //                                           decoration: BoxDecoration(
-  //                                               color: Color(0xFF6F6F6F),
-  //                                               shape: BoxShape.circle),
-  //                                           child: Icon(
-  //                                             Icons.done,
-  //                                             color: Colors.white,
-  //                                           )),
-  //                                       text: 'Started'),
-  //                                   Tab(
-  //                                       icon:  Container(
-  //                                           width: 35,
-  //                                           height: 35,
-  //                                           decoration: BoxDecoration(
-  //                                               color: Colors.orangeAccent,
-  //                                               shape: BoxShape.circle),
-  //                                           child: Icon(
-  //                                             Icons.done,
-  //                                             color: Colors.white,
-  //                                           )),
-  //                                       text: 'Complete'),
-  //                                 ],
-  //                               ),
-  //                             )
-  //                           ],
-  //                         ),
-  //                         Padding(
-  //                           padding: const EdgeInsets.only(top: 0),
-  //                           child: Divider(),
-  //                         ),
-  //                         Container(
-  //                           margin: const EdgeInsets.only(
-  //                             left: 18,
-  //                             right: 18,
-  //                           ),
-  //                           child: FlatButton(
-  //                             onPressed: () {
-  //                               Navigator.pop(context);
-  //                             },
-  //                             color: Color(0xFF9B049B),
-  //                             disabledColor: Color(0x909B049B),
-  //                             shape: RoundedRectangleBorder(
-  //                                 borderRadius: BorderRadius.circular(26)),
-  //                             padding: EdgeInsets.all(0.0),
-  //                             child: Ink(
-  //                               decoration: BoxDecoration(
-  //                                   borderRadius: BorderRadius.circular(26)),
-  //                               child: Container(
-  //                                 constraints: BoxConstraints(
-  //                                     maxWidth:
-  //                                     MediaQuery.of(context).size.width /
-  //                                         1.3,
-  //                                     minHeight: 45.0),
-  //                                 alignment: Alignment.center,
-  //                                 child: Text(
-  //                                   "COMPLETED",
-  //                                   textAlign: TextAlign.center,
-  //                                   style: TextStyle(
-  //                                     color: Colors.white,
-  //                                     fontWeight: FontWeight.w500,
-  //                                   ),
-  //                                 ),
-  //                               ),
-  //                             ),
-  //                           ),
-  //                         )
-  //                       ],
-  //                     ),
-  //                   )),
-  //             ],
-  //           ),
-  //         );
-  //       });
-  // }
-  //
-
-
 
 
 

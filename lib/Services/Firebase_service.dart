@@ -483,12 +483,25 @@ final newMessage = {
   }
 
 
+  static Future deleteNotificationInvoice(String bid_id,invoice_id) async {
+    final refMessages = FirebaseFirestore.instance.collection('JOB_BIDS');
 
-  static Future updateNotificationBid(String id,status, message) async {
+    await refMessages.where('invoice_id', isEqualTo: invoice_id.toString())
+        .where('bid_id', isEqualTo: bid_id.toString()).snapshots().forEach((element) {
+      print(
+          element.docs.map((e) {
+            refMessages.doc(e.id.toString()).delete();
+          })
+      );
+    });
+  }
+
+
+
+  static Future updateNotificationInvoice(String id,status, message) async {
     final refMessages = FirebaseFirestore.instance.collection('Notification');
-
     await refMessages.where('type', isEqualTo: status.toString())
-        .where('bidId', isEqualTo: id.toString()).snapshots().forEach((element) {
+        .where('invoice_id', isEqualTo: id.toString()).snapshots().forEach((element) {
           print(
               element.docs.map((e) {
            updateNotification(e.id.toString(), message);
@@ -496,11 +509,21 @@ final newMessage = {
            print(e.id +"llll");
           }));
     });
+  }
 
-    //     .update({
-    //   'type': message,
-    //   'createdAt': DateTime.now(),
-    // });
+
+
+  static Future updateNotificationBid(String id,status, message) async {
+    final refMessages = FirebaseFirestore.instance.collection('Notification');
+    await refMessages.where('type', isEqualTo: status.toString())
+        .where('bidId', isEqualTo: id.toString()).snapshots().forEach((element) {
+      print(
+          element.docs.map((e) {
+            updateNotification(e.id.toString(), message);
+            print(e.id +"llll");
+            print(e.id +"llll");
+          }));
+    });
   }
 
   static Stream<QuerySnapshot> userChatStreamUnread(chatid) {

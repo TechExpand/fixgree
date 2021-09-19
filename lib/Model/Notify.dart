@@ -88,6 +88,7 @@ class Bidify {
   final String user_rating;
   final String user_reviews;
   final String project_owner_user_id;
+  final String invoice_id;
   final String service_area;
 
 
@@ -99,6 +100,7 @@ class Bidify {
     this.bidder_name,
     this.job_id,
     this.user_rating,
+    this.invoice_id,
     this.service_area,
     this.message,
     @required this.user_reviews,
@@ -113,6 +115,7 @@ class Bidify {
         job_id = snapshot['job_id'] ?? '',
         user_rating = snapshot['user_rating'] ?? '',
         message = snapshot['message']??'',
+        invoice_id= snapshot['invoice_id']??'',
         service_area = snapshot['service_area'] ?? '',
         user_reviews =  snapshot['user_reviews'] ?? '',
         service_id = snapshot['service_id'] ?? '0',
@@ -123,6 +126,7 @@ class Bidify {
     'bidder_id': bidder_id,
     'bidder_name': bidder_name,
     'job_id': job_id,
+    'invoice_id':invoice_id,
     'user_rating': user_rating,
     'message':message,
     'service_area': service_area,
