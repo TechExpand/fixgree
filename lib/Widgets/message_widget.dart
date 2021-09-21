@@ -291,7 +291,10 @@ class MessageWidget extends StatelessWidget {
               ),
             ),
             // Text(message.username),
-            Text(date,style: TextStyle(color: Colors.white),),
+            Padding(
+              padding: const EdgeInsets.only(top:4.0),
+              child: Text(date,style:  TextStyle(color: Colors.white, fontSize: 13),),
+            ),
           ],
         ),
       ],
@@ -511,7 +514,10 @@ class MessageWidget extends StatelessWidget {
               ),
             ),
             // Text(message.username),
-            Text(date,style: TextStyle(color: Colors.black87), textAlign: TextAlign.end,),
+            Padding(
+              padding: const EdgeInsets.only(top:4.0),
+              child: Text(date,style: TextStyle(color: Colors.black54, fontSize: 13), textAlign: TextAlign.end,),
+            ),
           ],
         ),
       ],

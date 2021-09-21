@@ -148,7 +148,7 @@ class _BidPageState extends State<BidPage> {
                                                               context,
                                                               PageRouteBuilder(
                                                                 pageBuilder: (context, animation, secondaryAnimation) {
-                                                                  return RejectionList(users[index],users[index].id); //SignUpAddress();
+                                                                  return RejectionList(users[index],users[index].id,true); //SignUpAddress();
                                                                 },
                                                                 transitionsBuilder: (context, animation, secondaryAnimation, child) {
                                                                   return FadeTransition(
@@ -234,7 +234,7 @@ class _BidPageState extends State<BidPage> {
                                                     children: [
                                                       Padding(
                                                         padding: const EdgeInsets.all(8.0),
-                                                        child: Text('COMPLETED TASK AND PAYMENT REQUEST',   style: TextStyle(
+                                                        child: Text('PENDING TASK INVOICE',   style: TextStyle(
                                                             color: Colors
                                                                 .black, fontWeight: FontWeight.bold)),
                                                       ),
@@ -276,10 +276,26 @@ class _BidPageState extends State<BidPage> {
                                                         padding: const EdgeInsets.all(8.0),
                                                         child: InkWell(
                                                           onTap: () {
-                                                            FirebaseApi.updateNotificationInvoice(users[index].invoice_id.toString(), 'initiate_bid', 'rejectbids');
-                                                            FirebaseApi.deleteNotificationInvoice(
-                                                                users[index].bid_id.toString(),
-                                                                users[index].invoice_id.toString());
+                                                            Navigator.push(
+                                                              context,
+                                                              PageRouteBuilder(
+                                                                pageBuilder: (context, animation, secondaryAnimation) {
+                                                                  return RejectionList(users[index],users[index].id,false); //SignUpAddress();
+                                                                },
+                                                                transitionsBuilder: (context, animation, secondaryAnimation, child) {
+                                                                  return FadeTransition(
+                                                                    opacity: animation,
+                                                                    child: child,
+                                                                  );
+                                                                },
+                                                              ),
+
+                                                            );
+
+                                                            // FirebaseApi.updateNotificationInvoice(users[index].invoice_id.toString(), 'initiate_bid', 'rejectbids');
+                                                            // FirebaseApi.deleteNotificationInvoice(
+                                                            //     users[index].bid_id.toString(),
+                                                            //     users[index].invoice_id.toString());
                                                           },
                                                           child: Padding(
                                                             padding: const EdgeInsets.all(8.0),

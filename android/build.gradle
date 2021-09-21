@@ -14,6 +14,9 @@ buildscript {
 
 allprojects {
     repositories {
+        maven {
+            url "https://sdks.instabug.com/nexus/repository/instabug-cp"
+        }
         google()
         jcenter()
     }

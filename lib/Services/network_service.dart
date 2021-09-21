@@ -403,10 +403,10 @@ class WebServices extends ChangeNotifier {
       context: context,
       message:
       """Your cost has been sent and is pending approval. Once approved quickly deliver on your task as promised to gain good ratings. Click on the task screen to update the task to completed when the job is done and get rated.""",
-      alignment:  Alignment(1.8, 1.6),
-      opacity: 0.7,
+      opacity: 1.0,
       height: 55.0,
       showdot: false,
+      alignment: Alignment.center,
       whenComplete: () {
         showTextToast(
           text: 'JOB INITIATED',
@@ -1591,6 +1591,24 @@ class WebServices extends ChangeNotifier {
       "Content-type": "application/x-www-form-urlencoded",
       'Authorization': 'Bearer $bearer',
     });
+
+
+
+
+    Future<dynamic> rejectCost({userId, bidderId,reason, jobId, bidId,servicerequestId, context}) async {
+      var response =
+      await http.post(Uri.parse('$mainUrl/reject-cost'), body: {
+        'user_id': userId.toString(),
+        'cost_senders_id': bidderId.toString(),
+        'reason': reason.toString(),
+        'project_id': '',
+        'service_id': servicerequestId.toString(),
+        'bid_id': bidId.toString(),
+      }, headers: {
+        "Content-type": "application/x-www-form-urlencoded",
+        'Authorization': 'Bearer $bearer',
+      });
+    }
 
     var body = json.decode(response.body);
     notifyListeners();

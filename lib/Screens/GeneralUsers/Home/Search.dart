@@ -1,5 +1,4 @@
 import 'package:autocomplete_textfield/autocomplete_textfield.dart';
-import 'package:fixme/Model/UserSearch.dart';
 import 'package:fixme/Model/service.dart';
 import 'package:fixme/Screens/ArtisanUser/Profile/ArtisanPageNew.dart';
 import 'package:fixme/Screens/GeneralUsers/Chat/callscreens/listen_incoming_call.dart';

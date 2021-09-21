@@ -21,12 +21,12 @@ import 'package:file/local.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:flutter_audio_recorder/flutter_audio_recorder.dart';
-
-// import 'package:gx_file_picker/gx_file_picker.dart';
 import 'package:path_provider/path_provider.dart';
 import 'package:image_picker/image_picker.dart';
 import 'package:provider/provider.dart';
 import 'package:shared_preferences/shared_preferences.dart';
+
+import 'callscreens/listen_incoming_call.dart';
 
 class ChatPage extends StatefulWidget {
   final productSend;
@@ -138,37 +138,9 @@ class _ChatPageState extends State<ChatPage> {
     );
   }
 
-  Widget _buildText(RecordingStatus status) {
-    var text = "";
-    switch (_currentStatus) {
-      case RecordingStatus.Initialized:
-        {
-          text = 'Start';
-          break;
-        }
-      case RecordingStatus.Recording:
-        {
-          text = 'Pause';
-          break;
-        }
-      case RecordingStatus.Paused:
-        {
-          text = 'Resume';
-          break;
-        }
-      case RecordingStatus.Stopped:
-        {
-          text = 'Start Again';
-          break;
-        }
-      default:
-        break;
-    }
-    return Text(text, style: TextStyle(color: Colors.white));
-  }
+
 
   sendMessageTriggerFirst() async {
-    var datass = Provider.of<DataProvider>(context, listen: false);
     var network = Provider.of<WebServices>(context, listen: false);
     if (widget.instantChat != 'market') {
       message =
@@ -260,7 +232,7 @@ class _ChatPageState extends State<ChatPage> {
     SchedulerBinding.instance.addPostFrameCallback((_) {
       checkMessageDialog()async{
         SharedPreferences prefs = await SharedPreferences.getInstance();
-      //  prefs.remove('showMessage');
+       // prefs.remove('showMessage');
       var showMessage =  prefs.getBool('showMessage');
       var network = Provider.of<WebServices>(context, listen: false);
       network.role == 'artisan' || network.role == 'business'
@@ -268,10 +240,10 @@ class _ChatPageState extends State<ChatPage> {
         showdot: true,
               context: context,
               message:
-                  """You click this 3 dots to send the total cost to your customer. Click any where on your screen now to close this toggle and start selling.""",
-              alignment: Alignment(1.8, -1.6),
-              opacity: 0.7,
+                  """You click this 3 dots to send the total cost to your customer.""",
+              opacity: 1.0,
               height: 95.0,
+              alignment: Alignment.topRight,
               whenComplete: () {
                 showAgain();
               },
@@ -477,7 +449,6 @@ class _ChatPageState extends State<ChatPage> {
 
     void record({record, context}) async {
       FocusScope.of(context).unfocus();
-      // _controller2.clear();
       FirebaseApi.uploadCheckChat(widget.user.idUser);
       _controller.clear();
       datas.setWritingTo(false);
@@ -643,13 +614,6 @@ class _ChatPageState extends State<ChatPage> {
     );
 
     void _modalBottomSheetMenu(datas) {
-      print(widget.user.fcmToken);
-      // showDialog(
-      //   barrierColor: Colors.transparent,
-      //     context: context,
-      //     builder: (builder) {
-      //       return numberDialog;
-      //     });
       showGeneralDialog(
           barrierColor: Colors.transparent,
           transitionBuilder: (context, a1, a2, widget) {
@@ -667,7 +631,7 @@ class _ChatPageState extends State<ChatPage> {
           pageBuilder: (context, animation1, animation2) {});
     }
 
-    return Scaffold(
+    Widget scaffold =  Scaffold(
       appBar: AppBar(
         backgroundColor: Color(0xFF9B049B),
         leading: IconButton(
@@ -1121,6 +1085,8 @@ class _ChatPageState extends State<ChatPage> {
         ),
       ),
     );
+
+    return PickupLayout(scaffold: scaffold);
   }
 }
 

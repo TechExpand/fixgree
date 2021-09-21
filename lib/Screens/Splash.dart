@@ -1,19 +1,11 @@
-import 'dart:io';
-import 'dart:ui';
-
-import 'package:connectivity_plus/connectivity_plus.dart';
-import 'package:firebase_core/firebase_core.dart';
+import 'package:instabug_flutter/Instabug.dart';
 import 'package:fixme/Screens/GeneralUsers/IntroPages/intro.dart';
-import 'package:fixme/Services/Firebase_service.dart';
 import 'package:fixme/Services/location_service.dart';
 import 'package:fixme/Utils/Provider.dart';
-import 'package:fixme/Utils/service_locator.dart';
 import 'package:flutter/material.dart';
-import 'package:flutter/services.dart';
 import 'package:in_app_update/in_app_update.dart';
-import 'package:permission_handler/permission_handler.dart';
+import '../strings.dart';
 import 'GeneralUsers/Home/HomePage.dart';
-import 'GeneralUsers/LoginSignup/Login.dart';
 import 'package:fixme/Utils/utils.dart';
 import 'dart:async';
 import 'package:firebase_messaging/firebase_messaging.dart';
@@ -95,7 +87,7 @@ class SPLASHSTATE extends State<SplashScreen> {
       return decideFirstWidget();
     });
 
-
+    Instabug.start(INSTABUG_TOKEN, [InvocationEvent.shake]);
   }
 
 

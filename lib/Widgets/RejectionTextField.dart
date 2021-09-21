@@ -7,7 +7,8 @@ import 'package:provider/provider.dart';
 class RejectionTextField extends StatefulWidget {
   var index;
   var docid;
-  RejectionTextField(this.index, this.docid);
+  bool type;
+  RejectionTextField(this.index, this.docid, this.type);
   @override
   _RejectionTextFieldState createState() => _RejectionTextFieldState();
 }
@@ -71,7 +72,16 @@ class _RejectionTextFieldState extends State<RejectionTextField> {
           Padding(
             padding: const EdgeInsets.symmetric(vertical: 30, horizontal: 40),
             child: FlatButton(
-              onPressed:controller.text.isEmpty?null:() {
+              onPressed:controller.text.isEmpty?null:widget.type==false?(){
+                FirebaseApi.updateNotificationInvoice(
+                    widget.index.invoice_id.toString(),
+                    'initiate_bid', 'rejectbids');
+                FirebaseApi.deleteNotificationInvoice(
+                    widget.index.bid_id.toString(),
+                    widget.index.invoice_id.toString());
+                Navigator.pop(context);
+                Navigator.pop(context);
+              }:() {
                 var conData = Provider.of<DataProvider>(context, listen: false);
                 var network = Provider.of<WebServices>(context, listen: false);
                 conData.setSelectedBottomNavBar(1);
