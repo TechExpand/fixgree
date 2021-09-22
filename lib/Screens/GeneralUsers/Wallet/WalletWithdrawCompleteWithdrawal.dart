@@ -83,12 +83,12 @@ class _WalletWithdrawCompleteWithdrawalState
             ),
             Container(
               margin: const EdgeInsets.only(top: 5, right: 20, left: 20),
-              child: Text('  PS: Each withdrawal has a service charge of ₦20',
+              child: Text('PS: Each withdrawal has a bank charge of ₦20',
                   style: TextStyle(
-                      fontSize: 18,
+                      fontSize: 13,
                       fontFamily: 'Roboto',
-                      color: Color(0xFF333333),
-                      fontWeight: FontWeight.w600), textAlign: TextAlign.center,),
+                      color: Colors.red,
+                      fontWeight: FontWeight.bold), textAlign: TextAlign.center,),
             ),
             Container(
               margin: const EdgeInsets.only(top: 10, right: 25, left: 25),
