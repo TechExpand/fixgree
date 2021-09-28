@@ -14,7 +14,6 @@ import 'package:fixme/Screens/GeneralUsers/Notification/Pay.dart';
 import 'package:fixme/Services/location_service.dart';
 import 'package:fixme/Services/postrequest_service.dart';
 import 'package:fixme/Utils/Provider.dart';
-import 'package:dio/dio.dart';
 import 'package:fixme/Utils/utils.dart';
 import 'package:fl_toast/fl_toast.dart';
 import 'package:flutter/foundation.dart';

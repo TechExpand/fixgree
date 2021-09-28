@@ -19,7 +19,6 @@ import 'package:flutter_local_notifications/flutter_local_notifications.dart';
 import 'package:fixme/Services/postrequest_service.dart';
 import 'package:fixme/Utils/utils.dart';
 import 'package:fixme/Services/location_service.dart';
-import 'package:get_it/get_it.dart';
 import 'package:provider/provider.dart';
 import 'package:fixme/Widgets/Drawer.dart';
 import 'package:flutter/material.dart';

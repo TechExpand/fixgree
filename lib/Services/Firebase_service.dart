@@ -313,11 +313,7 @@ final newMessage = {
     });
   }
 
-  /*  static Stream<List<User>> SearchUserChatStream(chatid) => FirebaseFirestore.instance
-      .collection('UserChat/$chatid/individual')
-      .where('chatid', isEqualTo: chatid).where('')
-      .snapshots()
-      .transform(Utils.transformer(User.fromJson)); */
+
 
   static Stream<QuerySnapshot> userChatStream(chatid) {
     print(chatid);
@@ -565,29 +561,4 @@ final newMessage = {
     });
   }
 
-//  static Future uploadInMail(String idUser, String message, context) async {
-//    var network = Provider.of<WebServices>(context, listen: false);
-//    final refMessages =
-//        FirebaseFirestore.instance.collection('inmail/$idUser/messages');
-//
-//    final newMessage = Message(
-//      idUser: network.mobileDeviceToken ?? '',
-//      urlAvatar: network.profilePicFileName ?? '',
-//      username: network.firstName ?? '',
-//      message: message ?? '',
-//      createdAt: DateTime.now(),
-//    );
-//    await refMessages.add(newMessage.toJson());
-//
-//    final refUsers = FirebaseFirestore.instance.collection('UserChat');
-//    await refUsers.doc(idUser).update(
-//        {UserField.lastMessageTime: DateTime.now(), 'lastMessage': '$message'});
-//  }
-//
-//  static Stream<List<Message>> getInMails(String idUser) =>
-//      FirebaseFirestore.instance
-//          .collection('inmails/$idUser/messages')
-//          .orderBy(MessageField.createdAt, descending: true)
-//          .snapshots()
-//          .transform(Utils.transformer(Message.fromJson));
 }

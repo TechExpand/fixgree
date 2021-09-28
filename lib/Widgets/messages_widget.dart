@@ -4,7 +4,6 @@ import 'package:fixme/Services/Firebase_service.dart';
 import 'package:fixme/Services/network_service.dart';
 import 'package:fixme/Utils/utils.dart';
 import 'package:flutter/material.dart';
-import 'package:grouped_list/grouped_list.dart';
 import 'package:provider/provider.dart';
 import 'message_widget.dart';
 
@@ -84,56 +83,6 @@ class _MessagesWidgetState extends State<MessagesWidget> {
                     // optional
                     // floatingHeader: true, // optional
                   );
-
-          // GroupedListView<dynamic, String>(
-                    //   order: GroupedListOrder.ASC,
-                    //   reverse: true,
-                    //   elements: messages,
-                    //   groupBy: (element) =>
-                    //       Utils().formatYear(element.createdAt),
-                    //   groupSeparatorBuilder: (String groupByValue) {
-                    //     var date = new DateTime.now().toUtc();
-                    //     var yesterday = Utils().formatYear(
-                    //         DateTime(date.year, date.month, date.day - 1));
-                    //     var today = Utils().formatYear(DateTime.now());
-                    //     return Padding(
-                    //       padding: const EdgeInsets.only(top: 8.0, bottom: 8),
-                    //       child: Center(
-                    //           child: Container(
-                    //               height: 30,
-                    //               width: double.infinity,
-                    //               color: Color(0xFFEBEBEB),
-                    //               child: Padding(
-                    //                 padding: const EdgeInsets.only(top: 6.0),
-                    //                 child: Text(
-                    //                   groupByValue == today
-                    //                       ? 'TODAY'
-                    //                       : groupByValue == yesterday
-                    //                       ? 'YESTERDAY'
-                    //                       : groupByValue,
-                    //                   textAlign: TextAlign.center,
-                    //                 ),
-                    //               ))),
-                    //     );
-                    //   },
-                    //   addAutomaticKeepAlives: true,
-                    //
-                    //   itemBuilder: (context, element) {
-                    //     final message = element;
-                    //     return MessageWidget(
-                    //       message: message,
-                    //       isMe: message.idUser == network.mobileDeviceToken,
-                    //     );
-                    //   },
-                    //   // optional
-                    //   floatingHeader: true, // optional
-                    // );
-                    //
-
-
-
-
-
                 }
             }
           } else {

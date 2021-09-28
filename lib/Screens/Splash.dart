@@ -1,10 +1,8 @@
-import 'package:instabug_flutter/Instabug.dart';
 import 'package:fixme/Screens/GeneralUsers/IntroPages/intro.dart';
 import 'package:fixme/Services/location_service.dart';
 import 'package:fixme/Utils/Provider.dart';
 import 'package:flutter/material.dart';
 import 'package:in_app_update/in_app_update.dart';
-import '../strings.dart';
 import 'GeneralUsers/Home/HomePage.dart';
 import 'package:fixme/Utils/utils.dart';
 import 'dart:async';
@@ -87,7 +85,7 @@ class SPLASHSTATE extends State<SplashScreen> {
       return decideFirstWidget();
     });
 
-    Instabug.start(INSTABUG_TOKEN, [InvocationEvent.shake]);
+    //Instabug.start(INSTABUG_TOKEN, [InvocationEvent.shake]);
   }
 
 

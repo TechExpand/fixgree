@@ -108,12 +108,6 @@ class UserSearch {
         status: json['status'],
         longitude: json['longitude'],
         userRating: json['user_rating'],
-//    if (json['servicePictures'] != null) {
-//      servicePictures = new List<Null>();
-//      json['servicePictures'].forEach((v) {
-//        servicePictures.add(v);
-//      });
-//    }
       );
 
   Map<String, dynamic> toJson() => {
@@ -142,10 +136,6 @@ class UserSearch {
         "status": status,
         "longitude": longitude,
         "user_rating": userRating,
-//    if (servicePictures != null) {
-//      "servicePictures" =
-//          servicePictures.map((v) => v);
-//    }
-//    return data;
+
       };
 }

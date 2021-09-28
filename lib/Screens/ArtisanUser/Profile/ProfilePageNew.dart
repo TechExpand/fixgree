@@ -374,89 +374,9 @@ class _ProfilePageNewState extends State<ProfilePageNew> {
                                                     fontSize: 16,
                                                     fontWeight: FontWeight.w600),
                                               ),
-                                              // StarRating(
-                                              //   rating: double.parse(
-                                              //       widget.userData.userRating.toString()),
-                                              // ),
+
                                             ],
                                           ),
-                                          // Align(
-                                          //   alignment: Alignment.topLeft,
-                                          //   child: Padding(
-                                          //     padding: const EdgeInsets.all(8.0),
-                                          //     child: Container(
-                                          //       height: 35,
-                                          //       decoration: BoxDecoration(
-                                          //           border: Border.all(
-                                          //               color:
-                                          //               Color(0xFFE9E9E9),
-                                          //               width: 1),
-                                          //           borderRadius:
-                                          //           BorderRadius.circular(
-                                          //               5)),
-                                          //       child: FlatButton(
-                                          //         disabledColor:
-                                          //         Color(0x909B049B),
-                                          //         onPressed: () {
-                                          //           var role = network.role == 'artisan'? "business": "artisan";
-                                          //
-                                          //           network.changeAccRole(role, context).then((value){
-                                          //             network.getUserInfo(network.userId);
-                                          //             if(value == true){
-                                          //               Navigator.pushReplacement(
-                                          //                 context,
-                                          //                 PageRouteBuilder(
-                                          //                   pageBuilder:
-                                          //                       (context, animation, secondaryAnimation) {
-                                          //                     return ProfilePageNew();
-                                          //                   },
-                                          //                   transitionsBuilder:
-                                          //                       (context, animation, secondaryAnimation, child) {
-                                          //                     return FadeTransition(
-                                          //                       opacity: animation,
-                                          //                       child: child,
-                                          //                     );
-                                          //                   },
-                                          //                 ),
-                                          //               );
-                                          //             }
-                                          //           });
-                                          //         },
-                                          //         color: Colors.transparent,
-                                          //         shape: RoundedRectangleBorder(
-                                          //             borderRadius:
-                                          //             BorderRadius.circular(
-                                          //                 5)),
-                                          //         padding: EdgeInsets.all(0.0),
-                                          //         child: Ink(
-                                          //           decoration: BoxDecoration(
-                                          //               borderRadius:
-                                          //               BorderRadius
-                                          //                   .circular(5)),
-                                          //           child: Container(
-                                          //             constraints:
-                                          //             BoxConstraints(
-                                          //                 maxWidth:200,
-                                          //                 minHeight: 35.0),
-                                          //             alignment:
-                                          //             Alignment.center,
-                                          //             child: Text(
-                                          //               network.role == 'artisan'? "Change to Product Seller":"Change to Service Provider",
-                                          //               textAlign:
-                                          //               TextAlign.center,
-                                          //               style: TextStyle(
-                                          //                   color:
-                                          //                   Colors.black87,
-                                          //                   fontWeight:
-                                          //                   FontWeight
-                                          //                       .w600),
-                                          //             ),
-                                          //           ),
-                                          //         ),
-                                          //       ),
-                                          //     ),
-                                          //   ),
-                                          // ),
 
                                           snapshot.data['bio'] == null ||
                                                   snapshot.data['bio'] == ''

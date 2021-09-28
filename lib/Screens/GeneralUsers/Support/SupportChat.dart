@@ -99,45 +99,7 @@ class _SupportChatState extends State<SupportChat> {
               ],
             ),
           )),
-          // Container(
-          //   height: 55,
-          //   padding: const EdgeInsets.only(left: 19),
-          //   margin:
-          //       const EdgeInsets.only(bottom: 15, left: 18, right: 18, top: 5),
-          //   decoration: BoxDecoration(
-          //       color: Color(0xFFFFFFFF),
-          //       borderRadius: BorderRadius.all(Radius.circular(35))),
-          //   child: Row(
-          //     mainAxisAlignment: MainAxisAlignment.spaceBetween,
-          //     children: [
-          //       Expanded(
-          //         child: TextFormField(
-          //           textCapitalization: TextCapitalization.sentences,
-          //           style: TextStyle(
-          //               fontSize: 16,
-          //               color: Color(0xFF270F33),
-          //               fontWeight: FontWeight.w600),
-          //           decoration: InputDecoration.collapsed(
-          //             hintText: 'Type here',
-          //             hintStyle:
-          //                 TextStyle(fontSize: 16, fontWeight: FontWeight.w600),
-          //             focusColor: Color(0xFF2B1137),
-          //             fillColor: Color(0xFF2B1137),
-          //             hoverColor: Color(0xFF2B1137),
-          //           ),
-          //         ),
-          //       ),
-          //       Padding(
-          //         padding: const EdgeInsets.only(right: 17),
-          //         child: Icon(
-          //           FeatherIcons.send,
-          //           color: Color(0xFF9B049B),
-          //           size: 24,
-          //         ),
-          //       ),
-          //     ],
-          //   ),
-          // ),
+
         ],
       ),
     );

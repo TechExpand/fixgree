@@ -42,6 +42,9 @@ class MarketPage extends StatefulWidget {
 
 class _MarketPageState extends State<MarketPage> {
   List<Product> market;
+  var notifications;
+  var chats;
+
   ScrollController scrollController = ScrollController();
 
 
@@ -248,6 +251,8 @@ class _MarketPageState extends State<MarketPage> {
   void initState() {
     // TODO: implement initState
     super.initState();
+    var network = Provider.of<WebServices>(context, listen: false);
+    var data = Provider.of<Utils>(context, listen: false);
     //generalGuild(context);
     checkLocationPermission();
     var utils = Provider.of<Utils>(context, listen: false);
@@ -263,8 +268,12 @@ class _MarketPageState extends State<MarketPage> {
 
 
     callmarket(context);
-    var network = Provider.of<WebServices>(context, listen: false);
-    var data = Provider.of<Utils>(context, listen: false);
+
+    notifications = FirebaseApi.userCheckNotifyStream(
+        network.userId.toString());
+
+    chats = FirebaseApi.userCheckChatStream(
+        network.mobileDeviceToken.toString());
     network.updateFCMToken(network.userId, data.fcmToken);
   }
 
@@ -378,8 +387,7 @@ class _MarketPageState extends State<MarketPage> {
                       color:  Color(0xF0A40C85),
                       size: 24,),
                     StreamBuilder(
-                        stream: FirebaseApi.userCheckNotifyStream(
-                            network.userId.toString()),
+                        stream: notifications,
                         builder:
                             (context, AsyncSnapshot<QuerySnapshot> snapshot) {
                           if (snapshot.hasData) {
@@ -459,8 +467,7 @@ class _MarketPageState extends State<MarketPage> {
                         size: 23, color: Color(0xF0A40C85)),
                     Icon(Icons.more_horiz, size: 23, color: Colors.white,),
                     StreamBuilder(
-                        stream: FirebaseApi.userCheckChatStream(
-                            network.mobileDeviceToken.toString()),
+                        stream: chats,
                         builder: (context,
                             AsyncSnapshot<QuerySnapshot> snapshot) {
                           if (snapshot.hasData) {

@@ -101,13 +101,7 @@ class _NearbyShopsSeeAllState extends State<NearbyShopsSeeAll> {
           }
         }
 
-        // nearbyArtisans(longitude:1, latitude:1, highestId:userItems[userItems.length]);
-//      if (!isLoading) {
-//        isLoading = !isLoading;
-//
-//
-//        // Perform event when user reach at the end of list (e.g. do Api call)
-//      }
+
       }
     });
 

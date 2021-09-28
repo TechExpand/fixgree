@@ -8,7 +8,6 @@ import 'package:share/share.dart';
 import 'package:fixme/Screens/ArtisanUser/RegisterArtisan/thankyou.dart';
 import 'package:fixme/Screens/GeneralUsers/Chat/Chats.dart';
 import 'package:fixme/Screens/GeneralUsers/LoginSignup/Login.dart';
-import 'package:fixme/Screens/GeneralUsers/Profile/Profile.dart';
 import 'package:fixme/Screens/GeneralUsers/Support/SupportFeedback.dart';
 import 'package:fixme/Services/network_service.dart';
 import 'package:flutter/material.dart';

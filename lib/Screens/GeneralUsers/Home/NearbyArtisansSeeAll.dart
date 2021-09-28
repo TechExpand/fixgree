@@ -537,31 +537,7 @@ String nodata;
                                     });}
 
                       }
-                    // } else {
-                    //   mainWidget = Center(
-                    //     child: Column(
-                    //       mainAxisAlignment: MainAxisAlignment.center,
-                    //       crossAxisAlignment: CrossAxisAlignment.center,
-                    //       children: [
-                    //         Theme(
-                    //             data: Theme.of(context)
-                    //                 .copyWith(accentColor: Color(0xFF9B049B)),
-//                     //             child: CircularProgressIndicator(valueColor: AlwaysStoppedAnimation<Color>(Color(0xFF9B049B)),valueColor: AlwaysStoppedAnimation<Color>(Color(0xFF9B049B)),
-//      valueColor: new AlwaysStoppedAnimation<Color>(color: Color(0xFF9B049B)),
-// )),
-                    //         SizedBox(
-                    //           height: 10,
-                    //         ),
-                    //         Text('Loading',
-                    //             style: TextStyle(
-                    //                 // letterSpacing: 4,
-                    //                 color: Color(0xFF333333),
-                    //                 fontSize: 18,
-                    //                 fontWeight: FontWeight.w600)),
-                    //       ],
-                    //     ),
-                    //   );
-                    // }
+
                     return mainWidget;
                   })),
         ),

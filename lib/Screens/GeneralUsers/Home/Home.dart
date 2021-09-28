@@ -1,10 +1,7 @@
-import 'dart:async';
-import 'dart:io';
-import 'dart:ui';
 
+import 'dart:ui';
 import 'package:app_settings/app_settings.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
-import 'package:connectivity_plus/connectivity_plus.dart';
 import 'package:firebase_messaging/firebase_messaging.dart';
 import 'package:fixme/DummyData.dart';
 import 'package:fixme/Model/Notify.dart';
@@ -58,10 +55,6 @@ class _HomeState extends State<Home> {
 
     return distance;
   }
-  final Connectivity _connectivity = Connectivity();
-  StreamSubscription<ConnectivityResult> _connectivitySubscription;
-  ConnectivityResult _connectionStatus = ConnectivityResult.none;
-
 
 @override
  void initState(){
@@ -69,16 +62,6 @@ class _HomeState extends State<Home> {
    var network = Provider.of<WebServices>(context, listen: false);
    var data = Provider.of<Utils>(context, listen: false);
    network.updateFCMToken(network.userId, data.fcmToken);
-
-   // SchedulerBinding.instance.addPostFrameCallback((_) {
-   //   generalGuild(
-   //       context:context,
-   //       message:"""" message come here""",
-   //       alignment:  Alignment(1.8, 1.6),
-   //       opacity:0.9,
-   //   );
-   // }
-   // );
  }
 
 
@@ -96,32 +79,9 @@ class _HomeState extends State<Home> {
     }
   }
 
-  Future<void> initConnectivity() async {
-    ConnectivityResult result;
-    try {
-      result = await _connectivity.checkConnectivity();
-    } on PlatformException catch (e) {
-      print(e.toString());
-      return;
-    }
-    if (!mounted) {
-      return Future.value(null);
-    }
-
-    return _updateConnectionStatus(result);
-  }
-
-
-  Future<void> _updateConnectionStatus(ConnectivityResult result) async {
-    setState(() {
-      _connectionStatus = result;
-    });
-  }
-
   @override
   dispose() {
     super.dispose();
-    _connectivitySubscription.cancel();
   }
 
 

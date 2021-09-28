@@ -38,32 +38,7 @@ class PhotoCatelogPageState extends State<PhotoCatelogPage> {
                     '${datas.artisanVendorChoice == 'business' ? "Upload your product catalog" : "Upload your service catalog"}',
                     style: TextStyle(fontWeight: FontWeight.w500)),
               ),
-              /*    SizedBox(
-                 child:  Center(
-            child: SizedBox(
-              height: 200, // card height
-              child: PageView.builder(
-                itemCount: data.image.length,
-                controller: PageController(viewportFraction: 0.7),
-                onPageChanged: (int index) => setState(() => _index = index),
-                itemBuilder: (_, i) {
-                  return Transform.scale(
-                    scale: i == _index ? 1 : 0.9,
-                    child: Container(
-                      width: 100,
-                      child: Card(
-                        elevation: 2,
-                        shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(20)),
-                        child: Image.file(File(data.image[i].path,), fit: BoxFit.cover,)
 
-                      ),
-                    ),
-                  );
-                },
-              ),
-            ),
-          ),
-                    height: MediaQuery.of(context).size.height/3),*/
               SizedBox(
                   child: Center(
                     child: SizedBox(

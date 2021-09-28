@@ -169,9 +169,7 @@ class SearchResultState extends State<SearchResult> {
                                             'https://uploads.fixme.ng/thumbnails/${snapshot.data[index].urlAvatar}',
                                         name: snapshot.data[index].name,
                                       );
-//                                      FirebaseApi.uploadCheckChat(
-//                                        snapshot.data[index].id,
-//                                      );
+//
                                       Navigator.push(
                                         context,
                                         PageRouteBuilder(

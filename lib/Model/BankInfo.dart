@@ -41,8 +41,4 @@ class BankInfo {
       code: jsonData["code"],
       id: jsonData["id"]);
 
-  //   createdAt: jsonData["currency_code"],
-  //   gateway: jsonData["accountNumber"],
-  //   updatedAt: jsonData["balance"],
-  // isDeleted: jsonData["customer_email"]);
 }

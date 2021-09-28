@@ -417,18 +417,7 @@ displayEnterSecurePinBottomModal(
                                             fontSize: 17,
                                             fontWeight: FontWeight.w600),
                                       ),
-                                      //           Container(
-                                      //               height: 25,
-                                      //               width: 25,
-                                      //               child: model.getTransactionStatus
-                                      //                   ? Icon(
-                                      //                       FeatherIcons.checkCircle,
-                                      //                       color: Colors.white,
-                                      //                     )
-                                      //                   : CircularProgressIndicator(valueColor: AlwaysStoppedAnimation<Color>(Color(0xFF9B049B)),
-                                      //                       strokeWidth: 2,
-                                      //                       backgroundColor: Colors.white,
-                                      //                     ))
+
                                     ],
                                   ),
                                 ),

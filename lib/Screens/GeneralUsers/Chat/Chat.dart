@@ -226,11 +226,10 @@ class _ChatPageState extends State<ChatPage> {
   void initState() {
     // TODO: implement initState
     super.initState();
-    init();
-    widget.productSend == null ? null : sendMessageTriggerFirst();
-
     SchedulerBinding.instance.addPostFrameCallback((_) {
       checkMessageDialog()async{
+        init();
+        widget.productSend == null ? null : sendMessageTriggerFirst();
         SharedPreferences prefs = await SharedPreferences.getInstance();
        // prefs.remove('showMessage');
       var showMessage =  prefs.getBool('showMessage');
