@@ -1,3 +1,4 @@
+import 'package:firebase_crashlytics/firebase_crashlytics.dart';
 import 'package:fixme/Screens/GeneralUsers/IntroPages/intro.dart';
 import 'package:fixme/Services/location_service.dart';
 import 'package:fixme/Utils/Provider.dart';
@@ -9,6 +10,7 @@ import 'dart:async';
 import 'package:firebase_messaging/firebase_messaging.dart';
 import 'package:provider/provider.dart';
 import 'package:fixme/Services/network_service.dart';
+import 'package:firebase_core/firebase_core.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 
 
@@ -82,6 +84,7 @@ class SPLASHSTATE extends State<SplashScreen> {
     Future.delayed(Duration(seconds: 5), () async {
       //sendAndRetrieveMessage();
       getit();
+     // FirebaseCrashlytics.instance.crash();
       return decideFirstWidget();
     });
 

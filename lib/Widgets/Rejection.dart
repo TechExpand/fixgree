@@ -237,8 +237,8 @@ class _RejectionListState extends State<RejectionList> {
                                                             FirebaseApi.deleteNotificationInvoice(
                                                                 widget.index.bid_id.toString(),
                                                                 widget.index.invoice_id.toString());
-                                                            Navigator.pop(context);
-                                                            Navigator.pop(context);
+                                                            Navigator.of(context).pop();
+                                                            Navigator.of(context).pop();
                                                           },
                                                           color: Color(
                                                               0xFF9B049B),
