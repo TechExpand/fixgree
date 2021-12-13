@@ -110,6 +110,12 @@ class Utils with ChangeNotifier {
     return formatted;
   }
 
+  formatYear2(DateTime now) {
+    final DateFormat formatter = DateFormat('dd/MMMM/yyyy');
+    final String formatted = formatter.format(now==null?DateTime.now():now);
+    return formatted;
+  }
+
   makePhoneCall(tel) async {
     var url = 'tel:$tel';
     if (await canLaunch(url)) {

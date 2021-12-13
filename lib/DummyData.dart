@@ -44,7 +44,7 @@ List<Map<String, String>> featuredServices = [
 
 
 class StateInfo{
-  String name;
+  String name = '';
   int id;
   StateInfo(this.name, this.id);
 }

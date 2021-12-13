@@ -3,6 +3,7 @@ import 'dart:io';
 import 'dart:ui';
 
 import 'package:cloud_firestore/cloud_firestore.dart';
+import 'package:fixme/Model/GeneralSearch.dart';
 import 'package:fixme/Model/Notify.dart';
 import 'package:fixme/Model/Product.dart';
 import 'package:fixme/Screens/GeneralUsers/Home/Search.dart';
@@ -30,187 +31,35 @@ import 'package:upgrader/upgrader.dart';
 
 import '../../../strings.dart';
 
-class MarketPage extends StatefulWidget {
+class CategoryPage extends StatefulWidget {
   final scafoldKey;
   final control;
+  final id;
 
-   MarketPage(this.scafoldKey, this.control);
+  CategoryPage({this.scafoldKey, this.control,this.id});
 
   @override
-  _MarketPageState createState() => _MarketPageState();
+  _CategoryPageState createState() => _CategoryPageState();
 }
 
-class _MarketPageState extends State<MarketPage> {
-  List<Product> market;
+class _CategoryPageState extends State<CategoryPage> {
+  List<GeneralSearch> market;
   var notifications;
   var chats;
 
   ScrollController scrollController = ScrollController();
 
 
-  checkLocationPermission()async{
-    SharedPreferences prefs = await SharedPreferences.getInstance();
-    var permission = prefs.getBool('permission');
-
- return   permission == null || permission == false?showDialog(
-        barrierDismissible: false,
-        context: context, builder: (context){
-      return WillPopScope(
-        onWillPop: (){},
-        child: BackdropFilter(
-          filter: ImageFilter.blur(sigmaX: 8, sigmaY: 8),
-          child: AlertDialog(
-            elevation: 6,
-            shape: RoundedRectangleBorder(
-                borderRadius: BorderRadius.all(Radius.circular(32.0))),
-            content: Container(
-              height: 200,
-              child: Column(
-                crossAxisAlignment: CrossAxisAlignment.center,
-                mainAxisAlignment: MainAxisAlignment.center,
-                children: <Widget>[
-                  Text(
-                    'Notice',
-                    style: TextStyle(
-                        fontSize: 20,
-                        color: Color(0xFF9B049B),
-                        fontWeight: FontWeight.bold),
-                  ),
-                  Row(
-                    children: [
-                      Container(
-                        width: 250,
-                        padding: EdgeInsets.only(top: 15, bottom: 15),
-                        child: Center(
-                          child: Text(
-                          'Accepting location permission is neccessary for the app to function',
-                            style: TextStyle(
-                              fontSize: 14,
-                              fontWeight: FontWeight.bold,
-                              color: Colors.black54,
-                            ),
-                            textAlign: TextAlign.center,
-                          ),
-                        ),
-                      ),
-                    ],
-                  ),
-                  ButtonBar(
-                      alignment: MainAxisAlignment.center,
-                      children: [
-                        Material(
-                          borderRadius: BorderRadius.circular(26),
-                          elevation: 2,
-                          child: Container(
-                            height: 35,
-                            width: 100,
-                            decoration: BoxDecoration(
-                                border: Border.all(
-                                    color: Color(0xFF9B049B)),
-                                borderRadius:
-                                BorderRadius.circular(26)),
-                            child: FlatButton(
-                              onPressed: () {
-                                return exit(0);
-                              },
-                              color: Color(0xFF9B049B),
-                              shape: RoundedRectangleBorder(
-                                  borderRadius:
-                                  BorderRadius.circular(26)),
-                              padding: EdgeInsets.all(0.0),
-                              child: Ink(
-                                decoration: BoxDecoration(
-                                    borderRadius:
-                                    BorderRadius.circular(26)),
-                                child: Container(
-                                  constraints: BoxConstraints(
-                                      maxWidth: 190.0, minHeight: 53.0),
-                                  alignment: Alignment.center,
-                                  child: Text(
-                                    "Exit",
-                                    textAlign: TextAlign.center,
-                                    style: TextStyle(
-                                        fontSize: 12,
-                                        fontWeight: FontWeight.bold,
-                                        color: Colors.white),
-                                  ),
-                                ),
-                              ),
-                            ),
-                          ),
-                        ),
-                        Material(
-                          borderRadius: BorderRadius.circular(26),
-                          elevation: 2,
-                          child: Container(
-                            height: 35,
-                            width: 100,
-                            decoration: BoxDecoration(
-                                border: Border.all(
-                                    color: Color(0xFF9B049B)),
-                                borderRadius:
-                                BorderRadius.circular(26)),
-                            child: FlatButton(
-                              onPressed:() async{
-                                Map<Permission, PermissionStatus> statuses = await [
-                                  Permission.notification,
-                                  Permission.accessNotificationPolicy,
-                                  Permission.locationAlways,
-                                ].request().then((value){
-                                  Navigator.pop(context);
-                                  prefs.setBool('permission', true);
-                                });
-                              },
-                              color: Color(0xFF9B049B),
-                              shape: RoundedRectangleBorder(
-                                  borderRadius:
-                                  BorderRadius.circular(26)),
-                              padding: EdgeInsets.all(0.0),
-                              child: Ink(
-                                decoration: BoxDecoration(
-                                    borderRadius:
-                                    BorderRadius.circular(26)),
-                                child: Container(
-                                  constraints: BoxConstraints(
-                                      maxWidth: 190.0, minHeight: 53.0),
-                                  alignment: Alignment.center,
-                                  child: Text(
-                                    "Grant Access",
-                                    textAlign: TextAlign.center,
-                                    style: TextStyle(
-                                        fontSize: 12,
-                                        fontWeight: FontWeight.bold,
-                                        color: Colors.white),
-                                  ),
-                                ),
-                              ),
-                            ),
-                          ),
-                        ),
-                      ]),
-                ],
-              ),
-            ),
-          ),
-        ),
-      );
-    }):null;
-  }
 
 
   callmarket(context)async{
     var network = Provider.of<WebServices>(context, listen: false);
-    network.getMarket().then((value) {
+    network.getCategoryItem(id: widget.id).then((value) {
       setState(() {
         market = value ;
 
       });
     });
-  }
-
-  checkPremiumUsersTickets(context)async{
-    var network = Provider.of<WebServices>(context, listen: false);
-    network.getSalesTickets(context);
   }
 
 
@@ -219,35 +68,35 @@ class _MarketPageState extends State<MarketPage> {
     var utils = Provider.of<Utils>(context, listen: false);
     var network = Provider.of<WebServices>(context, listen: false);
     try{
-    String mainUrl = 'https://manager.fixme.ng';
-    var response = await http
-        .post(Uri.parse('$mainUrl/load-more-explore-products'), body: {
-      'user_id': network.userId.toString(),
-      'highestId':  market.length.toString(),
-    }, headers: {
-      "Content-type": "application/x-www-form-urlencoded",
-      'Authorization': 'Bearer ${network.bearer}',
-    });
-    var body1 = json.decode(response.body);
-    print(body1);
-    print(body1);
-    List body = body1['products'];
-    List<Product> projects = body
-        .map((data) {
-      return Product.fromJson(data);
-    })
-        .toSet()
-        .toList();
-
-    if (body1['reqRes'] == 'true') {
-      setState(() {
-        utils.setLoading(false);
-        market.addAll(projects);
+      String mainUrl = 'https://manager.fixme.ng';
+      var response = await http
+          .post(Uri.parse('$mainUrl/load-more-explore-products'), body: {
+        'user_id': network.userId.toString(),
+        'highestId':  market.length.toString(),
+      }, headers: {
+        "Content-type": "application/x-www-form-urlencoded",
+        'Authorization': 'Bearer ${network.bearer}',
       });
-    } else if (body1['reqRes'] == 'false') {
-      utils.setLoading(false);
+      var body1 = json.decode(response.body);
       print(body1);
-    }}catch(e){
+      print(body1);
+      List body = body1['products'];
+      List<GeneralSearch> projects = body
+          .map((data) {
+        return GeneralSearch.fromJson(data);
+      })
+          .toSet()
+          .toList();
+
+      if (body1['reqRes'] == 'true') {
+        setState(() {
+          utils.setLoading(false);
+          market.addAll(projects);
+        });
+      } else if (body1['reqRes'] == 'false') {
+        utils.setLoading(false);
+        print(body1);
+      }}catch(e){
       utils.setLoading(false);
     }
   }
@@ -258,23 +107,19 @@ class _MarketPageState extends State<MarketPage> {
     super.initState();
     var network = Provider.of<WebServices>(context, listen: false);
     var data = Provider.of<Utils>(context, listen: false);
-    //generalGuild(context);
-    checkLocationPermission();
     var utils = Provider.of<Utils>(context, listen: false);
     utils.setLoading(false);
     scrollController.addListener(()async{
       if (scrollController.position.maxScrollExtent ==
           scrollController.position.pixels){
         var utils = Provider.of<Utils>(context, listen: false);
-        utils.setLoading(true);
-        getNextMarket();
+        // utils.setLoading(true);
+        // getNextMarket();
       }
     });
 
 
     callmarket(context);
-
-    checkPremiumUsersTickets(context);
 
     notifications = FirebaseApi.userCheckNotifyStream(
         network.userId.toString());
@@ -563,113 +408,242 @@ class _MarketPageState extends State<MarketPage> {
       ):UpgradeAlert(
         dialogStyle: UpgradeDialogStyle.cupertino,
         child: Consumer<Utils>(
-          builder: (context, utils, child) {
-            return Builder(
-              builder: (context) {
-                Map<int, Product> mp = {};
-                for (var item in market) {
-                  for(var items in item.productImages){
-                      mp[items['productId']] = item;
-                  }
-                }
-                var filteredList = mp.values.toList();
-                return Container(
-                  padding: EdgeInsets.all(5),
-                  child:  Container(
-                    child: Stack(
-                      children: [
-                        StaggeredGridView.countBuilder(
-                         //   itemExtent: 2000,
-                            physics: BouncingScrollPhysics(),
-                            controller: scrollController,
-                            crossAxisCount: 2,
-                            crossAxisSpacing: 4,
-                            mainAxisSpacing: 4,
-                            itemCount: filteredList.length,
-                            itemBuilder: (context, index) {
-                              return InkWell(
-                                onTap: (){
-                                  _viewProduct(filteredList[index].user, data: filteredList[index]);
-                                },
-                                child: Container(
-                                 // height: 100,
-                                  decoration: BoxDecoration(
-                                      color: Colors.transparent,
-                                      borderRadius: BorderRadius.all(
-                                          Radius.circular(18))
-                                  ),
-                                  child: ClipRRect(
-                                    borderRadius: BorderRadius.all(
-                                        Radius.circular(18)),
-                                    child: Card(
-                                      child: GridTile(
-                                        child: FadeInImage.memoryNetwork(
-                                          placeholder: kTransparentImage,
-                                          image: filteredList[index].productImages==null?'':"https://uploads.fixme.ng/thumbnails/${filteredList[index].productImages[0]['imageFileName']}",fit: BoxFit.cover,),
-                                        footer: Container(
-                                          decoration: BoxDecoration(
-                                            color: Colors.black38,
-                                          ),
-                                          child: Padding(
-                                            padding: const EdgeInsets.all(3.0),
-                                            child: Column(
-                                              children: [
-                                                Text("${filteredList[index].product_name}",
-                                                  style: TextStyle(
-                                                      color: Colors.white,
-                                                      fontWeight: FontWeight.bold),
-                                                  maxLines: 2,
-                                                 softWrap: true,
-                                                  overflow: TextOverflow.ellipsis,
+            builder: (context, utils, child) {
+              return Builder(
+                  builder: (context) {
+                    // Map<int, GeneralSearch> mp = {};
+                    // for (var item in market) {
+                    //   for(var items in item.productImages){
+                    //     mp[items['productId']] = item;
+                    //   }
+                    // }
+                    // var filteredList = mp.values.toList();
+                    return Container(
+                      padding: EdgeInsets.all(5),
+                      child:  Container(
+                        child: Stack(
+                          children: [
+                            Expanded(
+                              child:  StaggeredGridView.countBuilder(
+                                //   itemExtent: 2000,
+                                  physics: BouncingScrollPhysics(),
+                                  controller: scrollController,
+                                  crossAxisCount: 2,
+                                  crossAxisSpacing: 4,
+                                  mainAxisSpacing: 4,
+                                  itemCount: market.length,
+                                  itemBuilder: (context, index) {
+                                    return market[index].resultType=='product'?InkWell(
+                                      onTap: (){
+                                        _viewProduct(market[index].user, data: market[index]);
+                                      },
+                                      child: Container(
+                                        // height: 100,
+                                        decoration: BoxDecoration(
+                                            color: Colors.transparent,
+                                            borderRadius: BorderRadius.all(
+                                                Radius.circular(18))
+                                        ),
+                                        child: ClipRRect(
+                                          borderRadius: BorderRadius.all(
+                                              Radius.circular(18)),
+                                          child: Card(
+                                            child: GridTile(
+                                              child: FadeInImage.memoryNetwork(
+                                                placeholder: kTransparentImage,
+                                                image: market[index].productImages==null?'https://uploads.fixme.ng/thumbnails/${market[index].productImages}':"https://uploads.fixme.ng/thumbnails/${market[index].productImages}",fit: BoxFit.cover,),
+                                              footer: Container(
+                                                decoration: BoxDecoration(
+                                                  color: Colors.black38,
                                                 ),
-                                                Text("₦${filteredList[index].price}", style: TextStyle(
-                                                    color: Colors.white,
-                                                    fontFamily: 'Roboto',
-                                                    fontSize: 17,
-                                                    fontWeight: FontWeight.bold),
-                                                  maxLines: 1,
-                                                  softWrap: true,
-                                                  overflow: TextOverflow.ellipsis,
+                                                child: Padding(
+                                                  padding: const EdgeInsets.all(3.0),
+                                                  child: Column(
+                                                    children: [
+                                                      Text("${market[index].product_name}",
+                                                        style: TextStyle(
+                                                            color: Colors.white,
+                                                            fontWeight: FontWeight.bold),
+                                                        maxLines: 1,
+                                                        softWrap: true,
+                                                        overflow: TextOverflow.ellipsis,
+                                                      ),
+                                                      Text("₦${market[index].price}", style: TextStyle(
+                                                          color: Colors.white,
+                                                          fontFamily: 'Roboto',
+                                                          fontSize: 17,
+                                                          fontWeight:
+                                                          FontWeight
+                                                              .w400),
+                                                        maxLines: 1,
+                                                        softWrap: true,
+                                                        overflow: TextOverflow.ellipsis,
+                                                      ),
+                                                      Container(
+                                                        height: 22,
+                                                        width: 200,
+                                                        child: Row(
+                                                          mainAxisAlignment: MainAxisAlignment.center,
+                                                          children: [
+                                                            Icon(
+                                                              Icons
+                                                                  .location_on,
+                                                              color: Colors
+                                                                  .white,
+                                                              size: 14,
+                                                            ),
+                                                            Text(
+                                                              '${market[index].distance}km away',
+                                                              style: TextStyle(
+                                                                  color: Colors
+                                                                      .white,
+                                                                  fontSize:
+                                                                  12,
+                                                                  fontWeight:
+                                                                  FontWeight
+                                                                      .w400),
+                                                            ),
+                                                          ],
+                                                        ),
+                                                      ),
+                                                    ],
+                                                  ),
                                                 ),
-                                              ],
+                                              ),
                                             ),
                                           ),
                                         ),
                                       ),
-                                    ),
-                                  ),
-                                ),
-                              );
-                            },
-                            staggeredTileBuilder: (index) {
-                              return StaggeredTile.count(1, index.isEven ? 1.2 : 1.8);
-                            }),
-                        utils.isLoading?Padding(
-                          padding: const EdgeInsets.all(8.0),
-                          child: Align(
-                            alignment: Alignment.bottomCenter,
-                            child: Theme(
-                                data: Theme.of(context).copyWith(
-                                  accentColor: Color(0xFF9B049B),),
-                                child: SizedBox(
-                                  height: 20,
-                                  width: 20,
-                                  child: CircularProgressIndicator(
-                                    valueColor: AlwaysStoppedAnimation<Color>(Color(0xFF9B049B)),
-                                    strokeWidth: 2,
-                                    backgroundColor: Colors.white,
-                                    //  valueColor: new AlwaysStoppedAnimation<Color>(color: Color(0xFF9B049B)),
-                                  ),
-                                )),
-                          ),
-                        ):Container()
-                      ],
-                    ),
-                  ),
-                );
-              }
-            );
-          }
+                                    ):InkWell(
+                                      onTap: (){
+                                        network.postViewed(market[index].id);
+                                        Navigator.push(
+                                          context,
+                                          PageRouteBuilder(
+                                            pageBuilder: (context, animation,
+                                                secondaryAnimation) {
+                                              return ArtisanPageNew(
+                                                  market[index]);
+                                            },
+                                            transitionsBuilder: (context,
+                                                animation,
+                                                secondaryAnimation,
+                                                child) {
+                                              return FadeTransition(
+                                                opacity: animation,
+                                                child: child,
+                                              );
+                                            },
+                                          ),
+                                        );
+                                      },
+                                      child: Container(
+                                        // height: 100,
+                                        decoration: BoxDecoration(
+                                            color: Colors.transparent,
+                                            borderRadius: BorderRadius.all(
+                                                Radius.circular(18))
+                                        ),
+                                        child: ClipRRect(
+                                          borderRadius: BorderRadius.all(
+                                              Radius.circular(18)),
+                                          child: Card(
+                                            child: GridTile(
+                                              child: FadeInImage.memoryNetwork(
+                                                placeholder: kTransparentImage,
+                                                image: market[index].urlAvatar==null?'https://uploads.fixme.ng/thumbnails/${market[index].urlAvatar}':"https://uploads.fixme.ng/thumbnails/${market[index].urlAvatar}",fit: BoxFit.cover,),
+                                              footer: Container(
+                                                decoration: BoxDecoration(
+                                                  color: Colors.black38,
+                                                ),
+                                                child: Padding(
+                                                  padding: const EdgeInsets.all(3.0),
+                                                  child: Column(
+                                                    children: [
+                                                      Text("${market[index].product_name}",
+                                                        style: TextStyle(
+                                                            color: Colors.white,
+                                                            fontWeight: FontWeight.bold),
+                                                        maxLines: 2,
+                                                        softWrap: true,
+                                                        overflow: TextOverflow.ellipsis,
+                                                      ),
+                                                      Text("${market[index].serviceArea}", style: TextStyle(
+                                                          color: Colors.white,
+                                                          fontFamily: 'Roboto',
+                                                          fontSize: 17,
+                                                          fontWeight: FontWeight.w400),
+                                                        maxLines: 1,
+                                                        softWrap: true,
+                                                        overflow: TextOverflow.ellipsis,
+                                                      ),
+                                                      Container(
+                                                        height: 22,
+                                                        width: 200,
+                                                        child: Row(
+                                                          mainAxisAlignment: MainAxisAlignment.center,
+                                                          children: [
+                                                            Icon(
+                                                              Icons
+                                                                  .location_on,
+                                                              color: Colors
+                                                                  .white,
+                                                              size: 14,
+                                                            ),
+                                                            // Text(
+                                                            //   '${filteredList[index].distance}km away',
+                                                            //   style: TextStyle(
+                                                            //       color: Colors
+                                                            //           .white,
+                                                            //       fontSize:
+                                                            //       12,
+                                                            //       fontWeight:
+                                                            //       FontWeight
+                                                            //           .w400),
+                                                            // ),
+                                                          ],
+                                                        ),
+                                                      ),
+                                                    ],
+                                                  ),
+                                                ),
+                                              ),
+                                            ),
+                                          ),
+                                        ),
+                                      ),
+                                    );
+                                  },
+                                  staggeredTileBuilder: (index) {
+                                    return StaggeredTile.count(1, index.isEven ? 1.2 : 1.8);
+                                  }) ,
+                            ),
+                            utils.isLoading?Padding(
+                              padding: const EdgeInsets.all(8.0),
+                              child: Align(
+                                alignment: Alignment.bottomCenter,
+                                child: Theme(
+                                    data: Theme.of(context).copyWith(
+                                      accentColor: Color(0xFF9B049B),),
+                                    child: SizedBox(
+                                      height: 20,
+                                      width: 20,
+                                      child: CircularProgressIndicator(
+                                        valueColor: AlwaysStoppedAnimation<Color>(Color(0xFF9B049B)),
+                                        strokeWidth: 2,
+                                        backgroundColor: Colors.white,
+                                        //  valueColor: new AlwaysStoppedAnimation<Color>(color: Color(0xFF9B049B)),
+                                      ),
+                                    )),
+                              ),
+                            ):Container()
+                          ],
+                        ),
+                      ),
+                    );
+                  }
+              );
+            }
         ),
       ),
     );
@@ -770,9 +744,9 @@ class _MarketPageState extends State<MarketPage> {
                       color: Color(0xFFF0F0F0),
                       child: Row(
                         children: [
-                          for (dynamic item in data.productImages)
+                          // for (dynamic item in data.productImages)
                             Hero(
-                              tag:  'https://uploads.fixme.ng/originals/${item['imageFileName']}',
+                              tag:  'https://uploads.fixme.ng/originals/${data.productImages}',
                               child: InkWell(
                                 onTap: () {
                                   Navigator.push(
@@ -782,8 +756,8 @@ class _MarketPageState extends State<MarketPage> {
                                           animation,
                                           secondaryAnimation) {
                                         return PhotoView(
-                                          'https://uploads.fixme.ng/originals/${item['imageFileName']}',
-                                          'https://uploads.fixme.ng/originals/${item['imageFileName']}',
+                                          'https://uploads.fixme.ng/originals/${data.productImages}',
+                                          'https://uploads.fixme.ng/originals/${data.productImages}',
                                         );
                                       },
                                       transitionsBuilder:
@@ -811,7 +785,7 @@ class _MarketPageState extends State<MarketPage> {
                                           width: MediaQuery.of(context).size.width,
                                           height: 300,
                                           child: Image.network(
-                                            'https://uploads.fixme.ng/thumbnails/${item['imageFileName']}',
+                                            'https://uploads.fixme.ng/thumbnails/${data.productImages}',
                                             fit: BoxFit.cover,
                                           ),
                                         ),
@@ -936,7 +910,7 @@ class _MarketPageState extends State<MarketPage> {
                             'https://uploads.fixme.ng/thumbnails/${userData.urlAvatar}',
                             name: userData.name,
                           );
-                         network.sendSms(price:data.price ,product_name: data.product_name, phone:userData.userMobile.toString(),context: context);
+                          network.sendSms(price:data.price ,product_name: data.product_name, phone:userData.userMobile.toString(),context: context);
                           network.sendRoboco(price:data.price ,product_name: data.product_name, phone:userData.userMobile.toString(),context: context);
                           Navigator.push(
                             context,
@@ -1091,7 +1065,7 @@ class _MarketPageState extends State<MarketPage> {
                                   animation,
                                   secondaryAnimation) {
                                 return ArtisanPageNew(
-                                    data);
+                                    userData);
                               },
                               transitionsBuilder: (context,
                                   animation,

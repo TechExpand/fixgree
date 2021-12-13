@@ -129,7 +129,7 @@ class UserSearch {
         "reviews": reviews,
         "profile_views": profileViews,
         "user_mobile": userMobile,
-        "service_id": this.serviceId,
+        "service_id": serviceId,
         "profile_pic_file_name": urlAvatar,
         "service_area": serviceArea,
         "id": id,

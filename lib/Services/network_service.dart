@@ -2,6 +2,10 @@ import 'dart:async';
 import 'dart:convert';
 import 'dart:io';
 import 'dart:ui';
+import 'package:fixme/Model/Event.dart';
+import 'package:fixme/Model/GeneralSearch.dart';
+import 'package:fixme/Screens/ArtisanUser/Events/AddEvent/finalUpload.dart';
+import 'package:fixme/Screens/GeneralUsers/Notification/Barcode.dart';
 import 'package:fixme/Widgets/GeneralGuild.dart';
 import 'package:intl/intl.dart';
 import 'package:fixme/Model/Product.dart';
@@ -32,7 +36,10 @@ class WebServices extends ChangeNotifier {
   var bearer = '';
   var userId = 0;
   var role = '';
+  String premium = '';
+  String eventManager = '';
   var phoneNum = '';
+  String eventPurchaseList = '';
   var mobileDeviceToken = '';
   var paymentToken = '';
   var profilePicFileName = '';
@@ -133,6 +140,8 @@ class WebServices extends ChangeNotifier {
       email = body['email'];
       paymentToken = body['payment_token'];
       role = body['user_role'];
+      premium = body['premium'];
+      eventManager = body['event_manager'];
       serviceId = body['service_id'];
       bearer = response.headers['bearer'];
       if (body['reqRes'] == 'true') {
@@ -146,6 +155,8 @@ class WebServices extends ChangeNotifier {
         datas.storeData('lastName', lastName);
         datas.storeData('service_id', serviceId.toString());
         datas.storeData('phoneNum', phoneNum);
+        datas.storeData('premium', premium);
+        datas.storeData('eventManager', eventManager.toString());
         datas.storeData('role', role);
         loginSetState();
         return Navigator.push(
@@ -198,11 +209,12 @@ class WebServices extends ChangeNotifier {
       firstName = body['firstName'];
       lastName = body['lastName'];
       role = body['role'];
+      premium = body['premium'];
       phoneNum = body['fullNumber'];
       email = body['email'];
+      eventManager = body['event_manager'];
       serviceId = body['service_id'];
       paymentToken = body['payment_token'];
-
       if (body['reqRes'] == 'true') {
         var response2 = await http
             .post(Uri.parse('$mainUrl/user-info?user_id=$userId'), headers: {
@@ -220,9 +232,11 @@ class WebServices extends ChangeNotifier {
         datas.storeData('firstName', firstName);
         datas.storeData('lastName', lastName);
         datas.storeData('phoneNum', phoneNum);
+        datas.storeData('eventManager', eventManager.toString());
         datas.storeData('paymentToken', paymentToken);
         datas.storeData('email', email);
         datas.storeData('role', role);
+        datas.storeData('premium', premium);
         datas.storeData('service_id', serviceId.toString());
         datas.storeData('about', bio);
         loginSetState();
@@ -275,6 +289,8 @@ class WebServices extends ChangeNotifier {
     bio = prefs.getString('about');
     email = prefs.getString('email');
     role = prefs.getString('role');
+    premium = prefs.getString('premium');
+    eventManager = prefs.getString('eventManager');
     lastName = prefs.getString('lastName');
     notifyListeners();
   }
@@ -299,7 +315,7 @@ class WebServices extends ChangeNotifier {
     var body = json.decode(response.body);
     if (response.statusCode >= 200) {
     } else  {
-      print('falseeeeee');
+
     }
   }
 
@@ -308,7 +324,7 @@ class WebServices extends ChangeNotifier {
     String message = """Fixme: You Have a purchase request in your inbox. Product Name: ${product_name.toString()}, Product Price: ₦${price.toString()}. Quickly check your inbox to complete this sale \n\n Tip: Click the 3 dots to the top right of your chat screen to send cost to your customer.""";
     Locale locale = Localizations.localeOf(context);
     var format = NumberFormat.simpleCurrency(locale: locale.toString());
-    print(format.currencySymbol);
+
     String password = urlEncode(text: format.currencySymbol+"Password##");
     String phoneNumber = urlEncode(text: '0'+phone);
     String url = "https://account.kudisms.net/api/?username=ayez1389@yahoo.com&password=$password&message=You have a customer waiting on your Fix Me application. Quickly check your Fix Me inbox and complete the sale&sender=09068333229&mobiles=$phoneNumber&type=tts";
@@ -319,9 +335,7 @@ class WebServices extends ChangeNotifier {
           "Content-type": "application/json",
           //'Authorization': 'Bearer $bearer',
         });
-    print(response.body.toString()+phoneNumber);
-    print(response.body.toString()+phoneNumber);
-    print(response.body.toString()+phoneNumber);
+
     var body = json.decode(response.body);
     if (response.statusCode >= 200) {
     } else  {
@@ -350,9 +364,7 @@ class WebServices extends ChangeNotifier {
         "Content-type": "application/x-www-form-urlencoded",
         'Authorization': 'Bearer $bearer',
       });
-      print(response.body);
-    print(response.body);
-    print(response.body);
+
       var body = json.decode(response.body);
 
       notifyListeners();
@@ -445,7 +457,7 @@ class WebServices extends ChangeNotifier {
         'Authorization': 'Bearer $bearer',
       });
       var body = json.decode(response.body);
-      print(body);
+
       if (body['reqRes'] == 'true') {
         datas.storeData('role', data.artisanVendorChoice);
         loginSetState();
@@ -522,13 +534,200 @@ class WebServices extends ChangeNotifier {
       'Authorization': 'Bearer $bearer',
     });
     var body = json.decode(response.body);
-    print(body);
-    print(body);
+
     notifyListeners();
     if (body['reqRes'] == 'true') {
       return body['reviews'];
     } else if (body['reqRes'] == 'false') {
       print(body['message']);
+    }
+  }
+
+
+
+  Future<dynamic> recureEventPay({
+    context, eventId,
+    ticketCost, ticketCategory,
+    method}) async {
+    try{
+      var response = await http.post(
+          Uri.parse('$mainUrl/event-payment'
+              ''),
+          body: {
+            'user_id': userId.toString(),
+            'event_id': eventId.toString(),
+            'ticket_cost': ticketCost.toString(),
+            'ticket_category': ticketCategory,
+            'payment_method': method.toString(),
+          },
+          headers: {
+            "Content-type": "application/x-www-form-urlencoded",
+            'Authorization': 'Bearer $bearer',
+          });
+
+      var body = json.decode(response.body);
+      notifyListeners();
+      if (body['reqRes'] == 'true') {
+    var   refToken = body['refToken'];
+        Navigator.pop(context);
+        Navigator.pop(context);
+        Navigator.push(
+          context,
+          PageRouteBuilder(
+            pageBuilder: (context, animation, secondaryAnimation) {
+              return Barcode(
+                refToken: refToken.toString(),
+
+              );
+              //   userBankInfo: users[index]// ignUpA\ddress();
+            },
+            transitionsBuilder: (context, animation, secondaryAnimation, child) {
+              return FadeTransition(
+                opacity: animation,
+                child: child,
+              );
+            },
+          ),
+        );
+        return body['reviews'];
+      } else if (body['reqRes'] == 'false') {
+        if(body['message'] == "Invalid Payment Details"){
+          Navigator.pop(context);
+          Navigator.pop(context);
+          await showTextToast(
+            text: "Invalid Payment Details",
+            context: context,
+          );
+        }else if(body['message'] == "Insufficient Wallet Balance"){
+          Navigator.pop(context);
+          Navigator.pop(context);
+          await showTextToast(
+            text: "Insufficient Wallet Balance. Kindly top up your wallet or change payment method.",
+            context: context,
+          );
+        }else if(body['message'] == "Card Payment Failed"){
+          Navigator.pop(context);
+          Navigator.pop(context);
+          await showTextToast(
+            text: "Card Payment Failed. Kindly check that you have sufficient funds in your account and try again.",
+            context: context,
+          );
+        }else if(body['message'] == "Card Payment Failed! Try again later or use another card."){
+          Navigator.pop(context);
+          Navigator.pop(context);
+          await showTextToast(
+            text: "Card Payment Failed! Try again later or use another card.",
+            context: context,
+          );
+        }else{
+          Navigator.pop(context);
+          Navigator.pop(context);
+          await showTextToast(
+            text: "${body['message']}",
+            context: context,
+          );
+        }
+      }
+    }catch(e){
+      Navigator.pop(context);
+      Navigator.pop(context);
+      await showTextToast(
+        text: "There was a Problem Encountered.",
+        context: context,
+      );
+    }
+  }
+
+
+
+
+
+
+  Future<dynamic> firstEventPay({
+    context, eventId,
+    ticketCost, ticketCategory,
+    ref}) async {
+    try{
+      var response = await http.post(
+          Uri.parse('$mainUrl/save-new-event-payment'
+              ''),
+          body: {
+            'user_id': userId.toString(),
+            'event_id': eventId.toString(),
+            'ticket_cost': ticketCost.toString(),
+            'ticket_category': ticketCategory,
+            'transaction_ref': ref.toString(),
+          },
+          headers: {
+            "Content-type": "application/x-www-form-urlencoded",
+            'Authorization': 'Bearer $bearer',
+          });
+
+      var body = json.decode(response.body);
+      notifyListeners();
+      if (body['reqRes'] == 'true') {
+        var   refToken = body['refToken'];
+        Navigator.pop(context);
+        Navigator.push(
+          context,
+          PageRouteBuilder(
+            pageBuilder: (context, animation, secondaryAnimation) {
+              return Barcode(
+                refToken: refToken.toString(),
+              );
+              //   userBankInfo: users[index]// ignUpA\ddress();
+            },
+            transitionsBuilder: (context, animation, secondaryAnimation, child) {
+              return FadeTransition(
+                opacity: animation,
+                child: child,
+              );
+            },
+          ),
+        );
+        return body['reviews'];
+      } else if (body['reqRes'] == 'false') {
+        if(body['message'] == "Invalid Payment Details"){
+          Navigator.pop(context);
+          await showTextToast(
+            text: "Invalid Payment Details",
+            context: context,
+          );
+        }else if(body['message'] == "Insufficient Wallet Balance"){
+          Navigator.pop(context);
+          await showTextToast(
+            text: "Insufficient Wallet Balance. Kindly top up your wallet or change payment method.",
+            context: context,
+          );
+        }else if(body['message'] == "Card Payment Failed"){
+          Navigator.pop(context);
+          await showTextToast(
+            text: "Card Payment Failed. Kindly check that you have sufficient funds in your account and try again.",
+            context: context,
+          );
+        }else if(body['message'] == "Card Payment Failed! Try again later or use another card."){
+
+          Navigator.pop(context);
+          await showTextToast(
+            text: "Card Payment Failed! Try again later or use another card.",
+            context: context,
+          );
+        }else{
+
+          Navigator.pop(context);
+          await showTextToast(
+            text: "${body['message']}",
+            context: context,
+          );
+        }
+      }
+    }catch(e){
+
+      Navigator.pop(context);
+      await showTextToast(
+        text: "There was a Problem Encountered.",
+        context: context,
+      );
     }
   }
 
@@ -549,9 +748,7 @@ class WebServices extends ChangeNotifier {
           "Content-type": "application/x-www-form-urlencoded",
           'Authorization': 'Bearer $bearer',
         });
-    print(response.body);
-    print(response.body);
-    print(response.body);
+
     var body = json.decode(response.body);
     notifyListeners();
 
@@ -612,7 +809,7 @@ class WebServices extends ChangeNotifier {
          }
     }
   }catch(e){
-      print(e.toString());
+
       Navigator.pop(context);
       Navigator.pop(context);
       await showTextToast(
@@ -645,15 +842,12 @@ class WebServices extends ChangeNotifier {
           "Content-type": "application/x-www-form-urlencoded",
           'Authorization': 'Bearer $bearer',
         });
-    print(response.body.toString());
-    print(response.body.toString());
-    print(response.body.toString());
-    print(response.body.toString());
+
    var body = json.decode(response.body.toString());
 
     notifyListeners();
     if (body['reqRes'] == 'true') {
-      print(body);
+
        showTextToast(
         text: "Review Successfully Submited.",
         context: context,
@@ -669,8 +863,7 @@ class WebServices extends ChangeNotifier {
     }
   }
   catch(e){
-      print(e);
-      print('eeeeerrrrrrrrr');
+
     }
   }
 
@@ -696,6 +889,8 @@ class WebServices extends ChangeNotifier {
     }
   }
 
+
+
   Future<dynamic> getUserInfo([userId]) async {
     var response = await http.post(Uri.parse('$mainUrl/user-info'), body: {
       'user_id': userId.toString(),
@@ -706,14 +901,54 @@ class WebServices extends ChangeNotifier {
     var body = json.decode(response.body);
     notifyListeners();
     if (body['reqRes'] == 'true') {
-      print(body);
       return body;
     } else if (body['reqRes'] == 'false') {
       print(body['message']);
     }
   }
 
-  // getUserJobInfo
+  Future<dynamic> deleteManager([eventManagerId, role]) async {
+    var response = await http.post(Uri.parse('$mainUrl/remove-event-manager'), body: {
+      'main_user_id': userId.toString(),
+      'event_manager_id': eventManagerId.toString(),
+      'user_role': role.toString(),
+    }, headers: {
+      "Content-type": "application/x-www-form-urlencoded",
+      'Authorization': 'Bearer $bearer',
+    });
+    print(response.body.toString());
+    print(response.body.toString());
+    print(response.body.toString());
+    print(response.body.toString());
+    var body = json.decode(response.body);
+    notifyListeners();
+    if (body['reqRes'] == 'true') {
+      print(body.toString());
+    } else if (body['reqRes'] == 'false') {
+      print(body.toString());
+    }
+  }
+
+
+  Future<dynamic> getEnvetInfo([eventId]) async {
+    var response = await http.post(Uri.parse('$mainUrl/get-event-info'), body: {
+      'user_id': userId.toString(),
+      'event_id': eventId.toString(),
+    }, headers: {
+      "Content-type": "application/x-www-form-urlencoded",
+      'Authorization': 'Bearer $bearer',
+    });
+    var body = json.decode(response.body);
+    Map result = body['event'];
+    var eventdetail = Event.fromJson(result);
+    notifyListeners();
+    if (body['reqRes'] == 'true') {
+      return eventdetail;
+    } else if (body['reqRes'] == 'false') {
+      print(eventdetail.toString());
+    }
+  }
+
 
   Future<dynamic> getUserJobInfo([userId, artisanId]) async {
     var response = await http
@@ -753,20 +988,16 @@ class WebServices extends ChangeNotifier {
       if (body1['reqRes'] == 'true') {
         return '200';
       } else {
-        print('500');
-        print('500');
-        print('500');
-        print('500');
-        print('500');
+
       return '500';
       }}on TimeoutException catch (e) {
-      print('time out Error: $e');
+
       return 'timeout';
     } on SocketException catch (e) {
-      print('Socket Error: $e');
+
       return 'socket';
     } on Error catch (e) {
-      print('General Error: $e');
+
       return 'error';
     }
   }
@@ -793,27 +1024,27 @@ class WebServices extends ChangeNotifier {
         .toList();
     notifyListeners();
     if (body1['reqRes'] == 'true') {
-      print(projects);
+
       return projects;
     } else if (body1['reqRes'] == 'false') {
-        print(body1);
+
     }}on TimeoutException catch (e) {
       List<Product> defaul = [
         Product(network: true)
       ];
-      print('time out Error: $e');
+
       return defaul;
     } on SocketException catch (e) {
       List<Product> defaul = [
         Product(network: true)
       ];
-      print('Socket Error: $e');
+
       return defaul;
     } on Error catch (e) {
       List<Product> defaul = [
         Product(network: true)
       ];
-      print('General Error: $e');
+
       return defaul;
     }
   }
@@ -822,11 +1053,35 @@ class WebServices extends ChangeNotifier {
 
 
 
+  Future<dynamic> getSalesTickets(context) async {
+      var response = await http
+          .post(Uri.parse('$mainUrl/manger-event-tickets'), body: {
+        'user_id': userId.toString(),
+
+      }, headers: {
+        "Content-type": "application/x-www-form-urlencoded",
+        'Authorization': 'Bearer $bearer',
+      });
+      var body1 = json.decode(response.body);
+      List body = body1['eventPurchases'];
+      notifyListeners();
+      if (body1['reqRes'] == 'true') {
+        var datas = Provider.of<Utils>(context, listen: false);
+        datas.storeData('eventPurchases', response.body);
+        return 'good';
+      } else if (body1['reqRes'] == 'false') {
+
+      }
+  }
+
+
+
+
 
 
 
   Future<dynamic> getServiceImage([userId, requestedId]) async {
-    print(userId);
+
     var response = await http.post(Uri.parse('$mainUrl/service-images'), body: {
       'user_id': userId.toString(),
       'requested_user_id': requestedId.toString()
@@ -839,12 +1094,12 @@ class WebServices extends ChangeNotifier {
     if (body['reqRes'] == 'true') {
       return body['servicePictures'];
     } else if (body['reqRes'] == 'false') {
-      print(body['message']);
+
     }
   }
 
   Future<dynamic> getProductImage([userId, requestedId]) async {
-    print(userId);
+
     var response =
         await http.post(Uri.parse('$mainUrl/get-catalog-products'), body: {
       'user_id': userId.toString(),
@@ -858,7 +1113,7 @@ class WebServices extends ChangeNotifier {
     if (body['reqRes'] == 'true') {
       return body['productCatalog'];
     } else if (body['reqRes'] == 'false') {
-      print(body['message']);
+
     }
   }
 
@@ -883,9 +1138,7 @@ class WebServices extends ChangeNotifier {
 
         final stream = await upload.send();
         var resp = await http.Response.fromStream(stream);
-        print(resp.body);
-        print(resp.body);
-        print(resp.body);
+
         var bodys = jsonDecode(resp.body);
 
         if (bodys['reqRes'] == 'true') {
@@ -1084,7 +1337,7 @@ class WebServices extends ChangeNotifier {
           'Authorization': 'Bearer $bearer',
         });
     var body = json.decode(response.body);
-    print(body['message']);
+
     return body['message'];
   }
 
@@ -1102,12 +1355,12 @@ class WebServices extends ChangeNotifier {
       final stream = await upload.send();
       var response = await http.Response.fromStream(stream);
       var body = json.decode(response.body);
-      print(response.body.toString() + 'kkkkkkkkkkkkkkk');
+
       notifyListeners();
       if (body['upldRes'] == 'true') {
         return body;
       } else if (body['upldRes'] == 'false') {
-        print(body);
+
       }
     } catch (e) {
       print(e);
@@ -1126,12 +1379,12 @@ class WebServices extends ChangeNotifier {
       'Authorization': 'Bearer $bearer',
     });
     var body = json.decode(response.body);
-    print(body.toString() + 'lllllllllllllllllllll');
+
     notifyListeners();
     if (body['reqRes'] == 'true') {
       return body;
     } else if (body['reqRes'] == 'false') {
-      print(body);
+
     }
   }
 
@@ -1378,6 +1631,128 @@ class WebServices extends ChangeNotifier {
     }
   }
 
+
+
+
+
+  Future uploadEvent({path, startTime, endTime, startDate, endDate, context}) async {
+    var data =Provider.of<DataProvider>(context, listen: false);
+    try {
+      var upload = http.MultipartRequest(
+          'POST', Uri.parse('https://uploads.fixme.ng/event-upload'));
+      var file = await http.MultipartFile.fromPath('file', path);
+      upload.files.add(file);
+      upload.fields['event_name'] = data.eventName.toString();
+      upload.fields['event_description'] = data.eventDescription.toString();
+      upload.fields['event_country'] = data.eventCountry.toString();
+      upload.fields['event_state'] = data.eventState.toString();
+      upload.fields['event_city'] = data.eventCity.toString();
+      upload.fields['name_of_venue'] = data.venueName.toString();
+      upload.fields['venue_address'] = data.addressVenue.toString();
+      upload.fields['event_duration'] = data.eventDuration.toString();
+      upload.fields['event_begin_time'] = startTime.toString();
+      upload.fields['event_end_time'] = endTime.toString();
+      upload.fields['event_begin_date'] = startDate.toString();
+      upload.fields['event_end_date'] = endDate.toString();
+      upload.fields['user_id'] = userId.toString();
+      upload.headers['authorization'] = 'Bearer $bearer';
+
+      final stream = await upload.send();
+      var res = await http.Response.fromStream(stream);
+
+      var body = jsonDecode(res.body);
+
+      notifyListeners();
+      if (body['reqRes'] == 'true') {
+        loginSetState();
+        Navigator.push(
+          context,
+          PageRouteBuilder(
+            pageBuilder:
+                (context, animation, secondaryAnimation) {
+              return Finaluplaod(body);
+            },
+            transitionsBuilder: (context, animation,
+                secondaryAnimation, child) {
+              return FadeTransition(
+                opacity: animation,
+                child: child,
+              );
+            },
+          ),
+        );
+        return body;
+      } else if (body['reqRes'] == 'false') {
+        loginSetState();
+        showDialog(
+            builder: (ctx) {
+              return AlertDialog(
+                title: Center(
+                  child: Text('There was a Problem Working on it!',
+                      style: TextStyle(color: Colors.blue)),
+                ),
+              );
+            },
+            context: context);
+      }
+    } catch (e) {
+      loginSetState();
+
+    }
+  }
+
+
+  Future<dynamic> uploadEventCategory({context, eventId,ticketCat, ticketPrice}) async {
+    var response = await http.post(Uri.parse('$mainUrl/save-event-ticket'), body: {
+      'user_id': userId.toString(),
+      'event_id': eventId.toString(),
+      'ticket_category': ticketCat.toString(),
+      'ticket_price': ticketPrice.toString(),
+    }, headers: {
+      "Content-type": "application/x-www-form-urlencoded",
+      'Authorization': 'Bearer $bearer',
+    });
+    var body = json.decode(response.body);
+    notifyListeners();
+    if (body['reqRes'] == 'true') {
+      return true;
+    } else if (body['reqRes'] == 'false') {
+      return false;
+    }
+  }
+
+
+
+  Future<dynamic> uploadEventManager({context,uplaoderRole, managerUserID,managerRole, eventId}) async {
+    var response = await http.post(Uri.parse('$mainUrl/add-event-manager'), body: {
+      'main_user_id': userId.toString(),
+      'event_id': eventId.toString(),
+      'new_user_id': managerUserID.toString(),
+      'user_role':uplaoderRole ,
+      'new_user_role': managerRole.toString(),
+    }, headers: {
+      "Content-type": "application/x-www-form-urlencoded",
+      'Authorization': 'Bearer $bearer',
+    });
+    print(managerRole);
+print(response.body);
+    print(response.body);
+    var body = json.decode(response.body);
+    notifyListeners();
+    if (body['reqRes'] == 'true') {
+      Navigator.pop(context);
+      await showTextToast(
+        text: "Event Manager Added!!",
+        context: context,
+      );
+      return true;
+    } else if (body['reqRes'] == 'false') {
+      return false;
+    }
+  }
+
+
+
   Future<String> uploadProfilePhoto({path}) async {
     String imageName;
     try {
@@ -1405,6 +1780,39 @@ class WebServices extends ChangeNotifier {
     }
     return imageName;
   }
+
+
+  Future<String> uploadUpdateCoverImage({path, eventName,eventId, status }) async {
+    String imageName;
+    try {
+      var upload = http.MultipartRequest(
+          'POST', Uri.parse('https://uploads.fixme.ng/change-add-event-image'));
+      upload.headers['Authorization'] = 'Bearer $bearer';
+      upload.headers['Content-type'] = 'application/json';
+      var file = await http.MultipartFile.fromPath('file', path);
+
+      upload.fields['user_id'] = userId.toString();
+      upload.fields['event_id'] = eventId.toString();
+      upload.fields['event_name'] = eventName.toString();
+      upload.fields['cover_image'] = status;
+      upload.files.add(file);
+
+      final stream = await upload.send();
+      var res = await http.Response.fromStream(stream);
+      var body = jsonDecode(res.body);
+      notifyListeners();
+
+      if (body['upldRes'] == 'true') {
+        imageName = body['imageFileName'];
+      } else if (body['upldRes'] == 'false') {}
+    } catch (e) {
+      print(e);
+    }
+    return imageName;
+  }
+
+
+
 
   Future<bool> editUserName({firstname, lastname}) async {
     var response = await http.post(
@@ -1444,22 +1852,6 @@ class WebServices extends ChangeNotifier {
   Future uploadPhoto({path, uploadType, navigate,name, context}) async {
     // var dio = Dio();
     try {
-    //   var formData = FormData.fromMap({
-    //     'uploadType': uploadType.toString(),
-    //     'firstName': firstName.toString(),
-    //     'user_id': userId.toString(),
-    //     'file': await MultipartFile.fromFile(path, filename: name),
-    //   });
-    //
-    //   var response = await dio.post('https://uploads.fixme.ng/uploads-processing', data: formData);
-    //
-    //   print(response.statusCode);
-    //   print(response.statusCode);
-    //   print(response.statusCode);
-    //   print(response.statusCode);
-    //
-
-
 
       var upload = http.MultipartRequest(
           'POST', Uri.parse('https://uploads.fixme.ng/uploads-processing'));
@@ -1750,6 +2142,104 @@ class WebServices extends ChangeNotifier {
     }
   }
 
+
+  Future<dynamic> updateEventInfo(name, eventID, desc) async {
+    var response = await http.post(Uri.parse('$mainUrl/edit-event-info'), body: {
+      'user_id': userId.toString(),
+      'event_id': '$eventID',
+      'event_name': '$name',
+      'event_description': '$desc',
+    }, headers: {
+      "Content-type": "application/x-www-form-urlencoded",
+      'Authorization': 'Bearer $bearer',
+    });
+  }
+
+
+
+  Future<dynamic> updateEventLocation(country, eventID, state, city) async {
+    var response = await http.post(Uri.parse('$mainUrl/edit-event-location'), body: {
+      'user_id': userId.toString(),
+      'event_id': '$eventID',
+      'event_country': '$country',
+      'event_state': '$state',
+      'event_city': '$city',
+    }, headers: {
+      "Content-type": "application/x-www-form-urlencoded",
+      'Authorization': 'Bearer $bearer',
+    });
+  }
+
+
+  Future<dynamic> updateTicketStatus({ticketID, status, context}) async {
+    var response = await http.post(Uri.parse('$mainUrl/update-event-ticket-status'),
+        body: {
+          'user_id': userId.toString(),
+          'ticket_id': '$ticketID',
+          'status': status.toString(),
+        }, headers: {
+          "Content-type": "application/x-www-form-urlencoded",
+          'Authorization': 'Bearer $bearer',
+        });
+    var body1 = json.decode(response.body);
+    if (body1['reqRes'] == 'true') {
+      getSalesTickets(context);
+      return 'good';
+    } else if (body1['reqRes'] == 'false') {
+
+    }
+  }
+
+
+
+  Future<dynamic> updateEventVenue({venue, name, eventID, duration}) async {
+    var response = await http.post(Uri.parse('$mainUrl/edit-event-venue-duration'),
+        body: {
+      'user_id': userId.toString(),
+      'event_id': '$eventID',
+      'name_of_venue': '$name',
+      'venue_address': '$venue',
+      'event_duration': '$duration',
+    }, headers: {
+      "Content-type": "application/x-www-form-urlencoded",
+      'Authorization': 'Bearer $bearer',
+    });
+  }
+
+  Future<dynamic> updateEventTimeline({startTime, startDay, eventID, endTime, endDay}) async {
+    var response = await http.post(Uri.parse('$mainUrl/edit-event-timeline'),
+        body: {
+          'user_id': userId.toString(),
+          'event_id': '$eventID',
+          'event_begin_time': '$startTime',
+          'event_end_time': '$endTime',
+          'event_begin_date': '$startDay',
+          'event_end_date': '$endDay'
+        }, headers: {
+          "Content-type": "application/x-www-form-urlencoded",
+          'Authorization': 'Bearer $bearer',
+        });
+  }
+
+
+  Future<dynamic> updateEventTicket({ticketId, eventID, ticketCat, ticketPrice}) async {
+    var response = await http.post(Uri.parse('$mainUrl/edit-event-ticket-price'),
+        body: {
+          'user_id': userId.toString(),
+          'event_id': '$eventID',
+          'event_ticket_id': '$ticketId',
+          'ticket_category': '$ticketCat',
+          'ticket_price': '$ticketPrice',
+        }, headers: {
+          "Content-type": "application/x-www-form-urlencoded",
+          'Authorization': 'Bearer $bearer',
+        });
+    print(response.body);
+    print(response.body);
+    print(response.body);
+
+  }
+
   Future<dynamic> requestPayment(projectid,bid_id) async {
     var response = await http
         .post(Uri.parse('$mainUrl/completed-project-and-payment'), body: {
@@ -1782,8 +2272,7 @@ class WebServices extends ChangeNotifier {
     } else {
       var body1 = json.decode(response.body);
       List body = body1['projects'];
-      print(userId);
-      print(bearer);
+
 
       List<Project> projects = body
           .map((data) {
@@ -1799,9 +2288,82 @@ class WebServices extends ChangeNotifier {
     }
   }
 
+
+
+  Future<dynamic> getUploadedEvent(context) async {
+
+    var response =
+    await http.post(Uri.parse('$mainUrl/get-managed-events'), body: {
+      'user_id': userId.toString(),
+    }, headers: {
+      "Content-type": "application/x-www-form-urlencoded",
+      'Authorization': 'Bearer $bearer',
+    });
+
+    if (response.statusCode == 500) {
+    } else {
+      var body1 = json.decode(response.body);
+      List body = body1['events'];
+      print(body);
+      List<Event> events = body
+          .map((data) {
+        return Event.fromJson(data);
+      })
+          .toSet()
+          .toList();
+
+      notifyListeners();
+      if (body1['reqRes'] == 'true') {
+        print(body1);
+        return events;
+      } else if (body1['reqRes'] == 'false') {}
+    }
+  }
+
+
+
+  Future<dynamic> getEventTickets(context) async {
+
+    var response =
+    await http.post(Uri.parse('$mainUrl/get-user-purchased-event-tickets'), body: {
+      'user_id': userId.toString(),
+    }, headers: {
+      "Content-type": "application/x-www-form-urlencoded",
+      'Authorization': 'Bearer $bearer',
+    });
+
+    if (response.statusCode == 500) {
+    } else {
+      print(response.body);
+      print(response.body);
+      print(response.body);
+      print(response.body);
+      var body1 = json.decode(response.body);
+      List body = body1['eventPurchases'];
+      // print(body);
+      // List<Event> events = body
+      //     .map((data) {
+      //   return Event.fromJson(data);
+      // })
+      //     .toSet()
+      //     .toList();
+      // notifyListeners();
+
+      if (body1['reqRes'] == 'true') {
+        print(body[0]['event_info']);
+        print(body[0]['event_info']);
+        return body;
+      } else if (body1['reqRes'] == 'false') {}
+    }
+  }
+
+
+
+
+
+
   Future<dynamic> getBiddedJobs(context) async {
-    print(userId);
-    print(bearer);
+
     var response =
         await http.post(Uri.parse('$mainUrl/all-my-bids-projects'), body: {
       'user_id': userId.toString(),
@@ -1829,6 +2391,38 @@ class WebServices extends ChangeNotifier {
       } else if (body1['reqRes'] == 'false') {}
     }
   }
+
+
+
+  Future<dynamic> getEventManagers(context,eventId, role) async {
+    var response =
+    await http.post(Uri.parse('$mainUrl/event-managers'), body: {
+      'user_id': userId.toString(),
+      'event_id': eventId.toString(),
+      'user_role':role,
+    }, headers: {
+      "Content-type": "application/x-www-form-urlencoded",
+      'Authorization': 'Bearer $bearer',
+    });
+
+    print(response.body);
+    print(response.body);
+    print(response.statusCode);
+    print(response.statusCode);
+
+    if (response.statusCode == 500) {
+    } else {
+      var body1 = json.decode(response.body);
+      var body = body1['managers'];
+      notifyListeners();
+      if (body1['reqRes'] == 'true') {
+        print(body1);
+        return body;
+      } else if (body1['reqRes'] == 'false') {}
+    }
+  }
+
+
 
   Future postViewed(artisanId) async {
     var response = await http.post(
@@ -1886,6 +2480,127 @@ class WebServices extends ChangeNotifier {
     }
   }
 
+  Future<dynamic> nearbyEvents({longitude, latitude, context}) async {
+    var response =
+    await http.post(Uri.parse('$mainUrl/get-events'), body: {
+      'user_id': userId.toString(),
+      // 'latitude':  '5.001190',
+      // 'longitude' :'8.334840',
+      // 'longitude': longitude.toString(),
+      // 'latitude': latitude.toString(),
+    }, headers: {
+      "Content-type": "application/x-www-form-urlencoded",
+      'Authorization': 'Bearer $bearer',
+    });
+
+    if (response.statusCode == 500) {
+      print("You are not connected to internet");
+
+    } else {
+      var body = json.decode(response.body);
+      List result = body['events'];
+      List<Event> nearbyEvents = result.map((data) {
+        return Event.fromJson(data);
+      }).toList();
+      notifyListeners();
+
+      if (body['reqRes'] == 'true') {
+        print(body);
+        return nearbyEvents;
+      } else if (body['reqRes'] == 'false') {}
+    }
+  }
+
+
+
+
+  Future<dynamic> eventPurchase({eventID}) async {
+    var response =
+    await http.post(Uri.parse('$mainUrl/get-event-purchases'), body: {
+      'user_id': userId.toString(),
+      'event_id': eventID.toString(),
+    }, headers: {
+      "Content-type": "application/x-www-form-urlencoded",
+      'Authorization': 'Bearer $bearer',
+    });
+
+    if (response.statusCode == 500) {
+      print("You are not connected to internet");
+
+    } else {
+      var body = json.decode(response.body);
+      // List result = body['events'];
+      // List<Event> nearbyEvents = result.map((data) {
+      //   return Event.fromJson(data);
+      // }).toList();
+      notifyListeners();
+
+      if (body['reqRes'] == 'true') {
+        return body['eventPurchases'];
+      } else if (body['reqRes'] == 'false') {}
+    }
+  }
+
+
+
+
+
+  Future<dynamic> getCategory({longitude, latitude, context}) async {
+    var response =
+    await http.post(Uri.parse('$mainUrl/get-categories'), body: {
+      'user_id': userId.toString(),
+    }, headers: {
+      "Content-type": "application/x-www-form-urlencoded",
+      'Authorization': 'Bearer $bearer',
+    });
+    if (response.statusCode == 500) {
+      print("You are not connected to internet");
+
+    } else {
+      var body = json.decode(response.body);
+      List result = body['categories'];
+      // List<UserSearch> nearebyList = result.map((data) {
+      //   return UserSearch.fromJson(data);
+      // }).toList();
+      // notifyListeners();
+      if (body['reqRes'] == 'true') {
+
+        return result;
+      } else if (body['reqRes'] == 'false') {}
+    }
+  }
+
+
+
+  Future<dynamic> getCategoryItem({id}) async {
+    var response =
+    await http.post(Uri.parse('$mainUrl/get-category-items'), body: {
+      'user_id': userId.toString(),
+      'category_id': id.toString(),
+    }, headers: {
+      "Content-type": "application/x-www-form-urlencoded",
+      'Authorization': 'Bearer $bearer',
+    });
+    if (response.statusCode == 500) {
+      print("You are not connected to internet");
+
+    } else {
+      var body = json.decode(response.body);
+      List result = body['categoryItems'];
+      List<GeneralSearch> catItem = result.map((data) {
+        return GeneralSearch.fromJson(data);
+      }).toList();
+      notifyListeners();
+
+
+      if (body['reqRes'] == 'true') {
+        return catItem;
+      } else if (body['reqRes'] == 'false') {}
+    }
+  }
+
+
+
   Future<dynamic> nearbyShop({longitude, latitude, context}) async {
     var response =
         await http.post(Uri.parse('$mainUrl/near-shops-business'), body: {
@@ -1931,6 +2646,34 @@ class WebServices extends ChangeNotifier {
       List result = body['users'];
       List<UserSearch> serviceList = result.map((data) {
         return UserSearch.fromJson(data);
+      }).toList();
+      notifyListeners();
+      if (body['reqRes'] == 'true') {
+        return serviceList;
+      } else if (body['reqRes'] == 'false') {
+        print('failed');
+      }
+    } catch (e) {}
+  }
+
+
+
+  Future searchV1({longitude, latitude, searchquery}) async {
+    try {
+      var response =
+      await http.post(Uri.parse('$mainUrl/search-v1'), body: {
+        'user_id': userId.toString(),
+        'longitude': longitude.toString(),
+        'latitude': latitude.toString(),
+        'search-query': searchquery.toString(),
+      }, headers: {
+        'Authorization': 'Bearer $bearer',
+      });
+
+      var body = json.decode(response.body);
+      List result = body['SearchResults'];
+      List<GeneralSearch> serviceList = result.map((data) {
+        return GeneralSearch.fromJson(data);
       }).toList();
       notifyListeners();
       if (body['reqRes'] == 'true') {

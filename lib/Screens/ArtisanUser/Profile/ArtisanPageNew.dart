@@ -41,7 +41,7 @@ class _ArtisanPageNewState extends State<ArtisanPageNew> with SingleTickerProvid
 
   address() async {
     final coordinates =
-        new Coordinates(widget.userData.latitude, widget.userData.longitude);
+        new Coordinates(widget.userData.user.latitude, widget.userData.user.longitude);
     var addresses =
         await Geocoder.local.findAddressesFromCoordinates(coordinates);
     setState(() {
@@ -57,7 +57,7 @@ class _ArtisanPageNewState extends State<ArtisanPageNew> with SingleTickerProvid
     final artisanProvider =
         Provider.of<ArtisanProvider>(context, listen: false);
     cataloguePhotos =
-        network.getServiceImage(network.userId, widget.userData.id);
+        network.getServiceImage(network.userId, widget.userData.user.id);
     cataloguePhotos.then((data) {
       int catalogueCount = data.length;
       artisanProvider.setCatalogueCount = catalogueCount;
@@ -68,7 +68,7 @@ class _ArtisanPageNewState extends State<ArtisanPageNew> with SingleTickerProvid
     var network = Provider.of<WebServices>(context, listen: false);
     final artisanProvider =
         Provider.of<ArtisanProvider>(context, listen: false);
-    products = network.getProductImage(network.userId, widget.userData.id);
+    products = network.getProductImage(network.userId, widget.userData.user.id);
     products.then((data) {
       int productCount = data.length;
       artisanProvider.setProductCount = productCount;
@@ -155,10 +155,10 @@ class _ArtisanPageNewState extends State<ArtisanPageNew> with SingleTickerProvid
                                 child: Text(''),
                                 radius: 50,
                                 backgroundImage: NetworkImage(
-                                  widget.userData == 'no_picture_upload' ||
-                                          widget.userData == null
+                                  widget.userData.user.urlAvatar == 'no_picture_upload' ||
+                                      widget.userData.user.urlAvatar == null
                                       ? 'https://uploads.fixme.ng/thumbnails/no_picture_upload'
-                                      : 'https://uploads.fixme.ng/thumbnails/${widget.userData.urlAvatar}',
+                                      : 'https://uploads.fixme.ng/thumbnails/${widget.userData.user.urlAvatar}',
                                 ),
                                 foregroundColor: Colors.white,
                                 backgroundColor: Colors.white,
@@ -172,7 +172,7 @@ class _ArtisanPageNewState extends State<ArtisanPageNew> with SingleTickerProvid
                                   decoration: BoxDecoration(
                                       color: Color(0xFF0FB800),
                                       shape: BoxShape.circle),
-                                  child: widget.userData.verification ==
+                                  child: widget.userData.user.verification ==
                                           'un-verified'
                                       ? SizedBox()
                                       : Icon(
@@ -194,7 +194,7 @@ class _ArtisanPageNewState extends State<ArtisanPageNew> with SingleTickerProvid
                                       Padding(
                                         padding: const EdgeInsets.only(left: 0),
                                         child: Text(
-                                          '${widget.userData.name} ${widget.userData.userLastName}'
+                                          '${widget.userData.user.name} ${widget.userData.user.userLastName}'
                                               .capitalizeFirstOfEach,
                                           style: TextStyle(
                                               color: Color(0xFF333333),
@@ -208,7 +208,7 @@ class _ArtisanPageNewState extends State<ArtisanPageNew> with SingleTickerProvid
                                       Align(
                                         alignment: Alignment.bottomRight,
                                         child: Text(
-                                          '${widget.userData.serviceArea}'
+                                          '${widget.userData.user.serviceArea}'
                                               .toUpperCase(),
                                           style: TextStyle(
                                               fontWeight: FontWeight.bold,
@@ -233,7 +233,7 @@ class _ArtisanPageNewState extends State<ArtisanPageNew> with SingleTickerProvid
                                       SizedBox(
                                         width: 200,
                                         child: Text(
-                                          '${first == null ? '${widget.userData.userAddress}' : first.addressLine}',
+                                          '${first == null ? '${widget.userData.user.userAddress}' : first.addressLine}',
                                           softWrap: true,
                                           maxLines: 2,
                                           style: TextStyle(
@@ -248,7 +248,7 @@ class _ArtisanPageNewState extends State<ArtisanPageNew> with SingleTickerProvid
                                   Row(
                                     children: [
                                       Text(
-                                        '${double.parse(widget.userData.userRating.toString())}',
+                                        '${double.parse(widget.userData.user.userRating.toString())}',
                                         style: TextStyle(
                                             color: Color(0xFF333333),
                                             fontSize: 16,
@@ -266,7 +266,7 @@ class _ArtisanPageNewState extends State<ArtisanPageNew> with SingleTickerProvid
                                         width: 3,
                                       ),
                                       Text(
-                                        '(${this.widget.userData.reviews} reviews)',
+                                        '(${this.widget.userData.user.reviews} reviews)',
                                         style: TextStyle(
                                             color: Color(0xFF333333),
                                             fontSize: 16,
@@ -294,8 +294,8 @@ class _ArtisanPageNewState extends State<ArtisanPageNew> with SingleTickerProvid
                               height: 5,
                             ),
 
-                            widget.userData.bio == null ||
-                                    widget.userData.bio == ''
+                            widget.userData.user.bio == null ||
+                                    widget.userData.user.bio == ''
                                 ? SizedBox()
                                 : Column(
                                     children: [
@@ -321,7 +321,7 @@ class _ArtisanPageNewState extends State<ArtisanPageNew> with SingleTickerProvid
                                                 Align(
                                                   alignment: Alignment.centerLeft,
                                                   child: Text(
-                                                    '${widget.userData.bio == null ? '' : widget.userData.bio}',
+                                                    '${widget.userData.user.bio == null ? '' : widget.userData.user.bio}',
                                                     style: TextStyle(
                                                         color: Color(0xFF333333),
                                                         fontSize: 16,
@@ -349,7 +349,7 @@ class _ArtisanPageNewState extends State<ArtisanPageNew> with SingleTickerProvid
                                                 Align(
                                                   alignment: Alignment.centerLeft,
                                                   child: Text(
-                                                    '${widget.userData.businessAddress.toString().isEmpty || widget.userData.businessAddress == null ? widget.userData.userAddress : widget.userData.businessAddress}',
+                                                    '${widget.userData.user.businessAddress.toString().isEmpty || widget.userData.user.businessAddress == null ? widget.userData.user.userAddress : widget.userData.user.businessAddress}',
                                                     style: TextStyle(
                                                         color: Color(0xFF333333),
                                                         fontSize: 16,
@@ -369,8 +369,8 @@ class _ArtisanPageNewState extends State<ArtisanPageNew> with SingleTickerProvid
                               duration: Duration(milliseconds: 500),
                               child: model.getExpandedStatus
                                   ? Column(children: [
-                                      widget.userData.subServices == null ||
-                                              widget.userData.subServices.isEmpty
+                                      widget.userData.user.subServices == null ||
+                                              widget.userData.user.subServices.isEmpty
                                           ? SizedBox()
                                           : AnimatedContainer(
                                               duration:
@@ -400,7 +400,7 @@ class _ArtisanPageNewState extends State<ArtisanPageNew> with SingleTickerProvid
                                                           WrapAlignment.start,
                                                       children: [
                                                         for (dynamic subService
-                                                            in widget.userData
+                                                            in widget.userData.user
                                                                 .subServices)
                                                           Chip(
                                                             backgroundColor:
@@ -441,10 +441,10 @@ class _ArtisanPageNewState extends State<ArtisanPageNew> with SingleTickerProvid
                                 onPressed: () {
                                   FirebaseApi.addUserChat(
                                     token2: data.fcmToken ,
-                              token: widget.userData.fcmToken,
+                              token: widget.userData.user.fcmToken,
                               recieveruserId2: network.userId,
-                               recieveruserId:  widget.userData.id,
-                               serviceId: widget.userData.serviceId,
+                               recieveruserId:  widget.userData.user.id,
+                               serviceId: widget.userData.user.serviceId,
                               serviceId2: network.serviceId,
                                     urlAvatar2:
                                         'https://uploads.fixme.ng/thumbnails/${network.profilePicFileName}',
@@ -454,8 +454,8 @@ class _ArtisanPageNewState extends State<ArtisanPageNew> with SingleTickerProvid
                                     userMobile: widget.userData.userMobile,
                                     idUser: widget.userData.idUser,
                                     urlAvatar:
-                                        'https://uploads.fixme.ng/thumbnails/${widget.userData.urlAvatar}',
-                                    name: widget.userData.name,
+                                        'https://uploads.fixme.ng/thumbnails/${widget.userData.user.urlAvatar}',
+                                    name: widget.userData.user.name,
                                   );
 
                                   Navigator.push(
@@ -463,7 +463,7 @@ class _ArtisanPageNewState extends State<ArtisanPageNew> with SingleTickerProvid
                                     PageRouteBuilder(
                                       pageBuilder: (context, animation,
                                           secondaryAnimation) {
-                                        return ChatPage(user: widget.userData);
+                                        return ChatPage(user: widget.userData.user);
                                       },
                                       transitionsBuilder: (context, animation,
                                           secondaryAnimation, child) {
@@ -508,7 +508,7 @@ class _ArtisanPageNewState extends State<ArtisanPageNew> with SingleTickerProvid
                                 disabledColor: Color(0x909B049B),
                                 onPressed: () async {
                                   await UrlLauncher.launch(
-                                      "tel://${widget.userData.fullNumber}");
+                                      "tel://${widget.userData.user.fullNumber}");
                                 },
                                 // full_number
                                 color: Colors.transparent,
@@ -598,7 +598,7 @@ class _ArtisanPageNewState extends State<ArtisanPageNew> with SingleTickerProvid
                                 tabs: [
                                   Tab(
                                       child: Text(
-                                          widget.userData.userRole == 'artisan'
+                                          widget.userData.user.userRole == 'artisan'
                                               ? 'Catalogue(${model.getCatalogueCount == 0 ? 0 : model.getCatalogueCount})'
                                               : 'Products(${model.getProductCount == 0 ? 0 : model.getProductCount})',
                                           style: GoogleFonts.poppins(
@@ -606,7 +606,7 @@ class _ArtisanPageNewState extends State<ArtisanPageNew> with SingleTickerProvid
                                               fontWeight: FontWeight.w600))),
                                   Tab(
                                       child: Text(
-                                          'Reviews(${this.widget.userData.reviews})',
+                                          'Reviews(${this.widget.userData.user.reviews})',
                                           style: GoogleFonts.poppins(
                                               fontSize: 16,
                                               fontWeight: FontWeight.w600))),
@@ -623,7 +623,7 @@ class _ArtisanPageNewState extends State<ArtisanPageNew> with SingleTickerProvid
                                   physics: ScrollPhysics(),
                                   children: [
                                     Container(
-                                      child: widget.userData.userRole == 'artisan'
+                                      child: widget.userData.user.userRole == 'artisan'
                                           ? FutureBuilder(
                                           future: cataloguePhotos,
                                           builder: (context, snapshot) {
@@ -926,7 +926,7 @@ class _ArtisanPageNewState extends State<ArtisanPageNew> with SingleTickerProvid
                                             (BuildContext context, StateSetter setStates) {
                                           return FutureBuilder(
                                               future: network
-                                                  .getArtisanReviews(widget.userData.id),
+                                                  .getArtisanReviews(widget.userData.user.id),
                                               builder: (context, snapshot) {
                                                 Widget mainWidget;
                                                 if (snapshot.connectionState ==
@@ -1134,7 +1134,7 @@ class _ArtisanPageNewState extends State<ArtisanPageNew> with SingleTickerProvid
                                   onSelected: (value) {
                                     var datas = Provider.of<Utils>(context, listen: false);
                                     datas.makeOpenUrl(
-                                        'https://www.google.com/maps?saddr=${location.locationLatitude},${location.locationLongitude}&daddr= ${widget.userData.latitude}, ${widget.userData.longitude}');
+                                        'https://www.google.com/maps?saddr=${location.locationLatitude},${location.locationLongitude}&daddr= ${widget.userData.user.latitude}, ${widget.userData.user.longitude}');
                                   },
                                   elevation: 0.1,
                                   padding: EdgeInsets.all(0),
@@ -1349,30 +1349,30 @@ Divider(),
                                 var datas = Provider.of<Utils>(context, listen: false);
                                 FirebaseApi.addUserChat(
                                   token2: datas.fcmToken ,
-                                  token: widget.userData.fcmToken,
+                                  token: widget.userData.user.fcmToken,
                                   recieveruserId2: network.userId,
-                                   recieveruserId:  widget.userData.id,
-                                   serviceId: widget.userData.serviceId,
+                                   recieveruserId:  widget.userData.user.id,
+                                   serviceId: widget.userData.user.serviceId,
                                   serviceId2: network.serviceId,
                                   urlAvatar2:
                                   'https://uploads.fixme.ng/thumbnails/${network.profilePicFileName}',
                                   name2: network.firstName,
                                   idArtisan: network.mobileDeviceToken,
                                   artisanMobile: network.phoneNum,
-                                  userMobile: widget.userData.userMobile,
-                                  idUser: widget.userData.idUser,
+                                  userMobile: widget.userData.user.userMobile,
+                                  idUser: widget.userData.user.idUser,
                                   urlAvatar:
-                                  'https://uploads.fixme.ng/thumbnails/${widget.userData.urlAvatar}',
-                                  name: widget.userData.name,
+                                  'https://uploads.fixme.ng/thumbnails/${widget.userData.user.urlAvatar}',
+                                  name: widget.userData.user.name,
                                 );
-                                network.sendSms(product_name:data['product_name'], price: data['price'] ,phone:widget.userData.userMobile.toString(),context: context);
-                                network.sendRoboco(product_name:data['product_name'], price: data['price'] ,phone:widget.userData.userMobile.toString(),context: context);
+                                network.sendSms(product_name:data['product_name'], price: data['price'] ,phone:widget.userData.user.userMobile.toString(),context: context);
+                                network.sendRoboco(product_name:data['product_name'], price: data['price'] ,phone:widget.userData.user.userMobile.toString(),context: context);
                                 Navigator.push(
                                   context,
                                   PageRouteBuilder(
                                     pageBuilder: (context, animation,
                                         secondaryAnimation) {
-                                      return ChatPage(user: widget.userData, productData: data, productSend: 'send', instantChat: '',);
+                                      return ChatPage(user: widget.userData.user, productData: data, productSend: 'send', instantChat: '',);
                                     },
                                     transitionsBuilder: (context, animation,
                                         secondaryAnimation, child) {
@@ -1417,8 +1417,8 @@ Divider(),
                                 child: Text(''),
                                 radius: 50,
                                 backgroundImage: NetworkImage(
-                                  widget.userData == 'no_picture_upload' ||
-                                      widget.userData == null
+                                  widget.userData.urlAvatar == 'no_picture_upload' ||
+                                      widget.userData.urlAvatar == null
                                       ? 'https://uploads.fixme.ng/thumbnails/no_picture_upload'
                                       : 'https://uploads.fixme.ng/thumbnails/${widget.userData.urlAvatar}',
                                 ),
@@ -1438,7 +1438,7 @@ Divider(),
                                       Padding(
                                         padding: const EdgeInsets.only(left: 0),
                                         child: Text(
-                                        widget.userData.businessName==null||widget.userData.businessName.toString()==''?'${widget.userData.name} ${widget.userData.userLastName}':widget.userData.businessName.toString()
+                                        widget.userData.user.businessName==null||widget.userData.user.businessName.toString()==''?'${widget.userData.user.name} ${widget.userData.user.userLastName}':widget.userData.user.businessName.toString()
                                               .capitalizeFirstOfEach,
                                           style: TextStyle(
                                               color: Color(0xFF333333),
@@ -1452,7 +1452,7 @@ Divider(),
                                   Align(
                                     alignment: Alignment.bottomRight,
                                     child: Text(
-                                      '${widget.userData.serviceArea}'
+                                      '${widget.userData.user.serviceArea}'
                                           .toUpperCase(),
                                       style: TextStyle(
                                           fontWeight: FontWeight.bold,
@@ -1466,7 +1466,7 @@ Divider(),
                                   Row(
                                     children: [
                                       Text(
-                                        '${double.parse(widget.userData.userRating.toString())}',
+                                        '${double.parse(widget.userData.user.userRating.toString())}',
                                         style: TextStyle(
                                             color: Color(0xFF333333),
                                             fontSize: 16,
@@ -1484,7 +1484,7 @@ Divider(),
                                         width: 3,
                                       ),
                                       Text(
-                                        '(${this.widget.userData.reviews} reviews)',
+                                        '(${this.widget.userData.user.reviews} reviews)',
                                         style: TextStyle(
                                             color: Color(0xFF333333),
                                             fontSize: 16,

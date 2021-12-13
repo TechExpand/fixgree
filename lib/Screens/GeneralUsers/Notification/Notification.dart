@@ -681,11 +681,7 @@ class _NotificationState extends State<NotificationPage> {
     paymentMethod(context, amount, email) async {
       Charge charge = Charge()
         ..amount = amount
-//        ..putMetaData('is_refund', is_refund)
-//        ..putMetaData('artisan_id', signController.currentUser.user.id)
-//        ..putMetaData('start_date', DateTime.now().toString())
         ..reference = _getReference()
-      // or ..accessCode = _getAccessCodeFrmInitialization()
         ..email = email;
       CheckoutResponse response = await plugin.checkout(
         context,

@@ -43,6 +43,16 @@ class DataProvider extends ChangeNotifier {
   String artisanVendorChoice = '';
   bool passwordObscure = true;
   bool showCallToAction = true;
+  String venueName = '' ;
+  String addressVenue = '' ;
+  String eventDuration = '' ;
+  String eventCountry = '';
+  String eventState = '';
+  String eventCity = '';
+  String eventName = '';
+  String eventDescription = '';
+
+
 
   set setCallToActionStatus(bool newVal) {
     showCallToAction = newVal;

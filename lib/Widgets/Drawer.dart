@@ -1,9 +1,14 @@
 import 'dart:ui';
+import 'package:fixme/Screens/ArtisanUser/Events/ManageEvent/manageEventList.dart';
+import 'package:fixme/Screens/ArtisanUser/Events/WelcomEvent.dart';
 import 'package:fixme/Screens/ArtisanUser/Profile/ProfilePageNew.dart';
+import 'package:fixme/Screens/GeneralUsers/Home/Events.dart';
 import 'package:fixme/Screens/GeneralUsers/Profile/ProfileNew.dart';
 import 'package:fixme/Screens/GeneralUsers/pending/pendingpage.dart';
 import 'package:fixme/Services/Firebase_service.dart';
 import 'package:fixme/Utils/icons.dart';
+import 'package:fixme/Utils/utils.dart';
+import 'package:flutter_feather_icons/flutter_feather_icons.dart';
 import 'package:share/share.dart';
 import 'package:fixme/Screens/ArtisanUser/RegisterArtisan/thankyou.dart';
 import 'package:fixme/Screens/GeneralUsers/Chat/Chats.dart';
@@ -265,6 +270,98 @@ class _DrawerState extends State<DrawerWidget> {
             ),
           ),
           Divider(),
+          // Text(network.eventManager),
+          // Text(network.eventManager),
+          network.premium=='in-active'  && network.eventManager=='false'?Container():Column(
+            children: [
+              Align(
+                  alignment: Alignment.topLeft,
+                  child: Padding(
+                    padding: const EdgeInsets.only(top: 8, left: 8, right: 8),
+                    child: Text('Promotion',
+                        style:
+                        TextStyle(fontSize: 16, fontWeight: FontWeight.w600)),
+                  )),
+              InkWell(
+                  onTap: network.eventManager =='true'?(){
+                    Navigator.push(
+                      context,
+                      PageRouteBuilder(
+                        pageBuilder:
+                            (context, animation, secondaryAnimation) {
+                          return ManageEventList();
+                        },
+                        transitionsBuilder:
+                            (context, animation, secondaryAnimation, child) {
+                          return FadeTransition(
+                            opacity: animation,
+                            child: child,
+                          );
+                        },
+                      ),
+                    );
+                  }
+                      :() async{
+                    SharedPreferences prefs = await SharedPreferences.getInstance();
+                    var event = prefs.getString('event');
+                    event == null || event == 'null' || event == '' ?Navigator.push(
+                      context,
+                      PageRouteBuilder(
+                        pageBuilder:
+                            (context, animation, secondaryAnimation) {
+                              var datas = Provider.of<Utils>(context, listen: false);
+                              datas.storeData('event', 'event');
+                          return EventWelcome();
+                        },
+                        transitionsBuilder:
+                            (context, animation, secondaryAnimation, child) {
+                          return FadeTransition(
+                            opacity: animation,
+                            child: child,
+                          );
+                        },
+                      ),
+                    ):Navigator.push(
+                      context,
+                      PageRouteBuilder(
+                        pageBuilder:
+                            (context, animation, secondaryAnimation) {
+                          return ManageEventList();
+                        },
+                        transitionsBuilder:
+                            (context, animation, secondaryAnimation, child) {
+                          return FadeTransition(
+                            opacity: animation,
+                            child: child,
+                          );
+                        },
+                      ),
+                    );
+                  },
+                  child: Container(
+                    margin: EdgeInsets.only(bottom: 5),
+                    height: 45,
+                    child: ListTile(
+                      leading:
+                      Icon(Icons.calendar_today_outlined,
+                          size: 20, color: Color(0xF0A40C85)),
+                      contentPadding: const EdgeInsets.only(
+                        left: 10,
+                      ),
+                      minLeadingWidth: 10,
+                      title: Padding(
+                        padding: const EdgeInsets.only(bottom: 5.0),
+                        child: Text(
+                          'Events',
+                          style: TextStyle(fontSize: 15, fontWeight: FontWeight.w400),
+                        ),
+                      ),
+                    ),
+                  )),
+              Divider(),
+            ],
+          ),
+
           Align(
               alignment: Alignment.topLeft,
               child: Padding(
@@ -273,6 +370,44 @@ class _DrawerState extends State<DrawerWidget> {
                     style:
                         TextStyle(fontSize: 16, fontWeight: FontWeight.w600)),
               )),
+          InkWell(
+            onTap: () {
+              Navigator.push(
+                context,
+                PageRouteBuilder(
+                  pageBuilder: (context, animation, secondaryAnimation) {
+                    return  EventList();
+                  },
+                  transitionsBuilder:
+                      (context, animation, secondaryAnimation, child) {
+                    return FadeTransition(
+                      opacity: animation,
+                      child: child,
+                    );
+                  },
+                ),
+              );
+            },
+            child: SizedBox(
+              height: 40,
+              child: ListTile(
+                leading: Icon(FeatherIcons.archive,
+                    size: 18,
+                    color: Color(0xF0A40C85)),
+                contentPadding: const EdgeInsets.only(
+                  left: 10,
+                ),
+                minLeadingWidth: 10,
+                title: Padding(
+                  padding: const EdgeInsets.only(bottom: 5.0),
+                  child: Text(
+                    'Event Ticket',
+                    style: TextStyle(fontSize: 15, fontWeight: FontWeight.w400),
+                  ),
+                ),
+              ),
+            ),
+          ),
 
           InkWell(
             onTap: () {
@@ -280,6 +415,7 @@ class _DrawerState extends State<DrawerWidget> {
               widget.controller.jumpToPage(3);
               data.setSelectedBottomNavBar(3);
               PendingScreen(paymentPush:true);
+
             },
             child: SizedBox(
               height: 40,

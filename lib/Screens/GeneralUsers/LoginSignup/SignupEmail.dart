@@ -128,10 +128,6 @@ class SignUpEmailState extends State<SignUpEmail> {
               padding: const EdgeInsets.only(top:0.0),
               child: Row(
                 children: [
-
-
-
-
                  Container(
                       decoration: BoxDecoration(
                           borderRadius:
